@@ -1,0 +1,3 @@
+@(request: RequestHeader)(implicit messages: Messages)
+<h1>@Messages("error.notfound.title")</h1>
+<p>@Messages("error.notfound.text", request.method + " " + request.uri)</p>

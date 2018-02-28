@@ -1,0 +1,85 @@
+
+################################################################################################
+# COMMON
+
+field.name=name
+field.email=Email
+field.password=パスワード
+field.password.repeat=パスワードの再入力
+field.services=Services
+
+submit=送信
+reset=変更する
+back=戻る
+go.index=メニュー画面へ
+
+################################################################################################
+# AUTH
+
+signin=Sign in
+signin.rememberme=Remember me
+signin.signup.question=Don''t you have an account?
+signin.signup=Sign up now
+
+signout=Sign out
+
+forgot.title=メールアドレスを入力してください。
+forgot.sent1={0} にメールを送信しました。
+forgot.sent2=メールの内容に従ってパスワードをリセットしてください。
+forgot.reset.title=パスワードのリセット
+forgot.reseted=パスワードをリセットしました。
+
+changepass=Change password
+changepass.title=パスワード変更
+changepass.field.current=現在のパスワード
+changepass.field.new=新しいパスワード
+changepass.field.repeat=新しいパスワードを再入力
+
+auth.user.notexists=メールアドレスが登録されていません。
+auth.user.notunique=There is another user with this email
+auth.credentials.incorrect=メールアドレスまたはパスワードが違います。
+auth.passwords.notequal=新しいパスワードを正しく再入力してください。
+auth.password.changed=パスワードを変更しました。
+auth.currentpwd.incorrect=現在のパスワードが違います。
+
+denied.title=Access denied!
+denied.text=You have no privileges to be here.
+
+################################################################################################
+# ERRORS
+
+error.unknown.title=Oops, an error occurred
+error.unknown.text=This exception has been logged with id <strong>{0}</strong>.
+error.notfound.title=ページが見つかりません。
+error.notfound.text=For request ''{0}''
+
+# 会議室予約データ登録APIエラー
+error.api.reserve.001.auth=認証に失敗しました。
+error.api.reserve.002.date=予約日付が不正です。
+error.api.reserve.003.room=会議室が不正です。(no:{0})
+error.api.reserve.004.startTime=開始時刻が不正です。(no:{0}, data:{1}件目)
+error.api.reserve.005.endTime=終了時刻が不正です。(no:{0}, data:{1}件目)
+error.api.reserve.006.future=終了時刻は開始時刻よりも未来の時刻を指定してください。(no:{0}, data:{1}件目)
+error.api.reserve.007.duplicate=予約時間が重複しています。(no:{0}, data:{1}件目)
+
+################################################################################################
+# MAILS
+
+mail.welcome.subject=こちらは日立アプライアンス会議室予約システムです。 アカウント情報をご確認ください。
+mail.welcome.hello=Welcome {0}!
+mail.welcome.prelink=Thanks for signing up for this great webpage! Please verify your email address by clicking the link below.
+mail.welcome.postlink=Note that this link will expire in 24 hours if it''s not activated.
+
+mail.forgotpwd.subject=日立アプライアンス会議室予約システム：パスワードのリセット
+mail.forgotpwd.prelink=こちらは立アプライアンス会議室予約システムです。\nパスワードをリセットするには以下のURLをクリックしてください。
+mail.forgotpwd.postlink1=URLの有効期限は24時間です。
+mail.forgotpwd.postlink2=パスワードのリセットしない場合はURLをクリックしないでください。
+
+mail.sign=日立アプライアンス会議室予約システム管理者
+
+################################################################################################
+# 執務空間ボタン
+
+shitsumu.button.floorMap=座席マップ
+shitsumu.button.temperature=温湿度
+shitsumu.button.statistics=統計解析

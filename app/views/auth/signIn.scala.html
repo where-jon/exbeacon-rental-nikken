@@ -1,0 +1,74 @@
+@(signInForm: Form[(String, String, Boolean)])(implicit request: RequestHeader, messages: Messages)
+@import b3.vertical.fieldConstructor
+@import controllers.routes
+
+<!doctype html>
+<html lang="ja">
+<head>
+	@templates.htmlHead(title="ログイン")
+	<style type="text/css">
+		.login-btn{
+			width: 100%!important;
+			font-size: 16px!important;
+			background-color:#95B3D7;
+			color:#000000;
+		}
+		.loginTappedClass{
+			box-shadow: 0px 0px 10px rgba(100, 100, 100, 0.5) inset;
+			background: #778fac;
+		}
+		.formRow{
+			margin-top: 200px;
+		}
+	</style>
+	<style media="(min-width:1025px)">
+		.form-control{
+			font-size: 16px;
+		}
+	</style>
+	<script type="text/javascript">
+		// ログインボタンのタップ時の動きをつける
+		$(function() {
+			$('.login-btn').on('touchstart touchend', function(e) {
+				if (e.type === 'touchstart') {
+					$(this).addClass('loginTappedClass');
+				}else{
+					$(this).removeClass('loginTappedClass');
+				}
+			});
+		});
+	</script>
+</head>
+<body>
+	<!-- content  -->
+	<div class="container">
+		<div class="navbar navbar-default navbar-fixed-top">
+			<div class="navbar-brand text-center" style="width: 100%;">
+				<div class="">
+					<span>作業車及び仮設材管理システム</span>
+				</div>
+			</div>
+		</div>
+		@b3.formCSRF(routes.Auth.authenticate) {
+			<div class="row formRow">
+				@tags.alertFromRequest(request, "error")
+				<div class="col-xs-6 col-xs-offset-3 col-xs-6 col-sm-offset-3 col-md-6 col-md-offset-3">
+					<div class="form-group">
+						@b3.text( signInForm("identifier"), '_hiddenLabel -> Messages("field.email"), 'placeholder -> "your@email.com", 'autofocus -> false )
+					</div>
+					<div class="form-group">
+						@b3.password( signInForm("password"), '_hiddenLabel -> Messages("field.password"), 'placeholder -> Messages("field.password") )
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-xs-6 col-xs-offset-3 col-xs-6 col-sm-6 col-sm-offset-3 col-md-6 col-md-offset-3">
+					<div class="form-group">
+						@b3.submit('class -> "btn login-btn text-center form-control fontMspGothic"){ ログイン }
+					</div>
+				</div>
+			</div>
+		}
+	</div>
+</body>
+</html>
