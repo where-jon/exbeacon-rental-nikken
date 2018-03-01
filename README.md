@@ -3,6 +3,6 @@
 
 PCブラウザ（Chrome）、iPad対応（1024x768）
 
-JG[/xqAy`dE1CMrKMaHbMmFeWvqtAtSq>uCvatNOTpJd[8H6ujkPfsEKP<uL1La:
+
 
 

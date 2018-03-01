@@ -16,7 +16,26 @@ class CarReserve @Inject()(config: Configuration
 
   /** 初期表示 */
   def index = SecuredAction { implicit request =>
-    Ok(views.html.carReserve("トップ"))
+    var companyList = Seq[String](
+       "ダクト1"
+      ,"ダクト2"
+      ,"配管1"
+      ,"配管2"
+      ,"保温1"
+      ,"保温2"
+      ,"計装1"
+      ,"計装2"
+      ,"多能1")
+    var floorList = Seq[String](
+       "8F"
+      ,"7F"
+      ,"6F"
+      ,"5F"
+      ,"4F"
+      ,"3F"
+      ,"2F"
+      ,"1F")
+    Ok(views.html.carReserve(companyList, floorList))
   }
 
 }

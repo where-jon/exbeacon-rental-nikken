@@ -41,6 +41,12 @@ class Auth @Inject() (
     clock: Clock
 ) extends AuthController {
 
+  // 定数
+  private val LOGIN_SUCCESS = 0
+  private val LOGIN_FAIL_ACCOUNT = 1
+  private val LOGIN_FAIL_PASSWORD = 2
+
+
   // UTILITIES
 
   implicit val ms = mailService
@@ -116,14 +122,15 @@ class Auth @Inject() (
   }
 
   private def authenticatorWithRememberMe(authenticator: CookieAuthenticator, rememberMe: Boolean) = {
-    if (rememberMe) {
-      authenticator.copy(
-        expirationDateTime = clock.now + rememberMeParams._1,
-        idleTimeout = rememberMeParams._2,
-        cookieMaxAge = rememberMeParams._3
-      )
-    } else
-      authenticator
+//    if (rememberMe) {
+//      authenticator.copy(
+//        expirationDateTime = clock.now + rememberMeParams._1,
+//        idleTimeout = rememberMeParams._2,
+//        cookieMaxAge = rememberMeParams._3
+//      )
+//    } else
+//      authenticator
+    authenticator
   }
   private lazy val rememberMeParams: (FiniteDuration, Option[FiniteDuration], Option[FiniteDuration]) = {
     val cfg = conf.getConfig("silhouette.authenticator.rememberMe").get.underlying
