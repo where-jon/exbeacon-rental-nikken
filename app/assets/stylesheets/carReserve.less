@@ -1,17 +1,20 @@
+
 td{
     padding:2px;
-    white-space: normal!important;
+    white-space: nowrap!important;
 }
 .pc-side-nav{
     background-color: #DAEEF4!important;
     padding-left: 0px;
     padding-right: 0px;
-    height: 100vh;
+    //height: 100vh;
+    margin-top: 20px;
 }
 .mainSpace{
     background-color: #DAEEF4!important;
     padding-left: 0px;
     padding-right: 0px;
+    margin-top: 20px;
 }
 #table-responsive-body{
     border: 1px;
@@ -19,7 +22,6 @@ td{
     border-top-width: 0px;
 }
 .tableRow{
-    margin-top: 4%!important;
     margin-right: 0!important;
     margin-left: 0!important;
 }
@@ -28,22 +30,20 @@ td{
     margin-bottom: 0px;
 }
 .part{
-    padding: 5px;
+    width: 35px;
+    padding: 3px;
     margin: 2px!important;
-/***background-color:yellow;***/
     border-radius: 7px;
     border-width: 1px;
     border-style: solid;
+    text-align: center;
     white-space: nowrap;
-    -ms-user-select: none; /* IE 10+ */
-    -moz-user-select: -moz-none;
-    -khtml-user-select: none;
-    -webkit-user-select: none;
-    user-select: none;
+    //display : block;
+    //float:left;
 }
 .partEx{
     width: 3vw;
-    height: 3vh;
+    height: 2vh;
 }
 .partExFont{
     font-size: calc(103%) !important;
@@ -82,7 +82,7 @@ td{
 .tableTitleTh{
     background-color: #4976CA;
     color: #FFFFFF;
-    font-size: 20px;
+    font-size: 19px;
     text-align: center;
 }
 .companyTh{
@@ -92,37 +92,79 @@ td{
     font-size: calc(120%);
 }
 .reserveNameTd{
-    font-size: 15px;
+    width: 45px!important;
+    font-size: 14px;
     background-color:#FFFFFF;
 }
 .useNameTd{
-    font-size: 15px;
+    font-size: 14px;
     background-color:#E7E6E6;
 }
 .reserveTd{
     background-color:#FFFFFF;
+    white-space: nowrap;
+}
+.reserveTdHoverColor{
+    background-color: #fcf8e3!important;
 }
 .useTd{
     background-color:#E7E6E6;
+    white-space: nowrap;
+    vertical-align: middle!important;
 }
 .floorNameTd{
     width: 20px!important;
     padding:0;
     background-color: #B4C7E7!important;
     text-align: center;
-    font-size: calc(120%);
+    font-size: calc(110%);
 }
+/*** table-bordered の改変 ***/
 .table-bordered {
     border: 2px solid #4472C4!important;
 }
-.table-bordered>thead>tr>th {
+.reserveTable>thead>tr>th, .reserveTable>tbody>tr>td{
+    -ms-user-select: none; /* IE 10+ */
+    -moz-user-select: -moz-none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    user-select: none;
+}
+.table-bordered>thead>tr>th , .table-bordered>tbody>tr>td{
     border: 2px solid #4472C4!important;
 }
-.table-bordered>tbody>tr>td {
-    border: 2px solid #4472C4!important;
+/*** .table-condensed の改変 ***/
+  .table-condensed>tbody>tr>td
+, .table-condensed>tbody>tr>th
+, .table-condensed>tfoot>tr>td
+, .table-condensed>tfoot>tr>th
+, .table-condensed>thead>tr>td
+, .table-condensed>thead>tr>th {
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-right: 4px;
+    padding-left: 4px;
+    vertical-align: middle;
+}
+
+.table>tbody>tr>th{
+    vertical-align: middle;
 }
 .dateFont{
     font-size: calc(180%);
     font-weight: bold;
     font-family: 'メイリオ', 'Meiryo', sans-serif;
+}
+
+.summeryDuplicate{
+    color: #FFFFFF;
+    background-color: #FF0000
+}
+
+.sideSummeryTable{
+    font-size: calc(110%)!important;
+}
+
+.modal-header{
+
 }

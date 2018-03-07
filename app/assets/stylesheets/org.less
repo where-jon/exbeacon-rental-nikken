@@ -1,11 +1,40 @@
+/******* TOPメニュー ********/
+.navbar{
+	border-radius: 0;
+	border: none;
+	background-color: #DCE6F2;
+	min-height: 57px;
+}
+.navbar-inverse .navbar-brand {
+    color: #000;
+}
+
+.navbar-brand {
+    padding: 15px 15px;
+    height: 50px;
+}
+
+.navbar-inverse:hover {
+    color: #000;
+}
+
+/******* モーダル ********/
+.modal-header{
+    font-weight: bold;
+    background-color: #d9d9d9;
+    padding: 5px;
+    font-size: 16px;
+}
+.modal-dialog{
+    width: 40%;
+}
+.modal-content{
+    border-radius: 0px;
+}
 
 /* コンテンツ */
 body{
     background-color: #DAEEF4!important;
-}
-
-/* 画面ヘッダの余白 */
-.screenHeadRow{
 }
 
 /* ボタン */
@@ -68,17 +97,17 @@ body{
     margin: 0 auto;
 }
 
-
 #cmsLink{
-    width: 50%!important;
+    width: 65%!important;
     border: 1px solid #fff;
     background: linear-gradient(180deg, #6083CB, #2E61BA)!important;
     padding-right: 0px!important;
     padding-left: 0px!important;
-    font-size: calc(133%) !important;
+    font-size: calc(123%) !important;
     font-weight: bold;
     font-family: 'メイリオ', 'Meiryo', sans-serif;
     box-shadow: 1px 1px 3px 1px #000!important;
+    text-align: center;
 }
 
 
@@ -109,7 +138,7 @@ body{
 /** (デカスマホ用) **/
 @media (min-width:1080px) {
     body{
-        font-size: 1.2em;
+        //font-size: 1.2em;
         background-color: #FFFFFF
     }
     .title{
