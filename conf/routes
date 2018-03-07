@@ -3,7 +3,7 @@
 # ~~~~
 
 # An example controller showing a sample home page
-GET     /                              controllers.Application.index
+GET     /                                controllers.Application.index
 
 
 ###  業務ページ ############################
