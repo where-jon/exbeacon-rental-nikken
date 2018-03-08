@@ -7,10 +7,12 @@ GET     /                                controllers.Application.index
 
 
 ###  業務ページ ############################
-# 作業者利用状況
-GET     /carSummery                      controllers.CarSummery.index
-# 作業者予約
-GET     /carReserve                      controllers.CarReserve.index
+# 作業車利用状況
+GET     /carSummery                     controllers.CarSummery.index
+# 作業車予約
+GET     /carReserve                     controllers.CarReserve.index
+# その他仮設材利用状況
+GET     /otherItem                      controllers.OtherItem.index
 
 ## 認証周り（日立APから移植）
 GET     /signin                         controllers.Auth.signIn
@@ -33,4 +35,3 @@ GET     /img/*file                      controllers.MyAssets.img(path="/public/i
 GET     /common/css/*file               controllers.MyAssets.commonCss(path="/public/lib/common/stylesheets", file: Asset)
 GET     /common/js/*file                controllers.MyAssets.commonJs(path="/public/lib/common/javascripts", file: Asset)
 GET     /common/img/*file               controllers.MyAssets.commonImg(path="/public/lib/common/images", file: Asset)
-GET     /favicon.png                    controllers.Assets.at(path="/public", file="favicon.png")

@@ -8,6 +8,11 @@ import play.api._
 import play.api.i18n.{I18nSupport, MessagesApi}
 import utils.silhouette.{AuthController, MyEnv}
 
+/**
+  * 高所作業車予約アクションクラス
+  *
+  *
+  */
 @Singleton
 class CarReserve @Inject()(config: Configuration
                            , val silhouette: Silhouette[MyEnv]

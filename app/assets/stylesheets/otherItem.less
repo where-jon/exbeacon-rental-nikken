@@ -1,4 +1,3 @@
-
 td{
     padding:2px;
     white-space: nowrap!important;
@@ -25,52 +24,25 @@ td{
     margin-right: 0!important;
     margin-left: 0!important;
 }
-#reserveTable{
+#itemTable{
     min-width: 100%;
     margin-bottom: 0px;
 }
-.part{
+
+.itemPart{
     width: 35px;
     padding: 3px;
-    margin: 2px!important;
+    margin: 4px!important;
     border-radius: 7px;
     border-width: 1px;
     border-style: solid;
     text-align: center;
     white-space: nowrap;
-
-}
-.partEx{
-    width: 3vw;
-    height: 2vh;
-}
-.partExFont{
-    font-size: calc(103%) !important;
-}
-
-
-/************************ 予約の状態 ************************/
-.useWorking{
     background-color: #4472C4;
     color: #FFFFFF;
     border-color: #000000;
+    font-weight: bold;
 }
-.useNotWorking{
-    background-color: #FFFFFF;
-    color: #000000;
-    border-color: #000000;
-}
-.reserveNone{
-    background-color: #FF0000;
-    color: #FFFFFF;
-    border-color: #000000;
-}
-.reserveContent{
-    background-color: rgba(0, 0, 0, 0.5);
-    color: #FFFFFF;
-    border-color: #000000;
-}
-/********/
 
 .tableTitleTh{
     background-color: #4976CA;
@@ -78,91 +50,88 @@ td{
     font-size: 19px;
     text-align: center;
 }
-.companyTh{
+.tableSubTitleTh{
     background-color: #B4C7E7!important;
     text-align: center;
     white-space: nowrap;
     font-size: calc(120%);
 }
-.useNameTd{
-    width: 45px!important;
-    font-size: 14px;
-    background-color:#FFFFFF;
-}
-.reserveNameTd{
-    font-size: 14px;
-    background-color:#E7E6E6;
-}
-.useTd{
+
+.itemTd{
     background-color:#FFFFFF;
     white-space: nowrap;
 }
-.reserveTdHoverColor{
-    background-color: #fcf8e3!important;
-}
-.reserveTd{
-    background-color:#E7E6E6;
-    white-space: nowrap;
-    vertical-align: middle!important;
-}
-.floorNameTd{
+
+.itemNameTd, .floorNameTd{
     width: 20px!important;
     padding:0;
     background-color: #B4C7E7!important;
     text-align: center;
     font-size: calc(110%);
 }
-/*** table の改変 start ************************************************/
-.reserveTable {
+/*** table-bordered の改変 start ****************************************/
+.itemTable {
     border: 2px solid #4472C4!important;
 }
 
-.reserveTable>thead>tr>th, .reserveTable>tbody>tr>td{
+.itemTable>thead>tr>th ,
+.itemTable>tbody>tr>td{
     border: 2px solid #4472C4!important;
 }
-.reserveTable>tbody>tr>td
-, .reserveTable>tbody>tr>th
-, .reserveTable>thead>tr>td
-, .reserveTable>thead>tr>th {
-    padding-top: 5px;
-    padding-bottom: 5px;
+
+  .itemTable>tbody>tr>td
+, .itemTable>tbody>tr>th
+, .itemTable>thead>tr>td
+, .itemTable>thead>tr>th {
+    padding-top: 7px;
+    padding-bottom: 7px;
     padding-right: 4px;
     padding-left: 4px;
     vertical-align: middle;
 }
-.reserveTable>tbody>tr>th{
+
+.itemTable>tbody>tr>th{
     vertical-align: middle;
 }
 
 .sideSummeryTable{
     font-size: calc(110%)!important;
 }
-.sideSummeryTable>thead>tr>th, .sideSummeryTable>tbody>tr>td{
+
+.sideSummeryTable {
     border: 2px solid #4472C4!important;
 }
-.sideSummeryTable>tbody>tr>td
+
+.sideSummeryTable>thead>tr>th ,
+.sideSummeryTable>tbody>tr>td{
+    border: 2px solid #4472C4!important;
+}
+
+  .sideSummeryTable>tbody>tr>td
 , .sideSummeryTable>tbody>tr>th
 , .sideSummeryTable>thead>tr>td
 , .sideSummeryTable>thead>tr>th {
-    padding-top: 3px;
-    padding-bottom: 3px;
-    padding-right: 2px;
-    padding-left: 2px;
-    vertical-align: middle;
-}
-.sideSummeryTable>tbody>tr>th{
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-right: 4px;
+    padding-left: 4px;
     vertical-align: middle;
 }
 
-/*** table の改変 end ************************************************/
+.itemTable>tbody>tr>th{
+    vertical-align: middle;
+}
 
-.dateFont{
+/*** table-bordered の改変 end ****************************************/
+
+.exFont{
     font-size: calc(130%);
     font-weight: bold;
     font-family: 'メイリオ', 'Meiryo', sans-serif;
 }
 
-.summeryDuplicate{
+.summerySelected{
     color: #FFFFFF;
-    background-color: #FF0000
+    background-color: #2E61BA !important;
+    font-weight: bold;
 }

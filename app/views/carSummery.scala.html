@@ -18,39 +18,9 @@
     <div class="container">
         <div class="row">
             <!-- 左サイド -->
-            <div class="col-xs-5 col-sm-5 col-md-5 col-lg-4 pc-side-nav">
+            <div class="col-sm-5 col-md-4 col-lg-4 pc-side-nav">
                 <!-- ボタン部ROW -->
-                <div class="row">
-                    <div class="col-xs-10 col-sm-10 col-md-10 col-xs-offset-1 col-sm-offset-1 col-md-offset-1" style="padding:0;">
-                        <!-- ボタン群の囲い -->
-                        <div class="menuBtnWrapper">
-                            <!-- 上部 -->
-                            <div>
-                                <div class="menuBtnsDiv">
-                                    <div class="row">
-                                        <span class="menuTitle">作業車管理画面</span>
-                                    </div>
-                                    <div class="row" style="margin-top: 10px;">
-                                        <div class="col-xs-6 col-sm-6 col-md-6" style="padding:0;">
-                                            <a class="btn btn-primary disabled menuBtn menuBtnSelected">当日</a>
-                                        </div>
-                                        <div class="col-xs-6 col-sm-6 col-md-6" style="padding:0;">
-                                            <a class="btn btn-primary menuBtn">予約</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- 下部 -->
-                            <div>
-                                <div style="margin: 9px 25px 9px 25px;">
-                                    <a class="btn btn-primary otherItemBtn">
-                                        その他仮設材利用状況
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                @templates.menuBtnDiv()
                 <!-- サマリー部ROW -->
                 <div class="row" style="margin-top: 5%;">
                     <div class="col-xs-10 col-sm-10 col-md-10 col-xs-offset-1 col-sm-offset-1 col-md-offset-1" style="padding:0;">
@@ -69,82 +39,82 @@
                                         <th class="companyTh" style="font-size:calc(100%);">予約無<br/>非稼働</th>
                                     </tr>
                                 </thead>
-                                <tbody>
+                                <tbody class="text-right">
                                     <tr>
                                         <td class="floorNameTd">8F</td>
+                                        <td class="reserveTd">0台</td>
                                         <td class="useTd">0台</td>
-                                        <td class="reserveTd">0台</td>
-                                        <td class="reserveTd">0台</td>
-                                        <td class="reserveTd">0台</td>
-                                        <td class="reserveTd">0台</td>
+                                        <td class="useTd">0台</td>
+                                        <td class="useTd">0台</td>
+                                        <td class="useTd">0台</td>
                                     </tr>
                                     <tr>
                                         <td class="floorNameTd">7F</td>
+                                        <td class="reserveTd">0台</td>
                                         <td class="useTd">0台</td>
-                                        <td class="reserveTd">0台</td>
-                                        <td class="reserveTd">0台</td>
-                                        <td class="reserveTd">0台</td>
-                                        <td class="reserveTd">0台</td>
+                                        <td class="useTd">0台</td>
+                                        <td class="useTd">0台</td>
+                                        <td class="useTd">0台</td>
                                     </tr>
                                     <tr>
                                         <td class="floorNameTd">6F</td>
+                                        <td class="reserveTd">0台</td>
                                         <td class="useTd">0台</td>
-                                        <td class="reserveTd">0台</td>
-                                        <td class="reserveTd">0台</td>
-                                        <td class="reserveTd">0台</td>
-                                        <td class="reserveTd">0台</td>
+                                        <td class="useTd">0台</td>
+                                        <td class="useTd">0台</td>
+                                        <td class="useTd">0台</td>
                                     </tr>
                                     <tr>
                                         <td class="floorNameTd">5F</td>
+                                        <td class="reserveTd">0台</td>
+                                        <td class="useTd">2台</td>
                                         <td class="useTd">0台</td>
-                                        <td class="reserveTd">2台</td>
-                                        <td class="reserveTd">0台</td>
-                                        <td class="reserveTd">0台</td>
-                                        <td class="reserveTd">0台</td>
+                                        <td class="useTd">0台</td>
+                                        <td class="useTd">0台</td>
                                     </tr>
                                     <tr>
                                         <td class="floorNameTd">4F</td>
-                                        <td class="useTd">7台</td>
-                                        <td class="reserveTd">4台</td>
-                                        <td class="reserveTd">1台</td>
-                                        <td class="reserveTd">0台</td>
-                                        <td class="reserveTd">1台</td>
+                                        <td class="reserveTd">7台</td>
+                                        <td class="useTd">4台</td>
+                                        <td class="useTd">1台</td>
+                                        <td class="useTd">0台</td>
+                                        <td class="useTd">1台</td>
                                     </tr>
                                     <tr>
                                         <td class="floorNameTd">3F</td>
-                                        <td class="useTd">5台</td>
-                                        <td class="reserveTd">4台</td>
-                                        <td class="reserveTd">0台</td>
-                                        <td class="reserveTd">0台</td>
-                                        <td class="reserveTd">1台</td>
+                                        <td class="reserveTd">5台</td>
+                                        <td class="useTd">4台</td>
+                                        <td class="useTd">0台</td>
+                                        <td class="useTd">0台</td>
+                                        <td class="useTd">1台</td>
                                     </tr>
                                     <tr>
                                         <td class="floorNameTd">2F</td>
-                                        <td class="useTd">2台</td>
-                                        <td class="reserveTd">1台</td>
-                                        <td class="reserveTd">1台</td>
-                                        <td class="reserveTd">1台</td>
-                                        <td class="reserveTd">0台</td>
+                                        <td class="reserveTd">2台</td>
+                                        <td class="useTd">1台</td>
+                                        <td class="useTd">1台</td>
+                                        <td class="useTd">1台</td>
+                                        <td class="useTd">0台</td>
                                     </tr>
                                     <tr>
                                         <td class="floorNameTd">1F</td>
+                                        <td class="reserveTd">0台</td>
                                         <td class="useTd">0台</td>
-                                        <td class="reserveTd">0台</td>
-                                        <td class="reserveTd">0台</td>
-                                        <td class="reserveTd">0台</td>
-                                        <td class="reserveTd">0台</td>
+                                        <td class="useTd">0台</td>
+                                        <td class="useTd">0台</td>
+                                        <td class="useTd">0台</td>
                                     </tr>
                                     <tr>
                                         <td class="floorNameTd">全数</td>
-                                        <td class="useTd">12台</td>
-                                        <td class="reserveTd">11台</td>
-                                        <td class="reserveTd">1台</td>
-                                        <td class="reserveTd">1台</td>
-                                        <td class="reserveTd">1台</td>
+                                        <td class="reserveTd">12台</td>
+                                        <td class="useTd">11台</td>
+                                        <td class="useTd">1台</td>
+                                        <td class="useTd">1台</td>
+                                        <td class="useTd">1台</td>
                                     </tr>
                                     <tr>
                                         <td class="floorNameTd" colspan="2">合計</td>
-                                        <td class="reserveTd text-right" colspan="4">14台</td>
+                                        <td class="useTd text-right" colspan="4">14台</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -178,24 +148,7 @@
                 </div>
             </div>
             <!-- 右サイド -->
-            <div class="col-xs-7 col-sm-7 col-md-7 col-lg-8 mainSpace">
-                <!-- メッセージ -->
-                @if(!flash.get("errMsg").isEmpty) {
-                    <div class="row">
-                        <div style="margin-top: 10px;margin-bottom: 10px;" class="alert alert-danger alert-dismissible" role="alert">
-                            <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
-                            @flash.get("errMsg")
-                        </div>
-                    </div>
-                }
-                @if(!flash.get("successMsg").isEmpty) {
-                    <div class="row">
-                        <div style="margin-top: 10px;margin-bottom: 10px;" class="alert alert-success alert-dismissible" role="alert">
-                            <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
-                            @flash.get("successMsg")
-                        </div>
-                    </div>
-                }
+            <div class="col-sm-7 col-md-8 col-lg-8 mainSpace">
                 <!-- 状況-->
                 <div class="row tableRow">
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="padding:0;">
@@ -203,34 +156,34 @@
                             <div id="table-responsive-body">
                                 <table id="reserveTable" class="table table-bordered table-condensed reserveTable">
                                     <thead>
-                                    <tr class="removable">
+                                    <tr>
                                         <th colspan="@{companyList.length + 3}" class="tableTitleTh">高所作業車各階稼働状況</th>
                                     </tr>
-                                    <tr class="removable">
+                                    <tr>
                                         <th style="background-color: #B4C7E7!important;" colspan="2"></th>
                                         <th class="companyTh">前日予約無</th>
                                         @for((company, no) <- companyList.zipWithIndex){
-                                            <th class="companyTh" data-th="th_@{no}">@company</th>
+                                            <th class="companyTh" data-id="th_@no">@company</th>
                                         }
                                     </tr>
                                     </thead>
                                     <tbody>
                                     @for(floor <- floorList){
-                                        <tr id="floorRow_@{floor}" class="reserveRow">
-                                            <td rowspan="2" class="floorNameTd removable">@floor<br/>F</td>
-                                            <td nowrap class="reserveNameTd removable" style="border-bottom-color: #7F7F7F!important;">予約</td>
-                                            <td class="reserveTd removable" style="border-bottom-color: #7F7F7F!important;"></td>
+                                        <tr id="floorRow_@{floor}" class="useRow">
+                                            <td rowspan="2" class="floorNameTd">@floor<br/>F</td>
+                                            <td nowrap class="useNameTd" style="border-bottom-color: #7F7F7F!important;">稼働</td>
+                                            <td class="useTd" id="useTd_@{floor}_x" style="border-bottom-color: #7F7F7F!important;"></td>
                                             @for((company, no) <- companyList.zipWithIndex){
-                                                <td class="drop-able reserveTd reserveTdHover" data-company="@{no}" data-name="@{floor}_@{company}" data-floor="@{floor}" id="td_@{floor}_@{no}" style="border-bottom-color: #7F7F7F!important;"></td>
+                                                <td class="useTd" id="useTd_@{floor}_@{no}" style="border-bottom-color: #7F7F7F!important;">
+                                                    @***<!--<span class="part reserveNone original" id="@{floor}_@{i}" data-originalId="@{floor}_@{company}" data-carNo="0@{floor}@{i}" data-before="@{floor}_@{company}">0@{floor}@{i}</span>-->***@
+                                                </td>
                                             }
                                         </tr>
-                                        <tr class="">
-                                            <td nowrap class="useNameTd removable">稼働<span class="part" style="visibility:hidden;">000</span></td>
-                                            <td class="useTd removable"></td>
-                                            @for((company, i) <- companyList.zipWithIndex){
-                                                <td class="useTd removable">
-                                                    <span class="part draggable reserveNone original" id="@{floor}_@{i}" data-originalId="@{floor}_@{company}" data-carNo="0@{floor}@{i}" data-before="@{floor}_@{company}">0@{floor}@{i}</span>
-                                                </td>
+                                        <tr class="reserveRow">
+                                            <td nowrap class="reserveNameTd">予約<span class="part" style="visibility:hidden;">000</span></td>
+                                            <td class="reserveTd" id="reserveTd_@{floor}_x"></td>
+                                            @for((company, no) <- companyList.zipWithIndex){
+                                                <td class="reserveTd reserveTdHover" data-company="@{no}" id="reserveTd_@{floor}_@{no}"></td>
                                             }
                                         </tr>
                                     }
@@ -245,8 +198,8 @@
                     <div class="col-xs-4 col-sm-4 col-md-4" style="padding:0;">
                         <a id="cmsLink" class="btn btn-primary">管理ページ</a>
                     </div>
-                    <div class="col-xs-8 col-sm-8 col-md-8" style="padding:0;">
-                        <span class="dateFont">最終更新日時：　7/3　9：00更新</span>
+                    <div class="col-xs-8 col-sm-8 col-md-8" style="padding:5px;">
+                        <span class="dateFont">最終更新日時：7/3　9:00</span>
                     </div>
                 </div>
             </div>

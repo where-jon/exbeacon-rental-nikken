@@ -21,8 +21,7 @@ class Application @Inject() (  config: Configuration
   def index = SecuredAction { implicit request =>
     Future {
     }
-    //Redirect(routes.CarSummery.index)
-    Redirect(routes.CarReserve.index)
+    Redirect(routes.CarSummery.index)
   }
   def myAccount = SecuredAction { implicit request =>
     Ok(views.html.myAccount())

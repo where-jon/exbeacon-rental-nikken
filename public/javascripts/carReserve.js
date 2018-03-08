@@ -6,12 +6,8 @@ function showInputModal(){
 // マウス・タッチの動作のバインド
 function bindMouseAndTouch(){
     var ua = navigator.userAgent;
-    if (ua.indexOf('iPad') > 0
-        || ua.indexOf('Android') > 0
-        || ua.indexOf('iPhone') > 0
-        || ua.indexOf('iPod') > 0
-        ) {
-
+    if (ua.indexOf('iPad') > 0 || ua.indexOf('Android') > 0 || ua.indexOf('iPhone') > 0 || ua.indexOf('iPod') > 0){
+        // タッチデバイスの場合
         var touched = false;
         var touch_time = 0;
         $(".reserveTdHover").bind({
@@ -39,6 +35,7 @@ function bindMouseAndTouch(){
             }
         });
     }else{
+        // PCブラウザの場合
         $(".reserveTdHover").bind({
             'mouseover': function(e) {
                 $(this).addClass('reserveTdHoverColor');
@@ -57,10 +54,10 @@ function bindMouseAndTouch(){
 function fixTable(){
     // 予約表テーブルの固定
     var h = $("#reserveTable").height();
-    var w = $('.mainSpace').width() * 0.95;
+    var w = $('.mainSpace').width() * 0.97;
     $('#reserveTable').tablefix({width: w, height: h, fixCols: 2, fixRows: 2});
-    // 複製テーブルのドラッグ＋ドロップは無効に
 
+    // 複製テーブルのドラッグ＋ドロップは無効に
     $('.crossTableDiv, .rowTableDiv, .colTableDiv').find('table').removeAttr('id');
     $('.crossTableDiv, .rowTableDiv, .colTableDiv').find('th').removeAttr('id');
     $('.crossTableDiv, .rowTableDiv, .colTableDiv').find('td').removeAttr('id data-company data-name data-floor');
@@ -125,12 +122,14 @@ function setSortable(){
 
                     // 色付け
                     setColor();
+
+                    // 幅を調整
+                    var no = $(this).attr('data-company');
+                    var minWidth = $(this).outerWidth()*1.1 + "px";
+                    $('[data-th="th_' + no + '"]').css("min-width", '');
+                    $('[data-th="th_' + no + '"]').css("min-width", minWidth);
                 }
-                // 幅を調整
-                var no = $(this).attr('data-company');
-                var minWidth = $(this).outerWidth()*1.5 + "px";
-                $('[data-th="th_' + no + '"]').css("min-width", '');
-                $('[data-th="th_' + no + '"]').css("min-width", minWidth);
+
 
                 // 受け取ったクローンをさらにドラッグ可能にする
                 clonedItem.draggable({
@@ -149,43 +148,12 @@ function setSortable(){
                         setColor();
 
                         $('[data-th="th_' + no + '"]').css("min-width", '');
-                        $('[data-th="th_' + no + '"]').css("min-width", parent.outerWidth()*1.5 + "px");
+                        $('[data-th="th_' + no + '"]').css("min-width", parent.outerWidth()*1.1 + "px");
                     }
                 });
           }
     });
 }
-
-$(function(){
-    // テーブルを固定
-    fixTable();
-    // マウス・タッチの動作のバインド
-    bindMouseAndTouch();
-    // ドラッグ設定
-    setDraggable();
-    // ドロップ可能にする(削除)
-    setRemovable();
-    // ドロップ可能にする
-    setSortable();
-
-    // リサイズ対応
-    var timer = false;
-    $(window).resize(function() {
-        if (timer !== false) {
-            clearTimeout(timer);
-        }
-        timer = setTimeout(function() {
-            console.log('resized');
-            // 処理の再実行
-            removeTable();
-            fixTable();
-            bindMouseAndTouch();
-            setDraggable();
-            setRemovable();
-            setSortable();
-        }, 200);
-    });
-});
 
 // 全体の色付け
 function setColor(){
@@ -234,5 +202,34 @@ function setColor(){
             $(useObj).addClass('reserveNone');
         }
     });
-
 }
+
+$(function(){
+    // テーブルを固定
+    fixTable();
+    // マウス・タッチの動作のバインド
+    bindMouseAndTouch();
+    // ドラッグ設定
+    setDraggable();
+    // ドロップ可能にする(削除)
+    setRemovable();
+    // ドロップ可能にする
+    setSortable();
+
+    // リサイズ対応
+    var timer = false;
+    $(window).resize(function() {
+        if (timer !== false) {
+            clearTimeout(timer);
+        }
+        timer = setTimeout(function() {
+            // 処理の再実行
+            removeTable();
+            fixTable();
+            bindMouseAndTouch();
+            setDraggable();
+            setRemovable();
+            setSortable();
+        }, 200);
+    });
+});

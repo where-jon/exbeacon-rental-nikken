@@ -118,27 +118,55 @@ td{
     text-align: center;
     font-size: calc(110%);
 }
-/*** table-bordered の改変 ***/
-.table-bordered {
+/*** table-bordered の改変 start ****************************************/
+.reserveTable {
+     border: 2px solid #4472C4!important;
+ }
+ .reserveTable>thead>tr>th,
+ .reserveTable>tbody>tr>td{
+     -ms-user-select: none; /* IE 10+ */
+     -moz-user-select: -moz-none;
+     -khtml-user-select: none;
+     -webkit-user-select: none;
+     user-select: none;
+ }
+ .reserveTable>thead>tr>th ,
+ .reserveTable>tbody>tr>td{
+     border: 2px solid #4472C4!important;
+ }
+
+   .reserveTable>tbody>tr>td
+ , .reserveTable>tbody>tr>th
+ , .reserveTable>thead>tr>td
+ , .reserveTable>thead>tr>th {
+     padding-top: 5px;
+     padding-bottom: 5px;
+     padding-right: 4px;
+     padding-left: 4px;
+     vertical-align: middle;
+ }
+
+ .reserveTable>tbody>tr>th{
+     vertical-align: middle;
+ }
+
+.sideSummeryTable{
+    font-size: calc(110%)!important;
+}
+
+.sideSummeryTable {
     border: 2px solid #4472C4!important;
 }
-.reserveTable>thead>tr>th, .reserveTable>tbody>tr>td{
-    -ms-user-select: none; /* IE 10+ */
-    -moz-user-select: -moz-none;
-    -khtml-user-select: none;
-    -webkit-user-select: none;
-    user-select: none;
-}
-.table-bordered>thead>tr>th , .table-bordered>tbody>tr>td{
+
+.sideSummeryTable>thead>tr>th ,
+.sideSummeryTable>tbody>tr>td{
     border: 2px solid #4472C4!important;
 }
-/*** .table-condensed の改変 ***/
-  .table-condensed>tbody>tr>td
-, .table-condensed>tbody>tr>th
-, .table-condensed>tfoot>tr>td
-, .table-condensed>tfoot>tr>th
-, .table-condensed>thead>tr>td
-, .table-condensed>thead>tr>th {
+
+  .sideSummeryTable>tbody>tr>td
+, .sideSummeryTable>tbody>tr>th
+, .sideSummeryTable>thead>tr>td
+, .sideSummeryTable>thead>tr>th {
     padding-top: 5px;
     padding-bottom: 5px;
     padding-right: 4px;
@@ -146,11 +174,14 @@ td{
     vertical-align: middle;
 }
 
-.table>tbody>tr>th{
+.reserveTable>tbody>tr>th{
     vertical-align: middle;
 }
+
+/*** table-bordered の改変 start ****************************************/
+
 .dateFont{
-    font-size: calc(180%);
+    font-size: calc(130%);
     font-weight: bold;
     font-family: 'メイリオ', 'Meiryo', sans-serif;
 }
@@ -158,12 +189,4 @@ td{
 .summeryDuplicate{
     color: #FFFFFF;
     background-color: #FF0000
-}
-
-.sideSummeryTable{
-    font-size: calc(110%)!important;
-}
-
-.modal-header{
-
 }
