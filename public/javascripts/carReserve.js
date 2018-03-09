@@ -55,7 +55,7 @@ function fixTable(){
     // 予約表テーブルの固定
     var h = $("#reserveTable").height();
     var w = $('.mainSpace').width() * 0.97;
-    $('#reserveTable').tablefix({width: w, height: h, fixCols: 2, fixRows: 2});
+    $('#reserveTable').tablefix({width: w, height: h, fixCols: 3, fixRows: 2});
 
     // 複製テーブルのドラッグ＋ドロップは無効に
     $('.crossTableDiv, .rowTableDiv, .colTableDiv').find('table').removeAttr('id');

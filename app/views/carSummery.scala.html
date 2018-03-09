@@ -12,6 +12,11 @@
     <link rel="stylesheet" href="@routes.MyAssets.css("carSummery.css")"/>
     <script type="text/javascript" src="@routes.MyAssets.lib("jquery.tablefix_1.0.1.js")"></script>
     <script></script>
+    <style>
+        ::-webkit-scrollbar{
+        　　border-right: 2px solid #FFF;
+        }
+    </style>
 </head>
 <body>
     <!-- content -->
@@ -108,7 +113,7 @@
                                     </tr>
                                     <tr>
                                         <td class="floorNameTd">全数</td>
-                                        <td class="reserveTd">123台</td>
+                                        <td class="reserveTd">12台</td>
                                         <td class="useTd">11台</td>
                                         <td class="useTd">1台</td>
                                         <td class="useTd">1台</td>
@@ -158,22 +163,24 @@
                             <div id="table-responsive-body">
                                 <table id="reserveTable" class="table table-bordered table-condensed reserveTable">
                                     <thead>
-                                    <tr>
-                                        <th colspan="@{companyList.length + 3}" class="tableTitleTh">高所作業車各階稼働状況</th>
-                                    </tr>
-                                    <tr>
-                                        <th style="background-color: #B4C7E7!important;" colspan="2"></th>
-                                        <th class="companyTh">前日予約無</th>
-                                        @for((company, no) <- companyList.zipWithIndex){
-                                            <th class="companyTh" data-id="th_@no">@company</th>
-                                        }
-                                    </tr>
+                                        <tr>
+                                            <th colspan="@{companyList.length + 4}" class="tableTitleTh">高所作業車各階稼働状況</th>
+                                        </tr>
+                                        <tr>
+                                            <th style="background-color: #B4C7E7!important;" colspan="2"></th>
+                                            <th class="blankTd" style="background-color:#B4C7E7;"></th>
+                                            <th class="companyTh">前日予約無</th>
+                                            @for((company, no) <- companyList.zipWithIndex){
+                                                <th class="companyTh" data-id="th_@no">@company</th>
+                                            }
+                                        </tr>
                                     </thead>
                                     <tbody>
                                     @for(floor <- floorList){
                                         <tr id="floorRow_@{floor}" class="useRow">
                                             <td rowspan="2" class="floorNameTd">@floor<br/>F</td>
                                             <td nowrap class="useNameTd" style="border-bottom-color: #7F7F7F!important;">稼働</td>
+                                            <td class="blankTd" style="background-color:#FFFFFF;border-bottom-color: #7F7F7F!important;"></td>
                                             <td class="useTd" id="useTd_@{floor}_x" style="border-bottom-color: #7F7F7F!important;"></td>
                                             @for((company, no) <- companyList.zipWithIndex){
                                                 <td class="useTd" id="useTd_@{floor}_@{no}" style="border-bottom-color: #7F7F7F!important;">
@@ -183,6 +190,7 @@
                                         </tr>
                                         <tr class="reserveRow">
                                             <td nowrap class="reserveNameTd">予約<span class="part" style="visibility:hidden;">000</span></td>
+                                            <td class="blankTd" style="background-color:#E7E6E6;"></td>
                                             <td class="reserveTd" id="reserveTd_@{floor}_x"></td>
                                             @for((company, no) <- companyList.zipWithIndex){
                                                 <td class="reserveTd reserveTdHover" data-company="@{no}" id="reserveTd_@{floor}_@{no}"></td>
@@ -196,7 +204,7 @@
                     </div>
                 </div>
                 <!-- 欄外-->
-                <div class="row tableRow">
+                <div class="row tableRow cmsLinkRow">
                     <div class="col-xs-4 col-sm-4 col-md-4" style="padding:0;">
                         <a id="cmsLink" class="btn btn-primary">管理ページ</a>
                     </div>

@@ -153,10 +153,11 @@
                                 <table id="reserveTable" class="table table-bordered table-condensed reserveTable">
                                     <thead>
                                         <tr class="removable">
-                                            <th colspan="@{companyList.length + 3}" class="tableTitleTh">高所作業車予約</th>
+                                            <th colspan="@{companyList.length + 4}" class="tableTitleTh">高所作業車予約</th>
                                         </tr>
                                         <tr class="removable">
                                             <th style="background-color: #B4C7E7!important;" colspan="2"></th>
+                                            <th class="blankTd" style="background-color:#B4C7E7;"></th>
                                             <th class="companyTh">前日予約無</th>
                                             @for((company, no) <- companyList.zipWithIndex){
                                                 <th class="companyTh" data-th="th_@{no}">@company</th>
@@ -168,6 +169,7 @@
                                             <tr id="floorRow_@{floor}" class="reserveRow">
                                                 <td rowspan="2" class="floorNameTd removable">@floor<br/>F</td>
                                                 <td nowrap class="reserveNameTd removable" style="border-bottom-color: #7F7F7F!important;">予約</td>
+                                                <td class="blankTd" style="background-color:#FFFFFF;border-bottom-color: #7F7F7F!important;"></td>
                                                 <td class="reserveTd removable" style="border-bottom-color: #7F7F7F!important;"></td>
                                                 @for((company, no) <- companyList.zipWithIndex){
                                                      <td class="drop-able reserveTd reserveTdHover" data-company="@{no}" data-name="@{floor}_@{company}" data-floor="@{floor}" id="td_@{floor}_@{no}" style="border-bottom-color: #7F7F7F!important;"></td>
@@ -175,6 +177,7 @@
                                             </tr>
                                             <tr class="">
                                                 <td nowrap class="useNameTd removable">稼働<span class="part" style="visibility:hidden;">000</span></td>
+                                                <td class="blankTd" style="background-color:#E7E6E6;"></td>
                                                 <td class="useTd removable"></td>
                                                 @for((company, i) <- companyList.zipWithIndex){
                                                     <td class="useTd removable">
@@ -190,7 +193,7 @@
                     </div>
                 </div>
                 <!-- 欄外-->
-                <div class="row tableRow">
+                <div class="row tableRow cmsLinkRow">
                     <div class="col-xs-4 col-sm-4 col-md-4" style="padding:0;">
                         <a id="cmsLink" class="btn btn-primary">管理ページ</a>
                     </div>

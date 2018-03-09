@@ -106,7 +106,7 @@
 			});
 			// 外部 div の設定
 			div
-				.width(opts.width + (withWidth ? 20 : 0) + (withHeight ? 20 : 0))
+				.width( (opts.width + (withWidth ? 20 : 0) + (withHeight ? 20 : 0) )  +1.5)
 				.height(opts.height + (withWidth ? 20 : 0) + (withHeight ? 20 : 0));
 		});
 	}

@@ -7,3 +7,7 @@ $(function(){
         }
     });
 });
+
+function hasScrollBar(obj){
+    return $(obj).get(0).scrollWidth > $(obj).width();
+}
