@@ -9,7 +9,4 @@ require.config
 			exports: "$"
 		bootstrap:
 			deps: ["jquery"]
-
-
-require ["app"]
 ###

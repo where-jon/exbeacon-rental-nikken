@@ -14,6 +14,10 @@ GET     /carReserve                     controllers.CarReserve.index
 # その他仮設材利用状況
 GET     /otherItem                      controllers.OtherItem.index
 
+# CMS
+GET     /cms/placeManage                controllers.cms.PlaceManage.index
+
+
 ## 認証周り（日立APから移植）
 GET     /signin                         controllers.Auth.signIn
 POST    /authenticate                   controllers.Auth.authenticate

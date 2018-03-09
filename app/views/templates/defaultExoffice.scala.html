@@ -3,11 +3,11 @@
 @import views.html.tags.auth._
 @import controllers.routes
 
-<!--@navbarContent = {-->
-    <!--@loggedUser.map { user =>-->
-        <!--<span style="float: right;">ログインID：@user.email</span><br/>-->
-        <!--<a class="btn btn-navbar btn-signout" href="@routes.Auth.signOut">ログアウト</a>-->
-    <!--}-->
-<!--}-->
+@navbarContent = {
+    @loggedUser.map { user =>
+        <span style="float: right;">ログインID：@user.email</span><br/>
+        <a class="btn btn-navbar btn-signout" href="@routes.Auth.signOut">ログアウト</a>
+    }
+}
 
 @content

@@ -1,0 +1,13 @@
+@()(implicit user: User, request: RequestHeader)
+
+@import controllers.routes
+
+<div class="navbar navbar-default navbar-fixed-top">
+    <div class="navbar-brand ">
+        <div class="text-left">
+            <span>作業車及び仮設材管理システム</span>
+        </div>
+    </div>
+    <span style="float: right;">ログインID：@user.email</span><br/>
+    <a class="btn btn-navbar btn-signout" href="/signout">ログアウト</a>
+</div>

@@ -18,7 +18,7 @@
 			background: #778fac;
 		}
 		.formRow{
-			margin-top: 200px;
+			margin-top: 150px;
 		}
 	</style>
 	<style media="(min-width:1025px)">
@@ -42,8 +42,9 @@
 <body>
 	<!-- content  -->
 	<div class="container">
+		<!-- ナビバー  -->
 		<div class="navbar navbar-default navbar-fixed-top">
-			<div class="navbar-brand text-center" style="width: 100%;">
+			<div class="navbar-brand text-left" style="width: 100%;">
 				<div class="">
 					<span>作業車及び仮設材管理システム</span>
 				</div>
@@ -51,13 +52,13 @@
 		</div>
 		@b3.formCSRF(routes.Auth.authenticate) {
 			<div class="row formRow">
-				@tags.alertFromRequest(request, "error")
 				<div class="col-xs-6 col-xs-offset-3 col-xs-6 col-sm-offset-3 col-md-6 col-md-offset-3">
+					@tags.alertFromRequest(request, "error")
 					<div class="form-group">
-						@b3.text( signInForm("identifier"), '_hiddenLabel -> Messages("field.email"), 'placeholder -> "your@email.com", 'autofocus -> false )
+						@b3.text( signInForm("identifier"), '_hiddenLabel -> Messages("field.email"), 'required -> false, 'placeholder -> "your@email.com", 'autofocus -> false )
 					</div>
 					<div class="form-group">
-						@b3.password( signInForm("password"), '_hiddenLabel -> Messages("field.password"), 'placeholder -> Messages("field.password") )
+						@b3.password( signInForm("password"), '_hiddenLabel -> Messages("field.password"), 'required -> false, 'placeholder -> Messages("field.password") )
 					</div>
 				</div>
 			</div>

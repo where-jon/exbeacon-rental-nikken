@@ -57,8 +57,8 @@ class Auth @Inject() (
   // SIGN IN
 
   val signInForm = Form(tuple(
-    "identifier" -> email,
-    "password" -> nonEmptyText,
+    "identifier" -> text,
+    "password" -> text,
     "rememberMe" -> boolean
   ))
 
