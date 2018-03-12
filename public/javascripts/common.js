@@ -11,3 +11,7 @@ $(function(){
 function hasScrollBar(obj){
     return $(obj).get(0).scrollWidth > $(obj).width();
 }
+
+function moveTo(url){
+    location.href = url;
+}

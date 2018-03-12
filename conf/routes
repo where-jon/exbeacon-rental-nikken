@@ -16,6 +16,7 @@ GET     /otherItem                      controllers.OtherItem.index
 
 # CMS
 GET     /cms/placeManage                controllers.cms.PlaceManage.index
+GET     /cms/placeManage/detail         controllers.cms.PlaceManage.detail
 
 
 ## 認証周り（日立APから移植）

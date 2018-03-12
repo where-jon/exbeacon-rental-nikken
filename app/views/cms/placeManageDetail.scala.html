@@ -1,0 +1,297 @@
+@(placeNameList: Seq[String])(implicit user: User, messages: Messages, request: RequestHeader, flash: Flash)
+
+@import controllers.routes
+@import helper._
+
+@views.html.templates.logged(title = "現場管理", tab = "index", containerClass = "container-index") {
+<!doctype html>
+<html lang="ja">
+<head>
+    @templates.htmlHead("現場管理")
+    <link rel="stylesheet" href="@routes.MyAssets.css("cms/placeManageDetail.css")"/>
+    <script type="text/javascript" src="@routes.MyAssets.lib("jquery.tablefix_1.0.1.js")"></script>
+    <script></script>
+</head>
+<body>
+    <!-- content -->
+    <div class="container">
+        <!-- ナビバー  -->
+        @views.html.templates.navBar()
+        <div class="row" style="margin-top: 50px;">
+            <!-- メイン -->
+            <div class="col-sm-3 col-md-3 col-lg-3 cms-side-area">
+                <div class="sideMenu">
+                    <div class="panel list-group" style="margin-bottom: 0px;">
+                        <a href="#" class="sideLinkClass sideLinkSelected list-group-item">
+                            現場管理
+                        </a>
+                        <a href="#" class="sideLinkClass list-group-item">
+                            作業車管理
+                        </a>
+                        <a href="#" class="sideLinkClass list-group-item">
+                            仮設材管理
+                        </a>
+                        <a href="#" class="sideLinkClass list-group-item">
+                            業者管理
+                        </a>
+                        <a href="#" class="sideLinkClass list-group-item">
+                            Beaconタグ管理
+                        </a>
+                    </div>
+                </div>
+                <div class="sideMenu" style="margin-top: 10vw;">
+                    <div class="panel list-group" style="margin-bottom: 0px;">
+                        <a href="@routes.CarSummery.index.path" class="sideLinkClass list-group-item">
+                            稼働状況ページ
+                        </a>
+                        <a href="@controllers.cms.routes.PlaceManage.index.path" class="sideLinkClass list-group-item">
+                            現場一覧ページ
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <!-- メイン -->
+            <div class="col-sm-9 col-md-9 col-lg-9">
+                <!-- テーブルのROW -->
+                <div class="row tableRow">
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="padding:0;">
+                        <div class="table-responsive-body">
+                            <table class="table table-bordered table-condensed itemTable">
+                                <thead>
+                                    <tr>
+                                        <th colspan="4" class="tableTitleTh">現場管理</th>
+                                    </tr>
+                                    <tr>
+                                        <th class="tableTh noTh">No.</th>
+                                        <th class="tableTh placeNameTh">建設現場名称</th>
+                                        <th class="tableTh floorCountTh">階数</th>
+                                        <th class="tableTh stateTh">状態</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                <tr class="rowColor">
+                                    <td class="itemTd text-right">1</td>
+                                    <td class="itemTd text-left">東北医科薬科大学病院</td>
+                                    <td class="itemTd text-right">8</td>
+                                    <td class="itemTd text-center">施行中</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <!-- ボタン-->
+                <div class="row tableRow" style="margin-bottom: 50px;">
+                    <div class="col-xs-4 col-sm-4 col-md-4" style="padding:0;">
+
+                    </div>
+                    <div class="text-center col-xs-4 col-sm-4 col-md-4" style="padding:0;">
+                        <a href="javascript:showInputModal();" class="btn btn-primary link text-right">編集</a>
+                    </div>
+                    <div class="text-right col-xs-4 col-sm-4 col-md-4" style="padding:0;">
+                        <a href="javascript:showDeleteModal();" class="btn deleteLink text-right">削除</a>
+                    </div>
+                </div>
+                <!-- フロア情報テーブルのROW -->
+                <div class="row tableRow">
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="padding:0;">
+                        <div class="table-responsive-body">
+                            <table class="table table-bordered table-condensed itemTable">
+                                <thead>
+                                <tr>
+                                    <th colspan="2" class="tableTitleTh">フロア情報</th>
+                                </tr>
+                                <tr>
+                                    <th class="tableTh floorTh">フロア名</th>
+                                    <th class="tableTh deviceTh">EXBeaconデバイスID</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="rowColor rowHover">
+                                        <td class="itemTd text-center">8F</td>
+                                        <td class="itemTd text-left">
+                                            <span class="part">4181</span>
+                                            <span class="part">4182</span>
+                                            <span class="part">4183</span>
+                                        </td>
+                                    </tr>
+                                    <tr class="rowColor rowHover">
+                                        <td class="itemTd text-center">7F</td>
+                                        <td class="itemTd text-left">
+                                            <span class="part">4171</span>
+                                            <span class="part">4172</span>
+                                            <span class="part">4173</span>
+                                        </td>
+                                    </tr>
+                                    <tr class="rowColor rowHover">
+                                        <td class="itemTd text-center">6F</td>
+                                        <td class="itemTd text-left">
+                                            <span class="part">4161</span>
+                                            <span class="part">4162</span>
+                                            <span class="part">4163</span>
+                                        </td>
+                                    </tr>
+                                    <tr class="rowColor rowHover">
+                                        <td class="itemTd text-center">5F</td>
+                                        <td class="itemTd text-left">
+                                            <span class="part">4151</span>
+                                            <span class="part">4152</span>
+                                            <span class="part">4153</span>
+                                        </td>
+                                    </tr>
+                                    <tr class="rowColor rowHover">
+                                        <td class="itemTd text-center">4F</td>
+                                        <td class="itemTd text-left">
+                                            <span class="part">4141</span>
+                                            <span class="part">4142</span>
+                                            <span class="part">4143</span>
+                                        </td>
+                                    </tr>
+                                    <tr class="rowColor rowHover">
+                                        <td class="itemTd text-center">3F</td>
+                                        <td class="itemTd text-left">
+                                            <span class="part">4131</span>
+                                            <span class="part">4132</span>
+                                            <span class="part">4133</span>
+                                        </td>
+                                    </tr>
+                                    <tr class="rowColor rowHover">
+                                        <td class="itemTd text-center">2F</td>
+                                        <td class="itemTd text-left">
+                                            <span class="part">4121</span>
+                                            <span class="part">4122</span>
+                                            <span class="part">4123</span>
+                                        </td>
+                                    </tr>
+                                    <tr class="rowColor rowHover">
+                                        <td class="itemTd text-center">1F</td>
+                                        <td class="itemTd text-left">
+                                            <span class="part">4111</span>
+                                            <span class="part">4112</span>
+                                            <span class="part">4113</span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <!-- ボタン-->
+                <div class="row tableRow" >
+                    <div class="col-xs-4 col-sm-4 col-md-4" style="padding:0;">
+
+                    </div>
+                    <div class="text-center col-xs-4 col-sm-4 col-md-4" style="padding:0;">
+
+                    </div>
+                    <div class="text-right col-xs-4 col-sm-4 col-md-4" style="padding:0;">
+                        <a href="javascript:showFloorModal();" class="btn btn-primary link text-right">フロア追加</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript" src="@routes.MyAssets.js("cms/placeManageDetail.js")"></script>
+    <script></script>
+
+    <!-- 更新モーダル画面 -->
+    <div class="modal" id="inputModal" tabindex="-1" role="dialog" aria-labelledby="inputModalLabel" aria-hidden="true" data-show="true" data-keyboard="false" data-backdrop="static">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form id="inputForm" name="inputForm" class="form-horizontal">
+                    <div class="modal-header" style="">編集</div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label class="control-label col-xs-5">建設現場名称</label>
+                            <div class="col-xs-5 col-xs-offset-1" style="padding-left: 0px;padding-right: 0px;">
+                                <input type="text" name="inputTitle" value="東北医科薬科大学病院" id="inputTitle" class="form-control" placeholder="東北医科薬科大学病院">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-xs-5" style="padding-top: 0px;">状態</label>
+                            <div class="col-xs-5 col-xs-offset-1" style="padding-left: 0px;padding-right: 0px;">
+                                <select class="form-control">
+                                    <option selected>施工前</option>
+                                    <option>施工中</option>
+                                    <option>終了</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="registFooter" class="modal-footer" style="text-align: center;">
+                        <div class="col-xs-6 text-center">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">キャンセル</button>
+                        </div>
+                        <div class="col-xs-6 text-center">
+                            <button type="button" class="text-center btn btn-primary">登録</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- 削除画面 -->
+    <div class="modal" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true" data-show="true" data-keyboard="false" data-backdrop="static">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form id="deleteForm" name="inputForm" class="form-horizontal">
+                    <div class="modal-header" style="">削除</div>
+                    <div class="modal-body">
+                        <div class="text-center">
+                            建設現場の情報を削除します。<br/>よろしいですか？
+                        </div>
+                    </div>
+                    <div id="deleteooter" class="modal-footer" style="text-align: center;">
+                        <div class="col-xs-6 text-center">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">キャンセル</button>
+                        </div>
+                        <div class="col-xs-6 text-center">
+                            <button type="button" class="text-center btn btn-danger">削除</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- フロアモーダル画面 -->
+    <div class="modal" id="floorModal" tabindex="-1" role="dialog" aria-labelledby="floorModalLabel" aria-hidden="true" data-show="true" data-keyboard="false" data-backdrop="static">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form id="floorForm" name="inputForm" class="form-horizontal">
+                    <div class="modal-header" style="">フロア情報更新</div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label class="control-label col-xs-5">フロア名</label>
+                            <div class="col-xs-5" style="padding-left: 0px;padding-right: 0px;">
+                                <input type="text" name="floorTitle" id="floorTitle" class="form-control" placeholder="8F">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-xs-5">EXBeaconデバイスID</label>
+                            <div class="col-xs-5" style="padding-left: 0px;padding-right: 0px;">
+                                <input type="text" name="deviceId" id="deviceId" class="form-control" placeholder="">
+                            </div>
+                            <div class="col-xs-2" style="padding-left: 0px;padding-right: 0px;">
+                                <a class="btn btn-default">追加</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="floorFooter" class="modal-footer" style="text-align: center;">
+                        <div class="col-xs-4 text-center">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">キャンセル</button>
+                        </div>
+                        <div class="col-xs-4 text-center">
+                            <button type="button" class="text-center btn btn-primary">更新</button>
+                        </div>
+                        <div class="col-xs-4 text-center">
+                            <button type="button" class="text-center btn btn-danger">削除</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
+}
