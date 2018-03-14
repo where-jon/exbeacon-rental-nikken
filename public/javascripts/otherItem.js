@@ -3,7 +3,7 @@
 // 予約テーブルの固定
 function fixTable(){
     // 予約表テーブルの固定
-    var h = $(".pc-side-nav").height()*0.96;
+    var h = $(".pc-side-nav").height()*0.97;
     $('#itemTable').tablefix({height: h, fixRows: 2});
 
     // 複製テーブルのドラッグ＋ドロップは無効に
