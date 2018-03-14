@@ -19,21 +19,21 @@ function bindMouseAndTouch(){
                         touch_time += 100;
                         if (touch_time == common.longTapTime) {
                             // ロングタップ時の処理
-                            moveTo('/cms/placeManage/detail');
+                            showInputModal();
                         }
-                    }, 100);
+                    }, 100)
                 }
             },
             'touchend': function(e) {
                 $(this).removeClass('rowHoverColor');
-                touched = false;
                 touch_time = 0;
+                touched = false;
                 clearInterval(document.interval);
             },
             'touchmove': function(e) {
                 $(this).removeClass('rowHoverColor');
-                touched = false;
                 touch_time = 0;
+                touched = false;
                 clearInterval(document.interval);
             }
         });
@@ -47,47 +47,77 @@ function bindMouseAndTouch(){
                 $(this).removeClass('rowHoverColor');
             },
             'click': function(e) {
-                moveTo('/cms/placeManage/detail');
+                showInputModal();
             },
         });
     }
 }
+
 
 // モーダル画面の表示
 function showInputModal(){
     $('#inputModal').modal();
 }
 
-// 予約テーブルの固定
+// テーブルの固定
 function fixTable(){
-    // 予約表テーブルの固定
-    var h = $(window).height()*0.7;
-    var w = $('#table-responsive-body').width();
-    $('#itemTable').tablefix({height: h, fixRows: 2});
-
-    // 複製テーブルのドラッグ＋ドロップは無効に
-    $('.crossTableDiv, .rowTableDiv, .colTableDiv').find('table').removeAttr('id');
-
-    // Chromeのみ
-    if(window.navigator.userAgent.indexOf('Chrome') !== -1 ){
+    // 表テーブルの固定
+    var h = $(window).height()*0.8;
+    // テーブルの調整
+    var ua = navigator.userAgent;
+    if (ua.indexOf('iPad') > 0 || ua.indexOf('Android') > 0 || ua.indexOf('iPhone') > 0 || ua.indexOf('iPod') > 0){
+        // タッチデバイス
+        var w = $('.mainSpace').width()*0.99;
+        $('.itemTable').tablefix({width:w, height: h, fixRows: 2});
+        //$('.rowTableDiv').width(w);
+    }else{
+        // PCブラウザ
+        var w = $('.mainSpace').width();
+        $('.itemTable').tablefix({height: h, fixRows: 2});
         $('.rowTableDiv').width(w);
     }
     $('.bodyTableDiv').find('.itemTable').css('margin-bottom','0');
+    $('.colTableDiv').css("width","");
+
+    if(hasVerticalScrollBar($('.bodyTableDiv'), $('.bodyTableDiv').find('table')) == false){
+        removeTable();
+    }
 
 }
-// 予約テーブルのクリア
+// テーブルのクリア
 function removeTable(){
     var clonedTable = $('.bodyTableDiv').find('table').clone();
     $(clonedTable).attr('style', '');
     $(clonedTable).find('span').remove();
     $('.baseDiv').remove();
-    $('#table-responsive-body').append(clonedTable.prop("outerHTML"));
+    $('.table-responsive-body').append(clonedTable.prop("outerHTML"));
+}
+
+// モーダル画面の表示
+function showInputModal(){
+    $('#inputModal').modal();
+}
+function showDeleteModal(){
+    $('#deleteModal').modal();
+}
+
+// 入力モーダルのTxタグの行を追加
+function addTagRow(){
+    var clonedRow = $('.template').clone();
+    clonedRow.addClass('cloned');
+    clonedRow.removeClass('template');
+    clonedRow.removeClass('hidden');
+    $('.template').before(clonedRow);
+}
+// 入力モーダルのTxタグの行の削除
+function removeTagRow(obj){
+    $(obj).parent().parent().remove();
 }
 
 $(function(){
     // テーブルを固定
     fixTable();
-
+    // マウス操作とタップ操作をバインド
     bindMouseAndTouch();
 
     // リサイズ対応
@@ -101,9 +131,6 @@ $(function(){
             removeTable();
             fixTable();
             bindMouseAndTouch();
-            touched = false;
-            touch_time = 0;
-            clearInterval(document.interval);
         }, 200);
     });
 });

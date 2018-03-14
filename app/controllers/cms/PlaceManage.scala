@@ -10,7 +10,7 @@ import utils.silhouette.{AuthController, MyEnv}
 
 
 /**
-  * その他仮設材利用状況アクションクラス
+  * 現場管理アクションクラス
   *
   *
   */
@@ -23,7 +23,6 @@ class PlaceManage @Inject()(config: Configuration
 
   /** 初期表示 */
   def index = SecuredAction { implicit request =>
-    routes.PlaceManage.detail()
     val placeNameList = Seq[String](
        "東北医科薬科大学病院"
       ,"仙台〇〇〇〇〇"

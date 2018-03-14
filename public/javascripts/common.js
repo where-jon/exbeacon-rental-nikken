@@ -1,4 +1,7 @@
+var common = {longTapTime : 400};//ボタンタップ長押しと判定する時間（ミリ秒）
+
 $(function(){
+    // ボタンのタップ時の動き
     $('a.btn').on('touchstart touchend', function(e) {
         if (e.type === 'touchstart') {
           $(this).addClass('btnTappedClass');
@@ -6,10 +9,19 @@ $(function(){
           $(this).removeClass('btnTappedClass');
         }
     });
+    // CMSサイドメニューリンクのタップ時の動き
+    $('a.sideLinkNotSelected').on('touchstart touchend', function(e) {
+        if (e.type === 'touchstart') {
+          $(this).addClass('sideLinkSelected');
+        } else {
+          $(this).removeClass('sideLinkSelected');
+        }
+    });
+
 });
 
-function hasScrollBar(obj){
-    return $(obj).get(0).scrollWidth > $(obj).width();
+function hasVerticalScrollBar(div, table){
+    return $(div).height() <= $(table).height();
 }
 
 function moveTo(url){

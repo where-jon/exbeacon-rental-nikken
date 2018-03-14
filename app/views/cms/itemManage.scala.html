@@ -1,0 +1,130 @@
+@(dataList: Seq[String])(implicit user: User, messages: Messages, request: RequestHeader, flash: Flash)
+
+@import controllers.routes
+@import helper._
+
+@views.html.templates.logged(title = "仮設材管理", tab = "index", containerClass = "container-index") {
+<!doctype html>
+<html lang="ja">
+<head>
+    @templates.htmlHead("仮設材管理")
+    <link rel="stylesheet" href="@routes.MyAssets.css("cms/itemManage.css")"/>
+    <script type="text/javascript" src="@routes.MyAssets.lib("jquery.tablefix_1.0.1.js")"></script>
+    <script></script>
+</head>
+<body>
+    <!-- content -->
+    <div class="container">
+        <!-- ナビバー  -->
+        @views.html.templates.navBar()
+        <div class="row" style="margin-top: 50px;">
+            <!-- 左サイドバー -->
+            @views.html.templates.cmsSideMenu()
+            <!-- メイン -->
+            <div class="col-xs-9 col-sm-9 col-md-9 col-lg-9 mainSpace">
+                <!-- テーブルのROW -->
+                <div class="row tableRow">
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="padding:0;">
+                        <div class="table-responsive-body">
+                            <table class="table table-bordered table-condensed itemTable floorTable">
+                                <thead>
+                                <tr>
+                                    <th colspan="4" class="tableTitleTh">仮設材管理</th>
+                                </tr>
+                                <tr>
+                                    <th class="tableTh noTh">ID</th>
+                                    <th class="tableTh">名称</th>
+                                    <th class="tableTh">備考</th>
+                                    <th class="tableTh noTh">個数</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                    @for(data <- dataList){
+                                        <tr class="rowColor rowHover">
+                                            <td class="itemTd text-right">@{data.split(",")(0)}</td>
+                                            <td class="itemTd text-left">@{data.split(",")(1)}</td>
+                                            <td class="itemTd text-left">@{data.split(",")(2)}</td>
+                                            <td class="itemTd text-right">@{data.split(",")(3)}</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <!-- ボタン-->
+                <div class="row tableRow" >
+                    <div class="text-right col-xs-4 col-sm-4 col-md-4 col-xs-offset-8 col-sm-offset-8 col-md-offset-8" style="padding:0;">
+                        <a href="javascript:showInputModal();" class="btn btn-primary link text-right">新規仮設材追加</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript" src="@routes.MyAssets.js("cms/itemManage.js")"></script>
+    <script></script>
+
+    <!-- モーダル画面 -->
+    <div class="modal" id="inputModal" tabindex="-1" role="dialog" aria-labelledby="InputModalLabel" aria-hidden="true" data-show="true" data-keyboard="false" data-backdrop="static">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form id="floorForm" name="inputForm" class="form-horizontal">
+                    <div class="modal-header" style="">仮設材情報更新</div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label class="control-label col-xs-4">名称</label>
+                            <div class="col-xs-3" style="padding-left: 0px;padding-right: 0px;">
+                                <input type="text" name="floorTitle" class="form-control" placeholder="仮設材A">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-xs-4">備考</label>
+                            <div class="col-xs-5" style="padding-left: 0px;padding-right: 0px;">
+                                <input type="text" name="deviceId" class="form-control" placeholder="">
+                            </div>
+                        </div>
+                        <div class="form-group" style="margin-bottom: 5px;">
+                            <label class="control-label col-xs-4">Txタグ設定</label>
+                            <div class="col-xs-2" style="padding-left: 0px;padding-right: 0px;margin-right: 10px;">
+                                <input type="text" id="inputManageNo" class="form-control" placeholder="管理No">
+                            </div>
+                            <div class="col-xs-2" style="padding-left: 0px;padding-right: 0px;margin-right: 10px;">
+                                <input type="text" id="inputTxTagNo" class="form-control" placeholder="TxタグNo">
+                            </div>
+                            <div class="col-xs-2" style="padding-left: 0px;padding-right: 0px;">
+                                <a href="javascript:addTagRow();"class="btn btn-default"><i class="fa fa-plus" aria-hidden="true"></i></a>
+                            </div>
+                        </div>
+                        <div class="form-group template hidden" style="margin-bottom: 5px;">
+                            <label class="control-label col-xs-4"></label>
+                            <div class="col-xs-2 text-center inputManageNoDiv">
+                                <span class="inputManageNoSpan">001</span>
+                            </div>
+                            <div class="col-xs-2 text-center inputTxTagNoDiv">
+                                <span class="inputTxTagNoSpan">001</span>
+                            </div>
+                            <div class="col-xs-2" style="padding-left: 0px;padding-right: 0px;">
+                                <a onclick="removeTagRow(this);" class="btn btn-default removeRowBtn">
+                                    <i class="fa fa-close fa-1x" aria-hidden="true"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <div class="col-xs-4 text-center">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">キャンセル</button>
+                        </div>
+                        <div class="col-xs-4 text-center">
+                            <button type="button" class="text-center btn btn-primary">更新</button>
+                        </div>
+                        <div class="col-xs-4 text-center">
+                            <button type="button" class="text-center btn btn-danger">削除</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+}

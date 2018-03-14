@@ -14,9 +14,20 @@ GET     /carReserve                     controllers.CarReserve.index
 # その他仮設材利用状況
 GET     /otherItem                      controllers.OtherItem.index
 
-# CMS
+###  CMS　#################################
+# 現場管理
 GET     /cms/placeManage                controllers.cms.PlaceManage.index
 GET     /cms/placeManage/detail         controllers.cms.PlaceManage.detail
+# 作業車管理
+GET     /cms/carManage                  controllers.cms.CarManage.index
+# 仮設材管理
+GET     /cms/itemManage                 controllers.cms.ItemManage.index
+# 業者管理
+GET     /cms/companyManage              controllers.cms.CompanyManage.index
+# Beaconタグ管理
+GET     /cms/txTagManage                controllers.cms.TxTagManage.index
+
+
 
 
 ## 認証周り（日立APから移植）
