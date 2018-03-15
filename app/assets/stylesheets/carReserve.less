@@ -36,7 +36,7 @@ td{
     border-style: solid;
     text-align: center;
     white-space: nowrap;
-
+margin-right: 13px!important;
 }
 .partEx{
     width: 3vw;
@@ -200,6 +200,25 @@ td{
     background-color: #FF0000
 }
 
+/* バッジ部 */
+span[data-badge-top-right]:before {
+    position: absolute;
+    display: inline-block;
+    background-color: #f00;
+    border-radius: 50%;
+    font-size: 14px;
+    color: #FFF;
+    line-height: 1;
+    min-width: 1.2em;
+    padding: 4px;
+}
+
+span[data-badge-top-right]:before {
+    transform: translate(0%, -50%);
+    content: "\f00d";
+
+    font-family: FontAwesome;
+}
 
 /** (iPadタテ用) **/
 @media only screen

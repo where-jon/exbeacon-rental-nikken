@@ -1,8 +1,40 @@
+// マウス・タッチの動作のバインド
+function bindMouseAndTouch(){
+    var ua = navigator.userAgent;
+    if (ua.indexOf('iPad') > 0 || ua.indexOf('Android') > 0 || ua.indexOf('iPhone') > 0 || ua.indexOf('iPod') > 0){
+        // タッチデバイスの場合
+        $(".rowHover").bind({
+            'touchstart': function(e) {
+                if(e.originalEvent.touches.length == 1){
+                    //showInputModal();
+                }
+            },
+            'touchend': function(e) {
+                $(this).removeClass('rowHoverColor');
+            },
+            'touchmove': function(e) {
+                $(this).removeClass('rowHoverColor');
+            }
+        });
+    }else{
+        // PCブラウザの場合
+        $(".rowHover").bind({
+            'mouseover': function(e) {
+                $(this).find('td').addClass('rowHoverColor');
+            },
+            'mouseout': function(e) {
+                $(this).find('td').removeClass('rowHoverColor');
+            },
+            'click': function(e) {
+                //showInputModal();
+            },
+        });
+    }
+}
 
-
-// 予約テーブルの固定
+// テーブルの固定
 function fixTable(){
-    // 予約表テーブルの固定
+    // 表テーブルの固定
     var h = $(".pc-side-nav").height()*0.97;
     $('#itemTable').tablefix({height: h, fixRows: 2});
 
@@ -14,7 +46,7 @@ function fixTable(){
 
 //    $('.crossTableDiv, .rowTableDiv, .colTableDiv').find('tr').removeClass('reserveRow');
 }
-// 予約テーブルのクリア
+// テーブルのクリア
 function removeTable(){
     var clonedTable = $('.bodyTableDiv').find('table').clone();
     $(clonedTable).attr('style', '');
@@ -24,7 +56,7 @@ function removeTable(){
 }
 
 
-// 予約テーブルのクリア
+// テーブルのクリア
 function addDummyItem(){
     $("#td_0").append('<span class="itemPart">001</span>');
     $("#td_0").append('<span class="itemPart">002</span>');
@@ -41,6 +73,7 @@ $(function(){
     // テーブルを固定
     fixTable();
     addDummyItem();
+    bindMouseAndTouch();
 
     // リサイズ対応
     var timer = false;
@@ -53,6 +86,8 @@ $(function(){
             removeTable();
             fixTable();
             addDummyItem();
+            bindMouseAndTouch();
+
         }, 200);
     });
 });

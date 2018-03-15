@@ -3,6 +3,8 @@ function showInputModal(){
     $('#inputModal').modal();
 }
 
+var inputModalTimer_touch_time = 0;
+var inputModalTimer;
 // マウス・タッチの動作のバインド
 function bindMouseAndTouch(){
     var ua = navigator.userAgent;
@@ -13,27 +15,26 @@ function bindMouseAndTouch(){
         $(".reserveTdHover").bind({
             'touchstart': function(e) {
                 $(this).addClass('reserveTdHoverColor');
-                touched = true;
-                touch_time = 0;
-                document.interval = setInterval(function(){
-                    touch_time += 100;
-                    if (touch_time == 300) {
-                        // ロングタップ(タップから約0.3秒)時の処理
+                inputModalTimer = setTimeout(function(){
+                    inputModalTimer_touch_time += 100;
+                    if (inputModalTimer_touch_time == common.longTapTime) {
+                        // ロングタップ時の処理
                         showInputModal();
                     }
-                }, 100)
+                }, 100);
             },
             'touchend': function(e) {
                 $(this).removeClass('reserveTdHoverColor');
-                touched = false;
-                clearInterval(document.interval);
+                inputModalTimer_touch_time = 0;
+                clearTimeout(inputModalTimer);
             },
             'touchmove': function(e) {
                 $(this).removeClass('reserveTdHoverColor');
-                touched = false;
-                clearInterval(document.interval);
+                inputModalTimer_touch_time = 0;
+                clearTimeout(inputModalTimer);
             }
         });
+
     }else{
         // PCブラウザの場合
         $(".reserveTdHover").bind({
@@ -44,6 +45,7 @@ function bindMouseAndTouch(){
                 $(this).removeClass('reserveTdHoverColor');
             },
             'click': function(e) {
+                $(this).removeClass('reserveTdHoverColor');
                 showInputModal();
             },
         });
@@ -100,22 +102,69 @@ function setRemovable(){
     });
 }
 
+var partTapTime = 0;
+var partTapTimer;
+
 // ドロップ設定(削除)
 function setSortable(){
     // ドロップ可能にする
     $('.drop-able').sortable( {
-            revert: false                     // ドロップ時のアニメーション
+            revert: false                   // ドロップ時のアニメーション
           , stop: function(event, ui) {     // ドロップして、ソートした後の時の動き
                 // 複製されたコマ
                 var clonedItem = $(ui.item);
+
+                var ua = navigator.userAgent;
+                if (ua.indexOf('iPad') > 0 || ua.indexOf('Android') > 0 || ua.indexOf('iPhone') > 0 || ua.indexOf('iPod') > 0){
+                    // タッチデバイス
+                    clonedItem.find('.badgeCls').on('touchstart', function(e) {
+                        clonedItem.remove();
+                        setColor();
+                        return false;
+                    });
+                    clonedItem.bind({
+                        'touchstart': function(e) {
+                            partTapTimer = setTimeout(function(){
+                                partTapTime += 100;
+                            }, 100)
+                            return false;
+                        },
+                        'touchend': function(e) {
+                            if (partTapTime < 200) {
+                                if(clonedItem.find('.badgeCls').attr('data-badge-top-right')){
+                                    clonedItem.find('.badgeCls').removeAttr('data-badge-top-right');
+                                }else{
+                                    clonedItem.find('.badgeCls').attr('data-badge-top-right', '1');
+                                }
+                            }
+                            clearTimeout(partTapTimer);
+                            partTapTime = 0;
+                            return false;
+                        },
+                    });
+                }else{
+                    // PCデバイス
+                    clonedItem.find('.badgeCls').on('click', function(e) {
+                        clonedItem.remove();
+                        setColor();
+                        return false;
+                    });
+                    clonedItem.on('click', function(e) {
+                        if(clonedItem.find('.badgeCls').attr('data-badge-top-right')){
+                            clonedItem.find('.badgeCls').removeAttr('data-badge-top-right');
+                        }else{
+                            clonedItem.find('.badgeCls').attr('data-badge-top-right', '1');
+                        }
+                        return false;
+                    });
+                }
+
                 var originalId = clonedItem.attr('data-originalId');
 
                 // ドロップ箇所に同じ作業車がある場合は消す
                 var carNo = clonedItem.attr('data-carNo');
                 if($(this).find('[data-carNo="' + carNo + '"]').length > 1){
-                    if(clonedItem.hasClass('original')){
-                        clonedItem.remove();
-                    }
+                    clonedItem.remove();
                 }else{
                     clonedItem.addClass('cloned');
                     clonedItem.removeClass('original');
@@ -129,7 +178,6 @@ function setSortable(){
                     $('[data-th="th_' + no + '"]').css("min-width", '');
                     $('[data-th="th_' + no + '"]').css("min-width", minWidth);
                 }
-
 
                 // 受け取ったクローンをさらにドラッグ可能にする
                 clonedItem.draggable({
