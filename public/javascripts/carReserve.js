@@ -1,10 +1,9 @@
 // モーダル画面の表示
 function showInputModal(){
+    clearInterval(document.interval);
     $('#inputModal').modal();
 }
 
-var inputModalTimer_touch_time = 0;
-var inputModalTimer;
 // マウス・タッチの動作のバインド
 function bindMouseAndTouch(){
     var ua = navigator.userAgent;
@@ -14,27 +13,38 @@ function bindMouseAndTouch(){
         var touch_time = 0;
         $(".reserveTdHover").bind({
             'touchstart': function(e) {
-                $(this).addClass('reserveTdHoverColor');
-                inputModalTimer = setTimeout(function(){
-                    inputModalTimer_touch_time += 100;
-                    if (inputModalTimer_touch_time == common.longTapTime) {
-                        // ロングタップ時の処理
-                        showInputModal();
-                    }
-                }, 100);
+                if(e.originalEvent.touches.length > 1){
+                    touch_time = 0;
+                    touched = false;
+                    clearInterval(document.interval);
+                }else if(e.originalEvent.touches.length == 1){
+                    $(this).addClass('reserveTdHoverColor');
+                    touched = true;
+                    touch_time = 0;
+                    document.interval = setInterval(function(){
+                        touch_time += 500;
+                        if (touch_time == 500) {
+                            // ロングタップ時の処理
+                            showInputModal();
+                            touch_time = 0;
+                            clearInterval(document.interval);
+                        }
+                    }, 500);
+                }
             },
             'touchend': function(e) {
                 $(this).removeClass('reserveTdHoverColor');
-                inputModalTimer_touch_time = 0;
-                clearTimeout(inputModalTimer);
+                touched = false;
+                touch_time = 0;
+                clearInterval(document.interval);
             },
             'touchmove': function(e) {
                 $(this).removeClass('reserveTdHoverColor');
-                inputModalTimer_touch_time = 0;
-                clearTimeout(inputModalTimer);
+                touched = false;
+                touch_time = 0;
+                clearInterval(document.interval);
             }
         });
-
     }else{
         // PCブラウザの場合
         $(".reserveTdHover").bind({
@@ -48,6 +58,69 @@ function bindMouseAndTouch(){
                 $(this).removeClass('reserveTdHoverColor');
                 showInputModal();
             },
+        });
+    }
+}
+// 削除バッジの設定
+function setDeleteBadge(obj){
+    var ua = navigator.userAgent;
+    if (ua.indexOf('iPad') > 0 || ua.indexOf('Android') > 0 || ua.indexOf('iPhone') > 0 || ua.indexOf('iPod') > 0){
+        // タッチデバイス
+        $(obj).find('.badgeCls').on('touchstart', function(e) {
+            clearInterval(document.interval);
+            var parent = $(obj).parent();
+            var no = parent.attr('data-company');
+
+            $(obj).remove();
+            setColor();
+
+            $('[data-th="th_' + no + '"]').css("min-width", '');
+            $('[data-th="th_' + no + '"]').css("min-width", parent.outerWidth() + "px");
+
+            return false;
+        });
+        $(obj).bind({
+            'touchstart': function(e) {
+                clearInterval(document.interval);
+                partTapTimer = setTimeout(function(){
+                    partTapTime += 100;
+                }, 100)
+            },
+            'touchend': function(e) {
+                clearInterval(document.interval);
+                if (partTapTime < 200) {
+                    if($(obj).find('.badgeCls').attr('data-badge-top-right')){
+                        $(obj).find('.badgeCls').removeAttr('data-badge-top-right');
+                    }else{
+                        $(obj).find('.badgeCls').attr('data-badge-top-right', '1');
+                    }
+                }
+                clearTimeout(partTapTimer);
+                partTapTime = 0;
+                return false;
+            },
+        });
+    }else{
+        // PCデバイス
+        $(obj).find('.badgeCls').on('click', function(e) {
+            var parent = $(obj).parent();
+            var no = parent.attr('data-company');
+
+            $(obj).remove();
+            setColor();
+
+            $('[data-th="th_' + no + '"]').css("min-width", '');
+            $('[data-th="th_' + no + '"]').css("min-width", parent.outerWidth() + "px");
+
+            return false;
+        });
+        $(obj).on('click', function(e) {
+            if($(obj).find('.badgeCls').attr('data-badge-top-right')){
+                $(obj).find('.badgeCls').removeAttr('data-badge-top-right');
+            }else{
+                $(obj).find('.badgeCls').attr('data-badge-top-right', '1');
+            }
+            return false;
         });
     }
 }
@@ -65,9 +138,11 @@ function fixTable(){
     $('.crossTableDiv, .rowTableDiv, .colTableDiv').find('td').removeAttr('id data-company data-name data-floor');
     $('.crossTableDiv, .rowTableDiv, .colTableDiv').find('span').removeAttr('id data-originalId data-carNo data-before');
 
-    $('.crossTableDiv, .rowTableDiv, .colTableDiv').find('td').removeClass('drop-able draggable removable reserveTdHover');
-    $('.crossTableDiv, .rowTableDiv, .colTableDiv').find('th').removeClass('drop-able draggable removable');
-    $('.crossTableDiv, .rowTableDiv, .colTableDiv').find('tr').removeClass('drop-able draggable removable reserveRow');
+    $('.crossTableDiv, .rowTableDiv, .colTableDiv').find('span').removeClass('draggable reserveNone original badgeCls');
+
+    $('.crossTableDiv, .rowTableDiv, .colTableDiv').find('td').removeClass('drop-able removable reserveTdHover');
+    $('.crossTableDiv, .rowTableDiv, .colTableDiv').find('th').removeClass('drop-able removable');
+    $('.crossTableDiv, .rowTableDiv, .colTableDiv').find('tr').removeClass('drop-able removable reserveRow');
 }
 // 予約テーブルのクリア
 function removeTable(){
@@ -78,15 +153,42 @@ function removeTable(){
 }
 
 // ドラッグ設定
-function setDraggable(){
+function setDraggableOriginal(){
     // ドラッグ可能にする
-    $('.draggable').draggable({
+    $('.original').draggable({
           connectToSortable: '.drop-able, .removable'
         , helper: 'clone'                     // clone: 複製、original：移動
         , revert: false                       // true：範囲外の場合は元に戻す、false：範囲外の場合は消す
         , opacity: 0.5                        // ドラッグ中の透明度
         , stop: function(event,ui){
             ui.helper.attr('id',$(this).attr('id'));
+        }
+    });
+}
+// ドラッグ設定（クローン用）
+function setDraggableClone(paramObj){
+    var target;
+    if(paramObj){
+        target = $(paramObj);
+    }else{
+        target = $('.clone');
+    }
+    // ドラッグ可能にする
+    $(target).draggable({
+        connectToSortable: '.drop-able, .removable'
+        , helper: 'clone'
+        , revert: false
+        , opacity: 0.5
+        , stop: function(event,ui){
+            var parent = $(this).parent();//.outerWidth() + "px";
+            var no = parent.attr('data-company');
+            // 生成したクローンをさらにドラッグした時の動作
+            $(this).remove();   // 元を消去
+            // 色付け
+            setColor();
+            // 幅の調整
+            $('[data-th="th_' + no + '"]').css("min-width", '');
+            $('[data-th="th_' + no + '"]').css("min-width", parent.outerWidth()*1 + "px");
         }
     });
 }
@@ -114,91 +216,52 @@ function setSortable(){
                 // 複製されたコマ
                 var clonedItem = $(ui.item);
 
-                var ua = navigator.userAgent;
-                if (ua.indexOf('iPad') > 0 || ua.indexOf('Android') > 0 || ua.indexOf('iPhone') > 0 || ua.indexOf('iPod') > 0){
-                    // タッチデバイス
-                    clonedItem.find('.badgeCls').on('touchstart', function(e) {
-                        clonedItem.remove();
-                        setColor();
-                        return false;
-                    });
-                    clonedItem.bind({
-                        'touchstart': function(e) {
-                            partTapTimer = setTimeout(function(){
-                                partTapTime += 100;
-                            }, 100)
-                            return false;
-                        },
-                        'touchend': function(e) {
-                            if (partTapTime < 200) {
-                                if(clonedItem.find('.badgeCls').attr('data-badge-top-right')){
-                                    clonedItem.find('.badgeCls').removeAttr('data-badge-top-right');
-                                }else{
-                                    clonedItem.find('.badgeCls').attr('data-badge-top-right', '1');
-                                }
-                            }
-                            clearTimeout(partTapTimer);
-                            partTapTime = 0;
-                            return false;
-                        },
-                    });
-                }else{
-                    // PCデバイス
-                    clonedItem.find('.badgeCls').on('click', function(e) {
-                        clonedItem.remove();
-                        setColor();
-                        return false;
-                    });
-                    clonedItem.on('click', function(e) {
-                        if(clonedItem.find('.badgeCls').attr('data-badge-top-right')){
-                            clonedItem.find('.badgeCls').removeAttr('data-badge-top-right');
-                        }else{
-                            clonedItem.find('.badgeCls').attr('data-badge-top-right', '1');
-                        }
-                        return false;
-                    });
-                }
+                // 削除バッジ設定
+                setDeleteBadge(clonedItem);
 
                 var originalId = clonedItem.attr('data-originalId');
 
-                // ドロップ箇所に同じ作業車がある場合は消す
+                // ドロップ箇所に同じ作業車がある場合
                 var carNo = clonedItem.attr('data-carNo');
                 if($(this).find('[data-carNo="' + carNo + '"]').length > 1){
-                    clonedItem.remove();
+                    if(clonedItem.hasClass('original')){
+                        // originalから足す時
+                        var parent = $(clonedItem).parent();//.outerWidth() + "px";
+                        var no = parent.attr('data-company');
+                        clonedItem.remove();
+                        // 色付け
+                        setColor();
+                        // 幅の調整
+                        $('[data-th="th_' + no + '"]').css("min-width", '');
+                        $('[data-th="th_' + no + '"]').css("min-width", parent.outerWidth()*1 + "px");
+                    }else{
+                        // ただ同じ場所に移動した時
+                        clonedItem.addClass('cloned');
+                        clonedItem.removeClass('original');
+                        // 色付け
+                        setColor();
+                        // 幅を調整
+                        var no = $(this).attr('data-company');
+                        var minWidth = $(this).outerWidth() + "px";
+                        $('[data-th="th_' + no + '"]').css("min-width", '');
+                        $('[data-th="th_' + no + '"]').css("min-width", minWidth);
+                        // 受け取ったクローンをさらにドラッグ可能にする
+                        setDraggableClone(clonedItem);
+                    }
+
                 }else{
                     clonedItem.addClass('cloned');
                     clonedItem.removeClass('original');
-
                     // 色付け
                     setColor();
-
                     // 幅を調整
                     var no = $(this).attr('data-company');
-                    var minWidth = $(this).outerWidth()*1.1 + "px";
+                    var minWidth = $(this).outerWidth() + "px";
                     $('[data-th="th_' + no + '"]').css("min-width", '');
                     $('[data-th="th_' + no + '"]').css("min-width", minWidth);
+                    // 受け取ったクローンをさらにドラッグ可能にする
+                    setDraggableClone(clonedItem);
                 }
-
-                // 受け取ったクローンをさらにドラッグ可能にする
-                clonedItem.draggable({
-                    connectToSortable: '.drop-able, .removable'
-                    , helper: 'clone'
-                    , revert: false
-                    , opacity: 0.5
-                    , stop: function(event,ui){
-                        var parent = $(this).parent();//.outerWidth() + "px";
-                        var no = parent.attr('data-company');
-
-                        // 生成したクローンをさらにドラッグした時の動作
-                        $(this).remove();   // 元を消去
-
-                        // 色付け
-                        setColor();
-
-                        $('[data-th="th_' + no + '"]').css("min-width", '');
-                        $('[data-th="th_' + no + '"]').css("min-width", parent.outerWidth()*1.1 + "px");
-                    }
-                });
           }
     });
 }
@@ -252,17 +315,20 @@ function setColor(){
     });
 }
 
+// 初期表示時の処理
 $(function(){
     // テーブルを固定
     fixTable();
     // マウス・タッチの動作のバインド
     bindMouseAndTouch();
     // ドラッグ設定
-    setDraggable();
+    setDraggableOriginal();
     // ドロップ可能にする(削除)
     setRemovable();
     // ドロップ可能にする
     setSortable();
+    // ドラッグ設定(クローン用)
+    setDraggableClone(null);
 
     // リサイズ対応
     var timer = false;
@@ -273,11 +339,13 @@ $(function(){
         timer = setTimeout(function() {
             // 処理の再実行
             removeTable();
+            //doPunch();
             fixTable();
             bindMouseAndTouch();
-            setDraggable();
+            setDraggableOriginal();
             setRemovable();
             setSortable();
+            setDraggableClone(null);
         }, 200);
     });
 });
