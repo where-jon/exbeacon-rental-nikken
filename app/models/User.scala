@@ -62,10 +62,9 @@ class UserDAO @Inject() (dbapi: DBApi) {
     get[Int]("user_id") ~
     get[String]("email") ~
       get[String]("name") ~
-      get[String]("password") ~
-      get[Int]("permission") map {
-        case id ~ email ~ name ~ password ~ permission =>
-          User(Some(id.toString.toLong), email, true, password, name, List(if (permission > 0) "master" else ""))
+      get[String]("password")  map {
+        case id ~ email ~ name ~ password =>
+          User(Some(id.toString.toLong), email, true, password, name, List("master"))
       }
   }
 
@@ -80,7 +79,6 @@ class UserDAO @Inject() (dbapi: DBApi) {
               , email
               , name
               , password
-              , permission
             from
               user_master
             where
