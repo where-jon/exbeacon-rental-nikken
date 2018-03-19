@@ -58,7 +58,6 @@ error.cms.PlaceManage.register.inputPlaceName.empty=現場名称を入力して�
 
 ################################################################################################
 # SUCCESS
-
 success.cms.PlaceManage.register=現場情報を登録しました。
 success.cms.PlaceManage.update=現場情報を更新しました。
 success.cms.PlaceManage.delete=現場情報を削除しました。

@@ -94,7 +94,7 @@ class PlaceManage @Inject()(config: Configuration
       // DB登録
       placeDAO.updateById(f.inputPlaceId.toInt, f.inputPlaceName, f.inputPlaceStatus.toInt)
 
-      Redirect(routes.PlaceManage.detail().path() + s"""?${KEY_PLACE_ID}=${f.inputPlaceId}""")
+      Redirect(s"""${routes.PlaceManage.detail().path()}?${KEY_PLACE_ID}=${f.inputPlaceId}""")
         .flashing(SUCCESS_MSG_KEY -> Messages("success.cms.PlaceManage.update"))
     }
   }
