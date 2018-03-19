@@ -54,13 +54,21 @@ function bindMouseAndTouch(){
 }
 
 
+function doSubmit(formId){
+    $('#' + formId).submit();
+}
+
 // モーダル画面の表示
+function showPlaceUpdateModal(){
+    $('#placeUpdateModal').modal();
+}
+function showPlaceDeleteModal(){
+    $('#placeDeleteModal').modal();
+}
 function showInputModal(){
     $('#inputModal').modal();
 }
-function showDeleteModal(){
-    $('#deleteModal').modal();
-}
+
 function showFloorModal(){
     $('#floorModal').modal();
 }

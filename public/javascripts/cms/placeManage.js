@@ -19,7 +19,8 @@ function bindMouseAndTouch(){
                         touch_time += 100;
                         if (touch_time == common.longTapTime) {
                             // ロングタップ時の処理
-                            moveTo('/cms/placeManage/detail');
+                            var placeId = $(this).attr('data-placeId');
+                            moveTo('/cms/placeManage/detail?placeId=' + placeId);
                         }
                     }, 100);
                 }
@@ -47,7 +48,8 @@ function bindMouseAndTouch(){
                 $(this).removeClass('rowHoverColor');
             },
             'click': function(e) {
-                moveTo('/cms/placeManage/detail');
+                var placeId = $(this).attr('data-placeId');
+                moveTo('/cms/placeManage/detail?placeId=' + placeId);
             },
         });
     }
@@ -87,7 +89,6 @@ function removeTable(){
 $(function(){
     // テーブルを固定
     fixTable();
-
     bindMouseAndTouch();
 
     // リサイズ対応

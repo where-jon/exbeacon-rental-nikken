@@ -1,4 +1,4 @@
-@(placeNameList: Seq[String])(implicit user: User, messages: Messages, request: RequestHeader, flash: Flash)
+@(placeList: Seq[Place])(implicit user: User, messages: Messages, request: RequestHeader, flash: Flash)
 
 @import controllers.routes
 @import helper._
@@ -20,6 +20,8 @@
         <div class="row" style="margin-top: 60px;">
             <!-- メイン -->
             <div class="col-sm-10 col-md-10 col-lg-10 col-sm-offset-1 col-md-offset-1 col-lg-offset-1">
+                <!-- メッセージ -->
+                @views.html.templates.msgDiv()
                 <!-- テーブルのROW -->
                 <div class="row tableRow">
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="padding:0;">
@@ -30,25 +32,24 @@
                                         <th colspan="4" class="tableTitleTh">現場一覧</th>
                                     </tr>
                                     <tr>
-                                        <th class="tableTh noTh">No.</th>
+                                        <th class="tableTh noTh">ID</th>
                                         <th class="tableTh placeNameTh">建設現場名称</th>
                                         <th class="tableTh floorCountTh">階数</th>
                                         <th class="tableTh stateTh">状態</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @for((placeName, no) <- placeNameList.zipWithIndex){
-                                        <tr class="rowColor rowHover">
-                                            <td class="itemTd text-right">@{no+1}</td>
-                                            <td class="itemTd text-left">@placeName</td>
-                                            <td class="itemTd text-right">@{no+1}0</td>
-                                            <td class="itemTd text-center">施行中</td>
+                                    @for(place <- placeList){
+                                        <tr class="rowColor rowHover" data-placeId="@place.placeId">
+                                            <td class="itemTd text-right">@place.placeId</td>
+                                            <td class="itemTd text-left">@place.placeName</td>
+                                            <td class="itemTd text-right">@place.floorCount</td>
+                                            <td class="itemTd text-center">@place.statusName</td>
                                         </tr>
                                     }
                                 </tbody>
                             </table>
                         </div>
-
                     </div>
                 </div>
                 <!-- 欄外-->
@@ -68,13 +69,14 @@
     <div class="modal" id="inputModal" tabindex="-1" role="dialog" aria-labelledby="inputModalLabel" aria-hidden="true" data-show="true" data-keyboard="false" data-backdrop="static">
         <div class="modal-dialog">
             <div class="modal-content">
-                <form id="inputForm" name="inputForm" class="form-horizontal">
+                <form id="inputForm" name="inputForm" enctype="multipart/form-data" class="form-horizontal" method="post" action="@controllers.cms.routes.PlaceManage.register.path">
+                    @CSRF.formField
                     <div class="modal-header" style="">新規現場登録</div>
                     <div class="modal-body">
                         <div class="form-group">
-                            <label class="control-label col-xs-5">建設現場名称</label>
+                            <label class="control-label col-xs-4">建設現場名称</label>
                             <div class="col-xs-5" style="padding-left: 0px;padding-right: 0px;">
-                                <input type="text" name="inputTitle" value="東北医科薬科大学病院" id="inputTitle" class="form-control" placeholder="東北医科薬科大学病院">
+                                <input type="text" name="placeName" id="inputTitle" class="form-control" placeholder="東北医科薬科大学病院">
                             </div>
                         </div>
                     </div>
@@ -83,14 +85,13 @@
                             <button type="button" class="btn btn-default" data-dismiss="modal">キャンセル</button>
                         </div>
                         <div class="col-xs-6 text-center">
-                            <button type="button" class="text-center btn btn-primary">登録</button>
+                            <button type="submit" class="text-center btn btn-primary">登録</button>
                         </div>
                     </div>
                 </form>
             </div>
         </div>
     </div>
-
 </body>
 </html>
 }

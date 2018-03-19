@@ -18,6 +18,11 @@ GET     /otherItem                      controllers.OtherItem.index
 # 現場管理
 GET     /cms/placeManage                controllers.cms.PlaceManage.index
 GET     /cms/placeManage/detail         controllers.cms.PlaceManage.detail
+POST    /cms/placeManage/register       controllers.cms.PlaceManage.register
+POST    /cms/placeManage/update         controllers.cms.PlaceManage.update
+POST    /cms/placeManage/delete         controllers.cms.PlaceManage.delete
+
+
 # 作業車管理
 GET     /cms/carManage                  controllers.cms.CarManage.index
 # 仮設材管理

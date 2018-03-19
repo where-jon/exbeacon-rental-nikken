@@ -53,16 +53,17 @@ error.unknown.text=This exception has been logged with id <strong>{0}</strong>.
 error.notfound.title=ページが見つかりません。
 error.notfound.text=For request ''{0}''
 
-# 会議室予約データ登録APIエラー
-error.api.reserve.001.auth=認証に失敗しました。
-error.api.reserve.002.date=予約日付が不正です。
-error.api.reserve.003.room=会議室が不正です。(no:{0})
-error.api.reserve.004.startTime=開始時刻が不正です。(no:{0}, data:{1}件目)
-error.api.reserve.005.endTime=終了時刻が不正です。(no:{0}, data:{1}件目)
-error.api.reserve.006.future=終了時刻は開始時刻よりも未来の時刻を指定してください。(no:{0}, data:{1}件目)
-error.api.reserve.007.duplicate=予約時間が重複しています。(no:{0}, data:{1}件目)
+# CMS入力エラー
+error.cms.PlaceManage.register.inputPlaceName.empty=現場名称を入力してください。
 
 ################################################################################################
+# SUCCESS
+
+success.cms.PlaceManage.register=現場情報を登録しました。
+success.cms.PlaceManage.update=現場情報を更新しました。
+success.cms.PlaceManage.delete=現場情報を削除しました。
+
+
 # MAILS
 
 mail.welcome.subject=こちらは日立アプライアンス会議室予約システムです。 アカウント情報をご確認ください。
@@ -78,8 +79,3 @@ mail.forgotpwd.postlink2=パスワードのリセットしない場合はURLを�
 mail.sign=日立アプライアンス会議室予約システム管理者
 
 ################################################################################################
-# 執務空間ボタン
-
-shitsumu.button.floorMap=座席マップ
-shitsumu.button.temperature=温湿度
-shitsumu.button.statistics=統計解析

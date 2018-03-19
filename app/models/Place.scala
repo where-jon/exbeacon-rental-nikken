@@ -1,0 +1,168 @@
+package models
+
+import javax.inject.Inject
+
+import anorm.SqlParser._
+import anorm._
+import play.api.db._
+import play.api.Logger
+
+import play.api.libs.functional.syntax._
+import play.api.libs.json.{JsPath, Json, Reads}
+
+//case class roomPosition(
+//  room_id: String,
+//  room_name: String,
+//  description: String
+//)
+//object roomPosition {
+//
+//  implicit val jsonReads: Reads[roomPosition] = (
+//      ((JsPath \ "room_id").read[String] | Reads.pure("")) ~
+//      ((JsPath \ "room_name").read[String] | Reads.pure(""))~
+//      ((JsPath \ "description").read[String] | Reads.pure(""))
+//    )(roomPosition.apply _)
+//
+//  implicit def jsonWrites = Json.writes[roomPosition]
+//}
+
+case class PlaceEnum(
+  map: Map[Int,String] = Map[Int,String](0 -> "施工前", 1 -> "施行中", 9 -> "終了")
+)
+
+case class Place(
+  placeId: Int,
+  placeName: String,
+  floorCount: Int = 0,
+  status: Int,
+  statusName: String = ""
+)
+
+@javax.inject.Singleton
+class placeDAO @Inject() (dbapi: DBApi) {
+
+  private val db = dbapi.database("default")
+
+  /**
+    * 現場情報をID順で取得
+    * @return
+    */
+  def selectPlaceList(placeIdList: Seq[Int] = Seq[Int]()): Seq[Place] = {
+
+    val list = {
+      get[Int]("place_id") ~
+        get[String]("place_name") ~
+        get[Int]("floor_count") ~
+        get[Int]("status")  map {
+        case place_id ~ place_name ~ floor_count ~ status  =>
+          val statusName = PlaceEnum().map(status)
+          Place(place_id, place_name, floor_count, status, statusName)
+      }
+    }
+    db.withConnection { implicit connection =>
+
+      var selectPh =
+        s"""
+          select
+              pm.place_id
+            , pm.place_name
+            , count(f.floor_id) as floor_count
+            , pm.status
+          from
+            place_master pm
+            left outer join floor_master f
+              on pm.place_id = f.place_id
+          where
+            pm.active_flg = true
+          """
+      if(placeIdList.isEmpty == false){
+        selectPh += s""" and pm.place_id in (${placeIdList.mkString(",")})"""
+      }
+      val groupPh =
+        s"""
+              group by
+              pm.place_id
+            , pm.place_name
+            , pm.status
+          order by
+            pm.place_id
+        """
+      SQL(selectPh + groupPh).as(list.*)
+    }
+  }
+
+  /**
+    * 現場の新規登録
+    * @return
+    */
+  def insert(placeName: String): Int = {
+    db.withTransaction { implicit connection =>
+      // パラメータのセット
+      val params: Seq[NamedParameter] = Seq(
+        "placeName" -> placeName
+      )
+      // クエリ
+      var sql = SQL(
+        """
+          insert into place_master (place_name)
+          values ({placeName})
+        """
+      ).on(params:_*)
+
+      // SQL実行
+      val placeId: Option[Long] = sql.executeInsert()
+      // コミット
+      connection.commit()
+
+Logger.debug("現場を新規登録、ID：" + placeId.get.toString)
+
+      placeId.get.toInt
+    }
+  }
+
+  /**
+    * 現場の更新
+    * @return
+    */
+  def updateById(placeId:Int, placeName: String, status: Int): Unit = {
+    db.withTransaction { implicit connection =>
+      SQL(
+        """
+          update place_master set
+              place_name = {placeName}
+            , status = {status}
+            , updatetime = now()
+          where place_id = {placeId} ;
+        """).on(
+        'placeName -> placeName, 'status -> status, 'placeId -> placeId
+      ).executeUpdate()
+
+      // コミット
+      connection.commit()
+
+      Logger.debug(s"""現場情報を更新、ID：" + ${placeId.toString}""")
+    }
+  }
+
+  /**
+    * 現場の削除
+    * @return
+    */
+  def deleteById(placeId:Int): Unit = {
+    db.withTransaction { implicit connection =>
+      SQL(
+        """
+          delete from place_master where place_id = {placeId} ;
+        """).on(
+        'placeId -> placeId
+      ).executeUpdate()
+
+      // コミット
+      connection.commit()
+
+      Logger.debug(s"""現場情報を削除、ID：" + ${placeId.toString}""")
+    }
+  }
+
+}
+
