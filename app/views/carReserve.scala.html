@@ -172,7 +172,7 @@
                                                 <td class="blankTd" style="background-color:#FFFFFF;border-bottom-color: #7F7F7F!important;"></td>
                                                 <td class="reserveTd removable" style="border-bottom-color: #7F7F7F!important;"></td>
                                                 @for((company, no) <- companyList.zipWithIndex){
-                                                     <td class="drop-able reserveTd reserveTdHover" data-company="@{no}" data-name="@{floor}_@{company}" data-floor="@{floor}" id="td_@{floor}_@{no}" style="border-bottom-color: #7F7F7F!important;"></td>
+                                                     <td class="drop-able reserveTd reserveTdHover" data-company="@{no}" data-name="@{floor}F/@{company}" data-floor="@{floor}" id="td_@{floor}_@{no}" style="border-bottom-color: #7F7F7F!important;"></td>
                                                 }
                                             </tr>
                                             <tr class="">
@@ -181,7 +181,11 @@
                                                 <td class="useTd removable"></td>
                                                 @for((company, i) <- companyList.zipWithIndex){
                                                     <td class="useTd removable">
-                                                       <span class="part draggable reserveNone original" id="@{floor}_@{i}" data-originalId="@{floor}_@{company}" data-carNo="0@{floor}@{i}" data-before="@{floor}_@{company}">
+                                                       <span class="part draggable reserveNone original"
+                                                             id="@{floor}_@{i}"
+                                                             data-originalId="@{floor}_@{company}"
+                                                             data-carNo="0@{floor}@{i}"
+                                                             data-before="@{floor}_@{company}">
                                                            <span>0@{floor}@{i}</span>
                                                            <span class="badgeCls"></span>
                                                        </span>

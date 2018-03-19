@@ -153,6 +153,7 @@ function removeTable(){
 }
 
 // ドラッグ設定
+var parentOnDrag;
 function setDraggableOriginal(){
     // ドラッグ可能にする
     $('.original').draggable({
@@ -160,7 +161,27 @@ function setDraggableOriginal(){
         , helper: 'clone'                     // clone: 複製、original：移動
         , revert: false                       // true：範囲外の場合は元に戻す、false：範囲外の場合は消す
         , opacity: 0.5                        // ドラッグ中の透明度
+        , drag: function(event,ui){
+//            // 予約の行にドラッグ中の場合はフロアと業者名を表示
+//            if(parentOnDrag != ui.helper.parent()){
+//                // 親要素のtdを表示
+//                var name = ui.helper.parent().attr('data-name');
+//                if(name){
+//                    ui.helper.attr('data-dragDisp',name);
+//                    parentOnDrag = ui.helper.parent()
+//                }else{
+//                    ui.helper.removeAttr('data-dragDisp');
+//                    parentOnDrag = null;
+//                }
+//            }
+//            $('.drop-able').attr('drop-waiting', '1');
+        }
         , stop: function(event,ui){
+//            // ドラッグ中の表示を終了
+//            ui.helper.removeAttr('data-dragDisp');
+//            parentOnDrag = null;
+//            $('.drop-able').removeAttr('drop-waiting');
+
             ui.helper.attr('id',$(this).attr('id'));
         }
     });
@@ -179,7 +200,26 @@ function setDraggableClone(paramObj){
         , helper: 'clone'
         , revert: false
         , opacity: 0.5
+        , drag: function(event,ui){
+//            // 予約の行にドラッグ中の場合はフロアと業者名を表示
+//            if(parentOnDrag != ui.helper.parent()){
+//                // 親要素のtdを表示
+//                var name = ui.helper.parent().attr('data-name');
+//                if(name){
+//                    ui.helper.attr('data-dragDisp',name);
+//                    parentOnDrag = ui.helper.parent()
+//                }else{
+//                    ui.helper.removeAttr('data-dragDisp');
+//                    parentOnDrag = null;
+//                }
+//            }
+
+        }
         , stop: function(event,ui){
+//            // ドラッグ中の表示を終了
+//            ui.helper.removeAttr('data-dragDisp');
+//            parentOnDrag = null;
+
             var parent = $(this).parent();//.outerWidth() + "px";
             var no = parent.attr('data-company');
             // 生成したクローンをさらにドラッグした時の動作

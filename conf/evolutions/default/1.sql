@@ -33,7 +33,7 @@
 --(
 --  exb_device_id text NOT NULL,
 --  floor_id integer NOT NULL,
---  CONSTRAINT btx_master_pkey PRIMARY KEY (exb_device_id)
+--  CONSTRAINT exb_master_pkey PRIMARY KEY (exb_device_id)
 --)
 --WITH (
 --  OIDS=FALSE

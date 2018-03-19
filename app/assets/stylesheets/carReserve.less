@@ -200,7 +200,7 @@ margin-right: 8px!important;
     background-color: #FF0000
 }
 
-/* バッジ部 */
+/* 削除バッジ部 */
 span[data-badge-top-right]:before {
     position: absolute;
     display: inline-block;
@@ -216,8 +216,42 @@ span[data-badge-top-right]:before {
 span[data-badge-top-right]:before {
     transform: translate(0%, -50%);
     content: "\f00d";
-
     font-family: FontAwesome;
+}
+
+/* data-dragDisp **************************/
+span[data-dragDisp]:before {
+    position: absolute;
+    display: inline-block;
+    background-color: blue;
+    border-radius: 10%;
+    font-size: 10px;
+    color: #FFF;
+    line-height: 1;
+    min-width: 1.2em;
+    padding: 4px;
+}
+
+span[data-dragDisp]:before {
+    transform: translate(-8%, -100%);
+    content: attr(data-dragdisp);
+}
+td[drop-waiting]:before {
+    position: absolute;
+    display: inline-block;
+    background-color: #ddd;
+    border-radius: 10%;
+    font-size: 10px;
+    color: #000;
+    line-height: 1;
+    min-width: 1.2em;
+    padding: 2px;
+    opacity: 0.5;
+}
+
+td[drop-waiting]:before {
+    transform: translate(-8%, -50%);
+    content: attr(data-name);
 }
 
 /** (iPadタテ用) **/

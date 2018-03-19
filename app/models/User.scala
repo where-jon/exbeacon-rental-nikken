@@ -17,6 +17,7 @@ case class User(
     emailConfirmed: Boolean,
     password: String,
     name: String,
+    placeId: Option[Int],
     /*
 	 * A user can register some accounts from third-party services, then it will have access to different parts of the webpage. The 'master' privilege has full access.
 	 * Ex: ("master") -> full access to every point of the webpage.
@@ -62,9 +63,10 @@ class UserDAO @Inject() (dbapi: DBApi) {
     get[Int]("user_id") ~
     get[String]("email") ~
       get[String]("name") ~
-      get[String]("password")  map {
-        case id ~ email ~ name ~ password =>
-          User(Some(id.toString.toLong), email, true, password, name, List("master"))
+      get[String]("password") ~
+      get[Option[Int]]("place_id")  map {
+        case id ~ email ~ name ~ password ~ place_id =>
+          User(Some(id.toString.toLong), email, true, password, name, place_id, List("master"))
       }
   }
 
@@ -79,6 +81,7 @@ class UserDAO @Inject() (dbapi: DBApi) {
               , email
               , name
               , password
+              , place_id
             from
               user_master
             where
@@ -108,7 +111,7 @@ class UserDAO @Inject() (dbapi: DBApi) {
 //
 //        sql.executeUpdate()
 
-        val newUser = User(user.id, user.email, true, user.password, user.name, user.services)
+        val newUser = User(user.id, user.email, true, user.password, user.name, user.placeId, user.services)
         User.update(Some(newUser)).get
       }
     )
