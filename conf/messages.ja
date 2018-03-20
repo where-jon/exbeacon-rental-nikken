@@ -60,6 +60,9 @@ error.cms.PlaceManage.floorUpdate.inputFloorName.duplicate=フロア名が重複
 error.cms.PlaceManage.floorUpdate.inputDeviceId.duplicate=EXBeaconデバイスIDが重複しています。({0})
 error.cms.PlaceManage.floorUpdate.inputExbDeviceIdListComma.empty=EXBeaconデバイスIDを入力してください。
 
+error.cms.CompanyManage.update.inputCompanyName.empty=業者名を入力してください。
+error.cms.CompanyManage.update.inputCompanyName.duplicate=業者名が重複しています。
+
 ################################################################################################
 # SUCCESS
 success.cms.PlaceManage.register=現場情報を登録しました。
@@ -67,6 +70,9 @@ success.cms.PlaceManage.update=現場情報を更新しました。
 success.cms.PlaceManage.delete=現場情報を削除しました。
 success.cms.PlaceManage.floorDelete=フロアを削除しました。
 success.cms.PlaceManage.floorUpdate=フロア情報を更新しました。
+
+success.cms.CompanyManage.delete=業者を削除しました。
+success.cms.CompanyManage.update=業者情報を更新しました。
 
 # MAILS
 

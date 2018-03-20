@@ -49,11 +49,7 @@ class PlaceManage @Inject()(config: Configuration
     // 選択された現場の現場ID
     var placeIdStr = super.getRequestPlaceIdStr
     if(placeIdStr.isEmpty){
-      placeIdStr = request.session.get(CURRENT_PLACE_ID).map { str =>
-        str
-      }.getOrElse {
-        securedRequest2User.placeId.get.toString
-      }
+      placeIdStr = super.getCurrentPlaceIdStr
     }
 
     // 現場情報の取得
@@ -79,7 +75,7 @@ class PlaceManage @Inject()(config: Configuration
     val form = inputForm.bindFromRequest
     if (form.hasErrors){
       // エラーメッセージ
-      val errMsg = form.errors.map(_.message).mkString("<br/>")
+      val errMsg = form.errors.map(_.message).mkString(HTML_BR)
       // リダイレクトで画面遷移
       Redirect(routes.PlaceManage.index()).flashing(ERROR_MSG_KEY -> errMsg)
     }else{
@@ -103,7 +99,7 @@ class PlaceManage @Inject()(config: Configuration
     val form = inputForm.bindFromRequest
     if (form.hasErrors){
       // エラーメッセージ
-      val errMsg = form.errors.map(_.message).mkString("<br/>")
+      val errMsg = form.errors.map(_.message).mkString(HTML_BR)
       // リダイレクトで画面遷移
       Redirect(routes.PlaceManage.detail()).flashing(ERROR_MSG_KEY -> errMsg)
     }else{
@@ -127,13 +123,13 @@ class PlaceManage @Inject()(config: Configuration
     val form = inputForm.bindFromRequest
     if (form.hasErrors){
       // エラーメッセージ
-      val errMsg = form.errors.map(_.message).mkString("<br/>")
+      val errMsg = form.errors.map(_.message).mkString(HTML_BR)
       // リダイレクトで画面遷移
       Redirect(routes.PlaceManage.detail()).flashing(ERROR_MSG_KEY -> errMsg)
     }else{
       val f = form.get
       // DB処理
-      placeDAO.deleteById(f.inputPlaceId.toInt)
+      placeDAO.deleteLogicalById(f.inputPlaceId.toInt)
 
       // 現場一覧の方にリダイレクト
       Redirect(routes.PlaceManage.index()).flashing(SUCCESS_MSG_KEY -> Messages("success.cms.PlaceManage.delete"))
@@ -154,7 +150,7 @@ class PlaceManage @Inject()(config: Configuration
     val form = inputForm.bindFromRequest
     if (form.hasErrors){
       // エラーメッセージ
-      val errMsg = form.errors.map(_.message).mkString("<br/>")
+      val errMsg = form.errors.map(_.message).mkString(HTML_BR)
       // リダイレクトで画面遷移
       Redirect(routes.PlaceManage.detail()).flashing(ERROR_MSG_KEY -> errMsg)
     }else{
@@ -170,19 +166,15 @@ class PlaceManage @Inject()(config: Configuration
         }
         // デバイスID重複チェック
         val exbDeviceIdList = exbDAO.selectExb(f.inputPlaceId.toInt).map(exb =>{exb.exbDeviceId})
-        val inputExbDeviceIdList = f.inputExbDeviceIdListComma.split(",").toSeq
-        val errDeviceIdList = inputExbDeviceIdList.map(deviceId => {
-          if(exbDeviceIdList.contains(deviceId)){
-            deviceId
-          }
-        })
+        val inputExbDeviceIdList = f.inputExbDeviceIdListComma.split(",").filter(_.isEmpty == false).toSeq
+        val errDeviceIdList = inputExbDeviceIdList.filter(exbDeviceIdList.contains(_))
         if(errDeviceIdList.isEmpty == false){
-          errMsg :+= Messages("error.cms.PlaceManage.floorUpdate.inputFloorName.duplicate", errDeviceIdList.mkString(","))
+          errMsg :+= Messages("error.cms.PlaceManage.floorUpdate.inputDeviceId.duplicate", errDeviceIdList.mkString(","))
         }
         if(errMsg.isEmpty == false){
           // エラーで遷移
           Redirect(s"""${routes.PlaceManage.detail().path()}?${KEY_PLACE_ID}=${f.inputPlaceId}""")
-            .flashing(ERROR_MSG_KEY -> errMsg.mkString("<br/>"))
+            .flashing(ERROR_MSG_KEY -> errMsg.mkString(HTML_BR))
         }else{
           // DB処理
           floorDAO.insert(f.inputFloorName, f.inputPlaceId.toInt, inputExbDeviceIdList)
@@ -194,16 +186,33 @@ class PlaceManage @Inject()(config: Configuration
       }else{
         // フロア更新の場合 --------------------------
 
-
         // フロア名称重複チェック
         val floorList = floorDAO.selectFloorInfo(f.inputPlaceId.toInt)
+        val rest = floorList.filter(_.floorId != f.inputFloorId.toInt).filter(_.floorName == f.inputFloorName)
+        if(rest.length > 0){
+          errMsg :+= Messages("error.cms.PlaceManage.floorUpdate.inputFloorName.duplicate")
+        }
 
-
-
-        Redirect(routes.PlaceManage.detail()).flashing(ERROR_MSG_KEY -> errMsg.mkString("<br/>"))
+        // デバイスID重複チェック
+        val exbDeviceIdList = exbDAO.selectExb(f.inputPlaceId.toInt).filter(_.floorId != f.inputFloorId.toInt).map(exb =>{exb.exbDeviceId})
+        val inputExbDeviceIdList = f.inputExbDeviceIdListComma.split(",").toSeq
+        val errDeviceIdList = inputExbDeviceIdList.filter(exbDeviceIdList.contains(_))
+        if(errDeviceIdList.isEmpty == false){
+          errMsg :+= Messages("error.cms.PlaceManage.floorUpdate.inputDeviceId.duplicate", errDeviceIdList.mkString(","))
+        }
+        if(errMsg.isEmpty == false){
+          // エラーで遷移
+          Redirect(s"""${routes.PlaceManage.detail().path()}?${KEY_PLACE_ID}=${f.inputPlaceId}""")
+            .flashing(ERROR_MSG_KEY -> errMsg.mkString(HTML_BR))
+        }else{
+          // DB処理
+          floorDAO.updateById(f.inputFloorId.toInt, f.inputFloorName, inputExbDeviceIdList)
+          // 成功で遷移
+          Redirect(s"""${routes.PlaceManage.detail().path()}?${KEY_PLACE_ID}=${f.inputPlaceId}""")
+            .flashing(SUCCESS_MSG_KEY -> Messages("success.cms.PlaceManage.floorUpdate"))
+        }
       }
     }
-
   }
 
 

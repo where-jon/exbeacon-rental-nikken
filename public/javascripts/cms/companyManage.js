@@ -13,13 +13,14 @@ function bindMouseAndTouch(){
                     clearInterval(document.interval);
                 }else if(e.originalEvent.touches.length == 1){
                     $(this).addClass('rowHoverColor');
+                    var companyId = $(this).attr('id');
                     touched = true;
                     touch_time = 0;
                     document.interval = setInterval(function(){
                         touch_time += 100;
                         if (touch_time == common.longTapTime) {
                             // ロングタップ時の処理
-                            showInputModal();
+                            showInputModal(companyId);
                         }
                     }, 100);
                 }
@@ -47,7 +48,8 @@ function bindMouseAndTouch(){
                 $(this).removeClass('rowHoverColor');
             },
             'click': function(e) {
-                showInputModal();
+                var companyId = $(this).attr('id');
+                showInputModal(companyId);
             },
         });
     }
@@ -87,13 +89,32 @@ function removeTable(){
     $('.table-responsive-body').append(clonedTable.prop("outerHTML"));
 }
 
+// サブミット
+function doSubmit(formId, action){
+    $('#' + formId).attr('action', action)
+    $('#' + formId).submit();
+}
+
 // モーダル画面の表示
-function showInputModal(){
+function showInputModal(companyId){
+    if(companyId == ""){
+        $('#inputCompanyId').val('');
+        $('#inputCompanyName').val('');
+        $('#inputNote').val('');
+
+        $('#updateFooter').addClass('hidden');
+        $('#registerFooter').removeClass('hidden');
+    }else{
+        $('#inputCompanyId').val(companyId);
+        $('#inputCompanyName').val($('#'+companyId).find('.companyName').text());
+        $('#inputNote').val($('#'+companyId).find('.note').text());
+
+        $('#updateFooter').removeClass('hidden');
+        $('#registerFooter').addClass('hidden');
+    }
     $('#inputModal').modal();
 }
-function showDeleteModal(){
-    $('#deleteModal').modal();
-}
+
 
 $(function(){
     // テーブルを固定

@@ -82,6 +82,7 @@ function showFloorModal(floorId){
         $('#floorUpdateFooter').addClass('hidden');
         $('#floorRegisterFooter').removeClass('hidden');
     }else{
+        $('.cloned').remove();
         $('#inputFloorId').val(floorId);
         $('#inputExbDeviceIdListComma').val('');
         $('#inputFloorName').val($('#'+floorId).find('.floorName').text());
@@ -92,39 +93,55 @@ function showFloorModal(floorId){
             var clonedRow = $('.template').clone();
             clonedRow.addClass('cloned');
             clonedRow.removeClass('template');
-            clonedRow.find('span.inputDeviceIdSpan').text($.trim(element.text()));
+            clonedRow.find('span.inputDeviceIdSpan').text($.trim($(element).text()));
             $('.template').before(clonedRow);
             var value = $('#inputExbDeviceIdListComma').val();
-            $('#inputExbDeviceIdListComma').val(value + "-" + $.trim(element.text()))
+            $('#inputExbDeviceIdListComma').val(value + "-" + $.trim($(element).text()))
 
             clonedRow.removeClass('hidden');
         });
 
         // ボタン表示の切り替え
-        $('#floorUpdateFooter').addClass('hidden');
-        $('#floorRegisterFooter').removeClass('hidden');
+        $('#floorUpdateFooter').removeClass('hidden');
+        $('#floorRegisterFooter').addClass('hidden');
     }
     $('#floorModal').modal();
 }
 
-// 入力モーダルのTxタグの行を追加
+// 入力モーダルのEXBデバイスの行を追加
 function addTagRow(){
     if($('#inputDeviceId').val() != ''){
-        var clonedRow = $('.template').clone();
-        clonedRow.addClass('cloned');
-        clonedRow.removeClass('template');
-        // 表示文字列の設定
-        clonedRow.find('span.inputDeviceIdSpan').text($.trim($('#inputDeviceId').val()));
-        // 値の設定
-        var value = $('#inputExbDeviceIdListComma').val();
-        $('#inputExbDeviceIdListComma').val(value + "," + $.trim($('#inputDeviceId').val()));
+        if($('#inputDeviceId').val().match(/[0-9a-zA-Z]/)){
+            var duplicateFlg = false;
+            $('.cloned').each(function(index, element){
+                if($(element).find('span').text() == $('#inputDeviceId').val()){
+                    duplicateFlg = true;
+                    return false;
+                }
+            });
 
-        clonedRow.removeClass('hidden');
-        $('.template').before(clonedRow);
+            if(duplicateFlg){
+                $('#inputDeviceId').val('');
+                return false;
+            }
+
+            var clonedRow = $('.template').clone();
+            clonedRow.addClass('cloned');
+            clonedRow.removeClass('template');
+            // 表示文字列の設定
+            clonedRow.find('span.inputDeviceIdSpan').text($.trim($('#inputDeviceId').val()));
+            // 値の設定
+            var value = $('#inputExbDeviceIdListComma').val();
+            $('#inputExbDeviceIdListComma').val(value + "," + $.trim($('#inputDeviceId').val()));
+
+            clonedRow.removeClass('hidden');
+            $('.template').before(clonedRow);
+            $('#inputDeviceId').val('');
+        }
     }
 }
 
-// 入力モーダルのTxタグの行の削除
+// 入力モーダルのEXBデバイスの行の削除
 function removeTagRow(obj){
     var clonedRow = $(obj).parent().parent();
     var value = "-" + $.trim(clonedRow.find('span.inputDeviceIdSpan').text());

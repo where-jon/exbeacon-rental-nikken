@@ -13,6 +13,8 @@ import models.User
   */
 trait BaseController extends AuthController {
 
+  val HTML_BR = "<br/>"
+
   val ERROR_MSG_KEY = "errMsg"
   val SUCCESS_MSG_KEY = "successMsg"
 

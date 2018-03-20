@@ -145,14 +145,14 @@ Logger.debug("現場を新規登録、ID：" + placeId.get.toString)
   }
 
   /**
-    * 現場の削除
+    * 現場の論理削除
     * @return
     */
-  def deleteById(placeId:Int): Unit = {
+  def deleteLogicalById(placeId:Int): Unit = {
     db.withTransaction { implicit connection =>
       SQL(
         """
-          delete from place_master where place_id = {placeId} ;
+          update place_master set active_flg = false where place_id = {placeId} ;
         """).on(
         'placeId -> placeId
       ).executeUpdate()
@@ -160,7 +160,7 @@ Logger.debug("現場を新規登録、ID：" + placeId.get.toString)
       // コミット
       connection.commit()
 
-      Logger.debug(s"""現場情報を削除、ID：" + ${placeId.toString}""")
+      Logger.debug(s"""現場情報を論理削除、ID：" + ${placeId.toString}""")
     }
   }
 

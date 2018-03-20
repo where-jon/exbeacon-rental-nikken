@@ -61,8 +61,8 @@ class floorDAO @Inject() (dbapi: DBApi) {
       val selectPh =
         """
           select
-              floor_id
-            , floor_name
+              f.floor_id
+            , f.floor_name
             , ARRAY_TO_STRING(
                 ARRAY(
                   SELECT
@@ -70,24 +70,27 @@ class floorDAO @Inject() (dbapi: DBApi) {
                   FROM
                     exb_master e
                   WHERE
-                    e.floor_id = floor_id
+                    e.floor_id = f.floor_id
                   ORDER BY
                     e.exb_device_id
                 )
               , ',') as exb_device_id_str
           from
-            floor_master
+            place_master p
+            inner join floor_master f
+              on p.place_id = f.place_id
+              and p.active_flg = true
         """
 
-      var wherePh = """ where place_id = {placeId} """
+      var wherePh = """ where p.place_id = {placeId} """
       if(floorName.isEmpty == false){
-        wherePh += s""" and floor_name = '${floorName}' """
+        wherePh += s""" and f.floor_name = '${floorName}' """
       }
 
       val orderPh =
         """
           order by
-            display_order
+            f.display_order
         """
       SQL(selectPh + wherePh + orderPh).on('placeId -> placeId).as(simple.*)
     }
@@ -161,36 +164,57 @@ Logger.debug(s"""フロアを登録、ID：" + ${floorId.get.toInt}""")
 Logger.debug(s"""EXBマスタを登録""")
     }
   }
-  //
-//  /**
-//    * フロアのIDと名前の取得
-//    * @return
-//    */
-//  def selectFloor(): Seq[MapViewer] = {
-//
-//    val parser = {
-//      get[Int]("map_id") ~
-//        get[String]("map_name")  map {
-//        case map_id ~ map_name =>
-//          MapViewer(map_id, 0, 0, "", map_name)
-//      }
-//    }
-//
-//    db.withConnection { implicit connection =>
-//      val sql = SQL("""
-//        select distinct
-//            m.map_id
-//          , m.map_name
-//        from
-//          conference_room_master r
-//          inner join map_master m
-//            on r.map_id = m.map_id
-//        order by map_id desc;
-//        """)
-//
-//      sql.as(parser.*)
-//    }
-//  }
+
+
+  /**
+    * フロアの新規登録
+    * @return
+    */
+  def updateById(floorId: Int, floorName: String, deviceIdList: Seq[String]) = {
+
+    db.withTransaction { implicit connection =>
+      // フロアの更新
+      val params: Seq[NamedParameter] = Seq(
+        "floorName" -> floorName,
+        "floorId" -> floorId)
+      SQL(
+        """
+          update floor_master
+          set floor_name = {floorName}, updatetime = now()
+          where floor_id = {floorId};
+        """
+      ).on(params:_*).executeUpdate()
+Logger.debug(s"""フロアを更新、ID：" + ${floorId}""")
+      // EXBマスタの削除
+      SQL(
+        """
+          delete from exb_master
+          where floor_id = {floorId}
+        """
+      ).on('floorId -> floorId).executeUpdate()
+
+      // EXBマスタの登録
+      val indexedValues = deviceIdList.zipWithIndex
+
+      val rows = indexedValues.map{ case (value, i) =>
+        s"""({exb_device_id_${i}}, {floor_id_${i}})"""
+      }.mkString(",")
+
+      val parameters = indexedValues.flatMap{ case(value, i) =>
+        Seq(
+          NamedParameter(s"exb_device_id_${i}" , value),
+          NamedParameter(s"floor_id_${i}" , floorId)
+        )
+      }
+
+      // SQL実行
+      BatchSql(s""" insert into exb_master (exb_device_id, floor_id) values ${rows} """, parameters).execute
+
+      // コミット
+      connection.commit()
+Logger.debug(s"""EXBマスタを更新""")
+    }
+  }
 
 }
 

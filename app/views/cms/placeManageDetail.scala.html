@@ -54,12 +54,18 @@
                 </div>
                 <!-- ボタン-->
                 <div class="row tableRow" style="margin-bottom: 50px;">
-                    <div class="text-center col-xs-4 col-sm-4 col-md-4 col-xs-offset-4 col-sm-offset-4 col-md-offset-4" style="padding:0;">
-                        <a href="javascript:showPlaceUpdateModal();" class="btn btn-primary link text-right">編集</a>
-                    </div>
-                    <div class="text-right col-xs-4 col-sm-4 col-md-4" style="padding:0;">
-                        <a href="javascript:showPlaceDeleteModal();" class="btn deleteLink text-right">削除</a>
-                    </div>
+                    @if(user.isSysMng){
+                        <div class="text-center col-xs-4 col-sm-4 col-md-4 col-xs-offset-4 col-sm-offset-4 col-md-offset-4" style="padding:0;">
+                            <a href="javascript:showPlaceUpdateModal();" class="btn btn-primary link text-right">編集</a>
+                        </div>
+                        <div class="text-right col-xs-4 col-sm-4 col-md-4" style="padding:0;">
+                            <a href="javascript:showPlaceDeleteModal();" class="btn deleteLink text-right">削除</a>
+                        </div>
+                    }else{
+                        <div class="text-center col-xs-4 col-sm-4 col-md-4 col-xs-offset-8 col-sm-offset-8 col-md-offset-8" style="padding:0;">
+                            <a href="javascript:showPlaceUpdateModal();" class="btn btn-primary link text-right">編集</a>
+                        </div>
+                    }
                 </div>
                 <!-- フロア情報テーブルのROW -->
                 <div class="row tableRow">
@@ -190,7 +196,7 @@
                         <div class="form-group" style="margin-bottom: 5px;">
                             <label class="control-label col-xs-5">EXBeaconデバイスID</label>
                             <div class="col-xs-2" style="padding-left: 0px;padding-right: 0px;margin-right:10px;">
-                                <input type="text" name="inputDeviceId" id="inputDeviceId" class="form-control">
+                                <input type="text" name="inputDeviceId" id="inputDeviceId" class="form-control" placeholder="半角英数のみ">
                             </div>
                             <div class="col-xs-1" style="padding-left: 0px;padding-right: 0px;">
                                 <a href="javascript:addTagRow();"class="btn btn-default"><i class="fa fa-plus" aria-hidden="true"></i></a>

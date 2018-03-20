@@ -35,7 +35,9 @@
     <div class="sideMenu" style="margin-top: 10vw;">
         <div class="panel list-group" style="margin-bottom: 0px;">
             <a href="@routes.CarSummery.index.path" class="sideLinkClass sideLinkNotSelected list-group-item">稼働状況ページ</a>
-            <a href="@controllers.cms.routes.PlaceManage.index.path" class="sideLinkClass sideLinkNotSelected list-group-item">現場一覧ページ</a>
+            @if(user.isSysMng){
+                <a href="@controllers.cms.routes.PlaceManage.index.path" class="sideLinkClass sideLinkNotSelected list-group-item">現場一覧ページ</a>
+            }
         </div>
     </div>
 </div>
