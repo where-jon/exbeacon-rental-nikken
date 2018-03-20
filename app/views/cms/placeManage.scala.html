@@ -56,7 +56,7 @@
                 <div class="row tableRow" style="margin-top: 10px;">
                     <div class="pull-right col-xs-4 col-sm-4 col-md-4 col-xs-offset-8 col-sm-offset-8 col-md-offset-8"
                          style="padding:0;">
-                        <a href="javascript:showInputModal();" class="btn btn-primary registerLink">新規現場登録</a>
+                        <a href="javascript:showPlaceRegisterModal();" class="btn btn-primary registerLink">新規現場登録</a>
                     </div>
                 </div>
             </div>
@@ -66,10 +66,10 @@
     <script></script>
 
     <!-- 更新モーダル画面 -->
-    <div class="modal" id="inputModal" tabindex="-1" role="dialog" aria-labelledby="inputModalLabel" aria-hidden="true" data-show="true" data-keyboard="false" data-backdrop="static">
+    <div class="modal" id="placeRegisterModal" tabindex="-1" role="dialog" aria-labelledby="placeRegisterModalLabel" aria-hidden="true" data-show="true" data-keyboard="false" data-backdrop="static">
         <div class="modal-dialog">
             <div class="modal-content">
-                <form id="inputForm" name="inputForm" enctype="multipart/form-data" class="form-horizontal" method="post" action="@controllers.cms.routes.PlaceManage.register.path">
+                <form id="placeRegisterForm" name="placeRegisterForm" enctype="multipart/form-data" class="form-horizontal" method="post" action="@controllers.cms.routes.PlaceManage.register.path">
                     @CSRF.formField
                     <div class="modal-header" style="">新規現場登録</div>
                     <div class="modal-body">

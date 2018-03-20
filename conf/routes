@@ -21,6 +21,9 @@ GET     /cms/placeManage/detail         controllers.cms.PlaceManage.detail
 POST    /cms/placeManage/register       controllers.cms.PlaceManage.register
 POST    /cms/placeManage/update         controllers.cms.PlaceManage.update
 POST    /cms/placeManage/delete         controllers.cms.PlaceManage.delete
+POST    /cms/placeManage/floorRegister  controllers.cms.PlaceManage.floorRegister
+POST    /cms/placeManage/floorUpdate    controllers.cms.PlaceManage.floorUpdate
+POST    /cms/placeManage/floorDelete    controllers.cms.PlaceManage.floorDelete
 
 
 # 作業車管理

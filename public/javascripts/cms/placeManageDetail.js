@@ -13,13 +13,14 @@ function bindMouseAndTouch(){
                     clearInterval(document.interval);
                 }else if(e.originalEvent.touches.length == 1){
                     $(this).addClass('rowHoverColor');
+                    var floorId = $(this).attr('id');
                     touched = true;
                     touch_time = 0;
                     document.interval = setInterval(function(){
                         touch_time += 100;
                         if (touch_time == common.longTapTime) {
                             // ロングタップ時の処理
-                            showFloorModal();
+                            showFloorModal(floorId);
                         }
                     }, 100)
                 }
@@ -47,14 +48,16 @@ function bindMouseAndTouch(){
                 $(this).removeClass('rowHoverColor');
             },
             'click': function(e) {
-                showFloorModal();
+                var floorId = $(this).attr('id');
+                showFloorModal(floorId);
             },
         });
     }
 }
 
-
-function doSubmit(formId){
+// サブミット
+function doSubmit(formId, action){
+    $('#' + formId).attr('action', action)
     $('#' + formId).submit();
 }
 
@@ -65,28 +68,73 @@ function showPlaceUpdateModal(){
 function showPlaceDeleteModal(){
     $('#placeDeleteModal').modal();
 }
-function showInputModal(){
-    $('#inputModal').modal();
-}
 
-function showFloorModal(){
+// フロア追加・更新モーダル画面の表示
+function showFloorModal(floorId){
+    if(floorId == ""){
+        // 新規
+        $('#inputFloorId').val('');
+        $('#inputExbDeviceIdListComma').val('');
+        $('#inputFloorName').val('');
+        $('#inputDeviceId').val('');
+        $('.cloned').remove();
+        // ボタン表示の切り替え
+        $('#floorUpdateFooter').addClass('hidden');
+        $('#floorRegisterFooter').removeClass('hidden');
+    }else{
+        $('#inputFloorId').val(floorId);
+        $('#inputExbDeviceIdListComma').val('');
+        $('#inputFloorName').val($('#'+floorId).find('.floorName').text());
+        $('#inputDeviceId').val('');
+
+        var spanObjList = $('#'+floorId).find('span');
+        $(spanObjList).each(function(index, element){
+            var clonedRow = $('.template').clone();
+            clonedRow.addClass('cloned');
+            clonedRow.removeClass('template');
+            clonedRow.find('span.inputDeviceIdSpan').text($.trim(element.text()));
+            $('.template').before(clonedRow);
+            var value = $('#inputExbDeviceIdListComma').val();
+            $('#inputExbDeviceIdListComma').val(value + "-" + $.trim(element.text()))
+
+            clonedRow.removeClass('hidden');
+        });
+
+        // ボタン表示の切り替え
+        $('#floorUpdateFooter').addClass('hidden');
+        $('#floorRegisterFooter').removeClass('hidden');
+    }
     $('#floorModal').modal();
 }
 
 // 入力モーダルのTxタグの行を追加
 function addTagRow(){
-    var clonedRow = $('.template').clone();
-    clonedRow.addClass('cloned');
-    clonedRow.removeClass('template');
-    clonedRow.removeClass('hidden');
-    $('.template').before(clonedRow);
+    if($('#inputDeviceId').val() != ''){
+        var clonedRow = $('.template').clone();
+        clonedRow.addClass('cloned');
+        clonedRow.removeClass('template');
+        // 表示文字列の設定
+        clonedRow.find('span.inputDeviceIdSpan').text($.trim($('#inputDeviceId').val()));
+        // 値の設定
+        var value = $('#inputExbDeviceIdListComma').val();
+        $('#inputExbDeviceIdListComma').val(value + "," + $.trim($('#inputDeviceId').val()));
+
+        clonedRow.removeClass('hidden');
+        $('.template').before(clonedRow);
+    }
 }
 
 // 入力モーダルのTxタグの行の削除
 function removeTagRow(obj){
-    $(obj).parent().parent().remove();
+    var clonedRow = $(obj).parent().parent();
+    var value = "-" + $.trim(clonedRow.find('span.inputDeviceIdSpan').text());
+    var originalValue = $('#inputExbDeviceIdListComma').val();
+    originalValue = originalValue.replace(value, '');
+    $('#inputExbDeviceIdListComma').val(originalValue);
+    clonedRow.remove();
 }
 
+// 初期表示
 $(function(){
     bindMouseAndTouch();
 });

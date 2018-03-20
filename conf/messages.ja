@@ -55,13 +55,18 @@ error.notfound.text=For request ''{0}''
 
 # CMS入力エラー
 error.cms.PlaceManage.register.inputPlaceName.empty=現場名称を入力してください。
+error.cms.PlaceManage.floorUpdate.inputFloorName.empty=フロア名を入力してください。
+error.cms.PlaceManage.floorUpdate.inputFloorName.duplicate=フロア名が重複しています。
+error.cms.PlaceManage.floorUpdate.inputDeviceId.duplicate=EXBeaconデバイスIDが重複しています。({0})
+error.cms.PlaceManage.floorUpdate.inputExbDeviceIdListComma.empty=EXBeaconデバイスIDを入力してください。
 
 ################################################################################################
 # SUCCESS
 success.cms.PlaceManage.register=現場情報を登録しました。
 success.cms.PlaceManage.update=現場情報を更新しました。
 success.cms.PlaceManage.delete=現場情報を削除しました。
-
+success.cms.PlaceManage.floorDelete=フロアを削除しました。
+success.cms.PlaceManage.floorUpdate=フロア情報を更新しました。
 
 # MAILS
 
