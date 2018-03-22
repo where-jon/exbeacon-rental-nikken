@@ -4,26 +4,9 @@ import javax.inject.Inject
 
 import anorm.SqlParser._
 import anorm._
-import play.api.Logger
+//import play.api.Logger
 import play.api.db._
 import play.api.libs.functional.syntax._
-import play.api.libs.json.{JsPath, Json, Reads}
-
-//case class roomPosition(
-//  room_id: String,
-//  room_name: String,
-//  description: String
-//)
-//object roomPosition {
-//
-//  implicit val jsonReads: Reads[roomPosition] = (
-//      ((JsPath \ "room_id").read[String] | Reads.pure("")) ~
-//      ((JsPath \ "room_name").read[String] | Reads.pure(""))~
-//      ((JsPath \ "description").read[String] | Reads.pure(""))
-//    )(roomPosition.apply _)
-//
-//  implicit def jsonWrites = Json.writes[roomPosition]
-//}
 
 
 case class ExbInfo(
@@ -37,7 +20,7 @@ class exbModelDAO @Inject() (dbapi: DBApi) {
   private val db = dbapi.database("default")
 
   /**
-    * フロア情報の取得
+    * EXBマスタ情報の取得
     * @return
     */
   def selectExb(placeId: Int, floorId:Option[Int] = None): Seq[ExbInfo] = {

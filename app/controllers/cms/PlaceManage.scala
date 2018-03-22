@@ -22,6 +22,7 @@ import utils.silhouette.MyEnv
 // フォーム定義
 case class PlaceRegisterForm(placeName: String)
 case class PlaceUpdateForm(inputPlaceId: String, inputPlaceName: String, inputPlaceStatus: String)
+case class PasswordUpdateForm(inputPlaceId: String, inputPassword: String, inputRePassword: String)
 case class PlaceDeleteForm(inputPlaceId: String)
 case class FloorDeleteForm(inputPlaceId: String, inputFloorId: String)
 case class FloorUpdateForm(inputPlaceId: String, inputFloorId: String, inputFloorName: String, inputExbDeviceIdListComma: String)
@@ -109,6 +110,40 @@ class PlaceManage @Inject()(config: Configuration
 
       Redirect(s"""${routes.PlaceManage.detail().path()}?${KEY_PLACE_ID}=${f.inputPlaceId}""")
         .flashing(SUCCESS_MSG_KEY -> Messages("success.cms.PlaceManage.update"))
+    }
+  }
+
+  /** 更新 */
+  def passwordUpdate = SecuredAction { implicit request =>
+    // フォームの準備
+    val inputForm = Form(mapping(
+        "inputPlaceId" -> text
+      , "inputPassword" -> text.verifying(Messages("error.cms.PlaceManage.passwordUpdate.inputPassword.empty"), {!_.isEmpty})
+      , "inputRePassword" -> text.verifying(Messages("error.cms.PlaceManage.passwordUpdate.inputRePassword.empty"), {!_.isEmpty})
+    )(PasswordUpdateForm.apply)(PasswordUpdateForm.unapply))
+
+    // フォームの取得
+    val form = inputForm.bindFromRequest
+    if (form.hasErrors){
+      // エラーメッセージ
+      val errMsg = form.errors.map(_.message).mkString(HTML_BR)
+      // リダイレクトで画面遷移
+      Redirect(routes.PlaceManage.detail()).flashing(ERROR_MSG_KEY -> errMsg)
+    }else{
+      val f = form.get
+
+      if(f.inputPassword != f.inputRePassword){
+        Redirect(routes.PlaceManage.detail()).flashing(ERROR_MSG_KEY -> Messages("error.cms.PlaceManage.passwordUpdate.notEqual"))
+      }else{
+        // DB登録
+        placeDAO.updatePassword(f.inputPlaceId.toInt, f.inputPassword)
+
+        Redirect(s"""${routes.PlaceManage.detail().path()}?${KEY_PLACE_ID}=${f.inputPlaceId}""")
+          .flashing(SUCCESS_MSG_KEY -> Messages("success.cms.PlaceManage.passwordUpdate"))
+      }
+
+
+
     }
   }
 

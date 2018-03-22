@@ -35,7 +35,9 @@ case class Place(
   placeName: String,
   floorCount: Int = 0,
   status: Int,
-  statusName: String = ""
+  statusName: String = "",
+  btxApiUrl: String = "",
+  cmsPassword: String = ""
 )
 
 @javax.inject.Singleton
@@ -53,10 +55,11 @@ class placeDAO @Inject() (dbapi: DBApi) {
       get[Int]("place_id") ~
         get[String]("place_name") ~
         get[Int]("floor_count") ~
-        get[Int]("status")  map {
-        case place_id ~ place_name ~ floor_count ~ status  =>
+        get[Int]("status") ~
+        get[String]("btx_api_url") map {
+        case place_id ~ place_name ~ floor_count ~ status ~ btx_api_url =>
           val statusName = PlaceEnum().map(status)
-          Place(place_id, place_name, floor_count, status, statusName)
+          Place(place_id, place_name, floor_count, status, statusName, btx_api_url)
       }
     }
     db.withConnection { implicit connection =>
@@ -68,6 +71,8 @@ class placeDAO @Inject() (dbapi: DBApi) {
             , pm.place_name
             , count(f.floor_id) as floor_count
             , pm.status
+            , pm.btx_api_url
+            , pm.cms_password
           from
             place_master pm
             left outer join floor_master f
@@ -141,6 +146,29 @@ Logger.debug("現場を新規登録、ID：" + placeId.get.toString)
       connection.commit()
 
       Logger.debug(s"""現場情報を更新、ID：" + ${placeId.toString}""")
+    }
+  }
+
+  /**
+    * 現場の更新
+    * @return
+    */
+  def updatePassword(placeId:Int, password: String): Unit = {
+    db.withTransaction { implicit connection =>
+      SQL(
+        """
+          update place_master set
+              cms_password = {password}
+            , updatetime = now()
+          where place_id = {placeId} ;
+        """).on(
+        'password -> password
+      ).executeUpdate()
+
+      // コミット
+      connection.commit()
+
+      Logger.debug(s"""現場パスワードを更新、ID：" + ${placeId.toString}""")
     }
   }
 

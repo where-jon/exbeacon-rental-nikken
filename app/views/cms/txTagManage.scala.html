@@ -1,4 +1,4 @@
-@(dataList: Seq[String])(implicit user: User, messages: Messages, request: RequestHeader, flash: Flash)
+@(dataList: Seq[BtxTelemetryInfo], placeId: Int)(implicit user: User, messages: Messages, request: RequestHeader, flash: Flash)
 
 @import controllers.routes
 @import helper._
@@ -42,26 +42,28 @@
                                 <tbody>
                                     @for(data <- dataList){
                                         <tr class="rowColor">
-                                            <td class="itemTd text-center">@{data.split(",")(0)}</td>
+                                            <td class="itemTd text-center">@{data.btxId}</td>
                                             <td class="itemTd text-center">
-                                                <div class="progress" style="margin-bottom: 0; background-color: #efe">
-                                                    <div
-                                                        @if( data.split(",")(1).toInt < 20){
-                                                            class="batteryDanger"
+                                                @if(data.isDetect){
+                                                    <div class="progress" style="margin-bottom: 0; background-color: #efe">
+                                                        @if(data.powerLevel < 20){
+                                                            <div class="batteryDanger" style="width: @{data.powerLevel}%;">&nbsp;</div>
                                                         }else{
-                                                            @if( data.split(",")(1).toInt <= 30){
-                                                                class="batteryWarn"
+                                                            @if(data.powerLevel <= 30){
+                                                                <div class="batteryWarn" style="width: @{data.powerLevel}%;">&nbsp;</div>
                                                             }else{
-                                                                class="batteryOk"
+                                                                <div class="batteryOk" style="width: @{data.powerLevel}%;">&nbsp;</div>
                                                             }
                                                         }
-                                                         style="width: @{data.split(",")(1)}%;">&nbsp;</div>
-                                                    <div style="margin-top: -24px; width:100%;">@{data.split(",")(1)}%</div>
-                                                </div>
+                                                        <div style="margin-top: -24px; width:100%;">@{data.powerLevel}%</div>
+                                                    </div>
+                                                }else{
+                                                    <span>未検知</span>
+                                                }
                                             </td>
-                                            <td class="itemTd text-center">@{data.split(",")(2)}</td>
-                                            <td class="itemTd text-left">@{data.split(",")(3)}</td>
-                                            <td class="itemTd text-left">@{data.split(",")(4)}</td>
+                                            <td class="itemTd text-center">@{data.kindName}</td>
+                                            <td class="itemTd text-left">@{data.name}</td>
+                                            <td class="itemTd text-left">@{data.note}</td>
                                         </tr>
                                     }
                                 </tbody>

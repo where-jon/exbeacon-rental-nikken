@@ -17,6 +17,8 @@ import utils.silhouette.MyEnv
   *
   *
   */
+
+// フォームの定義
 case class CompanyUpdateForm(inputPlaceId: String, inputCompanyId: String, inputCompanyName: String, inputNote: String = "")
 case class CompanyDeleteForm(inputCompanyId: String)
 
@@ -40,7 +42,7 @@ class CompanyManage @Inject()(config: Configuration
   }
 
 
-  /** フロア更新 */
+  /** 更新 */
   def update = SecuredAction { implicit request =>
     // フォームの準備
     val inputForm = Form(mapping(
@@ -85,7 +87,7 @@ class CompanyManage @Inject()(config: Configuration
         var companyList = companyDAO.selectCompany(super.getCurrentPlaceIdStr.toInt)
         companyList = companyList.filter(_.companyId != f.inputCompanyId.toInt).filter(_.companyName == f.inputCompanyName)
         if(companyList.length > 0){
-          errMsg :+= Messages("error.cms.CompanyManage.update.inputCompanyName.duplicate")
+          errMsg :+= Messages("error.cms.CompanyManage.update.inputCompanyName.duplicate", f.inputCompanyName)
         }
         if(errMsg.isEmpty == false){
           // エラーで遷移

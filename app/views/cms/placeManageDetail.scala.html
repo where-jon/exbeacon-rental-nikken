@@ -55,14 +55,20 @@
                 <!-- ボタン-->
                 <div class="row tableRow" style="margin-bottom: 50px;">
                     @if(user.isSysMng){
-                        <div class="text-center col-xs-4 col-sm-4 col-md-4 col-xs-offset-4 col-sm-offset-4 col-md-offset-4" style="padding:0;">
+                        <div class="text-center col-xs-4 col-sm-4 col-md-4" style="padding:0;">
+                            <a href="javascript:showPasswordUpdateModal();" class="btn btn-primary link text-right">パスワード変更</a>
+                        </div>
+                        <div class="text-center col-xs-4 col-sm-4 col-md-4" style="padding:0;">
                             <a href="javascript:showPlaceUpdateModal();" class="btn btn-primary link text-right">編集</a>
                         </div>
                         <div class="text-right col-xs-4 col-sm-4 col-md-4" style="padding:0;">
                             <a href="javascript:showPlaceDeleteModal();" class="btn deleteLink text-right">削除</a>
                         </div>
                     }else{
-                        <div class="text-center col-xs-4 col-sm-4 col-md-4 col-xs-offset-8 col-sm-offset-8 col-md-offset-8" style="padding:0;">
+                        <div class="text-center col-xs-4 col-sm-4 col-md-4 col-xs-offset-4 col-sm-offset-4 col-md-offset-4" style="padding:0;">
+                            <a href="javascript:showPasswordUpdateModal();" class="btn btn-primary link text-right">パスワード変更</a>
+                        </div>
+                        <div class="text-center col-xs-4 col-sm-4 col-md-4" style="padding:0;">
                             <a href="javascript:showPlaceUpdateModal();" class="btn btn-primary link text-right">編集</a>
                         </div>
                     }
@@ -109,6 +115,40 @@
     <script type="text/javascript" src="@routes.MyAssets.js("cms/placeManageDetail.js")"></script>
     <script></script>
 
+    <!-- パスワード更新モーダル画面 -->
+    <div class="modal" id="passwordUpdateModal" tabindex="-1" role="dialog" aria-labelledby="passwordUpdateModalLabel" aria-hidden="true" data-show="true" data-keyboard="false" data-backdrop="static">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form id="passwordUpdateForm" name="passwordUpdateForm" enctype="multipart/form-data" class="form-horizontal" method="post" action="@controllers.cms.routes.PlaceManage.passwordUpdate.path">
+                    @CSRF.formField
+                    <input type="hidden" name="inputPlaceId" value="@place.placeId">
+                    <div class="modal-header">パスワード変更</div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label class="control-label col-xs-5">パスワード</label>
+                            <div class="col-xs-5" style="padding-left: 0px;padding-right: 0px;">
+                                <input type="password" name="inputPassword" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-xs-5">パスワー再入力</label>
+                            <div class="col-xs-5" style="padding-left: 0px;padding-right: 0px;">
+                                <input type="password" name="inputRePassword" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer" style="text-align: center;">
+                        <div class="col-xs-6 text-center">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">キャンセル</button>
+                        </div>
+                        <div class="col-xs-6 text-center">
+                            <a href="javascript:doSubmit('passwordUpdateForm', '@controllers.cms.routes.PlaceManage.passwordUpdate.path');" class="text-center btn btn-primary">更新</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
     <!-- 現場更新モーダル画面 -->
     <div class="modal" id="placeUpdateModal" tabindex="-1" role="dialog" aria-labelledby="placeUpdateModalLabel" aria-hidden="true" data-show="true" data-keyboard="false" data-backdrop="static">
         <div class="modal-dialog">

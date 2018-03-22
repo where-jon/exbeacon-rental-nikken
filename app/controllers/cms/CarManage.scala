@@ -3,9 +3,13 @@ package controllers.cms
 import javax.inject.{Inject, Singleton}
 
 import com.mohiva.play.silhouette.api.Silhouette
+import controllers.BaseController
 import play.api._
-import play.api.i18n.{I18nSupport, MessagesApi}
-import utils.silhouette.{AuthController, MyEnv}
+import play.api.data.Form
+import play.api.data.Forms._
+import play.api.data.Forms.mapping
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
+import utils.silhouette.MyEnv
 
 
 /**
@@ -13,37 +17,187 @@ import utils.silhouette.{AuthController, MyEnv}
   *
   *
   */
+
+// フォームの定義
+case class CarUpdateForm(
+     inputPlaceId: String
+   , inputCarId: String
+   , inputCarNo: String
+   , inputCarName: String
+   , inputCarBtxId: String
+   , inputCarKeyBtxId: String
+)
+
+case class CarDeleteForm(
+  inputCarId: String
+)
+
 @Singleton
 class CarManage @Inject()(config: Configuration
                           , val silhouette: Silhouette[MyEnv]
                           , val messagesApi: MessagesApi
-                               ) extends AuthController with I18nSupport {
+                          , carDAO: models.carDAO
+                          , btxDAO: models.btxDAO
+                               ) extends BaseController with I18nSupport {
 
 
   /** 初期表示 */
   def index = SecuredAction { implicit request =>
-    val dataList = Seq[String](
-       "001,高所作業車A,110,100"
-      ,"002,高所作業車B,220,200"
-      ,"003,高所作業車C,330,300"
-      ,"004,高所作業車D,440,400"
-      ,"005,高所作業車F,550,500"
-      ,"006,高所作業車G,660,600"
-      ,"007,高所作業車H,770,700"
-      ,"008,高所作業車I,880,800"
-      ,"009,高所作業車J,990,900"
-      ,"010,高所作業車K,AA0,A00"
-      ,"011,高所作業車L,BB0,B00"
-      ,"013,高所作業車M,CC0,C00"
-      ,"014,高所作業車N,DD0,D00"
-      ,"015,高所作業車O,EE0,E00"
-      ,"016,高所作業車P,FF0,F00"
-      ,"017,高所作業車R,GG0,G00"
-      ,"018,高所作業車S,HH0,H00"
-      ,"019,高所作業車T,II0,I00"
-      ,"020,高所作業車U,JJ0,J00"
-      ,"021,高所作業車V,KK0,K00"
-      )
-    Ok(views.html.cms.carManage(dataList))
+    // 選択された現場の現場ID
+    val placeIdStr = super.getCurrentPlaceIdStr
+
+    // 業者情報
+    val carList = carDAO.selectCarInfo(placeId = placeIdStr.toInt)
+
+    Ok(views.html.cms.carManage(carList, placeIdStr.toInt))
   }
+
+
+  /** 登録・更新 */
+  def update = SecuredAction { implicit request =>
+    // フォームの準備
+    val inputForm = Form(mapping(
+        "inputPlaceId" -> text
+      , "inputCarId" -> text
+      , "inputCarNo" -> text.verifying(Messages("error.cms.CarManage.update.inputCarNo.empty"), {_.matches("^[0-9]+$")})
+      , "inputCarName" -> text
+      , "inputCarBtxId" -> text.verifying(Messages("error.cms.CarManage.update.inputCarBtxId.empty"), {_.matches("^[0-9]+$")})
+      , "inputCarKeyBtxId" -> text.verifying(Messages("error.cms.CarManage.update.inputCarKeyBtxId.empty"), {_.matches("^[0-9]+$")})
+    )(CarUpdateForm.apply)(CarUpdateForm.unapply))
+
+    // フォームの取得
+    val form = inputForm.bindFromRequest
+    if (form.hasErrors){
+      // エラーでリダイレクト遷移
+      Redirect(routes.CarManage.index()).flashing(ERROR_MSG_KEY -> form.errors.map(_.message).mkString(HTML_BR))
+    }else{
+
+      var errMsg = Seq[String]()
+      val f = form.get
+
+      if(f.inputCarBtxId == f.inputCarKeyBtxId){
+        errMsg :+= Messages("error.cms.CarManage.update.inputCarBtxId.inputCarKeyBtxId.duplicate", f.inputCarNo)
+      }
+
+      if(f.inputCarId.isEmpty){
+        // 新規登録の場合 --------------------------
+        // 作業車番号重複チェック
+        val carList = carDAO.selectCarInfo(super.getCurrentPlaceIdStr.toInt, f.inputCarNo)
+        if(carList.length > 0){
+          errMsg :+= Messages("error.cms.CarManage.update.inputCarNo.duplicate", f.inputCarNo)
+        }
+        // TxタグNo重複チェック
+        val btxList = btxDAO.select(super.getCurrentPlaceIdStr.toInt)
+        if(btxList.filter(_.btxId == f.inputCarBtxId.toInt).isEmpty == false){
+          errMsg :+= Messages("error.cms.CarManage.update.inputCarBtxId.duplicate", f.inputCarBtxId)
+        }
+        if(btxList.filter(_.btxId == f.inputCarKeyBtxId.toInt).isEmpty == false){
+          errMsg :+= Messages("error.cms.CarManage.update.inputCarKeyBtxId.duplicate", f.inputCarKeyBtxId)
+        }
+
+        if(errMsg.isEmpty == false){
+          // エラーで遷移
+          Redirect(routes.CarManage.index)
+            .flashing(ERROR_MSG_KEY -> errMsg.mkString(HTML_BR))
+        }else{
+          // DB処理
+          carDAO.insert(f.inputCarNo, f.inputCarName, f.inputCarBtxId.toInt, f.inputCarKeyBtxId.toInt, f.inputPlaceId.toInt)
+
+          Redirect(routes.CarManage.index)
+            .flashing(SUCCESS_MSG_KEY -> Messages("success.cms.CarManage.update"))
+        }
+
+      }else{
+        // 更新の場合 --------------------------
+        // 作業車番号重複チェック
+        var carList = carDAO.selectCarInfo(super.getCurrentPlaceIdStr.toInt, f.inputCarNo)
+        carList = carList.filter(_.carId != f.inputCarId.toInt).filter(_.carNo == f.inputCarNo)
+        if(carList.length > 0){
+          errMsg :+= Messages("error.cms.CarManage.update.inputCarNo.duplicate", f.inputCarNo)
+        }
+
+        // 変更前タグ情報
+        val preCarInfo = carDAO.selectCarInfo(super.getCurrentPlaceIdStr.toInt, "", Option(f.inputCarId.toInt)).last
+
+        // タグチェック
+        val checkList = Seq[(Int,Int)](
+            (preCarInfo.carBtxId, f.inputCarBtxId.toInt)
+          , (preCarInfo.carKeyBtxId, f.inputCarKeyBtxId.toInt)
+        )
+        checkList.zipWithIndex.foreach{case (btxId, i) =>
+          if(btxId._1 == btxId._2){
+            // OK
+          }else{
+            val btxList = btxDAO.select(super.getCurrentPlaceIdStr.toInt, Seq[Int](btxId._2))
+            if(btxList.isEmpty == false){
+              // NG
+              if(i == 0){
+                errMsg :+= Messages("error.cms.CarManage.update.inputCarBtxId.duplicate", btxId._2)
+              }else{
+                errMsg :+= Messages("error.cms.CarManage.update.inputCarKeyBtxId.duplicate", btxId._2)
+              }
+            }else{
+              // OK
+            }
+          }
+        }
+
+        if(errMsg.isEmpty == false){
+          // エラーで遷移
+          Redirect(routes.CarManage.index)
+            .flashing(ERROR_MSG_KEY -> errMsg.mkString(HTML_BR))
+        }else{
+          // DB処理
+          carDAO.update(
+              f.inputCarId.toInt
+            , f.inputCarNo
+            , f.inputCarName
+            , f.inputCarBtxId.toInt
+            , f.inputCarKeyBtxId.toInt
+            , super.getCurrentPlaceIdStr.toInt
+          )
+
+          Redirect(routes.CarManage.index)
+            .flashing(SUCCESS_MSG_KEY -> Messages("success.cms.CarManage.update"))
+        }
+      }
+    }
+  }
+
+
+
+
+  /** 削除 */
+  def delete = SecuredAction { implicit request =>
+    // フォームの準備
+    val inputForm = Form(mapping(
+      "inputCarId" -> text
+    )(CarDeleteForm.apply)(CarDeleteForm.unapply))
+
+    // フォームの取得
+    val form = inputForm.bindFromRequest
+    val f = form.get
+
+    // DB処理
+
+    // 検索
+    val carList = carDAO.selectCarInfo(super.getCurrentPlaceIdStr.toInt, "", Option(f.inputCarId.toInt))
+    // タグ
+    var txTagList = Seq[Int]()
+    if(carList.length > 0){
+      // タグ情報収集
+      carList.map{ car =>
+        txTagList :+= car.carBtxId
+        txTagList :+= car.carKeyBtxId
+      }
+
+      // 削除
+      carDAO.delete(f.inputCarId.toInt, super.getCurrentPlaceIdStr.toInt, txTagList)
+    }
+
+    // リダイレクト
+    Redirect(routes.CarManage.index)
+      .flashing(SUCCESS_MSG_KEY -> Messages("success.cms.CarManage.delete"))
+  }
+
 }

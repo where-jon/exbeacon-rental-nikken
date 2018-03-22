@@ -55,24 +55,39 @@ error.notfound.text=For request ''{0}''
 
 # CMS入力エラー
 error.cms.PlaceManage.register.inputPlaceName.empty=現場名称を入力してください。
+error.cms.PlaceManage.passwordUpdate.inputPassword.empty=パスワードを入力してください。
+error.cms.PlaceManage.passwordUpdate.inputRePassword.empty=パスワード再入力を入力してください。
+error.cms.PlaceManage.passwordUpdate.notEqual=再入力されたパスワードが異なります。
 error.cms.PlaceManage.floorUpdate.inputFloorName.empty=フロア名を入力してください。
 error.cms.PlaceManage.floorUpdate.inputFloorName.duplicate=フロア名が重複しています。
-error.cms.PlaceManage.floorUpdate.inputDeviceId.duplicate=EXBeaconデバイスIDが重複しています。({0})
+error.cms.PlaceManage.floorUpdate.inputDeviceId.duplicate=EXBeaconデバイスIDが重複しています。(デバイスID：{0})
 error.cms.PlaceManage.floorUpdate.inputExbDeviceIdListComma.empty=EXBeaconデバイスIDを入力してください。
 
 error.cms.CompanyManage.update.inputCompanyName.empty=業者名を入力してください。
-error.cms.CompanyManage.update.inputCompanyName.duplicate=業者名が重複しています。
+error.cms.CompanyManage.update.inputCompanyName.duplicate=業者名が重複しています。(業者名：{0})
+
+error.cms.CarManage.update.inputCarNo.empty=作業車番号を半角数字で入力してください。
+error.cms.CarManage.update.inputCarBtxId.empty=作業車TxタグNoを半角数字で入力してください。
+error.cms.CarManage.update.inputCarKeyBtxId.empty=鍵TxタグNoを半角数字で入力してください。
+error.cms.CarManage.update.inputCarBtxId.inputCarKeyBtxId.duplicate=作業車TxタグNoと鍵TxタグNoが重複しています。
+error.cms.CarManage.update.inputCarNo.duplicate=作業車番号が重複しています。(作業車番号：{0})
+error.cms.CarManage.update.inputCarBtxId.duplicate=作業車TxタグNoが重複しています。(作業車TxタグNo.{0})
+error.cms.CarManage.update.inputCarKeyBtxId.duplicate=鍵TxタグNoが重複しています。(作業車TxタグNo.{0})
 
 ################################################################################################
 # SUCCESS
 success.cms.PlaceManage.register=現場情報を登録しました。
 success.cms.PlaceManage.update=現場情報を更新しました。
+success.cms.PlaceManage.passwordUpdate=パスワードを更新しました。
 success.cms.PlaceManage.delete=現場情報を削除しました。
 success.cms.PlaceManage.floorDelete=フロアを削除しました。
 success.cms.PlaceManage.floorUpdate=フロア情報を更新しました。
 
 success.cms.CompanyManage.delete=業者を削除しました。
 success.cms.CompanyManage.update=業者情報を更新しました。
+
+success.cms.CarManage.delete=作業車を削除しました。
+success.cms.CarManage.update=作業車情報を更新しました。
 
 # MAILS
 

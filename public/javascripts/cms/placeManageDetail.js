@@ -62,6 +62,9 @@ function doSubmit(formId, action){
 }
 
 // モーダル画面の表示
+function showPasswordUpdateModal(){
+    $('#passwordUpdateModal').modal();
+}
 function showPlaceUpdateModal(){
     $('#placeUpdateModal').modal();
 }

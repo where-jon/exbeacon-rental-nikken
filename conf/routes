@@ -27,6 +27,8 @@ POST    /cms/placeManage/floorDelete    controllers.cms.PlaceManage.floorDelete
 
 # 作業車管理
 GET     /cms/carManage                  controllers.cms.CarManage.index
+POST    /cms/carManage/update           controllers.cms.CarManage.update
+POST    /cms/carManage/delete           controllers.cms.CarManage.delete
 # 仮設材管理
 GET     /cms/itemManage                 controllers.cms.ItemManage.index
 # 業者管理

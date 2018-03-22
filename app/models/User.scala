@@ -67,7 +67,16 @@ class UserDAO @Inject() (dbapi: DBApi) {
       get[String]("password") ~
       get[Option[Int]]("place_id")  map {
         case id ~ email ~ name ~ password ~ place_id =>
-          User(Some(id.toString.toLong), email, true, password, name, place_id, (place_id == None), List("master"))
+          User(
+            Some(id.toString.toLong)
+            , email
+            , true
+            , password
+            , name
+            , place_id
+            , (place_id == None)
+            , List("master")
+          )
       }
   }
 

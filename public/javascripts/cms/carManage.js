@@ -13,13 +13,14 @@ function bindMouseAndTouch(){
                     clearInterval(document.interval);
                 }else if(e.originalEvent.touches.length == 1){
                     $(this).addClass('rowHoverColor');
+                    var id = $(this).attr('id');
                     touched = true;
                     touch_time = 0;
                     document.interval = setInterval(function(){
                         touch_time += 100;
                         if (touch_time == common.longTapTime) {
                             // ロングタップ時の処理
-                            showInputModal();
+                            showInputModal(id);
                         }
                     }, 100);
                 }
@@ -47,7 +48,8 @@ function bindMouseAndTouch(){
                 $(this).removeClass('rowHoverColor');
             },
             'click': function(e) {
-                showInputModal();
+                var id = $(this).attr('id');
+                showInputModal(id);
             },
         });
     }
@@ -87,12 +89,34 @@ function removeTable(){
     $('.table-responsive-body').append(clonedTable.prop("outerHTML"));
 }
 
-// モーダル画面の表示
-function showInputModal(){
-    $('#inputModal').modal();
+// サブミット
+function doSubmit(formId, action){
+    $('#' + formId).attr('action', action)
+    $('#' + formId).submit();
 }
-function showDeleteModal(){
-    $('#deleteModal').modal();
+
+// モーダル画面の表示
+function showInputModal(carId){
+    if(carId == ""){
+        $('#inputCarId').val('');
+        $('#inputCarNo').val('');
+        $('#inputCarName').val('');
+        $('#inputCarBtxId').val('');
+        $('#inputCarKeyBtxId').val('');
+
+        $('#updateFooter').addClass('hidden');
+        $('#registerFooter').removeClass('hidden');
+    }else{
+        $('#inputCarId').val(carId);
+        $('#inputCarNo').val($('#'+carId).find('.carNo').text());
+        $('#inputCarName').val($('#'+carId).find('.carName').text());
+        $('#inputCarBtxId').val($('#'+carId).find('.carBtxId').text());
+        $('#inputCarKeyBtxId').val($('#'+carId).find('.carKeyBtxId').text());
+
+        $('#updateFooter').removeClass('hidden');
+        $('#registerFooter').addClass('hidden');
+    }
+    $('#inputModal').modal();
 }
 
 $(function(){
