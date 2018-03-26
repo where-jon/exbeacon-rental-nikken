@@ -2,12 +2,29 @@
 
 @import controllers.routes
 
-<div class="navbar navbar-default navbar-fixed-top">
-    <div class="navbar-brand ">
+<div class="navbarCorner navbar navbar-default navbar-fixed-top col-xs-3 col-sm-3 col-md-2 col-lg-2">
+    <div class="navbar-brand">
         <div class="text-left">
-            <span>作業車及び仮設材管理システム</span>
+            <span>システム名</span>
         </div>
     </div>
+</div>
+<div class="navbar navbar-default navbar-fixed-top col-xs-9 col-sm-9 col-md-10 col-lg-10 col-xs-offset-3 col-sm-offset-3 col-md-offset-2 col-lg-offset-2"
+        style="padding:0;">
+    <ul class="nav navbar-nav">
+        <li class="pull-left">
+            <a class="text-center tab">作業車当日</a>
+        </li>
+        <li class="pull-left">
+            <a class="text-center tab" style="margin-left:1px;">作業車予約</a>
+        </li>
+        <li class="pull-left">
+            <a class="text-center tab" style="margin-left:1px;">仮設材利用状況</a>
+        </li>
+        <li class="pull-left">
+            <a class="text-center cmsTab" style="margin-left:1px;">管理ページ</a>
+        </li>
+    </ul>
     <span style="float: right;">ログインID：@user.email</span><br/>
     <a class="btn btn-navbar btn-signout" href="/signout">ログアウト</a>
 </div>

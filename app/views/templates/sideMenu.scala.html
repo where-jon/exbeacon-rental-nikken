@@ -1,0 +1,76 @@
+@()(implicit user: User, request: RequestHeader)
+
+@import controllers.routes
+
+<div class="col-xs-3 col-sm-3 col-md-2 col-lg-2 cms-side-area">
+    <div class="row">
+        <div class="col-xs-10 col-sm-10 col-md-10 col-xs-offset-1 col-sm-offset-1 col-md-offset-1" style="padding:0;">
+            <!-- タイトル -->
+            <div style="margin: 20px 0px 30px 0px;">
+                <div class="row text-center">
+                    <span class="currentTitle">作業車当日稼働状況</span>
+                </div>
+            </div>
+            <!-- 上部 -->
+            <div class="menuBtnsDiv">
+                <div class="menuBtnWrapper">
+                    <div class="row text-center">
+                        <span class="menuTitle">
+                            @if(request.path == routes.CarSummery.index.path) {
+                                作業車当日稼働状況
+                            }
+                            @if(request.path == routes.CarReserve.index.path) {
+                                高所作業車予約
+                            }
+                            @if(request.path contains "/cms/") {
+                                管理ページ
+                            }
+                        </span>
+                    </div>
+                    <div class="row" style="margin: 10px 0px 0px 0px;">
+                        <div class="text-center col-xs-6 col-sm-6 col-md-6" style="padding:0;">
+                            <div class="row" style="margin: 0px;">
+                                <div class="text-center col-xs-12 col-sm-12 col-md-12" style="padding:0px 3px;">
+                                    <a href="@routes.CarSummery.index.path" class="btn menuBtn">当日</a>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="text-center col-xs-6 col-sm-6 col-md-6" style="padding:0;">
+                            <div class="row" style="margin: 0px;">
+                                <div class="text-center col-xs-12 col-sm-12 col-md-12" style="padding:0px 3px;">
+                                    <a href="@routes.CarReserve.index.path" class="btn menuBtn">予約</a>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- 下部 -->
+            <div class="menuBtnsDiv">
+                <div class="menuBtnWrapper">
+                    <div class="row" style="margin: 10px 0px 0px 0px;">
+                        <div class="text-center col-xs-12 col-sm-12 col-md-12" style="padding:0;">
+                            <div class="row" style="margin: 0px 0px 60px 0px;">
+                                <div class="text-center col-xs-12 col-sm-12 col-md-12" style="padding:0px 3px;">
+                                    <a href="@routes.OtherItem.index.path" class="btn btn-primary menuBtn">
+                                        その他仮設材利用状況
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="row" style="margin: 0px;">
+                                <div class="text-center col-xs-12 col-sm-12 col-md-12" style="padding:0px 3px;">
+                                    <a href="@routes.OtherItem.index.path" class="btn btn-primary cmsBtn">
+                                        管理ページ
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

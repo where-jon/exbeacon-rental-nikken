@@ -2,40 +2,50 @@
 
 @import controllers.routes
 
-<div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 cms-side-area">
-    <div class="sideMenu">
-        <div class="panel list-group" style="margin-bottom: 0px;">
-            @if(request.path == controllers.cms.routes.PlaceManage.detail.path){
-                <a class="sideLinkClass sideLinkSelected list-group-item">現場管理</a>
-            }else{
-                <a href="@controllers.cms.routes.PlaceManage.detail.path" class="sideLinkClass sideLinkNotSelected list-group-item">現場管理</a>
-            }
-            @if(request.path == controllers.cms.routes.CarManage.index.path){
-                <a class="sideLinkClass sideLinkSelected list-group-item">作業車管理</a>
-            }else{
-                <a href="@controllers.cms.routes.CarManage.index.path" class="sideLinkClass sideLinkNotSelected list-group-item">作業車管理</a>
-            }
-            @if(request.path == controllers.cms.routes.ItemManage.index.path){
-                <a class="sideLinkClass sideLinkSelected list-group-item">仮設材管理</a>
-            }else{
-                <a href="@controllers.cms.routes.ItemManage.index.path" class="sideLinkClass sideLinkNotSelected list-group-item">仮設材管理</a>
-            }
-            @if(request.path == controllers.cms.routes.CompanyManage.index.path){
-                <a class="sideLinkClass sideLinkSelected list-group-item">業者管理</a>
-            }else{
-                <a href="@controllers.cms.routes.CompanyManage.index.path" class="sideLinkClass sideLinkNotSelected list-group-item">業者管理</a>
-            }
-            @if(request.path == controllers.cms.routes.TxTagManage.index.path){
-                <a class="sideLinkClass sideLinkSelected list-group-item">Beaconタグ管理</a>
-            }else{
-                <a href="@controllers.cms.routes.TxTagManage.index.path" class="sideLinkClass sideLinkNotSelected list-group-item">Beaconタグ管理</a>
-            }
-        </div>
-    </div>
-    <div class="sideMenu" style="margin-top: 10vw;">
-        <div class="panel list-group" style="margin-bottom: 0px;">
-            <a href="@routes.CarSummery.index.path" class="sideLinkClass sideLinkNotSelected list-group-item">稼働状況ページ</a>
-            <a href="@controllers.cms.routes.PlaceManage.index.path" class="sideLinkClass sideLinkNotSelected list-group-item">現場一覧ページ</a>
+<div class="col-xs-3 col-sm-3 col-md-2 col-lg-2 cms-side-area">
+    <div class="row">
+        <div class="col-xs-10 col-sm-10 col-md-10 col-xs-offset-1 col-sm-offset-1 col-md-offset-1" style="padding:0;">
+            <!-- タイトル -->
+            <div style="margin: 20px 0px 30px 0px;">
+                <div class="row text-center">
+                    <span class="currentTitle">作業車当日稼働状況</span>
+                </div>
+            </div>
+            <!-- 上部 -->
+            <div style="padding: 0px 5px;margin-bottom: 10px;">
+                <div class="menuBtnWrapper">
+                    <div class="row text-center">
+                        <span class="menuTitle">作業車管理画面</span>
+                    </div>
+                    <div class="row" style="margin: 10px 0px 0px 0px;">
+                        <div class="text-center col-xs-6 col-sm-6 col-md-6" style="padding:0;">
+                            @if(request.path contains routes.CarSummery.index.path) {
+                                <a class="btn btn-primary disabled menuBtn menuBtnSelected">当日</a>
+                            }else{
+                                <a href="@routes.CarSummery.index.path" class="btn btn-primary menuBtn">当日</a>
+                            }
+                        </div>
+                        <div class="text-center col-xs-6 col-sm-6 col-md-6" style="padding:0;">
+                            @if(request.path contains routes.CarReserve.index.path) {
+                                <a class="btn btn-primary disabled menuBtn menuBtnSelected">予約</a>
+                            }else{
+                                <a href="@routes.CarReserve.index.path" class="btn btn-primary menuBtn">予約</a>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- 下部 -->
+            <div style="padding: 0px 5px;margin-bottom: 10px;">
+                <div class="menuBtnWrapper">
+                    <div class="row" style="margin: 10px 0px 0px 0px;">
+                        <div class="text-center col-xs-12 col-sm-12 col-md-12" style="padding:0;">
+                            <a href="@routes.OtherItem.index.path" class="btn btn-primary otherItemBtn">その他</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
+

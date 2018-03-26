@@ -3,39 +3,14 @@ function bindMouseAndTouch(){
     var ua = navigator.userAgent;
     if (ua.indexOf('iPad') > 0 || ua.indexOf('Android') > 0 || ua.indexOf('iPhone') > 0 || ua.indexOf('iPod') > 0){
         // タッチデバイスの場合
-        var touched = false;
-        var touch_time = 0;
         $(".rowHover").bind({
             'touchstart': function(e) {
                 if(e.originalEvent.touches.length > 1){
-                    touch_time = 0;
-                    touched = false;
-                    clearInterval(document.interval);
                 }else if(e.originalEvent.touches.length == 1){
-                    $(this).addClass('rowHoverColor');
-                    touched = true;
-                    touch_time = 0;
-                    document.interval = setInterval(function(){
-                        touch_time += 100;
-                        if (touch_time == common.longTapTime) {
-                            // ロングタップ時の処理
-                            moveTo('/cms/placeManage/detail');
-                        }
-                    }, 100);
+                    $(".rowHoverSelectedColor").removeClass('rowHoverSelectedColor');
+                    $(this).addClass('rowHoverSelectedColor');
                 }
             },
-            'touchend': function(e) {
-                $(this).removeClass('rowHoverColor');
-                touched = false;
-                touch_time = 0;
-                clearInterval(document.interval);
-            },
-            'touchmove': function(e) {
-                $(this).removeClass('rowHoverColor');
-                touched = false;
-                touch_time = 0;
-                clearInterval(document.interval);
-            }
         });
     }else{
         // PCブラウザの場合
@@ -47,7 +22,8 @@ function bindMouseAndTouch(){
                 $(this).removeClass('rowHoverColor');
             },
             'click': function(e) {
-                moveTo('/cms/placeManage/detail');
+                $(".rowHoverSelectedColor").removeClass('rowHoverSelectedColor');
+                $(this).addClass('rowHoverSelectedColor');
             },
         });
     }
@@ -56,6 +32,17 @@ function bindMouseAndTouch(){
 // モーダル画面の表示
 function showInputModal(){
     $('#inputModal').modal();
+}
+function showDeleteModal(){
+    if($('.rowHoverSelectedColor').length > 0){
+        $('#deleteModal').modal();
+    }
+}
+//
+function moveToSelected(){
+    if($('.rowHoverSelectedColor').length > 0){
+        moveTo('/cms/placeManage/detail');
+    }
 }
 
 // 予約テーブルの固定
