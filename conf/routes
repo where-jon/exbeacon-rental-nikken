@@ -9,6 +9,7 @@ GET     /                                controllers.Application.index
 ###  業務ページ ############################
 # 作業車利用状況
 GET     /carSummery                     controllers.CarSummery.index
+GET     /carSummery/getPlotInfo         controllers.CarSummery.getPlotInfo
 # 作業車予約
 GET     /carReserve                     controllers.CarReserve.index
 # その他仮設材利用状況
@@ -23,7 +24,7 @@ POST    /cms/placeManage/update         controllers.cms.PlaceManage.update
 POST    /cms/placeManage/delete         controllers.cms.PlaceManage.delete
 POST    /cms/placeManage/floorUpdate    controllers.cms.PlaceManage.floorUpdate
 POST    /cms/placeManage/floorDelete    controllers.cms.PlaceManage.floorDelete
-
+POST    /cms/placeManage/passwordUpdate controllers.cms.PlaceManage.passwordUpdate
 
 # 作業車管理
 GET     /cms/carManage                  controllers.cms.CarManage.index

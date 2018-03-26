@@ -1,6 +1,6 @@
-// 予約テーブルの固定
+// テーブルの固定
 function fixTable(){
-    // 予約表テーブルの固定
+    // 表テーブルの固定
     var h = $("#reserveTable").height();
     var w = $('.mainSpace').width() * 0.95;
     $('#reserveTable').tablefix({width: w, height: h, fixCols: 3, fixRows: 2});
@@ -15,7 +15,8 @@ function fixTable(){
 //    $('.crossTableDiv, .rowTableDiv, .colTableDiv').find('th').removeClass('draggable');
     $('.crossTableDiv, .rowTableDiv, .colTableDiv').find('tr').removeClass('reserveRow');
 }
-// 予約テーブルのクリア
+
+// テーブルのクリア
 function removeTable(){
     var clonedTable = $('.bodyTableDiv').find('table').clone();
     $(clonedTable).attr('style', '');
@@ -24,57 +25,53 @@ function removeTable(){
     $('#table-responsive-body').append(clonedTable.prop("outerHTML"));
 }
 
-function addDummyData(){
-    $("#reserveTd_4_x").append('<span class="part reserveNone">005</span>');
-    $("#useTd_3_x").append('<span class="part useNotWorking">008</span>');
-    $("#reserveTd_3_x").append('<span class="part reserveNone">008</span>');
+//
+function drawCar(){
+    // APIからデータを取得
+    $.ajax({
+        type: "GET",
+        url: "/carSummery/getPlotInfo?placeId=" + $('#placeId').val(),
+        cache: false,
+        datatype: 'json',
+        success: function (json) {
+            // 予約情報
+            $.each(json.reserveInfoList, function(i, record){
+                var htmlStr = '<span class="part reserveContent">'+record.carNo+'</span>';
+                var id = 'reserveTd_' + record.floorId + '_' + record.companyId;
+                $("#" + id).append(htmlStr);
+                $('[data-id="th_'+ record.companyId +'"]').css("min-width", $("#" + id).outerWidth() + "px");
+            });
 
-    $("#useTd_5_0").append('<span class="part useWorking">001</span>');
-    $("#useTd_5_0").append('<span class="part useWorking">002</span>');
-    $("#reserveTd_4_0").append('<span class="part reserveContent">001</span>');
-    $("#reserveTd_4_0").append('<span class="part reserveContent">002</span>');
-    $('[data-id="th_0"]').css("min-width", $("#useTd_5_0").outerWidth() + "px");
-
-    $("#useTd_4_1").append('<span class="part useWorking">003</span>');
-    $("#useTd_4_1").append('<span class="part useWorking">004</span>');
-    $("#reserveTd_4_1").append('<span class="part reserveContent">003</span>');
-    $("#reserveTd_4_1").append('<span class="part reserveContent">004</span>');
-    $('[data-id="th_1"]').css("min-width", $("#useTd_4_1").outerWidth() + "px");
-
-    $("#useTd_4_2").append('<span class="part useWorking">005</span>');
-    $("#useTd_4_2").append('<span class="part useWorking">006</span>');
-    $("#reserveTd_4_2").append('<span class="part reserveContent">006</span>');
-    $('[data-id="th_2"]').css("min-width", $("#useTd_4_2").outerWidth() + "px");
-
-    $("#useTd_4_3").append('<span class="part useWorking">007</span>');
-    $("#reserveTd_4_3").append('<span class="part reserveContent">007</span>');
-    $("#useTd_3_3").append('<span class="part useWorking">009</span>');
-    $("#reserveTd_3_3").append('<span class="part reserveContent">009</span>');
-    $('[data-id="th_3"]').css("min-width", $("#useTd_4_3").outerWidth() + "px");
-
-    $("#useTd_3_4").append('<span class="part useWorking">010</span>');
-    $("#reserveTd_3_4").append('<span class="part reserveContent">010</span>');
-    $('[data-id="th_4"]').css("min-width", $("#useTd_3_4").outerWidth() + "px");
-
-    $("#useTd_3_5").append('<span class="part useWorking">011</span>');
-    $("#reserveTd_3_5").append('<span class="part reserveContent">011</span>');
-    $("#useTd_2_5").append('<span class="part useWorking">013</span>');
-    $("#reserveTd_2_5").append('<span class="part reserveContent">013</span>');
-    $('[data-id="th_5"]').css("min-width", $("#useTd_3_5").outerWidth() + "px");
-
-    $("#useTd_3_6").append('<span class="part useWorking">012</span>');
-    $("#reserveTd_3_6").append('<span class="part reserveContent">012</span>');
-    $("#useTd_2_6").append('<span class="part useNotWorking">014</span>');
-    $("#reserveTd_2_6").append('<span class="part reserveContent">014</span>');
-    $('[data-id="th_6"]').css("min-width", $("#useTd_3_6").outerWidth() + "px");
-
+            // 稼働情報
+            $.each(json.workInfoList, function(i, record){
+                var class = ""
+                if(record.companyId == ""){
+                    //予約なし
+                    class = "reserveNone"
+                }else{
+                    if(record.isWorking){
+                        class = "useWorking"
+                    }else{
+                        class = "useNotWorking"
+                    }
+                }
+                var htmlStr = '<span class="part '+ class + '">'+record.carNo+'</span>';
+                var id = 'useTd_' + record.floorId + '_' + record.companyId;
+                $("#" + id).append(htmlStr);
+                $('[data-id="th_'+ record.companyId +'"]').css("min-width", $("#" + id).outerWidth() + "px");
+            });
+        }
+    },
+    error: function (e) {
+        console.dir(e);
+    }
 }
 
 $(function(){
     // テーブルを固定
     fixTable();
-
-    addDummyData();
+    // テーブルの中身を描画
+    drawCar();
 
     // リサイズ対応
     var timer = false;
@@ -86,7 +83,7 @@ $(function(){
             // 処理の再実行
             removeTable();
             fixTable();
-            addDummyData();
+
         }, 200);
     });
 });

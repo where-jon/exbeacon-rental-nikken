@@ -1,4 +1,4 @@
-@(companyList: Seq[String], floorList:Seq[String])(implicit user: User, messages: Messages, request: RequestHeader, flash: Flash)
+@(companyList: Seq[Company], floorList:Seq[FloorInfo], summeryInfoList: Seq[CarSummeryInfo], allTotal:Int)(implicit user: User, messages: Messages, request: RequestHeader, flash: Flash)
 
 @import controllers.routes
 @import helper._
@@ -47,81 +47,19 @@
                                     </tr>
                                 </thead>
                                 <tbody class="text-right">
-                                    <tr>
-                                        <td class="floorNameTd">8F</td>
-                                        <td class="reserveTd">0台</td>
-                                        <td class="useTd">0台</td>
-                                        <td class="useTd">0台</td>
-                                        <td class="useTd">0台</td>
-                                        <td class="useTd">0台</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="floorNameTd">7F</td>
-                                        <td class="reserveTd">0台</td>
-                                        <td class="useTd">0台</td>
-                                        <td class="useTd">0台</td>
-                                        <td class="useTd">0台</td>
-                                        <td class="useTd">0台</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="floorNameTd">6F</td>
-                                        <td class="reserveTd">0台</td>
-                                        <td class="useTd">0台</td>
-                                        <td class="useTd">0台</td>
-                                        <td class="useTd">0台</td>
-                                        <td class="useTd">0台</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="floorNameTd">5F</td>
-                                        <td class="reserveTd">0台</td>
-                                        <td class="useTd">2台</td>
-                                        <td class="useTd">0台</td>
-                                        <td class="useTd">0台</td>
-                                        <td class="useTd">0台</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="floorNameTd">4F</td>
-                                        <td class="reserveTd">7台</td>
-                                        <td class="useTd">4台</td>
-                                        <td class="useTd">1台</td>
-                                        <td class="useTd">0台</td>
-                                        <td class="useTd">1台</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="floorNameTd">3F</td>
-                                        <td class="reserveTd">5台</td>
-                                        <td class="useTd">4台</td>
-                                        <td class="useTd">0台</td>
-                                        <td class="useTd">0台</td>
-                                        <td class="useTd">1台</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="floorNameTd">2F</td>
-                                        <td class="reserveTd">2台</td>
-                                        <td class="useTd">1台</td>
-                                        <td class="useTd">1台</td>
-                                        <td class="useTd">1台</td>
-                                        <td class="useTd">0台</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="floorNameTd">1F</td>
-                                        <td class="reserveTd">0台</td>
-                                        <td class="useTd">0台</td>
-                                        <td class="useTd">0台</td>
-                                        <td class="useTd">0台</td>
-                                        <td class="useTd">0台</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="floorNameTd">全数</td>
-                                        <td class="reserveTd">12台</td>
-                                        <td class="useTd">11台</td>
-                                        <td class="useTd">1台</td>
-                                        <td class="useTd">1台</td>
-                                        <td class="useTd">1台</td>
-                                    </tr>
+                                    @for(info <- summeryInfoList){
+                                        <tr>
+                                            <td class="floorNameTd">@{info.floorName}台</td>
+                                            <td class="reserveTd">@{info.reserveCnt}台</td>
+                                            <td class="useTd">@{info.normalWorkingCnt}台</td>
+                                            <td class="useTd">@{info.workingOnlyCnt}台</td>
+                                            <td class="useTd">@{info.reserveOnlyCnt}台</td>
+                                            <td class="useTd">@{info.noReserveNoWorkingCnt}台</td>
+                                        </tr>
+                                    }
                                     <tr>
                                         <td class="floorNameTd" colspan="2">合計</td>
-                                        <td class="useTd text-right" colspan="4">14台</td>
+                                        <td class="useTd text-right" colspan="4">@{allTotal}台</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -169,22 +107,21 @@
                                         <tr>
                                             <th style="background-color: #B4C7E7!important;" colspan="2"></th>
                                             <th class="blankTd" style="background-color:#B4C7E7;"></th>
-                                            <th class="companyTh">前日予約無</th>
-                                            @for((company, no) <- companyList.zipWithIndex){
-                                                <th class="companyTh" data-id="th_@no">@company</th>
+                                            <th class="companyTh" data-id="th_">前日予約無</th>
+                                            @for(company <- companyList){
+                                                <th class="companyTh" data-id="th_@company.companyId">@company.companyName</th>
                                             }
                                         </tr>
                                     </thead>
                                     <tbody>
                                     @for(floor <- floorList){
-                                        <tr id="floorRow_@{floor}" class="useRow">
-                                            <td rowspan="2" class="floorNameTd">@floor<br/>F</td>
+                                        <tr id="floorRow_@floor.floorId" class="useRow">
+                                            <td rowspan="2" class="floorNameTd">@floor.floorName</td>
                                             <td nowrap class="useNameTd" style="border-bottom-color: #7F7F7F!important;">稼働</td>
                                             <td class="blankTd" style="background-color:#FFFFFF;border-bottom-color: #7F7F7F!important;"></td>
-                                            <td class="useTd" id="useTd_@{floor}_x" style="border-bottom-color: #7F7F7F!important;"></td>
-                                            @for((company, no) <- companyList.zipWithIndex){
-                                                <td class="useTd" id="useTd_@{floor}_@{no}" style="border-bottom-color: #7F7F7F!important;">
-                                                    @***<!--<span class="part reserveNone original" id="@{floor}_@{i}" data-originalId="@{floor}_@{company}" data-carNo="0@{floor}@{i}" data-before="@{floor}_@{company}">0@{floor}@{i}</span>-->***@
+                                            <td class="useTd" id="useTd_@{floor.floorId}"_ style="border-bottom-color: #7F7F7F!important;"></td>
+                                            @for(company <- companyList){
+                                                <td class="useTd" id="useTd_@{floor.floorId}_@{company.companyId}" style="border-bottom-color: #7F7F7F!important;">
                                                 </td>
                                             }
                                         </tr>
@@ -192,8 +129,9 @@
                                             <td nowrap class="reserveNameTd">予約<span class="part" style="visibility:hidden;">000</span></td>
                                             <td class="blankTd" style="background-color:#E7E6E6;"></td>
                                             <td class="reserveTd" id="reserveTd_@{floor}_x"></td>
-                                            @for((company, no) <- companyList.zipWithIndex){
-                                                <td class="reserveTd reserveTdHover" data-company="@{no}" id="reserveTd_@{floor}_@{no}"></td>
+                                            @for(company <- companyList){
+                                                <td class="reserveTd reserveTdHover" data-company="@{company.companyId}" id="reserveTd_@{floor.floorId}_@{company.companyId}">
+                                                </td>
                                             }
                                         </tr>
                                     }
