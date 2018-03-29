@@ -2,6 +2,7 @@
 
 @import controllers.routes
 @import helper._
+@import org.joda.time.DateTime
 
 @views.html.templates.logged(title = "高所作業車各階稼働状況", tab = "index", containerClass = "container-index") {
 <!doctype html>
@@ -49,7 +50,7 @@
                                 <tbody class="text-right">
                                     @for(info <- summeryInfoList){
                                         <tr>
-                                            <td class="floorNameTd">@{info.floorName}台</td>
+                                            <td class="floorNameTd">@{info.floorName}</td>
                                             <td class="reserveTd">@{info.reserveCnt}台</td>
                                             <td class="useTd">@{info.normalWorkingCnt}台</td>
                                             <td class="useTd">@{info.workingOnlyCnt}台</td>
@@ -147,7 +148,7 @@
                         <a href="@controllers.cms.routes.PlaceManage.detail.path" class="btn btn-primary cmsLink">管理ページ</a>
                     </div>
                     <div class="col-xs-8 col-sm-8 col-md-8" style="padding:5px;">
-                        <span class="dateFont">最終更新日時：7/3　9:00</span>
+                        <span class="dateFont">最終更新日時：@{new DateTime().toString("MM/dd HH:mm")}</span>
                     </div>
                 </div>
             </div>

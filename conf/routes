@@ -14,6 +14,7 @@ GET     /carSummery/getPlotInfo         controllers.CarSummery.getPlotInfo
 GET     /carReserve                     controllers.CarReserve.index
 # その他仮設材利用状況
 GET     /otherItem                      controllers.OtherItem.index
+GET     /otherItem/getPlotInfo          controllers.OtherItem.getPlotInfo
 
 ###  CMS　#################################
 # 現場管理

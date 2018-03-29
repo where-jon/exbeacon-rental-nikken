@@ -11,7 +11,6 @@ import play.api.libs.ws._
 import utils.silhouette.MyEnv
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import org.joda.time.DateTime
-import org.joda.time.format.DateTimeFormat
 
 /**
   * 高所作業車各階稼働状況アクションクラス
@@ -36,14 +35,15 @@ class CarSummery @Inject()(config: Configuration
     */
 
   def index = SecuredAction.async { implicit request =>
+    val placeId = super.getCurrentPlaceIdStr.toInt
     // 現場情報
-    val place = placeDAO.selectPlaceList(Seq[Int](super.getRequestPlaceIdStr.toInt)).last
+    val place = placeDAO.selectPlaceList(Seq[Int](placeId)).last
     // フロア情報
-    val floorInfoList = floorDAO.selectFloorInfo(super.getRequestPlaceIdStr.toInt)
+    val floorInfoList = floorDAO.selectFloorInfo(placeId)
     // 作業車情報
-    val carList = carDAO.selectCarInfo(super.getRequestPlaceIdStr.toInt)
+    val carList = carDAO.selectCarInfo(placeId)
     // 業者情報
-    val companyList = companyDAO.selectCompany(super.getRequestPlaceIdStr.toInt)
+    val companyList = companyDAO.selectCompany(placeId)
 
     // 全数情報
     var reserveCntTotal = 0
@@ -59,29 +59,28 @@ class CarSummery @Inject()(config: Configuration
       val list = Json.parse(response.body).asOpt[List[exCloudBtxData]].getOrElse(Nil)
 
       // フロア毎に処理
-      var resultList = floorInfoList.map{floor =>
-        var reserveCnt = 0
+      var resultList = floorInfoList.map{floor => // -- ループ start --
         var normalWorkingCnt = 0
         var workingOnlyCnt = 0
         var reserveOnlyCnt = 0
         var noReserveNoWorkingCnt = 0
 
         // そのフロアの予約を取得
-        val reserveInfo = carSummeryDAO.selectReserve(
-                                                        floorId = Option(floor.floorId)
+        val reserveInfo = carSummeryDAO.selectReserve(  floorId = Option(floor.floorId)
                                                       , dateStr = new DateTime().minusDays(1).toString("yyyyMMdd"))
-        reserveCnt += 1
 
+        // 実際の作業車Tx
         val carsAtFloor = list
           .filter(floor.exbDeviceIdList contains _.device_id.toString) // フロアのEXBデバイスIDに合致するもの
           .filter(carList.map{c => c.carBtxId} contains _.btx_id)  // 予約作業車のBTXidに合致するもの
 
+        // 実際の鍵Tx
         val keysAtFloor = list
           .filter(floor.exbDeviceIdList contains _.device_id.toString) // フロアのEXBデバイスIDに合致するもの
           .filter(carList.map{c => c.carKeyBtxId} contains _.btx_id)  // 予約作業車鍵のBTXidに合致するもの
 
-        //
-        carsAtFloor.foreach(car => {
+        // 実際の作業車毎に処理
+        carsAtFloor.foreach(car => { // -- foreach start --
           val carRest = carList.filter(_.carBtxId == car.btx_id)
           if(carRest.length > 0){
             val rest = reserveInfo.filter(_.carBtxId == car.btx_id)
@@ -106,24 +105,27 @@ class CarSummery @Inject()(config: Configuration
               }
             }
           }
-        })
+        })// -- foreach end --
 
-        reserveCntTotal += reserveCnt
+        // 各々の全数の値に加算
+        reserveCntTotal += reserveInfo.length
         normalWorkingCntTotal += normalWorkingCnt
         workingOnlyCntTotal += workingOnlyCnt
         reserveOnlyCntTotal += reserveOnlyCnt
         noReserveNoWorkingCntTotal += noReserveNoWorkingCnt
 
+        // レコード生成
         CarSummeryInfo(
             floor.floorName
-          , reserveCnt
+          , reserveInfo.length
           , normalWorkingCnt
           , workingOnlyCnt
           , reserveOnlyCnt
           , noReserveNoWorkingCnt
         )
-      }
+      } // -- ループ end --
 
+      // 全数のレコードを追加
       resultList :+= CarSummeryInfo(
           "全数"
         , reserveCntTotal
@@ -133,6 +135,7 @@ class CarSummery @Inject()(config: Configuration
         , noReserveNoWorkingCntTotal
       )
 
+      // 合計値の算出
       val allTotal = (normalWorkingCntTotal + workingOnlyCntTotal + reserveOnlyCntTotal + noReserveNoWorkingCntTotal)
 
       Ok(views.html.carSummery(companyList, floorInfoList, resultList, allTotal))
@@ -144,19 +147,20 @@ class CarSummery @Inject()(config: Configuration
     * @return
     */
   def getPlotInfo = SecuredAction.async { implicit request =>
+    val placeId = super.getCurrentPlaceIdStr.toInt
 
     // 予約情報
-    val carSummeryReservePlotInfoList = carSummeryDAO.selectReserveForPlot(super.getRequestPlaceIdStr.toInt)
+    val carSummeryReservePlotInfoList = carSummeryDAO.selectReserveForPlot(placeId)
 
     // 稼働情報
     var carSummeryWorkPlotInfoList = Seq[CarSummeryWorkPlotInfo]()
 
     // 現場の情報を取得
-    val place = placeDAO.selectPlaceList(Seq[Int](super.getRequestPlaceIdStr.toInt)).last
+    val place = placeDAO.selectPlaceList(Seq[Int](placeId)).last
     // フロア情報
-    val floorInfoList = floorDAO.selectFloorInfo(super.getRequestPlaceIdStr.toInt)
+    val floorInfoList = floorDAO.selectFloorInfo(placeId)
     // 作業車情報
-    val carList = carDAO.selectCarInfo(super.getRequestPlaceIdStr.toInt)
+    val carList = carDAO.selectCarInfo(placeId)
 
     // API呼び出し
     ws.url(place.btxApiUrl).get().map { response =>

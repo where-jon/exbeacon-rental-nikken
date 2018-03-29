@@ -6,7 +6,8 @@ function bindMouseAndTouch(){
         $(".rowHover").bind({
             'touchstart': function(e) {
                 if(e.originalEvent.touches.length == 1){
-                    //showInputModal();
+                    var floorId = $(this).attr('id');
+                    moveTo(window.location.pathname + "?floorId" + floorId);
                 }
             },
             'touchend': function(e) {
@@ -26,7 +27,8 @@ function bindMouseAndTouch(){
                 $(this).find('td').removeClass('rowHoverColor');
             },
             'click': function(e) {
-                //showInputModal();
+                var floorId = $(this).attr('id');
+                moveTo(window.location.pathname + "?floorId=" + floorId);
             },
         });
     }
@@ -55,24 +57,32 @@ function removeTable(){
     $('#table-responsive-body').append(clonedTable.prop("outerHTML"));
 }
 
-
-// テーブルのクリア
-function addDummyItem(){
-    $("#td_0").append('<span class="itemPart">001</span>');
-    $("#td_0").append('<span class="itemPart">002</span>');
-    $("#td_0").append('<span class="itemPart">003</span>');
-    $("#td_0").append('<span class="itemPart">004</span>');
-    $("#td_1").append('<span class="itemPart">005</span>');
-    $("#td_1").append('<span class="itemPart">006</span>');
-    $("#td_2").append('<span class="itemPart">007</span>');
-    $("#td_3").append('<span class="itemPart">008</span>');
-    $("#td_4").append('<span class="itemPart">009</span>');
+// 仮設材マークの描画
+function drawItem(){
+    // APIからデータを取得
+    $.ajax({
+        type: "GET",
+        url: window.location.pathname + "/getPlotInfo?floorId=" + $('#floorId').val(),
+        cache: false,
+        datatype: 'json',
+        success: function (json) {
+            // 仮設材情報を表示
+            $.each(json, function(i, record){
+                var htmlStr = '<span class="itemPart">'+record.itemNo+'</span>';
+                var id = 'td_' + record.itemKindId;
+                $("#" + id).append(htmlStr);
+            });
+        },
+        error: function (e) {
+            console.dir(e);
+        }
+    });
 }
 
 $(function(){
     // テーブルを固定
     fixTable();
-    addDummyItem();
+    drawItem();
     bindMouseAndTouch();
 
     // リサイズ対応
@@ -85,7 +95,6 @@ $(function(){
             // 処理の再実行
             removeTable();
             fixTable();
-            addDummyItem();
             bindMouseAndTouch();
 
         }, 200);

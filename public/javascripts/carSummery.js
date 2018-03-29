@@ -44,27 +44,27 @@ function drawCar(){
 
             // 稼働情報
             $.each(json.workInfoList, function(i, record){
-                var class = ""
+                var clsNm = "";
                 if(record.companyId == ""){
                     //予約なし
-                    class = "reserveNone"
+                    clsNm = "reserveNone";
                 }else{
                     if(record.isWorking){
-                        class = "useWorking"
+                        clsNm = "useWorking";
                     }else{
-                        class = "useNotWorking"
+                        clsNm = "useNotWorking";
                     }
                 }
-                var htmlStr = '<span class="part '+ class + '">'+record.carNo+'</span>';
+                var htmlStr = '<span class="part '+ clsNm + '">'+record.carNo+'</span>';
                 var id = 'useTd_' + record.floorId + '_' + record.companyId;
                 $("#" + id).append(htmlStr);
                 $('[data-id="th_'+ record.companyId +'"]').css("min-width", $("#" + id).outerWidth() + "px");
             });
+        },
+        error: function (e) {
+            console.dir(e);
         }
-    },
-    error: function (e) {
-        console.dir(e);
-    }
+    });
 }
 
 $(function(){

@@ -46,7 +46,7 @@ class floorDAO @Inject() (dbapi: DBApi) {
     * フロア情報の取得
     * @return
     */
-  def selectFloorInfo(placeId: Int, floorName: String = ""): Seq[FloorInfo] = {
+  def selectFloorInfo(placeId: Int, floorName: String = "", floorId: Option[Int] = None): Seq[FloorInfo] = {
 
     val simple = {
       get[Int]("floor_id") ~
@@ -85,6 +85,9 @@ class floorDAO @Inject() (dbapi: DBApi) {
       var wherePh = """ where p.place_id = {placeId} """
       if(floorName.isEmpty == false){
         wherePh += s""" and f.floor_name = '${floorName}' """
+      }
+      if(floorId != None){
+        wherePh += s""" and f.floor_id = ${floorId.get} """
       }
 
       val orderPh =
