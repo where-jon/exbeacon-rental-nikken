@@ -6,14 +6,15 @@ function bindMouseAndTouch(){
         $(".rowHover").bind({
             'touchstart': function(e) {
                 if(e.originalEvent.touches.length == 1){
+                    $(this).find('td').addClass('rowHoverColor');
                     //showInputModal();
                 }
             },
             'touchend': function(e) {
-                $(this).removeClass('rowHoverColor');
+                $(this).find('td').removeClass('rowHoverColor');
             },
             'touchmove': function(e) {
-                $(this).removeClass('rowHoverColor');
+                $(this).find('td').removeClass('rowHoverColor');
             }
         });
     }else{
@@ -43,8 +44,6 @@ function fixTable(){
     $('.crossTableDiv, .rowTableDiv, .colTableDiv').find('th').removeAttr('id');
     $('.crossTableDiv, .rowTableDiv, .colTableDiv').find('td').removeAttr('id data-company data-name data-floor');
     $('.crossTableDiv, .rowTableDiv, .colTableDiv').find('span').removeAttr('id data-originalId data-carNo data-before');
-
-//    $('.crossTableDiv, .rowTableDiv, .colTableDiv').find('tr').removeClass('reserveRow');
 }
 // テーブルのクリア
 function removeTable(){
@@ -58,15 +57,15 @@ function removeTable(){
 
 // テーブルのクリア
 function addDummyItem(){
-    $("#td_0").append('<span class="itemPart">001</span>');
-    $("#td_0").append('<span class="itemPart">002</span>');
-    $("#td_0").append('<span class="itemPart">003</span>');
-    $("#td_0").append('<span class="itemPart">004</span>');
-    $("#td_1").append('<span class="itemPart">005</span>');
-    $("#td_1").append('<span class="itemPart">006</span>');
-    $("#td_2").append('<span class="itemPart">007</span>');
-    $("#td_3").append('<span class="itemPart">008</span>');
-    $("#td_4").append('<span class="itemPart">009</span>');
+    $("#td_0").append('<span class="part">001</span>');
+    $("#td_0").append('<span class="part">002</span>');
+    $("#td_0").append('<span class="part">003</span>');
+    $("#td_0").append('<span class="part">004</span>');
+    $("#td_1").append('<span class="part">005</span>');
+    $("#td_1").append('<span class="part">006</span>');
+    $("#td_2").append('<span class="part">007</span>');
+    $("#td_3").append('<span class="part">008</span>');
+    $("#td_4").append('<span class="part">009</span>');
 }
 
 $(function(){

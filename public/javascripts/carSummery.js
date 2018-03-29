@@ -19,7 +19,7 @@ function fixTable(){
 function removeTable(){
     var clonedTable = $('.bodyTableDiv').find('table').clone();
     $(clonedTable).attr('style', '');
-    $(clonedTable).find('span').remove();
+    $(clonedTable).find('span.part').remove();
     $('.baseDiv').remove();
     $('#table-responsive-body').append(clonedTable.prop("outerHTML"));
 }

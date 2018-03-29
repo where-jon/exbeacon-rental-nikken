@@ -3,12 +3,10 @@
 @import controllers.routes
 @import helper._
 
-@views.html.templates.logged(title = "現場管理", tab = "index", containerClass = "container-index") {
 <!doctype html>
 <html lang="ja">
 <head>
-    @templates.htmlHead("現場管理")
-    <link rel="stylesheet" href="@routes.MyAssets.css("mainMenu.css")"/>
+    @templates.htmlHead(title = "現場管理")
     <link rel="stylesheet" href="@routes.MyAssets.css("cms/placeManageDetail.css")"/>
     <script type="text/javascript" src="@routes.MyAssets.lib("jquery.tablefix_1.0.1.js")"></script>
     <script></script>
@@ -23,6 +21,10 @@
             @views.html.templates.sideMenu()
             <!-- メイン -->
             <div class="col-xs-9 col-sm-9 col-md-10 col-lg-10">
+                <!-- 画面題字 -->
+                <div class="form-group" style="font-weight:bold;font-size:19px;margin:15px 0px;">
+                    現場管理画面
+                </div>
                 <!-- テーブルのROW -->
                 <div class="row tableRow">
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="padding:0;">
@@ -63,7 +65,7 @@
                     </div>
                 </div>
                 <!-- フロア情報テーブルのROW -->
-                <div class="row tableRow" style="margin-top: 50px;">
+                <div class="row tableRow" style="margin-top: 30px;">
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="padding:0;">
                         <div class="floorTable-responsive-body">
                             <table class="table table-bordered table-condensed itemTable floorTable">
@@ -156,6 +158,21 @@
                     </div>
                     <div class="text-left col-xs-4 col-sm-4 col-md-4" style="padding:0;">
                         <a href="javascript:showFloorDeleteModal();" class="btn link">選択したフロアを削除</a>
+                    </div>
+                </div>
+                <!-- 遷移ボタン-->
+                <div class="row tableRow" style="margin-top: 30px;">
+                    <div class="text-center col-xs-3 col-sm-3 col-md-3" style="padding:0;">
+                        <a href="/cms/carManage" class="btn link">作業車管理</a>
+                    </div>
+                    <div class="text-center col-xs-3 col-sm-3 col-md-3" style="padding:0;">
+                        <a href="/cms/itemManage" class="btn link">仮設材管理</a>
+                    </div>
+                    <div class="text-center col-xs-3 col-sm-3 col-md-3" style="padding:0;">
+                        <a href="/cms/companyManage" class="btn link">業者管理</a>
+                    </div>
+                    <div class="text-center col-xs-3 col-sm-3 col-md-3" style="padding:0;">
+                        <a href="/cms/txTagManage" class="btn link">Beaconタグ一覧</a>
                     </div>
                 </div>
             </div>
@@ -303,4 +320,3 @@
     </div>
 </body>
 </html>
-}

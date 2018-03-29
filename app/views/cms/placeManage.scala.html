@@ -3,12 +3,10 @@
 @import controllers.routes
 @import helper._
 
-@views.html.templates.logged(title = "現場一覧", tab = "index", containerClass = "container-index") {
 <!doctype html>
 <html lang="ja">
 <head>
-    @templates.htmlHead("現場一覧")
-    <link rel="stylesheet" href="@routes.MyAssets.css("mainMenu.css")"/>
+    @templates.htmlHead(title = "現場一覧")
     <link rel="stylesheet" href="@routes.MyAssets.css("cms/placeManage.css")"/>
     <script type="text/javascript" src="@routes.MyAssets.lib("jquery.tablefix_1.0.1.js")"></script>
     <script></script>
@@ -133,4 +131,3 @@
 
 </body>
 </html>
-}

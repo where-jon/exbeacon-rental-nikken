@@ -13,16 +13,32 @@
         style="padding:0;">
     <ul class="nav navbar-nav">
         <li class="pull-left">
-            <a class="text-center tab">作業車当日</a>
+            @if(request.path == routes.CarSummery.index.path){
+                <a class="text-center tabSelected">作業車当日</a>
+            }else{
+                <a href="@routes.CarSummery.index.path" class="text-center tab">作業車当日</a>
+            }
         </li>
         <li class="pull-left">
-            <a class="text-center tab" style="margin-left:1px;">作業車予約</a>
+            @if(request.path == routes.CarReserve.index.path){
+                <a class="text-center tabSelected" style="margin-left:1px;">作業車予約</a>
+            }else{
+                <a href="@routes.CarReserve.index.path" class="text-center tab" style="margin-left:1px;">作業車予約</a>
+            }
         </li>
         <li class="pull-left">
-            <a class="text-center tab" style="margin-left:1px;">仮設材利用状況</a>
+            @if(request.path == routes.OtherItem.index.path){
+                <a class="text-center tabSelected" style="margin-left:1px;">仮設材利用状況</a>
+            }else{
+                <a href="@routes.OtherItem.index.path" class="text-center tab" style="margin-left:1px;">仮設材利用状況</a>
+            }
         </li>
         <li class="pull-left">
-            <a class="text-center cmsTab" style="margin-left:1px;">管理ページ</a>
+            @if(request.path contains "/cms/"){
+                <a class="text-center tabSelected" style="margin-left:1px;">管理ページ</a>
+            }else{
+                <a href="@controllers.cms.routes.PlaceManage.detail.path" class="text-center cmsTab" style="margin-left:1px;">管理ページ</a>
+            }
         </li>
     </ul>
     <span style="float: right;">ログインID：@user.email</span><br/>

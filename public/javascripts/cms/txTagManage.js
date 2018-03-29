@@ -1,8 +1,7 @@
 // テーブルの固定
 function fixTable(){
     // テーブルの固定
-    var h = $(window).height()*0.9;
-
+    var h = $(window).height()*0.7;
     // テーブルの調整
     var ua = navigator.userAgent;
     if (ua.indexOf('iPad') > 0 || ua.indexOf('Android') > 0 || ua.indexOf('iPhone') > 0 || ua.indexOf('iPod') > 0){
