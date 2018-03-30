@@ -1,4 +1,4 @@
-@(dataList: Seq[String])(implicit user: User, messages: Messages, request: RequestHeader, flash: Flash)
+@(itemList: Seq[ItemListInfo], placeId: Int)(implicit user: User, messages: Messages, request: RequestHeader, flash: Flash)
 
 @import controllers.routes
 @import helper._
@@ -22,6 +22,8 @@
             @views.html.templates.cmsSideMenu()
             <!-- メイン -->
             <div class="col-xs-9 col-sm-9 col-md-9 col-lg-9 mainSpace">
+                <!-- メッセージ -->
+                @views.html.templates.msgDiv()
                 <!-- テーブルのROW -->
                 <div class="row tableRow">
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="padding:0;">
@@ -39,12 +41,16 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                    @for(data <- dataList){
-                                        <tr class="rowColor rowHover">
-                                            <td class="itemTd text-right">@{data.split(",")(0)}</td>
-                                            <td class="itemTd text-left">@{data.split(",")(1)}</td>
-                                            <td class="itemTd text-left">@{data.split(",")(2)}</td>
-                                            <td class="itemTd text-right">@{data.split(",")(3)}</td>
+                                    @for(item <- itemList){
+                                        <tr class="rowColor rowHover" id="@item.itemKindId">
+                                            <td class="itemTd text-right itemKindId">@{item.itemKindId}</td>
+                                            <td class="itemTd text-left itemKindName">@{item.itemKindName}</td>
+                                            <td class="itemTd text-left note">@{item.note}</td>
+                                            <td class="itemTd text-right itemCount"><span>@{item.itemCount}</span>
+                                                @for(data <- item.actualItemInfoList){
+                                                    <span class="item hidden" data-itemId="@data.itemId" data-itemNo="@data.itemNo" data-itemBtxId="@data.itemBtxId"/>
+                                                }
+                                            </td>
                                         </tr>
                                     }
                                 </tbody>
@@ -55,7 +61,7 @@
                 <!-- ボタン-->
                 <div class="row tableRow" >
                     <div class="text-right col-xs-4 col-sm-4 col-md-4 col-xs-offset-8 col-sm-offset-8 col-md-offset-8" style="padding:0;">
-                        <a href="javascript:showInputModal();" class="btn btn-primary link text-right">新規仮設材追加</a>
+                        <a href="javascript:showInputModal('');" class="btn btn-primary link text-right">新規仮設材追加</a>
                     </div>
                 </div>
             </div>
@@ -68,28 +74,32 @@
     <div class="modal" id="inputModal" tabindex="-1" role="dialog" aria-labelledby="InputModalLabel" aria-hidden="true" data-show="true" data-keyboard="false" data-backdrop="static">
         <div class="modal-dialog">
             <div class="modal-content">
-                <form id="floorForm" name="inputForm" class="form-horizontal">
+                <form id="itemForm" name="itemForm" enctype="multipart/form-data" class="form-horizontal" method="post">
+                    @CSRF.formField
+                    <input type="hidden" name="inputPlaceId" value="@placeId">
+                    <input type="hidden" id="inputItemKindId" name="inputItemKindId">
+                    <input type="hidden" id="actualItemInfoStr" name="actualItemInfoStr">
                     <div class="modal-header" style="">仮設材情報更新</div>
                     <div class="modal-body">
                         <div class="form-group">
                             <label class="control-label col-xs-4">名称</label>
                             <div class="col-xs-3" style="padding-left: 0px;padding-right: 0px;">
-                                <input type="text" name="floorTitle" class="form-control" placeholder="仮設材A">
+                                <input type="text" id="inputItemKindName" name="inputItemKindName" class="form-control" placeholder="仮設材A">
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="control-label col-xs-4">備考</label>
                             <div class="col-xs-5" style="padding-left: 0px;padding-right: 0px;">
-                                <input type="text" name="deviceId" class="form-control" placeholder="">
+                                <input type="text" id="inputNote" name="inputNote" class="form-control">
                             </div>
                         </div>
                         <div class="form-group" style="margin-bottom: 5px;">
                             <label class="control-label col-xs-4">Txタグ設定</label>
                             <div class="col-xs-2" style="padding-left: 0px;padding-right: 0px;margin-right: 10px;">
-                                <input type="text" id="inputManageNo" class="form-control" placeholder="管理No">
+                                <input type="text" maxlength="3" id="inputItemNo" class="form-control" placeholder="管理No">
                             </div>
                             <div class="col-xs-2" style="padding-left: 0px;padding-right: 0px;margin-right: 10px;">
-                                <input type="text" id="inputTxTagNo" class="form-control" placeholder="TxタグNo">
+                                <input type="text" id="inputItemBtxId" class="form-control" placeholder="TxタグNo">
                             </div>
                             <div class="col-xs-2" style="padding-left: 0px;padding-right: 0px;">
                                 <a href="javascript:addTagRow();"class="btn btn-default"><i class="fa fa-plus" aria-hidden="true"></i></a>
@@ -98,10 +108,10 @@
                         <div class="form-group template hidden" style="margin-bottom: 5px;">
                             <label class="control-label col-xs-4"></label>
                             <div class="col-xs-2 text-center inputManageNoDiv">
-                                <span class="inputManageNoSpan">001</span>
+                                <span class="inputItemNoSpan"></span>
                             </div>
                             <div class="col-xs-2 text-center inputTxTagNoDiv">
-                                <span class="inputTxTagNoSpan">001</span>
+                                <span class="inputItemBtxIdSpan"></span>
                             </div>
                             <div class="col-xs-2" style="padding-left: 0px;padding-right: 0px;">
                                 <a onclick="removeTagRow(this);" class="btn btn-default removeRowBtn">
@@ -110,15 +120,25 @@
                             </div>
                         </div>
                     </div>
-                    <div class="modal-footer">
-                        <div class="col-xs-4 text-center">
-                            <button type="button" class="btn btn-default" data-dismiss="modal">キャンセル</button>
+                    <div id="itemFooter" class="modal-footer">
+                        <div id="itemUpdateFooter">
+                            <div class="col-xs-4 text-center">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">キャンセル</button>
+                            </div>
+                            <div class="col-xs-4 text-center">
+                                <a href="javascript:doSubmit('itemForm', '@controllers.cms.routes.ItemManage.update.path');" class="text-center btn btn-primary">更新</a>
+                            </div>
+                            <div class="col-xs-4 text-center">
+                                <a href="javascript:doSubmit('itemForm', '@controllers.cms.routes.ItemManage.delete.path');" class="text-center btn btn-danger">削除</a>
+                            </div>
                         </div>
-                        <div class="col-xs-4 text-center">
-                            <button type="button" class="text-center btn btn-primary">更新</button>
-                        </div>
-                        <div class="col-xs-4 text-center">
-                            <button type="button" class="text-center btn btn-danger">削除</button>
+                        <div id="itemRegisterFooter">
+                            <div class="col-xs-6 text-center">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">キャンセル</button>
+                            </div>
+                            <div class="col-xs-6 text-center">
+                                <a href="javascript:doSubmit('itemForm', '@controllers.cms.routes.ItemManage.update.path');" class="text-center btn btn-primary">登録</a>
+                            </div>
                         </div>
                     </div>
                 </form>

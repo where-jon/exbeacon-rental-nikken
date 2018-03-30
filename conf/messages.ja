@@ -74,6 +74,14 @@ error.cms.CarManage.update.inputCarNo.duplicate=作業車番号が重複して�
 error.cms.CarManage.update.inputCarBtxId.duplicate=作業車TxタグNoが重複しています。(作業車TxタグNo.{0})
 error.cms.CarManage.update.inputCarKeyBtxId.duplicate=鍵TxタグNoが重複しています。(作業車TxタグNo.{0})
 
+error.cms.ItemManage.update.inputItemKindName.empty=仮設材名称を入力してください。
+error.cms.ItemManage.update.inputItemKindName.duplicate=仮設材名称が重複しています。
+error.cms.ItemManage.update.inputItemNo.notNumeric=管理Noを半角数字で入力してください。
+error.cms.ItemManage.update.inputItemNo.duplicate=管理Noが重複しています。
+error.cms.ItemManage.update.inputBtxId.notNumeric=TxタグNoを半角数字で入力してください。
+error.cms.ItemManage.update.inputBtxId.duplicate=TxタグNoが重複しています。
+error.cms.ItemManage.update.actualItemInfoStr.empty=Txタグ設定を入力してください。
+
 ################################################################################################
 # SUCCESS
 success.cms.PlaceManage.register=現場情報を登録しました。
@@ -83,11 +91,14 @@ success.cms.PlaceManage.delete=現場情報を削除しました。
 success.cms.PlaceManage.floorDelete=フロアを削除しました。
 success.cms.PlaceManage.floorUpdate=フロア情報を更新しました。
 
-success.cms.CompanyManage.delete=業者を削除しました。
+success.cms.CompanyManage.delete=業者情報を削除しました。
 success.cms.CompanyManage.update=業者情報を更新しました。
 
-success.cms.CarManage.delete=作業車を削除しました。
+success.cms.CarManage.delete=作業車情報を削除しました。
 success.cms.CarManage.update=作業車情報を更新しました。
+
+success.cms.ItemManage.delete=仮設材情報を削除しました。
+success.cms.ItemManage.update=仮設材情報を更新しました。
 
 # MAILS
 
