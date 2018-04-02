@@ -32,9 +32,9 @@ object CarSummeryWorkPlotInfo {
 }
 
 case class CarSummeryReservePlotInfo(
-    floorId: String
-  , carId: String
+  carId: String
   , carNo: String
+  , floorId: String
   , companyId: String = ""
 )
 
@@ -188,10 +188,11 @@ class carSummeryDAO @Inject() (dbapi: DBApi) {
             c.active_flg = true
             and r.active_flg = true
             and c.place_id = {placeId}
+            and r.reserve_date = to_date({dateStr}, 'YYYYMMDD')
           order by
             c.car_id
         """
-      SQL(selectPh).on('placeId -> placeId).as(simple.*)
+      SQL(selectPh).on('placeId -> placeId, 'dateStr -> dateStr).as(simple.*)
     }
   }
 

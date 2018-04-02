@@ -93,8 +93,8 @@ class UserDAO @Inject() (dbapi: DBApi) {
   def findByEmail(email: String): Future[Option[User]] = {
     Future.successful(
       User.find(email) match {
-        case Some(u) => Some(u)
-        case None => db.withConnection { implicit connection =>
+        //case Some(u) => Some(u)
+        case _ => db.withConnection { implicit connection =>
           val sql = SQL("""
             select
                 user_id

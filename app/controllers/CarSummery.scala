@@ -150,7 +150,7 @@ class CarSummery @Inject()(config: Configuration
     val placeId = super.getCurrentPlaceId
 
     // 予約情報
-    val carSummeryReservePlotInfoList = carSummeryDAO.selectReserveForPlot(placeId)
+    val carSummeryReservePlotInfoList = carSummeryDAO.selectReserveForPlot(placeId, new DateTime().toString("yyyyMMdd"))
 
     // 稼働情報
     var carSummeryWorkPlotInfoList = Seq[CarSummeryWorkPlotInfo]()
@@ -188,7 +188,7 @@ class CarSummery @Inject()(config: Configuration
         // そのフロアの予約情報
         val reserveInfo = carSummeryDAO.selectReserve(
             floorId = Option(floor.floorId)
-          , dateStr = new DateTime().minusDays(1).toString("yyyyMMdd")
+          , dateStr = new DateTime().toString("yyyyMMdd")
         )
 
         // 実体の車

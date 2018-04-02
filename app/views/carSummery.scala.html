@@ -145,7 +145,7 @@
                                                 稼働<span class="hiddenPart"></span>
                                             </td>
                                             <td class="blankTd" style="background-color:#DEEBF7;"></td>
-                                            <td class="useTd" id="useTd_@{floor.floorId}"></td>
+                                            <td class="useTd" id="useTd_@{floor.floorId}_"></td>
                                             @for(company <- companyList){
                                                 <td class="useTd" id="useTd_@{floor.floorId}_@{company.companyId}">
                                                 </td>
@@ -156,7 +156,7 @@
                                                 予約<span class="hiddenPart"></span>
                                             </td>
                                             <td class="blankTd" style="background-color:#E7E6E6;"></td>
-                                            <td class="reserveTd" id="reserveTd_@{floor}_x"></td>
+                                            <td class="reserveTd" id="reserveTd_@{floor.floorId}_"></td>
                                             @for(company <- companyList){
                                                 <td class="reserveTd reserveTdHover" data-company="@{company.companyId}" id="reserveTd_@{floor.floorId}_@{company.companyId}">
                                                 </td>
