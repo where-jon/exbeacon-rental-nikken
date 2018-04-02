@@ -10,11 +10,11 @@ $(function(){
         }
     });
     // CMSサイドメニューリンクのタップ時の動き
-    $('a.sideLinkNotSelected').on('touchstart touchend', function(e) {
+    $('a.link').on('touchstart touchend', function(e) {
         if (e.type === 'touchstart') {
-          $(this).addClass('sideLinkSelected');
+          $(this).addClass('btnTappedClass');
         } else {
-          $(this).removeClass('sideLinkSelected');
+          $(this).removeClass('btnTappedClass');
         }
     });
 

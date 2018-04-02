@@ -3,15 +3,11 @@ function bindMouseAndTouch(){
     var ua = navigator.userAgent;
     if (ua.indexOf('iPad') > 0 || ua.indexOf('Android') > 0 || ua.indexOf('iPhone') > 0 || ua.indexOf('iPod') > 0){
         // タッチデバイスの場合
-        var touched = false;
-        var touch_time = 0;
         $(".rowHover").bind({
             'touchstart': function(e) {
                 if(e.originalEvent.touches.length > 1){
-                    touch_time = 0;
-                    touched = false;
-                    clearInterval(document.interval);
                 }else if(e.originalEvent.touches.length == 1){
+<<<<<<< HEAD
                     $(this).addClass('rowHoverColor');
                     var floorId = $(this).attr('id');
                     touched = true;
@@ -23,20 +19,12 @@ function bindMouseAndTouch(){
                             showFloorModal(floorId);
                         }
                     }, 100)
+=======
+                    $(".rowHoverSelectedColor").removeClass('rowHoverSelectedColor');
+                    $(this).addClass('rowHoverSelectedColor');
+>>>>>>> design
                 }
             },
-            'touchend': function(e) {
-                $(this).removeClass('rowHoverColor');
-                touch_time = 0;
-                touched = false;
-                clearInterval(document.interval);
-            },
-            'touchmove': function(e) {
-                $(this).removeClass('rowHoverColor');
-                touch_time = 0;
-                touched = false;
-                clearInterval(document.interval);
-            }
         });
     }else{
         // PCブラウザの場合
@@ -48,8 +36,13 @@ function bindMouseAndTouch(){
                 $(this).removeClass('rowHoverColor');
             },
             'click': function(e) {
+<<<<<<< HEAD
                 var floorId = $(this).attr('id');
                 showFloorModal(floorId);
+=======
+                $(".rowHoverSelectedColor").removeClass('rowHoverSelectedColor');
+                $(this).addClass('rowHoverSelectedColor');
+>>>>>>> design
             },
         });
     }
@@ -68,6 +61,7 @@ function showPasswordUpdateModal(){
 function showPlaceUpdateModal(){
     $('#placeUpdateModal').modal();
 }
+<<<<<<< HEAD
 function showPlaceDeleteModal(){
     $('#placeDeleteModal').modal();
 }
@@ -109,6 +103,24 @@ function showFloorModal(floorId){
         $('#floorRegisterFooter').addClass('hidden');
     }
     $('#floorModal').modal();
+=======
+function showPasswordModal(){
+    $('#passwordModal').modal();
+}
+function showFloorUpdateModal(isRegister){
+    if(isRegister){
+        $('#floorUpdateModal').modal();
+    }else{
+        if($('.rowHoverSelectedColor').length > 0){
+            $('#floorUpdateModal').modal();
+        }
+    }
+}
+function showFloorDeleteModal(){
+    if($('.rowHoverSelectedColor').length > 0){
+        $('#floorDeleteModal').modal();
+    }
+>>>>>>> design
 }
 
 // 入力モーダルのEXBデバイスの行を追加

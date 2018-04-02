@@ -14,8 +14,8 @@ td{
 }
 
 .tableTitleTh{
-    background-color: #4976CA;
-    color: #FFFFFF;
+    background-color: #DAE3F3;
+    color: #000;
     font-size: 19px;
     text-align: center;
 }
@@ -27,45 +27,29 @@ td{
 
 .tableTh{
     padding:0;
-    background-color: #B4C7E7!important;
+    background-color: #DEEBF7!important;
     text-align: center;
     font-size: calc(110%);
 }
 
-.txTagNoTh{
-    width: 13%;
-}
-.batteryTh{
-    width: 10%;
-}
-.kindTh{
-    width: 10%;
-}
-.nameTh{
-
-}
-.noteTh{
-
-}
-
 /*** table-bordered の改変 start ****************************************/
 .itemTable {
-    border: 2px solid #4472C4!important;
+    border: 2px solid #000!important;
     min-width: 100%;
     margin-bottom: 0px;
 }
 
 .itemTable>thead>tr>th ,
 .itemTable>tbody>tr>td{
-    border: 2px solid #4472C4!important;
+    border: 1px solid #000!important;
 }
 
   .itemTable>tbody>tr>td
 , .itemTable>tbody>tr>th
 , .itemTable>thead>tr>td
 , .itemTable>thead>tr>th {
-    padding-top: 5px;
-    padding-bottom: 5px;
+    padding-top: 4px;
+    padding-bottom: 4px;
     padding-right: 4px;
     padding-left: 4px;
     vertical-align: middle;
@@ -79,6 +63,20 @@ td{
     vertical-align: middle;
 }
 
+.itemTable>tbody>tr>td{
+    -ms-user-select: none; /* IE 10+ */
+    -moz-user-select: -moz-none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    user-select: none;
+}
+th{
+    font-weight: normal;
+}
+
+.txTagNoTh{
+    width: 18%;
+}
 /*** table-bordered の改変 end ****************************************/
 
 .rowColor{

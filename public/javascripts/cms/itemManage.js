@@ -3,15 +3,11 @@ function bindMouseAndTouch(){
     var ua = navigator.userAgent;
     if (ua.indexOf('iPad') > 0 || ua.indexOf('Android') > 0 || ua.indexOf('iPhone') > 0 || ua.indexOf('iPod') > 0){
         // タッチデバイスの場合
-        var touched = false;
-        var touch_time = 0;
         $(".rowHover").bind({
             'touchstart': function(e) {
                 if(e.originalEvent.touches.length > 1){
-                    touch_time = 0;
-                    touched = false;
-                    clearInterval(document.interval);
                 }else if(e.originalEvent.touches.length == 1){
+<<<<<<< HEAD
                     $(this).addClass('rowHoverColor');
                     var itemKindId = $(this).attr('id');
                     touched = true;
@@ -23,19 +19,11 @@ function bindMouseAndTouch(){
                             showInputModal(itemKindId);
                         }
                     }, 100)
+=======
+                    $(".rowHoverSelectedColor").removeClass('rowHoverSelectedColor');
+                    $(this).addClass('rowHoverSelectedColor');
+>>>>>>> design
                 }
-            },
-            'touchend': function(e) {
-                $(this).removeClass('rowHoverColor');
-                touch_time = 0;
-                touched = false;
-                clearInterval(document.interval);
-            },
-            'touchmove': function(e) {
-                $(this).removeClass('rowHoverColor');
-                touch_time = 0;
-                touched = false;
-                clearInterval(document.interval);
             }
         });
     }else{
@@ -48,14 +36,20 @@ function bindMouseAndTouch(){
                 $(this).removeClass('rowHoverColor');
             },
             'click': function(e) {
+<<<<<<< HEAD
                 var itemKindId = $(this).attr('id');
                 showInputModal(itemKindId);
+=======
+                $(".rowHoverSelectedColor").removeClass('rowHoverSelectedColor');
+                $(this).addClass('rowHoverSelectedColor');
+>>>>>>> design
             },
         });
     }
 }
 
 
+<<<<<<< HEAD
 // モーダル画面の表示
 function showInputModal(itemKindId){
     if(itemKindId == ""){
@@ -101,17 +95,19 @@ function showInputModal(itemKindId){
     $('#inputModal').modal();
 }
 
+=======
+>>>>>>> design
 // テーブルの固定
 function fixTable(){
     // 表テーブルの固定
-    var h = $(window).height()*0.8;
+    var h = $(window).height()*0.7;
     // テーブルの調整
     var ua = navigator.userAgent;
     if (ua.indexOf('iPad') > 0 || ua.indexOf('Android') > 0 || ua.indexOf('iPhone') > 0 || ua.indexOf('iPod') > 0){
         // タッチデバイス
-        var w = $('.mainSpace').width()*0.99;
+        var w = $('.mainSpace').width()*0.993;
         $('.itemTable').tablefix({width:w, height: h, fixRows: 2});
-        //$('.rowTableDiv').width(w);
+
     }else{
         // PCブラウザ
         var w = $('.mainSpace').width();
@@ -120,11 +116,6 @@ function fixTable(){
     }
     $('.bodyTableDiv').find('.itemTable').css('margin-bottom','0');
     $('.colTableDiv').css("width","");
-
-    if(hasVerticalScrollBar($('.bodyTableDiv'), $('.bodyTableDiv').find('table')) == false){
-        removeTable();
-    }
-
 }
 // テーブルのクリア
 function removeTable(){
@@ -135,6 +126,24 @@ function removeTable(){
     $('.table-responsive-body').append(clonedTable.prop("outerHTML"));
 }
 
+<<<<<<< HEAD
+=======
+// モーダル画面の表示
+function showInputModal(isRegister){
+    if(isRegister){
+        $('#inputModal').modal();
+    }else{
+        if($('.rowHoverSelectedColor').length > 0){
+            $('#inputModal').modal();
+        }
+    }
+}
+function showDeleteModal(){
+    if($('.rowHoverSelectedColor').length > 0){
+        $('#deleteModal').modal();
+    }
+}
+>>>>>>> design
 
 // 入力モーダルのTxタグの行を追加
 function addTagRow(){

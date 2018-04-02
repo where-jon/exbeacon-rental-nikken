@@ -1,18 +1,16 @@
 td{
     padding:2px;
-    white-space: nowrap!important;
+    white-space: nowrap;
 }
 .pc-side-nav{
-    background-color: #DAEEF4!important;
     padding-left: 0px;
     padding-right: 0px;
-    margin-top: 20px;
+    margin-top: 10px;
 }
 .mainSpace{
-    background-color: #DAEEF4!important;
     padding-left: 0px;
     padding-right: 0px;
-    margin-top: 20px;
+    margin-top: 25px;
 }
 #table-responsive-body{
     border: 1px;
@@ -32,106 +30,137 @@ td{
     padding: 3px;
     margin: 2px!important;
     border-radius: 7px;
-    border-width: 1px;
+    border-width: 0px;
     border-style: solid;
     text-align: center;
     white-space: nowrap;
+    font-family: 'arial', sans-serif;
+    font-size: 15px!important;
+    font-weight: bold;
+}
+.hiddenPart{
+    text-align: center;
+    white-space: nowrap;
+    font-family: 'arial', sans-serif;
+    font-size: 15px!important;
+    font-weight: bold;
+    width: 0px;
+    padding: 3px 0px;
+    margin: 2px 0px!important;
+    border-width: 0px;
+    visibility:hidden;
+}
 
-}
-.partEx{
-    width: 3vw;
-    height: 2vh;
-}
 .partExFont{
     font-size: calc(103%) !important;
+    margin-top: 5px;
+    white-space: nowrap;
 }
-
 
 /************************ 予約の状態 ************************/
 .useWorking{
-    background-color: #4472C4;
+    background-color: #404040;
     color: #FFFFFF;
-    border-color: #000000;
 }
 .useNotWorking{
-    background-color: #FFFFFF;
-    color: #000000;
-    border-color: #000000;
+    background-color: #D9D9D9;
+    color: #FFFFFF;
 }
 .reserveNone{
-    background-color: #FF0000;
+    background-color: #C00000;
     color: #FFFFFF;
-    border-color: #000000;
 }
 .reserveContent{
-    background-color: rgba(0, 0, 0, 0.5);
-    color: #FFFFFF;
-    border-color: #000000;
+    background-color: #BFBFBF;
+    color: #000000;
 }
 /********/
 
 .tableTitleTh{
-    background-color: #4976CA;
-    color: #FFFFFF;
+    background-color: #DAE3F3;
+    color: #000;
     font-size: 19px;
     text-align: center;
     padding-top: 3px;
     padding-bottom: 3px;
 }
+.summeryTableTitleTh{
+    background-color: #DAE3F3;
+    color: #000;
+    font-size: 16px!important;
+    padding-top: 3px;
+    padding-bottom: 3px;
+    font-family: "游ゴシック Medium", "Yu Gothic Medium", "游ゴシック体", YuGothic, 'メイリオ', 'Meiryo', sans-serif;
+}
 .companyTh{
-    background-color: #B4C7E7!important;
+    background-color: #DEEBF7;
     text-align: center;
     white-space: nowrap;
     font-size: calc(108%);
+    min-width: 80px;
 }
 .useNameTd{
-    width: 45px!important;
-    font-size: 14px;
-    background-color:#FFFFFF;
+    text-align: center;
+    font-size: 11px;
+    background-color:#DEEBF7;
+    padding-right: 2px!important;
+    padding-left: 2px!important;
 }
 
 .blankTd{
     padding-left: 1px!important;
     padding-right: 1px!important;
 }
-
-.reserveNameTd{
-    font-size: 14px;
-    background-color:#E7E6E6;
-}
 .useTd{
-    background-color:#FFFFFF;
-    white-space: nowrap;
+    background-color:#ECF3FA;
 }
+.reserveNameTd{
+    text-align: center;
+    font-size: 11px;
+    padding-right: 2px!important;
+    padding-left: 2px!important;
+}
+
 .reserveTdHoverColor{
     background-color: #fcf8e3!important;
 }
 .reserveTd{
-    background-color:#E7E6E6;
-    white-space: nowrap;
-    vertical-align: middle!important;
+}
+.reserveFloorNameTd{
+    width: 20px!important;
+    padding:0;
+    background-color: #F2F2F2!important;
+    text-align: center;
+    white-space: normal!important;
 }
 .floorNameTd{
     width: 20px!important;
     padding:0;
-    background-color: #B4C7E7!important;
+    background-color: #F2F2F2!important;
+    text-align: center;
+}
+.floorNameTh{
+    padding:0;
+    background-color: #F2F2F2!important;
     text-align: center;
     font-size: calc(110%);
 }
+
 /*** table の改変 start ************************************************/
 .reserveTable {
-    border: 2px solid #4472C4;
+    border: 1px solid #000000;
 }
 
-.reserveTable>thead>tr>th, .reserveTable>tbody>tr>td{
-    border: 2px solid #4472C4;
+.reserveTable>thead>tr>th
+, .reserveTable>tbody>tr>td{
+    border: 1px solid #000000;
 }
 .reserveTable>tbody>tr>td
 , .reserveTable>tbody>tr>th
 , .reserveTable>thead>tr>td
 , .reserveTable>thead>tr>th {
-    padding-top: 5px;
-    padding-bottom: 5px;
+    padding-top: 6px;
+    padding-bottom: 6px;
     padding-right: 4px;
     padding-left: 4px;
     vertical-align: middle;
@@ -145,34 +174,46 @@ td{
     vertical-align: middle;
 }
 
+.sideSummeryTable{
+    margin-bottom: 0px;
+}
 .sideSummeryTable>thead>tr>th{
-    font-size: calc(110%)!important;
+    font-size: calc(85%);
+    font-family: "游ゴシック Medium", "Yu Gothic Medium", "游ゴシック体", YuGothic, 'メイリオ', 'Meiryo', sans-serif;
+    font-weight: 100;
+    border: 0px!important;
 }
 .sideSummeryTable>tbody>tr>td{
-    font-size: calc(105%)!important;
+    font-size: calc(90%);
+    font-family: 'Calibri', sans-serif;
+    padding: 8px;
+    border: 0px!important;
 }
 
-.sideSummeryTable>thead>tr>th, .sideSummeryTable>tbody>tr>td{
-    border: 2px solid #4472C4!important;
-}
 .sideSummeryTable>tbody>tr>td
 , .sideSummeryTable>tbody>tr>th
 , .sideSummeryTable>thead>tr>td
 , .sideSummeryTable>thead>tr>th {
-    padding-top: 4px;
-    padding-bottom: 4px;
-    padding-right: 2px;
-    padding-left: 2px;
     vertical-align: middle;
-}
-.sideSummeryTable>tbody>tr>th{
-    vertical-align: middle;
+    text-align: center;
 }
 
+.summeryColoredTh{
+    background-color: #DEEBF7;
+    white-space: nowrap;
+}
+.summeryColoredTd{
+    background-color: #DEEBF7;
+    white-space: nowrap;
+}
+
+th{
+    font-weight: normal;
+}
 /*** table の改変 end ************************************************/
 
 .dateFont{
-    font-size: calc(130%);
+    font-size: 16px;
     font-weight: bold;
     font-family: 'メイリオ', 'Meiryo', sans-serif;
 }
@@ -182,9 +223,6 @@ td{
     background-color: #FF0000
 }
 
-.baseDivLine{
-    border-right: 2px solid rgb(68, 114, 196)!important;
-}
 
 /** (iPadタテ用) **/
 @media only screen
@@ -197,13 +235,11 @@ td{
         padding-bottom: 13px;
         padding-right: 4px;
         padding-left: 4px;
-        vertical-align: middle;
     }
     .sideSummeryTable>tbody>tr>td{
-        padding-top: 16.5px;
-        padding-bottom: 16.5px;
+        padding-top: 17px;
+        padding-bottom: 17px;
         padding-right: 2px;
         padding-left: 2px;
-        vertical-align: middle;
     }
 }

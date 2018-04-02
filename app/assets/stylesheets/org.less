@@ -1,9 +1,19 @@
-/******* TOPメニュー ********/
+/******* ナビバー ********/
+.navbarCorner{
+    background-color: #B4C7E7!important;
+    padding:0;
+    z-index: 1035;
+}
 .navbar{
 	border-radius: 0;
 	border: none;
-	background-color: #DCE6F2;
-	min-height: 50px;
+	background-color: #D9D9D9;
+	min-height: 54px;
+}
+.navbar-brand{
+    text-align: center;
+    width:100%;
+    padding:15px 0px;
 }
 .navbar-default .navbar-brand {
     color: #000;
@@ -15,21 +25,54 @@
     padding: 15px 15px;
     height: 50px;
 }
+/******* ナビバーのタブ ********/
+.tab{
+    background-color: #BFBFBF!important;
+    color: #000000!important;
+    padding-left:7px!important;
+    padding-right:7px!important;
+    padding-bottom: 0px!important;
+    padding-top: 5px!important;
+    margin-top: 29px!important;
+    font-family: YuGothic, '游ゴシック体', 'Yu Gothic Medium', '游ゴシック Medium', sans-serif!important;
+}
+.cmsTab{
+    background-color: #8FAADC!important;
+    color: #FFF!important;
+    padding-left:7px!important;
+    padding-right:7px!important;
+    padding-bottom: 0px!important;
+    padding-top: 5px!important;
+    margin-top: 29px!important;
+    font-family: YuGothic, '游ゴシック体', 'Yu Gothic Medium', '游ゴシック Medium', sans-serif!important;
+ }
+ .tabSelected{
+     background-color: #FFF!important;
+     color: #000000!important;
+     padding-left:7px!important;
+     padding-right:7px!important;
+     padding-bottom: 0px!important;
+     padding-top: 5px!important;
+     margin-top: 29px!important;
+     font-family: YuGothic, '游ゴシック体', 'Yu Gothic Medium', '游ゴシック Medium', sans-serif!important;
+ }
+
+/******* ログアウト ********/
 .btn-signout {
     float: right;
     margin-top: 5px;
     margin-right: 8px;
     margin-bottom: 5px;
-    border: 1px solid #fff;
+    border: 1px solid #4472C4;
     padding: 1px 8px 1px 8px !important;
-    background: linear-gradient(180deg, #6083cb, #2e61ba) !important;
+    background-color: #4472C4;
     color: #FFF;
     font-family: 'メイリオ', 'Meiryo', sans-serif;
-    font-weight: bold;
-    box-shadow: 1px 1px 3px 1px #000;
+    border-radius: 0;
 }
 .btn-signout:hover {
     color: #FFF;
+    background-color: #4274b0;
 }
 
 /******* モーダル ********/
@@ -52,18 +95,7 @@
     width: 92px;
 }
 
-/* コンテンツ */
-body{
-    background-color: #DAEEF4!important;
-}
-
-/* ボタン */
-.btn-white {
-    color: #595959;
-    background-color: #FFFFFF;
-}
-
-/** フォント **/
+/******* フォント ********/
 .fontYuGothic{
     font-family: 'Yu Gothic Medium', '游ゴシック Medium', YuGothic, '游ゴシック体', sans-serif!important;
 }
@@ -74,96 +106,26 @@ body{
     font-family: 'Calibri', sans-serif!important;
 }
 
-/** 各画面のヘッダで使用するクラス **/
-.btnBlock{
-    background-color: #F2F2F2;
-    padding-top: 3px;
-    padding-bottom: 3px;
-}
-/*画像アイコンの大きさ*/
-.headIcon{
-    width: 5.5vmax;
-}
-/*タイトルのフォント*/
-.btnTitle{
-    font-family: 'Meiryo', sans-serif;
-    color: #376092;
-    font-weight: bold;
-    font-size: calc(82% + 1.5vw);
-    vertical-align: middle;
-}
-/*戻るアイコン、ナビバーボタンアイコンの色*/
-.headFontAwesome{
-    color: #4F81BD;
-    padding-top: 10px;
-    font-size: calc(133% + 2.5vw);
-}
-/*ヘッダーの中のタイトルロゴ（"EXOffice"）*/
-.headerTitle{
-    font-family: 'leelawadeeui-semilight', sans-serif;
-    letter-spacing: 0.6em;
-    font-size: 2.3vw;
-    /* font-weight: bold; */
-}
-
 .marginAuto{
     margin: 0 auto;
 }
 
-.cmsLink{
-    width: 65%!important;
-    border: 1px solid #fff;
-    background: linear-gradient(180deg, #6083CB, #2E61BA)!important;
-    padding-right: 0px!important;
-    padding-left: 0px!important;
-    font-size: calc(115%) !important;
-    font-weight: bold;
-    font-family: 'メイリオ', 'Meiryo', sans-serif;
-    box-shadow: 1px 1px 3px 1px #000;
-    text-align: center;
+/* コンテンツ */
+body{
+    background-color: #FFF;
 }
 
 .btnTappedClass{
-    border-width: 0!important;
     box-shadow: 0px 0px 0px 0px #000!important;
 }
 
-.cms-side-area{
+/******* サイドメニュー ********/
+.side-area{
     background-color: #f2f2f2!important;
-    height: calc(~"100vh - 50px");
+    height: calc(~"100vh - 40px");
     padding-left: 0px;
     padding-right: 0px;
 }
-
-.sideMenu{
-    background: linear-gradient(180deg, #6083cb, #2e61ba);
-    text-align: center;
-    margin: 11px 15px 9px 15px;
-    border: 1px solid #fff;
-    border-radius: 4px;
-    box-shadow: 1px 1px 3px 0px;
-}
-.sideLinkClass{
-    font-size: 16px;
-    font-weight: bold;
-    color: #FFF!important;
-    background: linear-gradient(180deg, #6083cb, #2e61ba) !important;
-    padding: 15px 15px;
-}
-.sideLinkClass:hover{
-    color: #FFF;
-    -webkit-text-stroke: 1px #000;
-    background: linear-gradient(to bottom, #ffffff, #6083cb 48%, #6083cb 52%, #ffffff) !important;
-    opacity: 1.0!important;
-}
-.sideLinkSelected{
-    color: #FFF;
-    -webkit-text-stroke: 1px #000;
-    background: linear-gradient(to bottom, #ffffff, #6083cb 48%, #6083cb 52%, #ffffff) !important;
-    opacity: 1.0!important;
-}
-
-
 
 @media (max-width:1079px) {
     .container {
@@ -175,36 +137,3 @@ body{
         width: 100%!important;
     }
 }
-
-/** (デカスマホ用)
-@media (min-width:1080px) {
-    body{
-        //font-size: 1.2em;
-        background-color: #FFFFFF
-    }
-    .title{
-        font-size: 8vw;
-        letter-spacing: 0.5em;
-        margin-bottom: 0px;
-    }
-    .btnTitle{
-        font-size: 33px;
-    }
-    .headerTitle{
-        font-size: 32px;
-    }
-    .headFontAwesome {
-        padding-top: 22px;
-        font-size: 68px!important
-    }
-    a.cancelLink{
-        font-size: 35px;
-    }
-   .pushy-link{
-        font-size: 40px!important;
-   }
-   .headSpace{
-       margin-top: 185px;
-   }
-}
-**/

@@ -54,6 +54,9 @@ function bindMouseAndTouch(){
             'mouseout': function(e) {
                 $(this).removeClass('reserveTdHoverColor');
             },
+            'drag': function(e) {
+                $(this).removeClass('reserveTdHoverColor');
+            },
             'click': function(e) {
                 $(this).removeClass('reserveTdHoverColor');
                 showInputModal();
@@ -129,7 +132,8 @@ function setDeleteBadge(obj){
 function fixTable(){
     // 予約表テーブルの固定
     var h = $("#reserveTable").height();
-    var w = $('.mainSpace').width() * 0.97;
+    var x = $("#reserveTable").width();
+    var w = $('.mainSpace').width() * 0.96;
     $('#reserveTable').tablefix({width: w, height: h, fixCols: 3, fixRows: 2});
 
     // 複製テーブルのドラッグ＋ドロップは無効に
@@ -148,6 +152,7 @@ function fixTable(){
 function removeTable(){
     var clonedTable = $('.bodyTableDiv').find('table').clone();
     $(clonedTable).attr('style', '');
+
     $('.baseDiv').remove();
     $('#table-responsive-body').append(clonedTable.prop("outerHTML"));
 }
@@ -379,7 +384,6 @@ $(function(){
         timer = setTimeout(function() {
             // 処理の再実行
             removeTable();
-            //doPunch();
             fixTable();
             bindMouseAndTouch();
             setDraggableOriginal();

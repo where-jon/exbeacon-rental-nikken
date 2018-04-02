@@ -3,11 +3,10 @@
 @import controllers.routes
 @import helper._
 
-@views.html.templates.logged(title = "現場管理", tab = "index", containerClass = "container-index") {
 <!doctype html>
 <html lang="ja">
 <head>
-    @templates.htmlHead("現場管理")
+    @templates.htmlHead(title = "現場管理")
     <link rel="stylesheet" href="@routes.MyAssets.css("cms/placeManageDetail.css")"/>
     <script type="text/javascript" src="@routes.MyAssets.lib("jquery.tablefix_1.0.1.js")"></script>
     <script></script>
@@ -19,11 +18,15 @@
         @views.html.templates.navBar()
         <div class="row" style="margin-top: 50px;">
             <!-- 左サイドバー -->
-            @views.html.templates.cmsSideMenu()
+            @views.html.templates.sideMenu()
             <!-- メイン -->
-            <div class="col-xs-9 col-sm-9 col-md-9 col-lg-9">
+            <div class="col-xs-9 col-sm-9 col-md-10 col-lg-10">
                 <!-- メッセージ -->
                 @views.html.templates.msgDiv()
+                <!-- 画面題字 -->
+                <div class="form-group" style="font-weight:bold;font-size:19px;margin:15px 0px;">
+                    現場管理画面
+                </div>
                 <!-- テーブルのROW -->
                 <div class="row tableRow">
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="padding:0;">
@@ -53,28 +56,18 @@
                     </div>
                 </div>
                 <!-- ボタン-->
-                <div class="row tableRow" style="margin-bottom: 50px;">
-                    @if(user.isSysMng){
-                        <div class="text-center col-xs-4 col-sm-4 col-md-4" style="padding:0;">
-                            <a href="javascript:showPasswordUpdateModal();" class="btn btn-primary link text-right">パスワード変更</a>
-                        </div>
-                        <div class="text-center col-xs-4 col-sm-4 col-md-4" style="padding:0;">
-                            <a href="javascript:showPlaceUpdateModal();" class="btn btn-primary link text-right">編集</a>
-                        </div>
-                        <div class="text-right col-xs-4 col-sm-4 col-md-4" style="padding:0;">
-                            <a href="javascript:showPlaceDeleteModal();" class="btn deleteLink text-right">削除</a>
-                        </div>
-                    }else{
-                        <div class="text-center col-xs-4 col-sm-4 col-md-4 col-xs-offset-4 col-sm-offset-4 col-md-offset-4" style="padding:0;">
-                            <a href="javascript:showPasswordUpdateModal();" class="btn btn-primary link text-right">パスワード変更</a>
-                        </div>
-                        <div class="text-center col-xs-4 col-sm-4 col-md-4" style="padding:0;">
-                            <a href="javascript:showPlaceUpdateModal();" class="btn btn-primary link text-right">編集</a>
-                        </div>
-                    }
+                <div class="row tableRow" style="margin-top: 10px;">
+                    <div class="text-center col-xs-4 col-sm-4 col-md-4 col-xs-offset-1 col-sm-offset-1 col-md-offset-1"
+                         style="padding:0;">
+                        <a href="javascript:showPasswordModal();" class="btn link text-right">パスワード変更</a>
+                    </div>
+                    <div class="text-center col-xs-4 col-sm-4 col-md-4 col-xs-offset-1 col-sm-offset-1 col-md-offset-1"
+                         style="padding:0;">
+                        <a href="javascript:showInputModal();" class="btn link text-right">編集</a>
+                    </div>
                 </div>
                 <!-- フロア情報テーブルのROW -->
-                <div class="row tableRow">
+                <div class="row tableRow" style="margin-top: 30px;">
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="padding:0;">
                         <div class="floorTable-responsive-body">
                             <table class="table table-bordered table-condensed itemTable floorTable">
@@ -104,9 +97,30 @@
                     </div>
                 </div>
                 <!-- ボタン-->
-                <div class="row tableRow" >
-                    <div class="text-right col-xs-4 col-sm-4 col-md-4 col-xs-offset-8 col-sm-offset-8 col-md-offset-8" style="padding:0;">
-                        <a href="javascript:showFloorModal('');" class="btn btn-primary link text-right">フロア追加</a>
+                <div class="row tableRow" style="margin-top: 10px;">
+                    <div class="text-right col-xs-4 col-sm-4 col-md-4" style="padding:0;">
+                        <a href="javascript:showFloorUpdateModal(false);" class="btn link">選択したフロアを編集</a>
+                    </div>
+                    <div class="text-center col-xs-4 col-sm-4 col-md-4" style="padding:0;">
+                        <a href="javascript:showFloorUpdateModal(true);" class="btn link">新規フロア追加</a>
+                    </div>
+                    <div class="text-left col-xs-4 col-sm-4 col-md-4" style="padding:0;">
+                        <a href="javascript:showFloorDeleteModal();" class="btn link">選択したフロアを削除</a>
+                    </div>
+                </div>
+                <!-- 遷移ボタン-->
+                <div class="row tableRow" style="margin-top: 30px;">
+                    <div class="text-center col-xs-3 col-sm-3 col-md-3" style="padding:0;">
+                        <a href="/cms/carManage" class="btn link">作業車管理</a>
+                    </div>
+                    <div class="text-center col-xs-3 col-sm-3 col-md-3" style="padding:0;">
+                        <a href="/cms/itemManage" class="btn link">仮設材管理</a>
+                    </div>
+                    <div class="text-center col-xs-3 col-sm-3 col-md-3" style="padding:0;">
+                        <a href="/cms/companyManage" class="btn link">業者管理</a>
+                    </div>
+                    <div class="text-center col-xs-3 col-sm-3 col-md-3" style="padding:0;">
+                        <a href="/cms/txTagManage" class="btn link">Beaconタグ一覧</a>
                     </div>
                 </div>
             </div>
@@ -191,17 +205,24 @@
             </div>
         </div>
     </div>
-    <!-- 現場削除モーダル画面 -->
-    <div class="modal" id="placeDeleteModal" tabindex="-1" role="dialog" aria-labelledby="placeDeleteModalLabel" aria-hidden="true" data-show="true" data-keyboard="false" data-backdrop="static">
+    <!-- パスワード画面 -->
+    <div class="modal" id="passwordModal" tabindex="-1" role="dialog" aria-labelledby="passwordModalLabel" aria-hidden="true" data-show="true" data-keyboard="false" data-backdrop="static">
         <div class="modal-dialog">
             <div class="modal-content">
-                <form id="placeDeleteForm" name="placeDeleteForm" enctype="multipart/form-data" class="form-horizontal" method="post" action="@controllers.cms.routes.PlaceManage.delete.path">
-                    @CSRF.formField
-                    <input type="hidden" name="inputPlaceId" value="@place.placeId">
-                    <div class="modal-header">削除</div>
+                <form id="passwordForm" name="passwordForm" class="form-horizontal">
+                    <div class="modal-header">管理パスワード変更</div>
                     <div class="modal-body">
-                        <div class="text-center">
-                            建設現場の情報を削除します。<br/>よろしいですか？
+                        <div class="form-group">
+                            <label class="control-label col-xs-5">パスワード</label>
+                            <div class="col-xs-5" style="padding-left: 0px;padding-right: 0px;">
+                                <input type="password" name="inputTitle" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-xs-5">パスワード再入力</label>
+                            <div class="col-xs-5" style="padding-left: 0px;padding-right: 0px;">
+                                <input type="password" name="inputTitle" class="form-control">
+                            </div>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -209,7 +230,7 @@
                             <button type="button" class="btn btn-default" data-dismiss="modal">キャンセル</button>
                         </div>
                         <div class="col-xs-6 text-center">
-                            <a href="javascript:doSubmit('placeDeleteForm', '@controllers.cms.routes.PlaceManage.delete.path');" class="text-center btn btn-danger">削除</a>
+                            <button type="button" class="text-center btn btn-primary">変更</button>
                         </div>
                     </div>
                 </form>
@@ -217,7 +238,7 @@
         </div>
     </div>
     <!-- フロアモーダル画面 -->
-    <div class="modal" id="floorModal" tabindex="-1" role="dialog" aria-labelledby="floorModalLabel" aria-hidden="true" data-show="true" data-keyboard="false" data-backdrop="static">
+    <div class="modal" id="floorUpdateModal" tabindex="-1" role="dialog" aria-labelledby="floorUpdateModalLabel" aria-hidden="true" data-show="true" data-keyboard="false" data-backdrop="static">
         <div class="modal-dialog">
             <div class="modal-content">
                 <form id="floorForm" name="floorForm" enctype="multipart/form-data" class="form-horizontal" method="post">
@@ -255,31 +276,39 @@
                         </div>
                     </div>
                     <div id="floorFooter" class="modal-footer">
-                        <div id="floorUpdateFooter">
-                            <div class="col-xs-4 text-center">
-                                <button type="button" class="btn btn-default" data-dismiss="modal">キャンセル</button>
-                            </div>
-                            <div class="col-xs-4 text-center">
-                                <a href="javascript:doSubmit('floorForm', '@controllers.cms.routes.PlaceManage.floorUpdate.path');" class="text-center btn btn-primary">更新</a>
-                            </div>
-                            <div class="col-xs-4 text-center">
-                                <a href="javascript:doSubmit('floorForm', '@controllers.cms.routes.PlaceManage.floorDelete.path');" class="text-center btn btn-danger">削除</a>
-                            </div>
+                        <div class="col-xs-6 text-center">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">キャンセル</button>
                         </div>
-                        <div id="floorRegisterFooter">
-                            <div class="col-xs-6 text-center">
-                                <button type="button" class="btn btn-default" data-dismiss="modal">キャンセル</button>
-                            </div>
-                            <div class="col-xs-6 text-center">
-                                <a href="javascript:doSubmit('floorForm', '@controllers.cms.routes.PlaceManage.floorUpdate.path');" class="text-center btn btn-primary">登録</a>
-                            </div>
+                        <div class="col-xs-6 text-center">
+                            <button type="button" class="text-center btn btn-primary">更新</button>
                         </div>
                     </div>
                 </form>
             </div>
         </div>
     </div>
-
+    <!-- フロア削除モーダル画面 -->
+    <div class="modal" id="floorDeleteModal" tabindex="-1" role="dialog" aria-labelledby="floorDeleteModalLabel" aria-hidden="true" data-show="true" data-keyboard="false" data-backdrop="static">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form id="deleteForm" name="deleteForm" class="form-horizontal">
+                    <div class="modal-header">フロア情報削除</div>
+                    <div class="modal-body">
+                        <div class="text-center">
+                            フロア情報を削除します。<br/>よろしいですか？
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <div class="col-xs-6 text-center">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">キャンセル</button>
+                        </div>
+                        <div class="col-xs-6 text-center">
+                            <button type="button" class="text-center btn btn-danger">削除</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
-}
