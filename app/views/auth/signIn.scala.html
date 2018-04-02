@@ -43,12 +43,17 @@
 	<!-- content  -->
 	<div class="container">
 		<!-- ナビバー  -->
-		<div class="navbar navbar-default navbar-fixed-top">
-			<div class="navbar-brand text-left" style="width: 100%;">
-				<div class="">
-					<span>作業車及び仮設材管理システム</span>
+		<div class="navbarCorner navbar navbar-default navbar-fixed-top col-xs-3 col-sm-3 col-md-2 col-lg-2">
+			<div class="navbar-brand">
+				<div>
+					<span>システム名</span>
 				</div>
 			</div>
+		</div>
+		<div class="navbar navbar-default navbar-fixed-top col-xs-9 col-sm-9 col-md-10 col-lg-10 col-xs-offset-3 col-sm-offset-3 col-md-offset-2 col-lg-offset-2"
+			 style="padding:0;">
+			<ul class="nav navbar-nav">
+			</ul>
 		</div>
 		@b3.formCSRF(routes.Auth.authenticate) {
 			<div class="row formRow">
