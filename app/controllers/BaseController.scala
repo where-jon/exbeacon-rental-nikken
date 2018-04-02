@@ -31,7 +31,7 @@ trait BaseController extends AuthController {
       reqPlaceId.get
     } else {
       if (securedRequest2User(request).placeId == None) {
-        ""
+        "1"
       } else {
         securedRequest2User(request).placeId.get.toString
       }
@@ -46,7 +46,7 @@ trait BaseController extends AuthController {
     request.session.get(CURRENT_PLACE_ID).map { placeId =>
       placeId
     }.getOrElse {
-      securedRequest2User(request).placeId.toString
+      "1"
     }
   }
 }
