@@ -42,11 +42,11 @@ trait BaseController extends AuthController {
     * セッションから現在操作中の現場IDを取得
     *
     */
-  implicit def getCurrentPlaceIdStr[A](implicit request: SecuredRequest[MyEnv, A]): String = {
-    request.session.get(CURRENT_PLACE_ID).map { placeId =>
-      placeId
-    }.getOrElse {
-      "1"
+  implicit def getCurrentPlaceId[A](implicit request: SecuredRequest[MyEnv, A]): Int = {
+    if(securedRequest2User.currentPlaceId != None){
+      securedRequest2User.currentPlaceId.get
+    }else{
+      1
     }
   }
 }

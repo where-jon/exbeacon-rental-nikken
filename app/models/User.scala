@@ -18,6 +18,7 @@ case class User(
     password: String,
     name: String,
     placeId: Option[Int],
+    currentPlaceId: Option[Int],
     isSysMng: Boolean,
     /*
 	 * A user can register some accounts from third-party services, then it will have access to different parts of the webpage. The 'master' privilege has full access.
@@ -65,8 +66,8 @@ class UserDAO @Inject() (dbapi: DBApi) {
     get[String]("email") ~
       get[String]("name") ~
       get[String]("password") ~
-      get[Option[Int]]("place_id")  map {
-        case id ~ email ~ name ~ password ~ place_id =>
+      get[Option[Int]]("place_id") ~ get[Option[Int]]("current_place_id") map {
+        case id ~ email ~ name ~ password ~ place_id ~ current_place_id =>
           User(
             Some(id.toString.toLong)
             , email
@@ -74,6 +75,15 @@ class UserDAO @Inject() (dbapi: DBApi) {
             , password
             , name
             , place_id
+            , if(current_place_id == None){
+                if(place_id == None){
+                  Option(1)
+                }else{
+                  place_id
+                }
+              }else{
+                current_place_id
+              }
             , (place_id == None)
             , List("master")
           )
@@ -92,6 +102,7 @@ class UserDAO @Inject() (dbapi: DBApi) {
               , name
               , password
               , place_id
+              , current_place_id
             from
               user_master
             where
@@ -121,7 +132,15 @@ class UserDAO @Inject() (dbapi: DBApi) {
 //
 //        sql.executeUpdate()
 
-        val newUser = User(user.id, user.email, true, user.password, user.name, user.placeId, (user.placeId == None), user.services)
+        val newUser = User(user.id
+          , user.email
+          , true
+          , user.password
+          , user.name
+          , user.placeId
+          , user.currentPlaceId
+          , (user.placeId == None)
+          , user.services)
         User.update(Some(newUser)).get
       }
     )

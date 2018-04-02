@@ -18,7 +18,7 @@ class Application @Inject() (  config: Configuration
                              ) extends BaseController {
 
   def index = SecuredAction { implicit request =>
-    if(securedRequest2User.placeId != None){
+    if(securedRequest2User.isSysMng == false){
       Redirect(s"""${routes.CarSummery.index.path()}?${KEY_PLACE_ID}=${securedRequest2User.placeId.get}""")
     }else{
       Redirect(cms.routes.PlaceManage.index)

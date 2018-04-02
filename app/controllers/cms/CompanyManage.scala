@@ -33,12 +33,12 @@ class CompanyManage @Inject()(config: Configuration
   /** 初期表示 */
   def index = SecuredAction { implicit request =>
     // 選択された現場の現場ID
-    val placeIdStr = super.getCurrentPlaceIdStr
+    val placeId = super.getCurrentPlaceId
 
     // 業者情報
-    val companyList = companyDAO.selectCompany(placeIdStr.toInt)
+    val companyList = companyDAO.selectCompany(placeId)
 
-    Ok(views.html.cms.companyManage(companyList, placeIdStr.toInt))
+    Ok(views.html.cms.companyManage(companyList, placeId))
   }
 
 
@@ -65,7 +65,7 @@ class CompanyManage @Inject()(config: Configuration
       if(f.inputCompanyId.isEmpty){
         // 新規登録の場合 --------------------------
         // 名称重複チェック
-        val companyList = companyDAO.selectCompany(super.getCurrentPlaceIdStr.toInt, f.inputCompanyName)
+        val companyList = companyDAO.selectCompany(super.getCurrentPlaceId, f.inputCompanyName)
         if(companyList.length > 0){
           errMsg :+= Messages("error.cms.CompanyManage.update.inputCompanyName.duplicate")
         }
@@ -84,7 +84,7 @@ class CompanyManage @Inject()(config: Configuration
       }else{
         // 更新の場合 --------------------------
         // 名称重複チェック
-        var companyList = companyDAO.selectCompany(super.getCurrentPlaceIdStr.toInt)
+        var companyList = companyDAO.selectCompany(super.getCurrentPlaceId)
         companyList = companyList.filter(_.companyId != f.inputCompanyId.toInt).filter(_.companyName == f.inputCompanyName)
         if(companyList.length > 0){
           errMsg :+= Messages("error.cms.CompanyManage.update.inputCompanyName.duplicate", f.inputCompanyName)

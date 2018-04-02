@@ -36,11 +36,11 @@ class TxTagManage @Inject()(config: Configuration
     var resultList = Seq[BtxTelemetryInfo]()
 
     // 選択された現場の現場ID
-    val placeIdStr = super.getCurrentPlaceIdStr
+    val placeId = super.getCurrentPlaceId
     // URLを取得
-    val url = placeDAO.selectPlaceList(Seq[Int](placeIdStr.toInt)).last.btxApiUrl
+    val url = placeDAO.selectPlaceList(Seq[Int](placeId)).last.btxApiUrl
     // DBからの情報を取得
-    val dbInfo = btxDAO.selectForTelemetry(placeIdStr.toInt)
+    val dbInfo = btxDAO.selectForTelemetry(placeId)
 
     // API呼び出し
     ws.url(url).get().map { response =>
@@ -69,7 +69,7 @@ class TxTagManage @Inject()(config: Configuration
           )
         }
       })
-      Ok(views.html.cms.txTagManage(resultList, placeIdStr.toInt))
+      Ok(views.html.cms.txTagManage(resultList, placeId))
     }
   }
 }

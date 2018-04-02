@@ -20,6 +20,7 @@ import utils.silhouette.MyEnv
   */
 
 // フォーム定義
+case class PlaceChangeForm(inputPlaceId: String)
 case class PlaceRegisterForm(placeName: String)
 case class PlaceUpdateForm(inputPlaceId: String, inputPlaceName: String, inputPlaceStatus: String)
 case class PasswordUpdateForm(inputPlaceId: String, inputPassword: String, inputRePassword: String)
@@ -39,30 +40,48 @@ class PlaceManage @Inject()(config: Configuration
 
   /** 初期表示 */
   def index = SecuredAction { implicit request =>
-    // 現場一覧を表示＋セッションをクリア
-    val placeList = placeDAO.selectPlaceList()
-    Ok(views.html.cms.placeManage(placeList))
-      .withSession(request.session + (CURRENT_PLACE_ID -> ""))
+    if(securedRequest2User.isSysMng){
+      // 一覧画面
+      val placeList = placeDAO.selectPlaceList()
+      Ok(views.html.cms.placeManage(placeList))
+    }else{
+      // シス管でなければログアウト
+      Redirect("/signout")
+    }
+
   }
 
   /** 詳細 */
+  def change = SecuredAction { implicit request =>
+    // フォームの準備
+    val inputForm = Form(mapping(
+      "inputPlaceId" -> text
+    )(PlaceChangeForm.apply)(PlaceChangeForm.unapply))
+
+    val form = inputForm.bindFromRequest
+    val f = form.get
+
+    // 現在の現場IDを更新
+    placeDAO.updateCurrentPlaceId(f.inputPlaceId.toInt, securedRequest2User.id.get.toInt)
+
+    Redirect(s"""${routes.PlaceManage.detail().path()}?${KEY_PLACE_ID}=${f.inputPlaceId}""")
+
+  }
+    /** 詳細 */
   def detail = SecuredAction { implicit request =>
     // 選択された現場の現場ID
-    var placeIdStr = super.getRequestPlaceIdStr
-    if(placeIdStr.isEmpty){
-      placeIdStr = super.getCurrentPlaceIdStr
-    }
+    var placeId = securedRequest2User.currentPlaceId.get
 
     // 現場情報の取得
-    val placeList = placeDAO.selectPlaceList(Seq[Int](placeIdStr.toInt))
+    val placeList = placeDAO.selectPlaceList(Seq[Int](placeId))
     // フロア情報の取得
-    val floorInfoList = floorDAO.selectFloorInfo(placeIdStr.toInt)
+    val floorInfoList = floorDAO.selectFloorInfo(placeId)
     // 現場状態の選択肢リスト
     val statusList = PlaceEnum().map
 
-    // 画面遷移＋現場IDをセッションに保存
+    // 画面遷移
     Ok(views.html.cms.placeManageDetail(placeList.last, floorInfoList, statusList))
-        .withSession(request.session + (CURRENT_PLACE_ID -> super.getRequestPlaceIdStr))
+
   }
 
   /** 登録 */

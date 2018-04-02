@@ -44,12 +44,12 @@ class CarManage @Inject()(config: Configuration
   /** 初期表示 */
   def index = SecuredAction { implicit request =>
     // 選択された現場の現場ID
-    val placeIdStr = super.getCurrentPlaceIdStr
+    val placeId = super.getCurrentPlaceId
 
     // 業者情報
-    val carList = carDAO.selectCarInfo(placeId = placeIdStr.toInt)
+    val carList = carDAO.selectCarInfo(placeId = placeId)
 
-    Ok(views.html.cms.carManage(carList, placeIdStr.toInt))
+    Ok(views.html.cms.carManage(carList, placeId))
   }
 
 
@@ -82,12 +82,12 @@ class CarManage @Inject()(config: Configuration
       if(f.inputCarId.isEmpty){
         // 新規登録の場合 --------------------------
         // 作業車番号重複チェック
-        val carList = carDAO.selectCarInfo(super.getCurrentPlaceIdStr.toInt, f.inputCarNo)
+        val carList = carDAO.selectCarInfo(super.getCurrentPlaceId, f.inputCarNo)
         if(carList.length > 0){
           errMsg :+= Messages("error.cms.CarManage.update.inputCarNo.duplicate", f.inputCarNo)
         }
         // TxタグNo重複チェック
-        val btxList = btxDAO.select(super.getCurrentPlaceIdStr.toInt)
+        val btxList = btxDAO.select(super.getCurrentPlaceId)
         if(btxList.filter(_.btxId == f.inputCarBtxId.toInt).isEmpty == false){
           errMsg :+= Messages("error.cms.CarManage.update.inputCarBtxId.duplicate", f.inputCarBtxId)
         }
@@ -110,14 +110,14 @@ class CarManage @Inject()(config: Configuration
       }else{
         // 更新の場合 --------------------------
         // 作業車番号重複チェック
-        var carList = carDAO.selectCarInfo(super.getCurrentPlaceIdStr.toInt, f.inputCarNo)
+        var carList = carDAO.selectCarInfo(super.getCurrentPlaceId, f.inputCarNo)
         carList = carList.filter(_.carId != f.inputCarId.toInt).filter(_.carNo == f.inputCarNo)
         if(carList.length > 0){
           errMsg :+= Messages("error.cms.CarManage.update.inputCarNo.duplicate", f.inputCarNo)
         }
 
         // 変更前タグ情報
-        val preCarInfo = carDAO.selectCarInfo(super.getCurrentPlaceIdStr.toInt, "", Option(f.inputCarId.toInt)).last
+        val preCarInfo = carDAO.selectCarInfo(super.getCurrentPlaceId, "", Option(f.inputCarId.toInt)).last
 
         // タグチェック
         val checkList = Seq[(Int,Int)](
@@ -128,7 +128,7 @@ class CarManage @Inject()(config: Configuration
           if(btxId._1 == btxId._2){
             // OK
           }else{
-            val btxList = btxDAO.select(super.getCurrentPlaceIdStr.toInt, Seq[Int](btxId._2))
+            val btxList = btxDAO.select(super.getCurrentPlaceId, Seq[Int](btxId._2))
             if(btxList.isEmpty == false){
               // NG
               if(i == 0){
@@ -154,7 +154,7 @@ class CarManage @Inject()(config: Configuration
             , f.inputCarName
             , f.inputCarBtxId.toInt
             , f.inputCarKeyBtxId.toInt
-            , super.getCurrentPlaceIdStr.toInt
+            , super.getCurrentPlaceId
           )
 
           Redirect(routes.CarManage.index)
@@ -181,7 +181,7 @@ class CarManage @Inject()(config: Configuration
     // DB処理
 
     // 検索
-    val carList = carDAO.selectCarInfo(super.getCurrentPlaceIdStr.toInt, "", Option(f.inputCarId.toInt))
+    val carList = carDAO.selectCarInfo(super.getCurrentPlaceId, "", Option(f.inputCarId.toInt))
     // タグ
     var txTagList = Seq[Int]()
     if(carList.length > 0){
@@ -192,7 +192,7 @@ class CarManage @Inject()(config: Configuration
       }
 
       // 削除
-      carDAO.delete(f.inputCarId.toInt, super.getCurrentPlaceIdStr.toInt, txTagList)
+      carDAO.delete(f.inputCarId.toInt, super.getCurrentPlaceId, txTagList)
     }
 
     // リダイレクト

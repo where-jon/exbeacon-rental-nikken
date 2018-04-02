@@ -32,7 +32,7 @@ class ItemManage @Inject()(config: Configuration
   /** 初期表示 */
   def index = SecuredAction { implicit request =>
     // 選択された現場の現場ID
-    val placeId = super.getCurrentPlaceIdStr.toInt
+    val placeId = super.getCurrentPlaceId
     // 仮設材情報
     val itemList = itemDAO.selectItemInfo(placeId)
 
@@ -79,7 +79,7 @@ class ItemManage @Inject()(config: Configuration
 
         // 重複チェック用
         val dbItemNoList = itemDAO.selectActualItemInfo(f.inputPlaceId.toInt)
-        val dbBtxList = btxDAO.select(super.getCurrentPlaceIdStr.toInt)
+        val dbBtxList = btxDAO.select(super.getCurrentPlaceId)
 
         // 管理Noのチェック
         if(itemNoList.filter(_.matches("^[0-9]+$")).isEmpty){

@@ -63,7 +63,11 @@
                         </div>
                     </div>
                 </div>
-                <!-- 欄外-->
+                <form id="placeChangeForm" name="placeChangeForm" enctype="multipart/form-data" class="hidden" method="post" action="@controllers.cms.routes.PlaceManage.change.path">
+                    @CSRF.formField
+                    <input type="hidden" id="inputPlaceId" name="inputPlaceId">
+                </form>
+                    <!-- 欄外-->
                 <div class="row tableRow" style="margin-top: 10px;">
                     <div class="text-right col-xs-4 col-sm-4 col-md-4" style="padding:0;">
                         <a href="javascript:moveToSelected();" class="btn link">選択した現場を管理</a>

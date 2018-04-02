@@ -21,6 +21,7 @@ GET     /otherItem/getPlotInfo          controllers.OtherItem.getPlotInfo
 GET     /cms/placeManage                controllers.cms.PlaceManage.index
 GET     /cms/placeManage/detail         controllers.cms.PlaceManage.detail
 POST    /cms/placeManage/register       controllers.cms.PlaceManage.register
+POST    /cms/placeManage/change         controllers.cms.PlaceManage.change
 POST    /cms/placeManage/update         controllers.cms.PlaceManage.update
 POST    /cms/placeManage/delete         controllers.cms.PlaceManage.delete
 POST    /cms/placeManage/floorUpdate    controllers.cms.PlaceManage.floorUpdate

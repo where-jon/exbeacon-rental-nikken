@@ -30,7 +30,7 @@ class OtherItem @Inject()(config: Configuration
   /** 初期表示 */
   def index = SecuredAction.async { implicit request =>
     // 現場ID
-    val placeId = super.getCurrentPlaceIdStr.toInt
+    val placeId = super.getCurrentPlaceId
     // 建築現場情報
     val place = placeDAO.selectPlaceList(Seq[Int](placeId)).last
     // フロア情報
@@ -85,7 +85,7 @@ class OtherItem @Inject()(config: Configuration
     */
   def getPlotInfo = SecuredAction.async { implicit request =>
     // 現場ID
-    val placeId = super.getCurrentPlaceIdStr.toInt
+    val placeId = super.getCurrentPlaceId
     // 建築現場情報
     val place = placeDAO.selectPlaceList(Seq[Int](placeId)).last
     // フロア情報

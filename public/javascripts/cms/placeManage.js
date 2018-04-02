@@ -7,22 +7,8 @@ function bindMouseAndTouch(){
             'touchstart': function(e) {
                 if(e.originalEvent.touches.length > 1){
                 }else if(e.originalEvent.touches.length == 1){
-<<<<<<< HEAD
-                    $(this).addClass('rowHoverColor');
-                    var placeId = $(this).attr('data-placeId');
-                    touched = true;
-                    touch_time = 0;
-                    document.interval = setInterval(function(){
-                        touch_time += 100;
-                        if (touch_time == common.longTapTime) {
-                            // ロングタップ時の処理
-                            moveTo('/cms/placeManage/detail?placeId=' + placeId);
-                        }
-                    }, 100);
-=======
                     $(".rowHoverSelectedColor").removeClass('rowHoverSelectedColor');
                     $(this).addClass('rowHoverSelectedColor');
->>>>>>> design
                 }
             },
         });
@@ -36,13 +22,8 @@ function bindMouseAndTouch(){
                 $(this).removeClass('rowHoverColor');
             },
             'click': function(e) {
-<<<<<<< HEAD
-                var placeId = $(this).attr('data-placeId');
-                moveTo('/cms/placeManage/detail?placeId=' + placeId);
-=======
                 $(".rowHoverSelectedColor").removeClass('rowHoverSelectedColor');
                 $(this).addClass('rowHoverSelectedColor');
->>>>>>> design
             },
         });
     }
@@ -60,7 +41,9 @@ function showDeleteModal(){
 //
 function moveToSelected(){
     if($('.rowHoverSelectedColor').length > 0){
-        moveTo('/cms/placeManage/detail');
+        var placeId = $('.rowHoverSelectedColor').attr('data-placeId');
+        $('#inputPlaceId').val(placeId)
+        $('#placeChangeForm').submit()
     }
 }
 

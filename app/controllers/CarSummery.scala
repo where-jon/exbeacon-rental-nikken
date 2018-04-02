@@ -35,7 +35,7 @@ class CarSummery @Inject()(config: Configuration
     */
 
   def index = SecuredAction.async { implicit request =>
-    val placeId = super.getCurrentPlaceIdStr.toInt
+    val placeId = super.getCurrentPlaceId
     // 現場情報
     val place = placeDAO.selectPlaceList(Seq[Int](placeId)).last
     // フロア情報
@@ -147,7 +147,7 @@ class CarSummery @Inject()(config: Configuration
     * @return
     */
   def getPlotInfo = SecuredAction.async { implicit request =>
-    val placeId = super.getCurrentPlaceIdStr.toInt
+    val placeId = super.getCurrentPlaceId
 
     // 予約情報
     val carSummeryReservePlotInfoList = carSummeryDAO.selectReserveForPlot(placeId)

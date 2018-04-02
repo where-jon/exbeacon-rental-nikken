@@ -219,6 +219,7 @@ CREATE TABLE user_master
   name text NOT NULL,
   password text NOT NULL,
   place_id integer,
+  current_place_id integer DEFAULT NULL,
   active_flg boolean NOT NULL DEFAULT true,
   updatetime timestamp without time zone DEFAULT now(),
   CONSTRAINT user_master_pkey PRIMARY KEY (user_id)
@@ -232,6 +233,7 @@ COMMENT ON COLUMN user_master.email IS 'メールアドレス';
 COMMENT ON COLUMN user_master.name IS '名前';
 COMMENT ON COLUMN user_master.password IS 'パスワード';
 COMMENT ON COLUMN user_master.place_id IS '現場ID';
+COMMENT ON COLUMN user_master.current_place_id IS '現在の現場ID';
 COMMENT ON COLUMN user_master.active_flg IS '有効フラグ';
 COMMENT ON COLUMN user_master.updatetime IS 'データ更新日時';
 

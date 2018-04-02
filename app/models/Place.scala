@@ -192,5 +192,27 @@ Logger.debug("現場を新規登録、ID：" + placeId.get.toString)
     }
   }
 
+  /**
+    * ユーザの現場IDの更新
+    * @return
+    */
+  def updateCurrentPlaceId(placeId:Int, userId: Int): Unit = {
+    db.withTransaction { implicit connection =>
+      SQL(
+        """
+          update user_master set
+              current_place_id = {placeId}
+          where user_id = {userId} ;
+        """).on(
+        'placeId -> placeId, 'userId -> userId
+      ).executeUpdate()
+
+      // コミット
+      connection.commit()
+
+      Logger.debug(s"""現在の現場IDを更新、ID：" + ${userId.toString}""")
+    }
+  }
+
 }
 
