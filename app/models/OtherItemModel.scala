@@ -4,6 +4,8 @@ import javax.inject.Inject
 
 import anorm.SqlParser._
 import anorm.{~, _}
+
+import scala.collection.immutable.ListMap
 //import play.api.Logger
 import play.api.db._
 import play.api.libs.json.{JsPath, Json, Reads}
@@ -79,9 +81,9 @@ class otherItemDAO @Inject() (dbapi: DBApi) {
     * 仮設材情報の取得
     * @return
     */
-  def selectItemMap(placeId:Int): Map[Int,String] = {
+  def selectItemMap(placeId:Int): ListMap[Int,String] = {
 
-    var resultMap = Map[Int,String]()
+    var resultMap = ListMap[Int,String]()
 
     val simple = {
         get[Int]("item_kind_id") ~

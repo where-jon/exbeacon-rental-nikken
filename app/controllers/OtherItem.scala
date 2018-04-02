@@ -79,7 +79,7 @@ class OtherItem @Inject()(config: Configuration
   }
 
   /**
-    * 作業車稼働情報のJSON出力
+    * 仮設材位置情報のJSON出力
     *
     * @return
     */

@@ -1,4 +1,5 @@
-@(otherItemSummeryInfoList: Seq[models.OtherItemSummeryInfo], itemMap: Map[Int,String], totalCount: Int, floorId: Int)(implicit user: User, messages: Messages, request: RequestHeader, flash: Flash)
+@(otherItemSummeryInfoList: Seq[models.OtherItemSummeryInfo], itemMap: scala.collection.immutable.ListMap[Int,String], totalCount: Int, floorId: Int)(implicit user: User, messages: Messages, request: RequestHeader, flash: Flash)
+
 
 @import controllers.routes
 @import helper._
@@ -48,7 +49,6 @@
                                     </tr>
                                 </thead>
                                 <tbody class="text-right">
-<<<<<<< HEAD
                                     @for(info <- otherItemSummeryInfoList){
                                         <tr class="rowHover" id="@info.floorId">
                                             @if(floorId == info.floorId){
@@ -72,43 +72,6 @@
                                         <td class="floorNameTd">全数</td>
                                         <td class="itemTd">@{totalCount}台</td>
                                         <input type="hidden" id="floorId" value="@floorId">
-=======
-                                    <tr class="rowHover">
-                                        <td class="floorNameTd">8F</td>
-                                        <td></td>
-                                    </tr>
-                                    <tr class="rowHover">
-                                        <td class="floorNameTd">7F</td>
-                                        <td></td>
-                                    </tr>
-                                    <tr class="rowHover">
-                                        <td class="floorNameTd">6F</td>
-                                        <td></td>
-                                    </tr>
-                                    <tr class="rowHover">
-                                        <td class="floorNameTd">5F</td>
-                                        <td></td>
-                                    </tr>
-                                    <tr class="rowHover">
-                                        <td class="floorNameTd summerySelected">4F</td>
-                                        <td class="itemTd summerySelected">9台</td>
-                                    </tr>
-                                    <tr class="rowHover">
-                                        <td class="floorNameTd">3F</td>
-                                        <td>5台</td>
-                                    </tr>
-                                    <tr class="rowHover">
-                                        <td class="floorNameTd">2F</td>
-                                        <td>1台</td>
-                                    </tr>
-                                    <tr class="rowHover">
-                                        <td class="floorNameTd">1F</td>
-                                        <td></td>
-                                    </tr>
-                                    <tr>
-                                        <td class="floorNameTd">全数</td>
-                                        <td>15台</td>
->>>>>>> design
                                     </tr>
                                 </tbody>
                             </table>

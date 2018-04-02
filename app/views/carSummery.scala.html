@@ -34,7 +34,7 @@
                         <div class="row" style="margin-bottom:5px;">
                             <div class="col-xs-8 col-xs-offset-4" style="padding:0;">
                                 <p class="dateFont" style="margin-top: 20px;">最終更新日時</p>
-                                <p class="dateFont" style="margin-bottom: 20px;">7月3日 9:00</p>
+                                <p class="dateFont" style="margin-bottom: 20px;">@{new DateTime().toString("MM月dd日 HH:mm")}</p>
                             </div>
                         </div>
                     </div>
@@ -140,7 +140,9 @@
                                     <tbody>
                                     @for(floor <- floorList){
                                         <tr id="floorRow_@floor.floorId" class="useRow">
-                                            <td rowspan="2" class="reserveFloorNameTd">@floor.floorName</td>
+                                            <td rowspan="2" class="reserveFloorNameTd">
+                                                @{Html(floor.floorName.map{char=>char}.mkString("<br/>"))}
+                                            </td>
                                             <td nowrap class="useNameTd">
                                                 稼働<span class="hiddenPart"></span>
                                             </td>

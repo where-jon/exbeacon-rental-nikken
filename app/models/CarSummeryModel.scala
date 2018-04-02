@@ -9,7 +9,7 @@ import play.api.db._
 import play.api.libs.json.{JsPath, Json, Reads}
 import play.api.libs.functional.syntax._
 
-// JSON用 ----------------------------------
+//  画面に渡す稼働情報JSONオブジェクト -------------------
 case class CarSummeryWorkPlotInfo(
     floorId: String
   , carId: String
@@ -19,18 +19,11 @@ case class CarSummeryWorkPlotInfo(
 )
 
 object CarSummeryWorkPlotInfo {
-//
-//  implicit val jsonReads: Reads[CarPlotInfo] = (
-//      ((JsPath \ "floorId").read[String] | Reads.pure("")) ~
-//      ((JsPath \ "carId").read[String] | Reads.pure("")) ~
-//      ((JsPath \ "carNo").read[String] | Reads.pure("")) ~
-//      ((JsPath \ "companyId").read[String] | Reads.pure("")) ~
-//      ((JsPath \ "isWorking").read[Boolean] | Reads.pure(false))
-//    )(CarPlotInfo.apply _)
 
   implicit def jsonWrites = Json.writes[CarSummeryWorkPlotInfo]
 }
 
+//  画面に渡す予約情報JSONオブジェクト -------------------
 case class CarSummeryReservePlotInfo(
   carId: String
   , carNo: String
@@ -39,32 +32,17 @@ case class CarSummeryReservePlotInfo(
 )
 
 object CarSummeryReservePlotInfo {
-  //
-  //  implicit val jsonReads: Reads[CarPlotInfo] = (
-  //      ((JsPath \ "floorId").read[String] | Reads.pure("")) ~
-  //      ((JsPath \ "carId").read[String] | Reads.pure("")) ~
-  //      ((JsPath \ "carNo").read[String] | Reads.pure("")) ~
-  //      ((JsPath \ "companyId").read[String] | Reads.pure("")) ~
-  //      ((JsPath \ "isWorking").read[Boolean] | Reads.pure(false))
-  //    )(CarPlotInfo.apply _)
 
   implicit def jsonWrites = Json.writes[CarSummeryReservePlotInfo]
 }
 
+//  画面に渡すJSONオブジェクト -------------------
 case class CarSummeryPlotInfo(
     workInfoList: List[CarSummeryWorkPlotInfo]
   , reserveInfoList: List[CarSummeryReservePlotInfo]
 )
 
 object CarSummeryPlotInfo {
-  //
-  //  implicit val jsonReads: Reads[CarPlotInfo] = (
-  //      ((JsPath \ "floorId").read[String] | Reads.pure("")) ~
-  //      ((JsPath \ "carId").read[String] | Reads.pure("")) ~
-  //      ((JsPath \ "carNo").read[String] | Reads.pure("")) ~
-  //      ((JsPath \ "companyId").read[String] | Reads.pure("")) ~
-  //      ((JsPath \ "isWorking").read[Boolean] | Reads.pure(false))
-  //    )(CarPlotInfo.apply _)
 
   implicit def jsonWrites = Json.writes[CarSummeryPlotInfo]
 }
