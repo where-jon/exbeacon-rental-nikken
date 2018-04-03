@@ -19,6 +19,7 @@ GET     /otherItem/getPlotInfo          controllers.OtherItem.getPlotInfo
 ###  CMS　#################################
 # 現場管理
 GET     /cms/placeManage                controllers.cms.PlaceManage.index
+GET     /cms/sortPlaceListWith/:number   controllers.cms.PlaceManage.sortPlaceListWith(number: Int)
 GET     /cms/placeManage/detail         controllers.cms.PlaceManage.detail
 POST    /cms/placeManage/register       controllers.cms.PlaceManage.register
 POST    /cms/placeManage/change         controllers.cms.PlaceManage.change

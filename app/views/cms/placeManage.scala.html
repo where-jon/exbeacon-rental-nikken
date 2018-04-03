@@ -6,7 +6,7 @@
 <!doctype html>
 <html lang="ja">
 <head>
-    @templates.htmlHead(title = "現場一覧")
+    @templates.htmlHead(title = Messages("lang.cms.placeManage.tabName"))
     <link rel="stylesheet" href="@routes.MyAssets.css("cms/placeManage.css")"/>
     <script type="text/javascript" src="@routes.MyAssets.lib("jquery.tablefix_1.0.1.js")"></script>
     <script></script>
@@ -25,12 +25,12 @@
                 @views.html.templates.msgDiv()
                 <!-- 画面題字 -->
                 <div class="form-group" style="font-weight:bold;font-size:19px;margin:15px 0px;">
-                    現場一覧画面
+                    @Messages("placeManage.title")
                     <div class="pull-right">
-                        <a href="javascript:location.reload();" class="btn sortBtn">ID順</a>
+                        <a href="@controllers.cms.routes.PlaceManage.sortPlaceListWith(0).path" class="btn sortBtn">@Messages("lang.cms.placeManage.sort.id")</a>
                     </div>
                     <div class="pull-right">
-                        <a href="javascript:location.reload();" class="btn sortBtn">登録順</a>
+                        <a href="@controllers.cms.routes.PlaceManage.sortPlaceListWith(1).path" class="btn sortBtn">@Messages("lang.cms.placeManage.sort.updatetime")</a>
                     </div>
                 </div>
                 <!-- テーブルのROW -->
@@ -40,13 +40,13 @@
                             <table id ="itemTable" class="table table-bordered table-condensed itemTable">
                                 <thead>
                                     <tr>
-                                        <th colspan="4" class="tableTitleTh">建築現場一覧</th>
+                                        <th colspan="4" class="tableTitleTh">@Messages("lang.cms.placeManage.list.header.title")</th>
                                     </tr>
                                     <tr>
-                                        <th class="tableTh noTh text-center">ID</th>
-                                        <th class="tableTh placeNameTh">建設現場名称</th>
-                                        <th class="tableTh floorCountTh">階数</th>
-                                        <th class="tableTh stateTh">状態</th>
+                                        <th class="tableTh noTh text-center">@Messages("lang.cms.placeManage.list.header.id")</th>
+                                        <th class="tableTh placeNameTh">@Messages("lang.cms.placeManage.list.header.placeName")</th>
+                                        <th class="tableTh floorCountTh">@Messages("lang.cms.placeManage.list.header.floor")</th>
+                                        <th class="tableTh stateTh">@Messages("lang.cms.placeManage.list.header.status")</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -70,13 +70,13 @@
                     <!-- 欄外-->
                 <div class="row tableRow" style="margin-top: 10px;">
                     <div class="text-right col-xs-4 col-sm-4 col-md-4" style="padding:0;">
-                        <a href="javascript:moveToSelected();" class="btn link">選択した現場を管理</a>
+                        <a href="javascript:moveToSelected();" class="btn link">@Messages("lang.cms.placeManage.change.title")</a>
                     </div>
                     <div class="text-center col-xs-4 col-sm-4 col-md-4" style="padding:0;">
-                        <a href="javascript:showInputModal();" class="btn link">新規現場登録</a>
+                        <a href="javascript:showInputModal();" class="btn link">@Messages("lang.cms.placeManage.input.title")</a>
                     </div>
                     <div class="text-left col-xs-4 col-sm-4 col-md-4" style="padding:0;">
-                        <a href="javascript:showDeleteModal();" class="btn link">選択した現場を削除</a>
+                        <a href="javascript:showDeleteModal();" class="btn link">@Messages("lang.cms.placeManage.delete.title")</a>
                     </div>
                 </div>
             </div>
@@ -86,26 +86,26 @@
     <script></script>
 
     <!-- 更新モーダル画面 -->
-    <div class="modal" id="placeRegisterModal" tabindex="-1" role="dialog" aria-labelledby="placeRegisterModalLabel" aria-hidden="true" data-show="true" data-keyboard="false" data-backdrop="static">
+    <div class="modal" id="inputModal" tabindex="-1" role="dialog" aria-labelledby="placeRegisterModalLabel" aria-hidden="true" data-show="true" data-keyboard="false" data-backdrop="static">
         <div class="modal-dialog">
             <div class="modal-content">
                 <form id="placeRegisterForm" name="placeRegisterForm" enctype="multipart/form-data" class="form-horizontal" method="post" action="@controllers.cms.routes.PlaceManage.register.path">
                     @CSRF.formField
-                    <div class="modal-header" style="">新規現場登録</div>
+                    <div class="modal-header" style="">@Messages("lang.cms.placeManage.input.popup.title")</div>
                     <div class="modal-body">
                         <div class="form-group">
-                            <label class="control-label col-xs-4">建設現場名称</label>
+                            <label class="control-label col-xs-4">@Messages("lang.cms.placeManage.input.popup.name")</label>
                             <div class="col-xs-5" style="padding-left: 0px;padding-right: 0px;">
-                                <input type="text" name="placeName" id="inputTitle" class="form-control" placeholder="東北医科薬科大学病院">
+                                <input type="text" name="placeName" id="inputTitle" class="form-control" placeholder="@Messages("lang.cms.placeManage.input.popup.placeholder")">
                             </div>
                         </div>
                     </div>
                     <div class="modal-footer">
                         <div class="col-xs-6 text-center">
-                            <button type="button" class="btn btn-default" data-dismiss="modal">キャンセル</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">@Messages("cancel")</button>
                         </div>
                         <div class="col-xs-6 text-center">
-                            <button type="submit" class="text-center btn btn-primary">登録</button>
+                            <button type="submit" class="text-center btn btn-primary">@Messages("registration")</button>
                         </div>
                     </div>
                 </form>
@@ -116,19 +116,21 @@
     <div class="modal" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true" data-show="true" data-keyboard="false" data-backdrop="static">
         <div class="modal-dialog">
             <div class="modal-content">
-                <form id="deleteForm" name="deleteForm" class="form-horizontal">
-                    <div class="modal-header">現場情報削除</div>
+                <form id="deleteForm" name="PlaceDeleteForm" class="form-horizontal" enctype="multipart/form-data" method="post" action="@controllers.cms.routes.PlaceManage.delete.path">
+                    @CSRF.formField
+                    <input type="hidden" id="deletePlaceId" name="inputPlaceId" value="">
+                    <div class="modal-header">@Messages("lang.cms.placeManage.delete.popup.title")</div>
                     <div class="modal-body">
                         <div class="text-center">
-                            建設現場の情報を削除します。<br/>よろしいですか？
+                            @Messages("lang.cms.placeManage.delete.popup.confirm")
                         </div>
                     </div>
                     <div class="modal-footer">
                         <div class="col-xs-6 text-center">
-                            <button type="button" class="btn btn-default" data-dismiss="modal">キャンセル</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">@Messages("cancel")</button>
                         </div>
                         <div class="col-xs-6 text-center">
-                            <button type="button" class="text-center btn btn-danger">削除</button>
+                            <button type="button" onClick="javascript:deleteSelectPlace();" class="text-center btn btn-danger">@Messages("delete")</button>
                         </div>
                     </div>
                 </form>

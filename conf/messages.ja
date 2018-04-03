@@ -13,6 +13,12 @@ reset=変更する
 back=戻る
 go.index=メニュー画面へ
 
+registration=登録
+cancel=キャンセル
+delete=削除
+
+placeManage.title=現場一覧画面
+
 ################################################################################################
 # AUTH
 
@@ -81,6 +87,29 @@ error.cms.ItemManage.update.inputItemNo.duplicate=管理Noが重複していま�
 error.cms.ItemManage.update.inputBtxId.notNumeric=TxタグNoを半角数字で入力してください。
 error.cms.ItemManage.update.inputBtxId.duplicate=TxタグNoが重複しています。
 error.cms.ItemManage.update.actualItemInfoStr.empty=Txタグ設定を入力してください。
+
+error.cms.placeManage.move.empty=選択された建築現場は既に削除されています
+
+# CMS文字列（現場一覧）
+lang.cms.placeManage.tabName=現場一覧
+lang.cms.placeManage.input.title=新規現場登録
+lang.cms.placeManage.input.popup.title=新規現場登録
+lang.cms.placeManage.input.popup.name=建設現場名称
+lang.cms.placeManage.input.popup.placeholder=現場名称
+lang.cms.placeManage.change.title=選択した現場を管理
+lang.cms.placeManage.delete.title=選択した現場を削除
+lang.cms.placeManage.delete.popup.title=現場情報削除
+lang.cms.placeManage.delete.popup.confirm=建設現場の情報を削除します。\nよろしいですか？
+lang.cms.placeManage.sort.id=ID順
+lang.cms.placeManage.sort.updatetime=登録順
+lang.cms.placeManage.list.header.title=建築現場一覧
+lang.cms.placeManage.list.header.id=ID
+lang.cms.placeManage.list.header.placeName=建設現場名称
+lang.cms.placeManage.list.header.floor=階数
+lang.cms.placeManage.list.header.status=状態
+
+# CMS文字列（現場管理）
+lang.cms.placeManage.detail.returnManage=現場一覧画面に戻る
 
 ################################################################################################
 # SUCCESS

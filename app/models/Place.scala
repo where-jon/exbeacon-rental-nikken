@@ -27,7 +27,8 @@ import play.api.libs.json.{JsPath, Json, Reads}
 //}
 
 case class PlaceEnum(
-  map: Map[Int,String] = Map[Int,String](0 -> "施工前", 1 -> "施行中", 9 -> "終了")
+  map: Map[Int,String] = Map[Int,String](0 -> "施工前", 1 -> "施行中", 9 -> "終了"),
+  sortTypeMap: Map[Int,String] = Map[Int,String](0 -> "pm.place_id", 1 -> "pm.updatetime")
 )
 
 case class Place(
@@ -97,20 +98,65 @@ class placeDAO @Inject() (dbapi: DBApi) {
   }
 
   /**
+    * 現場情報を指定されたソート順で取得
+    * @return
+    */
+  def selectPlaceListWithSortType(sortType: Int): Seq[Place] = {
+
+    val list = {
+      get[Int]("place_id") ~
+        get[String]("place_name") ~
+        get[Int]("floor_count") ~
+        get[Int]("status") ~
+        get[String]("btx_api_url") map {
+        case place_id ~ place_name ~ floor_count ~ status ~ btx_api_url =>
+          val statusName = PlaceEnum().map(status)
+          Place(place_id, place_name, floor_count, status, statusName, btx_api_url)
+      }
+    }
+    db.withConnection { implicit connection =>
+
+      var selectSQL =
+        s"""
+          select
+              pm.place_id
+            , pm.place_name
+            , count(f.floor_id) as floor_count
+            , pm.status
+            , pm.btx_api_url
+            , pm.cms_password
+          from
+            place_master pm
+            left outer join floor_master f
+              on pm.place_id = f.place_id
+          where
+            pm.active_flg = true
+              group by
+              pm.place_id
+            , pm.place_name
+            , pm.status
+            order by ${PlaceEnum().sortTypeMap(sortType)}"""
+
+      SQL(selectSQL).as(list.*)
+    }
+  }
+
+  /**
     * 現場の新規登録
     * @return
     */
-  def insert(placeName: String): Int = {
+  def insert(placeName: String, btxApiUrl: String): Int = {
     db.withTransaction { implicit connection =>
       // パラメータのセット
       val params: Seq[NamedParameter] = Seq(
-        "placeName" -> placeName
+        "placeName" -> placeName,
+        "btxApiUrl" -> btxApiUrl
       )
       // クエリ
       var sql = SQL(
         """
-          insert into place_master (place_name)
-          values ({placeName})
+          insert into place_master (place_name, btx_api_url)
+          values ({placeName}, {btxApiUrl})
         """
       ).on(params:_*)
 
@@ -119,7 +165,7 @@ class placeDAO @Inject() (dbapi: DBApi) {
       // コミット
       connection.commit()
 
-Logger.debug("現場を新規登録、ID：" + placeId.get.toString)
+      Logger.debug("現場を新規登録、ID：" + placeId.get.toString)
 
       placeId.get.toInt
     }

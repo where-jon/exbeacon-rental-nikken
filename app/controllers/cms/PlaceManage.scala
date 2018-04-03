@@ -24,7 +24,8 @@ case class PlaceChangeForm(inputPlaceId: String)
 case class PlaceRegisterForm(placeName: String)
 case class PlaceUpdateForm(inputPlaceId: String, inputPlaceName: String, inputPlaceStatus: String)
 case class PasswordUpdateForm(inputPlaceId: String, inputPassword: String, inputRePassword: String)
-case class PlaceDeleteForm(inputPlaceId: String)
+case class PlaceDeleteForm(deletePlaceId: String)
+case class PlaceSortForm(placeSortId: String)
 case class FloorDeleteForm(inputPlaceId: String, inputFloorId: String)
 case class FloorUpdateForm(inputPlaceId: String, inputFloorId: String, inputFloorName: String, inputExbDeviceIdListComma: String)
 
@@ -37,18 +38,32 @@ class PlaceManage @Inject()(config: Configuration
                             , exbDAO: models.exbModelDAO
                                ) extends BaseController with I18nSupport {
 
+  // FIXME: matsumura 実証実験では固定登録とする
+  val BTX_API_URL = "https://demo6743258.mockable.io/getTakasagoBtx"
+
+  /** 選択されている並び順 */
+  var selectedSortType = 0
 
   /** 初期表示 */
   def index = SecuredAction { implicit request =>
     if(securedRequest2User.isSysMng){
-      // 一覧画面
-      val placeList = placeDAO.selectPlaceList()
+      Redirect(routes.PlaceManage.sortPlaceListWith(selectedSortType))
+    }else{
+      // シス管でなければログアウト
+      Redirect("/signout")
+    }
+  }
+
+  /** 指定順一覧表示 */
+  def sortPlaceListWith(sortType:Int = 0) = SecuredAction { implicit request =>
+    if(securedRequest2User.isSysMng){
+      val placeList = placeDAO.selectPlaceListWithSortType(sortType)
+      selectedSortType = sortType
       Ok(views.html.cms.placeManage(placeList))
     }else{
       // シス管でなければログアウト
       Redirect("/signout")
     }
-
   }
 
   /** 詳細 */
@@ -79,9 +94,15 @@ class PlaceManage @Inject()(config: Configuration
     // 現場状態の選択肢リスト
     val statusList = PlaceEnum().map
 
-    // 画面遷移
-    Ok(views.html.cms.placeManageDetail(placeList.last, floorInfoList, statusList))
-
+    if (placeList.isEmpty) {
+      // エラーメッセージ
+      val errMsg =  Messages("error.cms.placeManage.move.empty")
+      // リダイレクトで画面遷移
+      Redirect(routes.PlaceManage.sortPlaceListWith(selectedSortType)).flashing(ERROR_MSG_KEY -> errMsg)
+    } else {
+      // 画面遷移
+      Ok(views.html.cms.placeManageDetail(placeList.last, floorInfoList, statusList))
+    }
   }
 
   /** 登録 */
@@ -97,12 +118,12 @@ class PlaceManage @Inject()(config: Configuration
       // エラーメッセージ
       val errMsg = form.errors.map(_.message).mkString(HTML_BR)
       // リダイレクトで画面遷移
-      Redirect(routes.PlaceManage.index()).flashing(ERROR_MSG_KEY -> errMsg)
+      Redirect(routes.PlaceManage.sortPlaceListWith(selectedSortType)).flashing(ERROR_MSG_KEY -> errMsg)
     }else{
       // DB登録
-      placeDAO.insert(form.get.placeName)
+      placeDAO.insert(form.get.placeName, BTX_API_URL)
 
-      Redirect(routes.PlaceManage.index()).flashing(SUCCESS_MSG_KEY -> Messages("success.cms.PlaceManage.register"))
+      Redirect(routes.PlaceManage.sortPlaceListWith(selectedSortType)).flashing(SUCCESS_MSG_KEY -> Messages("success.cms.PlaceManage.register"))
     }
   }
 
@@ -183,10 +204,10 @@ class PlaceManage @Inject()(config: Configuration
     }else{
       val f = form.get
       // DB処理
-      placeDAO.deleteLogicalById(f.inputPlaceId.toInt)
+      placeDAO.deleteLogicalById(f.deletePlaceId.toInt)
 
       // 現場一覧の方にリダイレクト
-      Redirect(routes.PlaceManage.index()).flashing(SUCCESS_MSG_KEY -> Messages("success.cms.PlaceManage.delete"))
+      Redirect(routes.PlaceManage.sortPlaceListWith(selectedSortType)).flashing(SUCCESS_MSG_KEY -> Messages("success.cms.PlaceManage.delete"))
     }
   }
 

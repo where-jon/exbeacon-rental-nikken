@@ -28,11 +28,11 @@ function bindMouseAndTouch(){
         });
     }
 }
-
 // モーダル画面の表示
-function showPlaceRegisterModal(){
-    $('#placeRegisterModal').modal();
+function showInputModal(){
+    $('#inputModal').modal();
 }
+
 function showDeleteModal(){
     if($('.rowHoverSelectedColor').length > 0){
         $('#deleteModal').modal();
@@ -44,6 +44,14 @@ function moveToSelected(){
         var placeId = $('.rowHoverSelectedColor').attr('data-placeId');
         $('#inputPlaceId').val(placeId)
         $('#placeChangeForm').submit()
+    }
+}
+
+function deleteSelectPlace() {
+    if($('.rowHoverSelectedColor').length > 0){
+        var placeId = $('.rowHoverSelectedColor').attr('data-placeId');
+        $('#deletePlaceId').val(placeId);
+        $('#deleteForm').submit();
     }
 }
 
