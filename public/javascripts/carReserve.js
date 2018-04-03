@@ -77,8 +77,8 @@ function setDeleteBadge(obj){
             $(obj).remove();
             setColor();
 
-            $('[data-th="th_' + no + '"]').css("min-width", '');
-            $('[data-th="th_' + no + '"]').css("min-width", parent.outerWidth() + "px");
+            $('#company_th_' + no).css("min-width", '');
+            $('#company_th_' + no).css("min-width", parent.outerWidth() + "px");
 
             return false;
         });
@@ -112,8 +112,8 @@ function setDeleteBadge(obj){
             $(obj).remove();
             setColor();
 
-            $('[data-th="th_' + no + '"]').css("min-width", '');
-            $('[data-th="th_' + no + '"]').css("min-width", parent.outerWidth() + "px");
+            $('#company_th_' + no).css("min-width", '');
+            $('#company_th_' + no).css("min-width", parent.outerWidth() + "px");
 
             return false;
         });
@@ -139,7 +139,7 @@ function fixTable(){
     // 複製テーブルのドラッグ＋ドロップは無効に
     $('.crossTableDiv, .rowTableDiv, .colTableDiv').find('table').removeAttr('id');
     $('.crossTableDiv, .rowTableDiv, .colTableDiv').find('th').removeAttr('id');
-    $('.crossTableDiv, .rowTableDiv, .colTableDiv').find('td').removeAttr('id data-company data-name data-floor');
+    $('.crossTableDiv, .rowTableDiv, .colTableDiv').find('td').removeAttr('id data-company data-pos data-floor');
     $('.crossTableDiv, .rowTableDiv, .colTableDiv').find('span').removeAttr('id data-originalId data-carNo data-before');
 
     $('.crossTableDiv, .rowTableDiv, .colTableDiv').find('span').removeClass('draggable reserveNone original badgeCls');
@@ -170,7 +170,7 @@ function setDraggableOriginal(){
 //            // 予約の行にドラッグ中の場合はフロアと業者名を表示
 //            if(parentOnDrag != ui.helper.parent()){
 //                // 親要素のtdを表示
-//                var name = ui.helper.parent().attr('data-name');
+//                var name = ui.helper.parent().attr('data-pos');
 //                if(name){
 //                    ui.helper.attr('data-dragDisp',name);
 //                    parentOnDrag = ui.helper.parent()
@@ -209,7 +209,7 @@ function setDraggableClone(paramObj){
 //            // 予約の行にドラッグ中の場合はフロアと業者名を表示
 //            if(parentOnDrag != ui.helper.parent()){
 //                // 親要素のtdを表示
-//                var name = ui.helper.parent().attr('data-name');
+//                var name = ui.helper.parent().attr('data-pos');
 //                if(name){
 //                    ui.helper.attr('data-dragDisp',name);
 //                    parentOnDrag = ui.helper.parent()
@@ -232,8 +232,8 @@ function setDraggableClone(paramObj){
             // 色付け
             setColor();
             // 幅の調整
-            $('[data-th="th_' + no + '"]').css("min-width", '');
-            $('[data-th="th_' + no + '"]').css("min-width", parent.outerWidth()*1 + "px");
+            $('#company_th_' + no).css("min-width", '');
+            $('#company_th_' + no).css("min-width", parent.outerWidth()*1 + "px");
         }
     });
 }
@@ -277,8 +277,8 @@ function setSortable(){
                         // 色付け
                         setColor();
                         // 幅の調整
-                        $('[data-th="th_' + no + '"]').css("min-width", '');
-                        $('[data-th="th_' + no + '"]').css("min-width", parent.outerWidth()*1 + "px");
+                        $('#company_th_' + no).css("min-width", '');
+                        $('#company_th_' + no).css("min-width", parent.outerWidth()*1 + "px");
                     }else{
                         // ただ同じ場所に移動した時
                         clonedItem.addClass('cloned');
@@ -288,8 +288,8 @@ function setSortable(){
                         // 幅を調整
                         var no = $(this).attr('data-company');
                         var minWidth = $(this).outerWidth() + "px";
-                        $('[data-th="th_' + no + '"]').css("min-width", '');
-                        $('[data-th="th_' + no + '"]').css("min-width", minWidth);
+                        $('#company_th_' + no).css("min-width", '');
+                        $('#company_th_' + no).css("min-width", minWidth);
                         // 受け取ったクローンをさらにドラッグ可能にする
                         setDraggableClone(clonedItem);
                     }
@@ -302,8 +302,8 @@ function setSortable(){
                     // 幅を調整
                     var no = $(this).attr('data-company');
                     var minWidth = $(this).outerWidth() + "px";
-                    $('[data-th="th_' + no + '"]').css("min-width", '');
-                    $('[data-th="th_' + no + '"]').css("min-width", minWidth);
+                    $('#company_th_' + no).css("min-width", '');
+                    $('#company_th_' + no).css("min-width", minWidth);
                     // 受け取ったクローンをさらにドラッグ可能にする
                     setDraggableClone(clonedItem);
                 }
@@ -328,10 +328,10 @@ function setColor(){
             $(rsvObjects).addClass('reserveDuplicate');
 
         }else if($(rsvObjects).length == 1){
-            if($(rsvObjects).parent().attr('data-name') != $(rsvObjects).attr('data-before')){
+            if($(rsvObjects).parent().attr('data-pos') != $(rsvObjects).attr('data-before')){
                 // 前日と異なる階 / 業者で予約
                 $(rsvObjects).addClass('reserveDiff');
-            }else if($(rsvObjects).parent().attr('data-name') == $(rsvObjects).attr('data-before')){
+            }else if($(rsvObjects).parent().attr('data-pos') == $(rsvObjects).attr('data-before')){
                 // 前日と同じ場合「予約希望」
                 $(rsvObjects).addClass('reserveNormal');
             }

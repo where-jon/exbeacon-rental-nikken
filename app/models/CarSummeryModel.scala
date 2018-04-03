@@ -57,7 +57,7 @@ case class CarSummeryInfo(
   , noReserveNoWorkingCnt: Int
 )
 
-case class ReserveInfo(
+case class CarSummeryModelReserveInfo(
     reserveId: Int
   , carId: Int
   , carBtxId: Int
@@ -76,7 +76,7 @@ class carSummeryDAO @Inject() (dbapi: DBApi) {
     * 予約情報の取得
     * @return
     */
-  def selectReserve(floorId:Option[Int] = None, companyId:Option[Int] = None, dateStr:String = ""): Seq[ReserveInfo] = {
+  def selectReserve(floorId:Option[Int] = None, companyId:Option[Int] = None, dateStr:String = ""): Seq[CarSummeryModelReserveInfo] = {
 
     val simple = {
       get[Int]("reserve_id") ~
@@ -87,7 +87,7 @@ class carSummeryDAO @Inject() (dbapi: DBApi) {
         get[Int]("company_id") ~
         get[String]("reserve_date") map {
         case reserve_id ~ car_id ~ car_btx_id ~ car_key_btx_id ~ floor_id ~ company_id ~ reserve_date  =>
-          ReserveInfo(reserve_id, car_id, car_btx_id, car_key_btx_id, floor_id, company_id, reserve_date)
+          CarSummeryModelReserveInfo(reserve_id, car_id, car_btx_id, car_key_btx_id, floor_id, company_id, reserve_date)
       }
     }
 

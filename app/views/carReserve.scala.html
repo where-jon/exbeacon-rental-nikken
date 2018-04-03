@@ -1,4 +1,4 @@
-@(companyList: Seq[String], floorList:Seq[String], floorSummeryDataList: Seq[models.FloorSummery])(implicit user: User, messages: Messages, request: RequestHeader, flash: Flash)
+@(companyList: Seq[Company], floorList:Seq[FloorInfo], reservePlotList:Seq[CarReserveModelPlotInfo], workPlotList:Seq[CarReserveModelPlotInfo])(implicit user: User, messages: Messages, request: RequestHeader, flash: Flash)
 
 @import controllers.routes
 @import helper._
@@ -52,50 +52,17 @@
                                     </tr>
                                 </thead>
                                 <tbody class="text-right">
-                                    <tr>
-                                        <td class="floorNameTd">8F</td>
-                                        <td></td>
-                                        <td class="summeryColoredTd"></td>
-                                    </tr>
-                                    <tr>
-                                        <td class="floorNameTd">7F</td>
-                                        <td></td>
-                                        <td class="summeryColoredTd"></td>
-                                    </tr>
-                                    <tr>
-                                        <td class="floorNameTd">6F</td>
-                                        <td></td>
-                                        <td class="summeryColoredTd"></td>
-                                    </tr>
-                                    <tr>
-                                        <td class="floorNameTd">5F</td>
-                                        <td></td>
-                                        <td class="summeryColoredTd">2台</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="floorNameTd">4F</td>
-                                        <td>7台</td>
-                                        <td class="summeryColoredTd summeryDuplicate">7台</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="floorNameTd">3F</td>
-                                        <td>5台</td>
-                                        <td class="summeryColoredTd summeryDuplicate">5台</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="floorNameTd">2F</td>
-                                        <td>2台</td>
-                                        <td class="summeryColoredTd">1台</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="floorNameTd">1F</td>
-                                        <td></td>
-                                        <td class="summeryColoredTd"></td>
-                                    </tr>
-                                    <tr>
-                                        <td class="floorNameTd">全数</td>
-                                        <td>14台</td>
-                                        <td class="reserveTd summeryDuplicate">15台</td>
+                                    @for(f <- floorList){
+                                        <tr id="summery_floorId_@f.floorId">
+                                            <td class="floorNameTd floorName">@f.floorName</td>
+                                            <td class="carExistCountStr"></td>
+                                            <td class="summeryColoredTd todayReserveCount"></td>
+                                        </tr>
+                                    }
+                                    <tr id="summery_floorId_total">
+                                        <td class="floorNameTd floorName">全数</td>
+                                        <td class="carExistCountStr">14台</td>
+                                        <td class="summeryColoredTd todayReserveCount">15台</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -181,22 +148,24 @@
                                             <th class="companyTh">
                                                 <span style="font-size: calc(80%);">前日予約無</span>
                                             </th>
-                                            @for((company, no) <- companyList.zipWithIndex){
-                                                <th class="companyTh" data-th="th_@{no}">@company</th>
+                                            @for(c <- companyList){
+                                                <th class="companyTh" id="company_th_@{c.companyId}">@c.companyName</th>
                                             }
                                         </tr>
                                     </thead>
                                     <tbody>
                                         @for(floor <- floorList){
-                                            <tr id="floorRow_@{floor}" class="reserveRow">
-                                                <td rowspan="2" class="floorNameTd removable">@floor<br/>F</td>
+                                            <tr class="reserveRow">
+                                                <td rowspan="2" class="floorNameTd removable">
+                                                    @{Html(floor.floorName.map{char=>char}.mkString("<br/>"))}
+                                                </td>
                                                 <td nowrap class="reserveNameTd removable">
                                                     予約<span class="hiddenPart"></span>
                                                 </td>
                                                 <td class="blankTd" style="background-color:#DEEBF7;"></td>
                                                 <td class="reserveTd removable"></td>
-                                                @for((company, no) <- companyList.zipWithIndex){
-                                                     <td class="drop-able reserveTd reserveTdHover" data-company="@{no}" data-name="@{floor}F/@{company}" data-floor="@{floor}" id="td_@{floor}_@{no}"></td>
+                                                @for(company <- companyList){
+                                                     <td class="drop-able reserveTd reserveTdHover" data-floor="@{floor.floorId}" data-company="@{company.companyId}" data-pos="@{floor.floorId}/@{company.companyId}" id="reserveTd_@{floor.floorId}_@{company.companyId}"></td>
                                                 }
                                             </tr>
                                             <tr>
@@ -204,17 +173,30 @@
                                                     稼働<span class="hiddenPart"></span>
                                                 </td>
                                                 <td class="blankTd" style="background-color:#E7E6E6;"></td>
-                                                <td class="useTd removable"></td>
-                                                @for((company, i) <- companyList.zipWithIndex){
-                                                    <td class="useTd removable">
-                                                       <span class="part draggable reserveNone original"
-                                                             id="@{floor}_@{i}"
-                                                             data-originalId="@{floor}_@{company}"
-                                                             data-carNo="0@{floor}@{i}"
-                                                             data-before="@{floor}F/@{company}">
-                                                           <span>0@{floor}@{i}</span>
-                                                           <span class="badgeCls"></span>
-                                                       </span>
+                                                <td class="useTd removable" id="useTd_@{floor.floorId}_">
+                                                    @workPlotList.filter(_.floorIdStr == floor.floorId.toString).filter(_.companyIdStr == "").map{ d =>
+                                                            <span class="part draggable reserveNone original"
+                                                                  id="@d.carIdStr"
+                                                                  data-originalId="@{d.floorIdStr}_@{d.companyIdStr}"
+                                                                  data-carNo="@d.carNo"
+                                                                  data-before="@{d.floorIdStr}/@{d.companyIdStr}">
+                                                               <span>@d.carNo</span>
+                                                               <span class="badgeCls"></span>
+                                                           </span>
+                                                    }
+                                                </td>
+                                                @for(company <- companyList){
+                                                    <td class="useTd removable" id="useTd_@{floor.floorId}_@{company.companyId}">
+                                                        @workPlotList.filter(_.floorIdStr == floor.floorId.toString).filter(_.companyIdStr == company.companyId.toString).map{ data =>
+                                                            <span class="part draggable reserveNone original"
+                                                                  id="@data.carIdStr"
+                                                                  data-originalId="@{data.floorIdStr}_@{data.companyIdStr}"
+                                                                  data-carNo="@data.carNo"
+                                                                  data-before="@{data.floorIdStr}/@{data.companyIdStr}">
+                                                               <span>@data.carNo</span>
+                                                               <span class="badgeCls"></span>
+                                                           </span>
+                                                        }
                                                     </td>
                                                 }
                                             </tr>
