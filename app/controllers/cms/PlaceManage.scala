@@ -3,6 +3,7 @@ package controllers.cms
 import javax.inject.{Inject, Singleton}
 
 import com.mohiva.play.silhouette.api.Silhouette
+import com.mohiva.play.silhouette.api.util.PasswordHasherRegistry
 import controllers.BaseController
 import models.PlaceEnum
 import play.api._
@@ -26,8 +27,6 @@ case class PlaceUpdateForm(inputPlaceId: String, inputPlaceName: String, inputPl
 case class PasswordUpdateForm(inputPlaceId: String, inputPassword: String, inputRePassword: String)
 case class PlaceDeleteForm(deletePlaceId: String)
 case class PlaceSortForm(placeSortId: String)
-case class FloorDeleteForm(inputPlaceId: String, inputFloorId: String)
-case class FloorUpdateForm(inputPlaceId: String, inputFloorId: String, inputFloorName: String, inputExbDeviceIdListComma: String)
 
 @Singleton
 class PlaceManage @Inject()(config: Configuration
@@ -36,6 +35,7 @@ class PlaceManage @Inject()(config: Configuration
                             , placeDAO: models.placeDAO
                             , floorDAO: models.floorDAO
                             , exbDAO: models.exbModelDAO
+                            , passwordHasherRegistry: PasswordHasherRegistry
                                ) extends BaseController with I18nSupport {
 
   // FIXME: matsumura 実証実験では固定登録とする
@@ -101,7 +101,7 @@ class PlaceManage @Inject()(config: Configuration
       Redirect(routes.PlaceManage.sortPlaceListWith(selectedSortType)).flashing(ERROR_MSG_KEY -> errMsg)
     } else {
       // 画面遷移
-      Ok(views.html.cms.placeManageDetail(placeList.last, floorInfoList, statusList))
+      Ok(views.html.cms.placeManageDetail(placeList.last, floorInfoList, statusList, securedRequest2User.isSysMng))
     }
   }
 
@@ -176,7 +176,8 @@ class PlaceManage @Inject()(config: Configuration
         Redirect(routes.PlaceManage.detail()).flashing(ERROR_MSG_KEY -> Messages("error.cms.PlaceManage.passwordUpdate.notEqual"))
       }else{
         // DB登録
-        placeDAO.updatePassword(f.inputPlaceId.toInt, f.inputPassword)
+        val passwordInfo = passwordHasherRegistry.current.hash(f.inputPassword)
+        placeDAO.updatePassword(f.inputPlaceId.toInt, passwordInfo.password)
 
         Redirect(s"""${routes.PlaceManage.detail().path()}?${KEY_PLACE_ID}=${f.inputPlaceId}""")
           .flashing(SUCCESS_MSG_KEY -> Messages("success.cms.PlaceManage.passwordUpdate"))
@@ -210,105 +211,4 @@ class PlaceManage @Inject()(config: Configuration
       Redirect(routes.PlaceManage.sortPlaceListWith(selectedSortType)).flashing(SUCCESS_MSG_KEY -> Messages("success.cms.PlaceManage.delete"))
     }
   }
-
-  /** フロア更新 */
-  def floorUpdate = SecuredAction { implicit request =>
-    // フォームの準備
-    val inputForm = Form(mapping(
-        "inputPlaceId" -> text
-      , "inputFloorId" -> text
-      , "inputFloorName" -> text.verifying(Messages("error.cms.PlaceManage.floorUpdate.inputFloorName.empty"), {!_.isEmpty})
-      , "inputExbDeviceIdListComma" -> text.verifying(Messages("error.cms.PlaceManage.floorUpdate.inputExbDeviceIdListComma.empty"), {!_.isEmpty})
-    )(FloorUpdateForm.apply)(FloorUpdateForm.unapply))
-
-    // フォームの取得
-    val form = inputForm.bindFromRequest
-    if (form.hasErrors){
-      // エラーメッセージ
-      val errMsg = form.errors.map(_.message).mkString(HTML_BR)
-      // リダイレクトで画面遷移
-      Redirect(routes.PlaceManage.detail()).flashing(ERROR_MSG_KEY -> errMsg)
-    }else{
-      var errMsg = Seq[String]()
-      val f = form.get
-      if(f.inputFloorId.isEmpty){
-        // 新規フロア登録の場合 --------------------------
-
-        // フロア名称重複チェック
-        val floorList = floorDAO.selectFloorInfo(f.inputPlaceId.toInt, f.inputFloorName)
-        if(floorList.length > 0){
-          errMsg :+= Messages("error.cms.PlaceManage.floorUpdate.inputFloorName.duplicate")
-        }
-        // デバイスID重複チェック
-        val exbDeviceIdList = exbDAO.selectExb(f.inputPlaceId.toInt).map(exb =>{exb.exbDeviceId})
-        val inputExbDeviceIdList = f.inputExbDeviceIdListComma.split(",").filter(_.isEmpty == false).toSeq
-        val errDeviceIdList = inputExbDeviceIdList.filter(exbDeviceIdList.contains(_))
-        if(errDeviceIdList.isEmpty == false){
-          errMsg :+= Messages("error.cms.PlaceManage.floorUpdate.inputDeviceId.duplicate", errDeviceIdList.mkString(","))
-        }
-        if(errMsg.isEmpty == false){
-          // エラーで遷移
-          Redirect(s"""${routes.PlaceManage.detail().path()}?${KEY_PLACE_ID}=${f.inputPlaceId}""")
-            .flashing(ERROR_MSG_KEY -> errMsg.mkString(HTML_BR))
-        }else{
-          // DB処理
-          floorDAO.insert(f.inputFloorName, f.inputPlaceId.toInt, inputExbDeviceIdList)
-          // 成功で遷移
-          Redirect(s"""${routes.PlaceManage.detail().path()}?${KEY_PLACE_ID}=${f.inputPlaceId}""")
-            .flashing(SUCCESS_MSG_KEY -> Messages("success.cms.PlaceManage.floorUpdate"))
-        }
-
-      }else{
-        // フロア更新の場合 --------------------------
-
-        // フロア名称重複チェック
-        val floorList = floorDAO.selectFloorInfo(f.inputPlaceId.toInt)
-        val rest = floorList.filter(_.floorId != f.inputFloorId.toInt).filter(_.floorName == f.inputFloorName)
-        if(rest.length > 0){
-          errMsg :+= Messages("error.cms.PlaceManage.floorUpdate.inputFloorName.duplicate")
-        }
-
-        // デバイスID重複チェック
-        val exbDeviceIdList = exbDAO.selectExb(f.inputPlaceId.toInt).filter(_.floorId != f.inputFloorId.toInt).map(exb =>{exb.exbDeviceId})
-        val inputExbDeviceIdList = f.inputExbDeviceIdListComma.split(",").toSeq
-        val errDeviceIdList = inputExbDeviceIdList.filter(exbDeviceIdList.contains(_))
-        if(errDeviceIdList.isEmpty == false){
-          errMsg :+= Messages("error.cms.PlaceManage.floorUpdate.inputDeviceId.duplicate", errDeviceIdList.mkString(","))
-        }
-        if(errMsg.isEmpty == false){
-          // エラーで遷移
-          Redirect(s"""${routes.PlaceManage.detail().path()}?${KEY_PLACE_ID}=${f.inputPlaceId}""")
-            .flashing(ERROR_MSG_KEY -> errMsg.mkString(HTML_BR))
-        }else{
-          // DB処理
-          floorDAO.updateById(f.inputFloorId.toInt, f.inputFloorName, inputExbDeviceIdList)
-          // 成功で遷移
-          Redirect(s"""${routes.PlaceManage.detail().path()}?${KEY_PLACE_ID}=${f.inputPlaceId}""")
-            .flashing(SUCCESS_MSG_KEY -> Messages("success.cms.PlaceManage.floorUpdate"))
-        }
-      }
-    }
-  }
-
-
-  /** フロア削除 */
-  def floorDelete = SecuredAction { implicit request =>
-    // フォームの準備
-    val inputForm = Form(mapping(
-        "inputPlaceId" -> text
-      , "inputFloorId" -> text
-    )(FloorDeleteForm.apply)(FloorDeleteForm.unapply))
-
-    // フォームの取得
-    val form = inputForm.bindFromRequest
-    val f = form.get
-    // DB処理
-    floorDAO.deleteById(f.inputFloorId.toInt)
-
-    // リダイレクト
-    Redirect(s"""${routes.PlaceManage.detail().path()}?${KEY_PLACE_ID}=${f.inputPlaceId}""")
-      .flashing(SUCCESS_MSG_KEY -> Messages("success.cms.PlaceManage.floorDelete"))
-  }
-
-
 }

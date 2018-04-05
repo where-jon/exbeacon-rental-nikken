@@ -25,9 +25,13 @@ POST    /cms/placeManage/register       controllers.cms.PlaceManage.register
 POST    /cms/placeManage/change         controllers.cms.PlaceManage.change
 POST    /cms/placeManage/update         controllers.cms.PlaceManage.update
 POST    /cms/placeManage/delete         controllers.cms.PlaceManage.delete
-POST    /cms/placeManage/floorUpdate    controllers.cms.PlaceManage.floorUpdate
-POST    /cms/placeManage/floorDelete    controllers.cms.PlaceManage.floorDelete
 POST    /cms/placeManage/passwordUpdate controllers.cms.PlaceManage.passwordUpdate
+
+# フロア管理
+GET     /cms/floorManage                controllers.cms.FloorManage.index
+POST    /cms/floorManage/floorUpdate    controllers.cms.FloorManage.floorUpdate
+POST    /cms/floorManage/floorDelete    controllers.cms.FloorManage.floorDelete
+
 
 # 作業車管理
 GET     /cms/carManage                  controllers.cms.CarManage.index

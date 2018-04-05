@@ -1,4 +1,4 @@
-@(place: Place, floorInfoList: Seq[FloorInfo], statusMap: Map[Int,String])(implicit user: User, messages: Messages, request: RequestHeader, flash: Flash)
+@(place: Place, floorInfoList: Seq[FloorInfo], statusMap: Map[Int,String], isSysMng: Boolean)(implicit user: User, messages: Messages, request: RequestHeader, flash: Flash)
 
 @import controllers.routes
 @import helper._
@@ -6,7 +6,7 @@
 <!doctype html>
 <html lang="ja">
 <head>
-    @templates.htmlHead(title = "現場管理")
+    @templates.htmlHead(title = Messages("lang.cms.placeManage.tabName"))
     <link rel="stylesheet" href="@routes.MyAssets.css("cms/placeManageDetail.css")"/>
     <script type="text/javascript" src="@routes.MyAssets.lib("jquery.tablefix_1.0.1.js")"></script>
     <script></script>
@@ -25,7 +25,7 @@
                 @views.html.templates.msgDiv()
                 <!-- 画面題字 -->
                 <div class="form-group" style="font-weight:bold;font-size:19px;margin:15px 0px;">
-                    現場管理画面
+                    @Messages("placeManage.detail.title")
                 </div>
                 <!-- テーブルのROW -->
                 <div class="row tableRow">
@@ -34,13 +34,13 @@
                             <table class="table table-bordered table-condensed itemTable">
                                 <thead>
                                     <tr>
-                                        <th colspan="4" class="tableTitleTh">現場管理</th>
+                                        <th colspan="4" class="tableTitleTh">@Messages("lang.cms.placeManage.place.list.header.title")</th>
                                     </tr>
                                     <tr>
-                                        <th class="tableTh noTh">ID</th>
-                                        <th class="tableTh placeNameTh">建設現場名称</th>
-                                        <th class="tableTh floorCountTh">階数</th>
-                                        <th class="tableTh stateTh">状態</th>
+                                        <th class="tableTh noTh">@Messages("lang.cms.placeManage.place.list.header.id")</th>
+                                        <th class="tableTh placeNameTh">@Messages("lang.cms.placeManage.place.list.header.placeName")</th>
+                                        <th class="tableTh floorCountTh">@Messages("lang.cms.placeManage.place.list.header.floor")</th>
+                                        <th class="tableTh stateTh">@Messages("lang.cms.placeManage.place.list.header.status")</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -56,6 +56,7 @@
                     </div>
                 </div>
                 <!-- リンク-->
+                @if(isSysMng) {
                 <div class="row tableRow" style="margin-top: 10px;">
                     <div class="col-xs-4 col-sm-4 col-md-4" style="padding:0;">
                         <a href="/cms/placeManage">
@@ -63,72 +64,16 @@
                         </a>
                     </div>
                 </div>
+                }
                 <!-- ボタン-->
                 <div class="row tableRow" style="margin-top: 10px;">
                     <div class="text-center col-xs-4 col-sm-4 col-md-4 col-xs-offset-1 col-sm-offset-1 col-md-offset-1"
                          style="padding:0;">
-                        <a href="javascript:showPasswordModal();" class="btn link text-right">パスワード変更</a>
+                        <a href="javascript:showPasswordModal();" class="btn link text-right">@Messages("lang.cms.placeManage.place.button.password")</a>
                     </div>
                     <div class="text-center col-xs-4 col-sm-4 col-md-4 col-xs-offset-1 col-sm-offset-1 col-md-offset-1"
                          style="padding:0;">
-                        <a href="javascript:showInputModal();" class="btn link text-right">編集</a>
-                    </div>
-                </div>
-                <!-- フロア情報テーブルのROW -->
-                <div class="row tableRow" style="margin-top: 30px;">
-                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="padding:0;">
-                        <div class="floorTable-responsive-body">
-                            <table class="table table-bordered table-condensed itemTable floorTable">
-                                <thead>
-                                    <tr>
-                                        <th colspan="2" class="tableTitleTh">フロア情報</th>
-                                    </tr>
-                                    <tr>
-                                        <th class="tableTh floorTh">フロア名</th>
-                                        <th class="tableTh deviceTh">EXBeaconデバイスID</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @for(floor <- floorInfoList){
-                                        <tr class="rowColor rowHover" id="@floor.floorId">
-                                            <td class="itemTd text-center floorName">@floor.floorName</td>
-                                            <td class="itemTd text-left exbDeviceIdList">
-                                                @for(exbDeviceId <- floor.exbDeviceIdList){
-                                                    <span class="part">@exbDeviceId</span>
-                                                }
-                                            </td>
-                                        </tr>
-                                    }
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-                <!-- ボタン-->
-                <div class="row tableRow" style="margin-top: 10px;">
-                    <div class="text-right col-xs-4 col-sm-4 col-md-4" style="padding:0;">
-                        <a href="javascript:showFloorUpdateModal(false);" class="btn link">選択したフロアを編集</a>
-                    </div>
-                    <div class="text-center col-xs-4 col-sm-4 col-md-4" style="padding:0;">
-                        <a href="javascript:showFloorUpdateModal(true);" class="btn link">新規フロア追加</a>
-                    </div>
-                    <div class="text-left col-xs-4 col-sm-4 col-md-4" style="padding:0;">
-                        <a href="javascript:showFloorDeleteModal();" class="btn link">選択したフロアを削除</a>
-                    </div>
-                </div>
-                <!-- 遷移ボタン-->
-                <div class="row tableRow" style="margin-top: 30px;">
-                    <div class="text-center col-xs-3 col-sm-3 col-md-3" style="padding:0;">
-                        <a href="/cms/carManage" class="btn link">作業車管理</a>
-                    </div>
-                    <div class="text-center col-xs-3 col-sm-3 col-md-3" style="padding:0;">
-                        <a href="/cms/itemManage" class="btn link">仮設材管理</a>
-                    </div>
-                    <div class="text-center col-xs-3 col-sm-3 col-md-3" style="padding:0;">
-                        <a href="/cms/companyManage" class="btn link">業者管理</a>
-                    </div>
-                    <div class="text-center col-xs-3 col-sm-3 col-md-3" style="padding:0;">
-                        <a href="/cms/txTagManage" class="btn link">Beaconタグ一覧</a>
+                        <a href="javascript:showPlaceUpdateModal();" class="btn link text-right">@Messages("lang.cms.placeManage.place.button.edit")</a>
                     </div>
                 </div>
             </div>
@@ -136,41 +81,6 @@
     </div>
     <script type="text/javascript" src="@routes.MyAssets.js("cms/placeManageDetail.js")"></script>
     <script></script>
-
-    <!-- パスワード更新モーダル画面 -->
-    <div class="modal" id="passwordUpdateModal" tabindex="-1" role="dialog" aria-labelledby="passwordUpdateModalLabel" aria-hidden="true" data-show="true" data-keyboard="false" data-backdrop="static">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <form id="passwordUpdateForm" name="passwordUpdateForm" enctype="multipart/form-data" class="form-horizontal" method="post" action="@controllers.cms.routes.PlaceManage.passwordUpdate.path">
-                    @CSRF.formField
-                    <input type="hidden" name="inputPlaceId" value="@place.placeId">
-                    <div class="modal-header">パスワード変更</div>
-                    <div class="modal-body">
-                        <div class="form-group">
-                            <label class="control-label col-xs-5">パスワード</label>
-                            <div class="col-xs-5" style="padding-left: 0px;padding-right: 0px;">
-                                <input type="password" name="inputPassword" class="form-control">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label col-xs-5">パスワー再入力</label>
-                            <div class="col-xs-5" style="padding-left: 0px;padding-right: 0px;">
-                                <input type="password" name="inputRePassword" class="form-control">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer" style="text-align: center;">
-                        <div class="col-xs-6 text-center">
-                            <button type="button" class="btn btn-default" data-dismiss="modal">キャンセル</button>
-                        </div>
-                        <div class="col-xs-6 text-center">
-                            <a href="javascript:doSubmit('passwordUpdateForm', '@controllers.cms.routes.PlaceManage.passwordUpdate.path');" class="text-center btn btn-primary">更新</a>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
     <!-- 現場更新モーダル画面 -->
     <div class="modal" id="placeUpdateModal" tabindex="-1" role="dialog" aria-labelledby="placeUpdateModalLabel" aria-hidden="true" data-show="true" data-keyboard="false" data-backdrop="static">
         <div class="modal-dialog">
@@ -178,16 +88,16 @@
                 <form id="placeUpdateForm" name="placeUpdateForm" enctype="multipart/form-data" class="form-horizontal" method="post" action="@controllers.cms.routes.PlaceManage.update.path">
                     @CSRF.formField
                     <input type="hidden" name="inputPlaceId" value="@place.placeId">
-                    <div class="modal-header">編集</div>
+                    <div class="modal-header">@Messages("lang.cms.placeManage.placeUpdate.popup.title")</div>
                     <div class="modal-body">
                         <div class="form-group">
-                            <label class="control-label col-xs-5">建設現場名称</label>
+                            <label class="control-label col-xs-5">@Messages("lang.cms.placeManage.placeUpdate.popup.name")</label>
                             <div class="col-xs-5" style="padding-left: 0px;padding-right: 0px;">
-                                <input type="text" name="inputPlaceName" value="@place.placeName" class="form-control" placeholder="東北医科薬科大学病院">
+                                <input type="text" name="inputPlaceName" value="@place.placeName" class="form-control" placeholder="@Messages("lang.cms.placeManage.placeUpdate.popup.placeholder")">
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="control-label col-xs-5" style="padding-top: 0px;">状態</label>
+                            <label class="control-label col-xs-5" style="padding-top: 0px;">@Messages("lang.cms.placeManage.placeUpdate.popup.status")</label>
                             <div class="col-xs-2" style="padding-left: 0px;padding-right: 0px;">
                                 <select name="inputPlaceStatus" class="form-control">
                                     @statusMap.map{case (code, name) =>
@@ -203,10 +113,10 @@
                     </div>
                     <div class="modal-footer" style="text-align: center;">
                         <div class="col-xs-6 text-center">
-                            <button type="button" class="btn btn-default" data-dismiss="modal">キャンセル</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">@Messages("cancel")</button>
                         </div>
                         <div class="col-xs-6 text-center">
-                            <a href="javascript:doSubmit('placeUpdateForm', '@controllers.cms.routes.PlaceManage.update.path');" class="text-center btn btn-primary">更新</a>
+                            <a href="javascript:doSubmit('placeUpdateForm', '@controllers.cms.routes.PlaceManage.update.path');" class="text-center btn btn-primary">@Messages("update")</a>
                         </div>
                     </div>
                 </form>
@@ -217,101 +127,30 @@
     <div class="modal" id="passwordModal" tabindex="-1" role="dialog" aria-labelledby="passwordModalLabel" aria-hidden="true" data-show="true" data-keyboard="false" data-backdrop="static">
         <div class="modal-dialog">
             <div class="modal-content">
-                <form id="passwordForm" name="passwordForm" class="form-horizontal">
-                    <div class="modal-header">管理パスワード変更</div>
-                    <div class="modal-body">
-                        <div class="form-group">
-                            <label class="control-label col-xs-5">パスワード</label>
-                            <div class="col-xs-5" style="padding-left: 0px;padding-right: 0px;">
-                                <input type="password" name="inputTitle" class="form-control">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label col-xs-5">パスワード再入力</label>
-                            <div class="col-xs-5" style="padding-left: 0px;padding-right: 0px;">
-                                <input type="password" name="inputTitle" class="form-control">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <div class="col-xs-6 text-center">
-                            <button type="button" class="btn btn-default" data-dismiss="modal">キャンセル</button>
-                        </div>
-                        <div class="col-xs-6 text-center">
-                            <button type="button" class="text-center btn btn-primary">変更</button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-    <!-- フロアモーダル画面 -->
-    <div class="modal" id="floorUpdateModal" tabindex="-1" role="dialog" aria-labelledby="floorUpdateModalLabel" aria-hidden="true" data-show="true" data-keyboard="false" data-backdrop="static">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <form id="floorForm" name="floorForm" enctype="multipart/form-data" class="form-horizontal" method="post">
+                <form id="passwordForm" name="passwordForm" class="form-horizontal" enctype="multipart/form-data" class="form-horizontal" method="post" action="@controllers.cms.routes.PlaceManage.passwordUpdate.path">
                     @CSRF.formField
-                    <input type="hidden" name="inputPlaceId" value="@place.placeId">
-                    <input type="hidden" id="inputFloorId" name="inputFloorId">
-                    <input type="hidden" id="inputExbDeviceIdListComma" name="inputExbDeviceIdListComma">
-                    <div class="modal-header">フロア情報更新</div>
+                    <div class="modal-header">@Messages("lang.cms.placeManage.passwordUpdate.popup.title")</div>
                     <div class="modal-body">
                         <div class="form-group">
-                            <label class="control-label col-xs-5">フロア名</label>
-                            <div class="col-xs-2" style="padding-left: 0px;padding-right: 0px;">
-                                <input type="text" name="inputFloorName" id="inputFloorName" class="form-control" placeholder="8F">
+                            <input type="hidden" name="inputPlaceId" value="@place.placeId">
+                            <label class="control-label col-xs-5">@Messages("lang.cms.placeManage.passwordUpdate.popup.password")</label>
+                            <div class="col-xs-5" style="padding-left: 0px;padding-right: 0px;">
+                                <input type="password" name="inputPassword" class="form-control">
                             </div>
                         </div>
-                        <div class="form-group" style="margin-bottom: 5px;">
-                            <label class="control-label col-xs-5">EXBeaconデバイスID</label>
-                            <div class="col-xs-2" style="padding-left: 0px;padding-right: 0px;margin-right:10px;">
-                                <input type="text" name="inputDeviceId" id="inputDeviceId" class="form-control" placeholder="半角英数のみ">
+                        <div class="form-group">
+                            <label class="control-label col-xs-5">@Messages("lang.cms.placeManage.passwordUpdate.popup.reEnter")</label>
+                            <div class="col-xs-5" style="padding-left: 0px;padding-right: 0px;">
+                                <input type="password" name="inputRePassword" class="form-control">
                             </div>
-                            <div class="col-xs-1" style="padding-left: 0px;padding-right: 0px;">
-                                <a href="javascript:addTagRow();"class="btn btn-default"><i class="fa fa-plus" aria-hidden="true"></i></a>
-                            </div>
-                        </div>
-                        <div class="form-group template hidden" style="margin-bottom: 5px;">
-                            <label class="control-label col-xs-5"></label>
-                            <div class="col-xs-2 inputDeviceIdDiv text-center">
-                                <span class="inputDeviceIdSpan"></span>
-                            </div>
-                            <div class="col-xs-1" style="padding-left: 0px;padding-right: 0px;">
-                                <a onclick="removeTagRow(this);" class="btn btn-default removeRowBtn">
-                                    <i class="fa fa-close fa-1x" aria-hidden="true"></i>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                    <div id="floorFooter" class="modal-footer">
-                        <div class="col-xs-6 text-center">
-                            <button type="button" class="btn btn-default" data-dismiss="modal">キャンセル</button>
-                        </div>
-                        <div class="col-xs-6 text-center">
-                            <button type="button" class="text-center btn btn-primary">更新</button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-    <!-- フロア削除モーダル画面 -->
-    <div class="modal" id="floorDeleteModal" tabindex="-1" role="dialog" aria-labelledby="floorDeleteModalLabel" aria-hidden="true" data-show="true" data-keyboard="false" data-backdrop="static">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <form id="deleteForm" name="deleteForm" class="form-horizontal">
-                    <div class="modal-header">フロア情報削除</div>
-                    <div class="modal-body">
-                        <div class="text-center">
-                            フロア情報を削除します。<br/>よろしいですか？
                         </div>
                     </div>
                     <div class="modal-footer">
                         <div class="col-xs-6 text-center">
-                            <button type="button" class="btn btn-default" data-dismiss="modal">キャンセル</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">@Messages("cancel")</button>
                         </div>
                         <div class="col-xs-6 text-center">
-                            <button type="button" class="text-center btn btn-danger">削除</button>
+                            <a href="javascript:doSubmit('passwordForm', '@controllers.cms.routes.PlaceManage.passwordUpdate.path');" class="text-center btn btn-primary">@Messages("update")</a>
                         </div>
                     </div>
                 </form>

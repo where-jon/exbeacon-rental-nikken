@@ -149,18 +149,19 @@ Logger.debug(s"""フロアを登録、ID：" + ${floorId.get.toInt}""")
       val indexedValues = deviceIdList.zipWithIndex
 
       val rows = indexedValues.map{ case (value, i) =>
-          s"""({exb_device_id_${i}}, {floor_id_${i}})"""
+          s"""({place_id_${i}}, {exb_device_id_${i}}, {floor_id_${i}})"""
       }.mkString(",")
 
       val parameters = indexedValues.flatMap{ case(value, i) =>
         Seq(
+          NamedParameter(s"place_id_${i}" , placeId),
           NamedParameter(s"exb_device_id_${i}" , value),
           NamedParameter(s"floor_id_${i}" , floorId.get.toInt)
         )
       }
 
       // SQL実行
-      BatchSql(s""" insert into exb_master (exb_device_id, floor_id) values ${rows} """, parameters).execute
+      BatchSql(s""" insert into exb_master (place_id, exb_device_id, floor_id) values ${rows} """, parameters).execute
 
       // コミット
       connection.commit()
@@ -173,7 +174,7 @@ Logger.debug(s"""EXBマスタを登録""")
     * フロアの新規登録
     * @return
     */
-  def updateById(floorId: Int, floorName: String, deviceIdList: Seq[String]) = {
+  def updateById(placeId: Int, floorId: Int, floorName: String, deviceIdList: Seq[String]) = {
 
     db.withTransaction { implicit connection =>
       // フロアの更新
@@ -200,18 +201,19 @@ Logger.debug(s"""フロアを更新、ID：" + ${floorId}""")
       val indexedValues = deviceIdList.zipWithIndex
 
       val rows = indexedValues.map{ case (value, i) =>
-        s"""({exb_device_id_${i}}, {floor_id_${i}})"""
+        s"""({place_id_${i}}, {exb_device_id_${i}}, {floor_id_${i}})"""
       }.mkString(",")
 
       val parameters = indexedValues.flatMap{ case(value, i) =>
         Seq(
+          NamedParameter(s"place_id_${i}" , placeId),
           NamedParameter(s"exb_device_id_${i}" , value),
           NamedParameter(s"floor_id_${i}" , floorId)
         )
       }
 
       // SQL実行
-      BatchSql(s""" insert into exb_master (exb_device_id, floor_id) values ${rows} """, parameters).execute
+      BatchSql(s""" insert into exb_master (place_id, exb_device_id, floor_id) values ${rows} """, parameters).execute
 
       // コミット
       connection.commit()

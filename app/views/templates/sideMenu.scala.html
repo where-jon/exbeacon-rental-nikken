@@ -55,6 +55,50 @@
                 <div class="menuBtnWrapper">
                     <div class="row" style="margin: 10px 0px 0px 0px;">
                         <div class="text-center col-xs-12 col-sm-12 col-md-12" style="padding:0;">
+                            @if((request.path contains "/cms/") && !(request.path contains "/cms/sortPlaceListWith")) {
+                            <div class="row" style="margin: 0px 0px 10px 0px;">
+                                <div class="text-center col-xs-12 col-sm-12 col-md-12" style="padding:0px 3px;">
+                                    <a href="/cms/placeManage/detail" class="btn menuBtn">
+                                        現場管理
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="row" style="margin: 0px 0px 10px 0px;">
+                                <div class="text-center col-xs-12 col-sm-12 col-md-12" style="padding:0px 3px;">
+                                    <a href="/cms/floorManage" class="btn menuBtn">
+                                        フロア情報管理
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="row" style="margin: 0px 0px 10px 0px;">
+                                <div class="text-center col-xs-12 col-sm-12 col-md-12" style="padding:0px 3px;">
+                                    <a href="/cms/carManage" class="btn menuBtn">
+                                        作業車管理
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="row" style="margin: 0px 0px 10px 0px;">
+                                <div class="text-center col-xs-12 col-sm-12 col-md-12" style="padding:0px 3px;">
+                                    <a href="/cms/itemManage" class="btn menuBtn">
+                                        仮設材管理
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="row" style="margin: 0px 0px 10px 0px;">
+                                <div class="text-center col-xs-12 col-sm-12 col-md-12" style="padding:0px 3px;">
+                                    <a href="/cms/companyManage" class="btn menuBtn">
+                                        業者管理
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="row" style="margin: 0px 0px 10px 0px;">
+                                <div class="text-center col-xs-12 col-sm-12 col-md-12" style="padding:0px 3px;">
+                                    <a href="/cms/txTagManage" class="btn menuBtn">
+                                        Beaconタグ一覧
+                                    </a>
+                                </div>
+                            </div>
+                            }else{
                             <div class="row" style="margin: 0px 0px 60px 0px;">
                                 <div class="text-center col-xs-12 col-sm-12 col-md-12" style="padding:0px 3px;">
                                     <a href="@routes.OtherItem.index.path" class="btn menuBtn">
@@ -69,6 +113,7 @@
                                     </a>
                                 </div>
                             </div>
+                            }
                         </div>
                     </div>
                 </div>

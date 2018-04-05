@@ -208,7 +208,7 @@ class placeDAO @Inject() (dbapi: DBApi) {
             , updatetime = now()
           where place_id = {placeId} ;
         """).on(
-        'password -> password
+        'placeId -> placeId, 'password -> password
       ).executeUpdate()
 
       // コミット
