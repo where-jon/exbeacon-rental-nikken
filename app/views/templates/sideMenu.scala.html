@@ -24,6 +24,7 @@
                     </span>
                 </div>
             </div>
+            @if(!(request.path contains "/cms/")) {
             <!-- 上部 -->
             <div class="menuBtnsDiv">
                 <div class="menuBtnWrapper">
@@ -50,12 +51,37 @@
                     </div>
                 </div>
             </div>
+            }
             <!-- 下部 -->
+            @if(!(request.path contains "/cms/")) {
             <div class="menuBtnsDiv">
                 <div class="menuBtnWrapper">
                     <div class="row" style="margin: 10px 0px 0px 0px;">
                         <div class="text-center col-xs-12 col-sm-12 col-md-12" style="padding:0;">
-                            @if((request.path contains "/cms/") && !(request.path contains "/cms/sortPlaceListWith")) {
+                            <div class="row" style="margin: 0px 0px 60px 0px;">
+                                <div class="text-center col-xs-12 col-sm-12 col-md-12" style="padding:0px 3px;">
+                                    <a href="@routes.OtherItem.index.path" class="btn menuBtn">
+                                        その他仮設材利用状況
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="row" style="margin: 0px;">
+                                <div class="text-center col-xs-12 col-sm-12 col-md-12" style="padding:0px 3px;">
+                                    <a href="/cms/placeManage/detail" class="btn cmsBtn">
+                                        管理ページ
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            }
+            @if((request.path contains "/cms/") && !(request.path contains "/cms/sortPlaceListWith")) {
+            <div class="menuBtnsDiv">
+                <div class="menuBtnWrapper">
+                    <div class="row" style="margin: 10px 0px 0px 0px;">
+                        <div class="text-center col-xs-12 col-sm-12 col-md-12" style="padding:0;">
                             <div class="row" style="margin: 0px 0px 10px 0px;">
                                 <div class="text-center col-xs-12 col-sm-12 col-md-12" style="padding:0px 3px;">
                                     <a href="/cms/placeManage/detail" class="btn menuBtn">
@@ -98,26 +124,11 @@
                                     </a>
                                 </div>
                             </div>
-                            }else{
-                            <div class="row" style="margin: 0px 0px 60px 0px;">
-                                <div class="text-center col-xs-12 col-sm-12 col-md-12" style="padding:0px 3px;">
-                                    <a href="@routes.OtherItem.index.path" class="btn menuBtn">
-                                        その他仮設材利用状況
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="row" style="margin: 0px;">
-                                <div class="text-center col-xs-12 col-sm-12 col-md-12" style="padding:0px 3px;">
-                                    <a href="/cms/placeManage/detail" class="btn cmsBtn">
-                                        管理ページ
-                                    </a>
-                                </div>
-                            </div>
-                            }
                         </div>
                     </div>
                 </div>
             </div>
+            }
         </div>
     </div>
 </div>
