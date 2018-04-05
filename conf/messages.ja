@@ -165,7 +165,7 @@ lang.cms.placeManage.passwordUpdate.popup.password=パスワード
 lang.cms.placeManage.passwordUpdate.popup.reEnter=パスワード再入力
 
 # CMS文字列（フロア管理）
-lang.cms.floorManage.title=フロア管理
+lang.cms.floorManage.title=フロア管理画面
 lang.cms.floorManage.floor.list.header.title=フロア情報
 lang.cms.floorManage.floor.list.header.floorName=フロア名
 lang.cms.floorManage.floor.list.header.deviceID=EXBeaconデバイスID
