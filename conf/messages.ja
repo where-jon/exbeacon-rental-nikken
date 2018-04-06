@@ -53,6 +53,11 @@ error.unknown.text=This exception has been logged with id <strong>{0}</strong>.
 error.notfound.title=ページが見つかりません。
 error.notfound.text=For request ''{0}''
 
+# 予約入力エラー
+error.CarReserve.registerModal.inputCarNo.format=作業車番号を半角数字で入力してください。
+error.CarReserve.registerModal.inputCarNo.exist=入力された作業車は存在しません。
+error.CarReserve.registerModal.inputCarNo.duplicate=入力された作業車は既に同フロア、同業者で予約されています。
+
 # CMS入力エラー
 error.cms.PlaceManage.register.inputPlaceName.empty=現場名称を入力してください。
 error.cms.PlaceManage.passwordUpdate.inputPassword.empty=パスワードを入力してください。
@@ -84,6 +89,8 @@ error.cms.ItemManage.update.actualItemInfoStr.empty=Txタグ設定を入力し�
 
 ################################################################################################
 # SUCCESS
+success.CarReserve.registerModal=予約を登録しました。
+
 success.cms.PlaceManage.register=現場情報を登録しました。
 success.cms.PlaceManage.update=現場情報を更新しました。
 success.cms.PlaceManage.passwordUpdate=パスワードを更新しました。

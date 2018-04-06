@@ -1,6 +1,12 @@
 // モーダル画面の表示
-function showInputModal(){
+function showInputModal(obj){
     clearInterval(document.interval);
+
+    $('#inputFloorId').val($(obj).attr('data-floor'));
+    $('#floorSpan').text($(obj).attr('data-floorNameStr'));
+    $('#inputCompanyId').val($(obj).attr('data-company'));
+    $('#companySpan').text($(obj).attr('data-companyNameStr'));
+    $('#inputCarNo').val('');
     $('#inputModal').modal();
 }
 
@@ -19,13 +25,14 @@ function bindMouseAndTouch(){
                     clearInterval(document.interval);
                 }else if(e.originalEvent.touches.length == 1){
                     $(this).addClass('reserveTdHoverColor');
+                    var targetTd = $(this);
                     touched = true;
                     touch_time = 0;
                     document.interval = setInterval(function(){
                         touch_time += 500;
                         if (touch_time == 500) {
                             // ロングタップ時の処理
-                            showInputModal();
+                            showInputModal($(targetTd));
                             touch_time = 0;
                             clearInterval(document.interval);
                         }
@@ -59,7 +66,7 @@ function bindMouseAndTouch(){
             },
             'click': function(e) {
                 $(this).removeClass('reserveTdHoverColor');
-                showInputModal();
+                showInputModal($(this));
             },
         });
     }
@@ -71,15 +78,8 @@ function setDeleteBadge(obj){
         // タッチデバイス
         $(obj).find('.badgeCls').on('touchstart', function(e) {
             clearInterval(document.interval);
-            var parent = $(obj).parent();
-            var no = parent.attr('data-company');
-
-            $(obj).remove();
-            setColor();
-
-            $('#company_th_' + no).css("min-width", '');
-            $('#company_th_' + no).css("min-width", parent.outerWidth() + "px");
-
+            // 予約の削除
+            deleteReserve($(obj));
             return false;
         });
         $(obj).bind({
@@ -106,18 +106,18 @@ function setDeleteBadge(obj){
     }else{
         // PCデバイス
         $(obj).find('.badgeCls').on('click', function(e) {
-            var parent = $(obj).parent();
-            var no = parent.attr('data-company');
-
-            $(obj).remove();
-            setColor();
-
-            $('#company_th_' + no).css("min-width", '');
-            $('#company_th_' + no).css("min-width", parent.outerWidth() + "px");
-
+            deleteReserve($(obj));// 実際の削除
             return false;
         });
         $(obj).on('click', function(e) {
+            if($(obj).find('.badgeCls').attr('data-badge-top-right')){
+                $(obj).find('.badgeCls').removeAttr('data-badge-top-right');
+            }else{
+                $(obj).find('.badgeCls').attr('data-badge-top-right', '1');
+            }
+            return false;
+        });
+        $(obj).find('.carNoTxtCls').on('click', function(e) {
             if($(obj).find('.badgeCls').attr('data-badge-top-right')){
                 $(obj).find('.badgeCls').removeAttr('data-badge-top-right');
             }else{
@@ -132,21 +132,21 @@ function setDeleteBadge(obj){
 function fixTable(){
     // 予約表テーブルの固定
     var h = $("#reserveTable").height();
-    var x = $("#reserveTable").width();
     var w = $('.mainSpace').width() * 0.96;
     $('#reserveTable').tablefix({width: w, height: h, fixCols: 3, fixRows: 2});
 
     // 複製テーブルのドラッグ＋ドロップは無効に
-    $('.crossTableDiv, .rowTableDiv, .colTableDiv').find('table').removeAttr('id');
-    $('.crossTableDiv, .rowTableDiv, .colTableDiv').find('th').removeAttr('id');
-    $('.crossTableDiv, .rowTableDiv, .colTableDiv').find('td').removeAttr('id data-company data-pos data-floor');
-    $('.crossTableDiv, .rowTableDiv, .colTableDiv').find('span').removeAttr('id data-originalId data-carNo data-before');
+    var divs = '.crossTableDiv, .rowTableDiv, .colTableDiv';
+    $(divs).find('table').removeAttr('id');
+    $(divs).find('th').removeAttr('id');
+    $(divs).find('td').removeAttr('id data-company data-pos data-floor');
+    $(divs).find('span').removeAttr('id data-originalId data-carNo data-before');
+    $(divs).find('tr').removeAttr('data-floorId');
 
-    $('.crossTableDiv, .rowTableDiv, .colTableDiv').find('span').removeClass('draggable reserveNone original badgeCls');
-
-    $('.crossTableDiv, .rowTableDiv, .colTableDiv').find('td').removeClass('drop-able removable reserveTdHover');
-    $('.crossTableDiv, .rowTableDiv, .colTableDiv').find('th').removeClass('drop-able removable');
-    $('.crossTableDiv, .rowTableDiv, .colTableDiv').find('tr').removeClass('drop-able removable reserveRow');
+    $(divs).find('span').removeClass('draggable reserveNone original badgeCls');
+    $(divs).find('td').removeClass('drop-able removable reserveTdHover');
+    $(divs).find('th').removeClass('drop-able removable');
+    $(divs).find('tr').removeClass('drop-able removable reserveRow workRow');
 }
 // 予約テーブルのクリア
 function removeTable(){
@@ -167,24 +167,25 @@ function setDraggableOriginal(){
         , revert: false                       // true：範囲外の場合は元に戻す、false：範囲外の場合は消す
         , opacity: 0.5                        // ドラッグ中の透明度
         , drag: function(event,ui){
-//            // 予約の行にドラッグ中の場合はフロアと業者名を表示
-//            if(parentOnDrag != ui.helper.parent()){
-//                // 親要素のtdを表示
-//                var name = ui.helper.parent().attr('data-pos');
-//                if(name){
-//                    ui.helper.attr('data-dragDisp',name);
-//                    parentOnDrag = ui.helper.parent()
-//                }else{
-//                    ui.helper.removeAttr('data-dragDisp');
-//                    parentOnDrag = null;
-//                }
-//            }
+            // 予約の行にドラッグ中の場合はフロアと業者名を表示
+            if(parentOnDrag != ui.helper.parent()){
+                // 親要素のtdを表示
+                var floorName = ui.helper.parent().attr('data-floorNameStr');
+                var companyName = ui.helper.parent().attr('data-companyNameStr');
+                if(floorName && companyName){
+                    ui.helper.attr('data-dragDisp',floorName+"/"+companyName);
+                    parentOnDrag = ui.helper.parent();
+                }else{
+                    ui.helper.removeAttr('data-dragDisp');
+                    parentOnDrag = null;
+                }
+            }
 //            $('.drop-able').attr('drop-waiting', '1');
         }
         , stop: function(event,ui){
-//            // ドラッグ中の表示を終了
-//            ui.helper.removeAttr('data-dragDisp');
-//            parentOnDrag = null;
+            // ドラッグ中の表示を終了
+            ui.helper.removeAttr('data-dragDisp');
+            parentOnDrag = null;
 //            $('.drop-able').removeAttr('drop-waiting');
 
             ui.helper.attr('id',$(this).attr('id'));
@@ -197,7 +198,7 @@ function setDraggableClone(paramObj){
     if(paramObj){
         target = $(paramObj);
     }else{
-        target = $('.clone');
+        target = $('.cloned');
     }
     // ドラッグ可能にする
     $(target).draggable({
@@ -206,34 +207,34 @@ function setDraggableClone(paramObj){
         , revert: false
         , opacity: 0.5
         , drag: function(event,ui){
-//            // 予約の行にドラッグ中の場合はフロアと業者名を表示
-//            if(parentOnDrag != ui.helper.parent()){
-//                // 親要素のtdを表示
-//                var name = ui.helper.parent().attr('data-pos');
-//                if(name){
-//                    ui.helper.attr('data-dragDisp',name);
-//                    parentOnDrag = ui.helper.parent()
-//                }else{
-//                    ui.helper.removeAttr('data-dragDisp');
-//                    parentOnDrag = null;
-//                }
-//            }
-
+            // 予約の行にドラッグ中の場合はフロアと業者名を表示
+            if(parentOnDrag != ui.helper.parent()){
+                // 親要素のtdを表示
+                var floorName = ui.helper.parent().attr('data-floorNameStr');
+                var companyName = ui.helper.parent().attr('data-companyNameStr');
+                if(floorName && companyName){
+                    ui.helper.attr('data-dragDisp',floorName+"/"+companyName);
+                    parentOnDrag = ui.helper.parent()
+                }else{
+                    ui.helper.removeAttr('data-dragDisp');
+                    parentOnDrag = null;
+                }
+            }
         }
         , stop: function(event,ui){
-//            // ドラッグ中の表示を終了
-//            ui.helper.removeAttr('data-dragDisp');
-//            parentOnDrag = null;
+            // ドラッグ中の表示を終了
+            ui.helper.removeAttr('data-dragDisp');
+            parentOnDrag = null;
 
-            var parent = $(this).parent();//.outerWidth() + "px";
+            var parent = $(this).parent();
             var no = parent.attr('data-company');
             // 生成したクローンをさらにドラッグした時の動作
             $(this).remove();   // 元を消去
             // 色付け
             setColor();
             // 幅の調整
-            $('#company_th_' + no).css("min-width", '');
-            $('#company_th_' + no).css("min-width", parent.outerWidth()*1 + "px");
+            $('.company_th_' + no).css("min-width", '');
+            $('.company_th_' + no).css("min-width", parent.outerWidth()*1 + "px");
         }
     });
 }
@@ -243,8 +244,13 @@ function setRemovable(){
     $('.removable').sortable( {
         revert: false
         , stop: function(event, ui) {
-            $(ui.item).remove();
-            setColor();
+            var clonedItem = $(ui.item);
+            // 削除
+            if($(clonedItem).attr("data-reserveId")){
+                deleteReserve($(clonedItem));// 実際の削除
+            }else{
+                clonedItem.remove();
+            }
         }
     });
 }
@@ -252,7 +258,7 @@ function setRemovable(){
 var partTapTime = 0;
 var partTapTimer;
 
-// ドロップ設定(削除)
+// ドロップ設定
 function setSortable(){
     // ドロップ可能にする
     $('.drop-able').sortable( {
@@ -264,9 +270,7 @@ function setSortable(){
                 // 削除バッジ設定
                 setDeleteBadge(clonedItem);
 
-                var originalId = clonedItem.attr('data-originalId');
-
-                // ドロップ箇所に同じ作業車がある場合
+                // ドロップ箇所に同じ作業車がある場合 -> データ的には何もしない
                 var carNo = clonedItem.attr('data-carNo');
                 if($(this).find('[data-carNo="' + carNo + '"]').length > 1){
                     if(clonedItem.hasClass('original')){
@@ -277,8 +281,8 @@ function setSortable(){
                         // 色付け
                         setColor();
                         // 幅の調整
-                        $('#company_th_' + no).css("min-width", '');
-                        $('#company_th_' + no).css("min-width", parent.outerWidth()*1 + "px");
+                        $('.company_th_' + no).css("min-width", '');
+                        $('.company_th_' + no).css("min-width", parent.outerWidth() + "px");
                     }else{
                         // ただ同じ場所に移動した時
                         clonedItem.addClass('cloned');
@@ -288,13 +292,26 @@ function setSortable(){
                         // 幅を調整
                         var no = $(this).attr('data-company');
                         var minWidth = $(this).outerWidth() + "px";
-                        $('#company_th_' + no).css("min-width", '');
-                        $('#company_th_' + no).css("min-width", minWidth);
+                        $('.company_th_' + no).css("min-width", '');
+                        $('.company_th_' + no).css("min-width", minWidth);
                         // 受け取ったクローンをさらにドラッグ可能にする
                         setDraggableClone(clonedItem);
                     }
-
-                }else{
+                }else{  // ドロップ箇所に同じ作業車がない場合 -> データ的に処理する
+                    var floorId = $(this).attr('data-floor');
+                    var companyId = $(this).attr('data-company');
+                    if(clonedItem.hasClass('original')){
+                        // originalから足す時は新規登録
+                        var carId = clonedItem.attr('data-carId');
+                        registerReserve(carId, floorId, companyId, clonedItem);
+                    }else{
+                        // 更新
+                        var carNo = clonedItem.attr('data-carNo');
+                        if($(this).find('[data-carId="' + carNo + '"]').length == 0){
+                            var reserveId = clonedItem.attr('data-reserveId');
+                            updateReserve(reserveId, floorId, companyId);
+                        }
+                    }
                     clonedItem.addClass('cloned');
                     clonedItem.removeClass('original');
                     // 色付け
@@ -302,8 +319,8 @@ function setSortable(){
                     // 幅を調整
                     var no = $(this).attr('data-company');
                     var minWidth = $(this).outerWidth() + "px";
-                    $('#company_th_' + no).css("min-width", '');
-                    $('#company_th_' + no).css("min-width", minWidth);
+                    $('.company_th_' + no).css("min-width", '');
+                    $('.company_th_' + no).css("min-width", minWidth);
                     // 受け取ったクローンをさらにドラッグ可能にする
                     setDraggableClone(clonedItem);
                 }
@@ -315,11 +332,13 @@ function setSortable(){
 function setColor(){
     // 予約のコマの色付け
     var rsvObjArray = $('.bodyTableDiv').find('.reserveRow').find('.cloned');
+    var rsvObjArray_length = rsvObjArray.length;
 
     // 一旦色を消す
     $(rsvObjArray).removeClass("reserveNormal reserveDuplicate reserveDiff reserveNone reserveDone");
 
-    $.each(rsvObjArray, function(i, rsvObj) {
+    for(var i = 0; i < rsvObjArray_length; i++){
+        var rsvObj = rsvObjArray[i];
         var cn = $(rsvObj).attr('data-carNo');
         var rsvObjects = $(".reserveRow").find('[data-carNo="' + cn + '"]')
 
@@ -336,16 +355,17 @@ function setColor(){
                 $(rsvObjects).addClass('reserveNormal');
             }
         }
-    });
+    }
 
     // 稼働のコマの色付け
-    var useObjArray = $('.bodyTableDiv').find('td.useTd').find('.original');
+    var useObjArray = document.getElementsByClassName("original");
+    var useObjArray_length = useObjArray.length;
 
     // 一旦色を消す
     $(useObjArray).removeClass("reserveNormal reserveDuplicate reserveDiff reserveNone reserveDone");
 
-    $.each(useObjArray, function(i, useObj) {
-
+    for(var i = 0; i < useObjArray_length; i++){
+        var useObj = useObjArray[i];
         // 予約の行に同じ作業車があるかをチェック
         var cn = $(useObj).attr('data-carNo');
         var useObjects = $(".reserveRow").find('[data-carNo="' + cn + '"]')
@@ -357,7 +377,64 @@ function setColor(){
             // 「予約なし」
             $(useObj).addClass('reserveNone');
         }
-    });
+    }
+
+    // サマリー表の色付け
+    var isTotalDuplicate = false;
+    $('.todayReserveCount').removeClass("summeryDuplicate summeryColoredTd");
+
+    var reserveRowList = document.getElementsByClassName("reserveRow");
+    var reserveRowList_length = reserveRowList.length;
+    for(var i = 0; i < reserveRowList_length; i++){
+        var row = reserveRowList[i];
+        var floorId = $(row).attr('data-floorId');
+        if($(row).find(".reserveDuplicate").length > 0){
+            $('#summery_floorId_'+floorId+' > .todayReserveCount').addClass('summeryDuplicate');
+            isTotalDuplicate = true;
+        }else{
+            $('#summery_floorId_'+floorId+' > .todayReserveCount').addClass('summeryColoredTd');
+        }
+    }
+    if(isTotalDuplicate){
+        $('#summery_floorId_total > .todayReserveCount').addClass('summeryDuplicate');
+    }else{
+        $('#summery_floorId_total > .todayReserveCount').addClass('summeryColoredTd');
+    }
+
+    setSummeryCount();
+}
+
+// サマリーの集計
+function setSummeryCount(){
+    // 稼働
+    var total = 0;
+    var rowList = document.getElementsByClassName("workRow");
+    var rowList_length = rowList.length;
+    for(var i = 0; i < rowList_length; i++){
+        var row = rowList[i];
+        var floorId = $(row).attr('data-floorId');
+        var count = $(row).find(".original").length;
+        total += count;
+        if(count > 0){
+            $('#summery_floorId_'+floorId+' > .carExistCountStr > span').text(count + "台");
+        }
+    }
+    $('#summery_floorId_total > .carExistCountStr > span').text(total);
+
+    // 予約
+    total = 0;
+    rowList = document.getElementsByClassName("reserveRow");
+    rowList_length = rowList.length;
+    for(var i = 0; i < rowList_length; i++){
+        var row = rowList[i];
+        var floorId = $(row).attr('data-floorId');
+        var count = $(row).find(".cloned").length;
+        total += count;
+        if(count > 0){
+            $('#summery_floorId_'+floorId+' > .todayReserveCount > span').text(count + "台");
+        }
+    }
+    $('#summery_floorId_total > .todayReserveCount > span').text(total);
 }
 
 // 初期表示時の処理
@@ -374,6 +451,14 @@ $(function(){
     setSortable();
     // ドラッグ設定(クローン用)
     setDraggableClone(null);
+    // 削除バッチ設定
+    var objArray = document.getElementsByClassName('cloned');
+    var length = objArray.length;
+    for(var i = 0; i < length; i++){
+        setDeleteBadge(objArray[i]);
+    }
+    // 色付け
+    setColor();
 
     // リサイズ対応
     var timer = false;
@@ -390,6 +475,10 @@ $(function(){
             setRemovable();
             setSortable();
             setDraggableClone(null);
+            // 削除バッチ設定
+            for(var i = 0; i < length; i++){
+                setDeleteBadge(objArray[i]);
+            }
         }, 200);
     });
 });

@@ -22,11 +22,11 @@
     <div class="container">
         <!-- ナビバー  -->
         @templates.navBar()
-        <div class="row" style="margin-top: 40px;">
+        <div class="row" style="margin-top: 50px;">
             <!-- 左サイド -->
             @views.html.templates.sideMenu()
             <!-- 中央 -->
-            <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 pc-side-nav">
+            <div class="col-xs-4 col-sm-4 col-md-3 col-lg-3 pc-side-nav">
                 <!-- 最終更新日時ROW -->
                 <div class="row" style="margin:15px -15px;">
                     <div class="col-xs-10 col-sm-10 col-md-10 col-xs-offset-1 col-sm-offset-1 col-md-offset-1"
@@ -34,7 +34,7 @@
                         <div class="row" style="margin-bottom:5px;">
                             <div class="col-xs-8 col-xs-offset-4" style="padding:0;">
                                 <p class="dateFont" style="margin-top: 20px;">最終更新日時</p>
-                                <p class="dateFont" style="margin-bottom: 20px;">@{new DateTime().toString("MM月dd日 HH:mm")}</p>
+                                <p class="dateFont" style="margin-bottom: 20px;">@{new DateTime().toString("M月d日 H:mm")}</p>
                             </div>
                         </div>
                     </div>
@@ -82,7 +82,7 @@
                 </div>
                 <!-- 凡例部ROW -->
                 <div class="row" style="margin-left: 0px;margin-right: 0px;">
-                    <div class="col-xs-10 col-sm-10 col-md-10 col-xs-offset-1 col-sm-offset-1 col-md-offset-1" style="padding:0;">
+                    <div class="col-xs-12 col-sm-12 col-md-12" style="padding:0;">
                         <div class="row" style="margin-left: 0px;margin-right: 0px;">
                             <div class="col-xs-10 col-sm-10 col-md-10 col-xs-offset-1 col-sm-offset-1 col-md-offset-1" style="padding:0;">
                                 <div class="row" style="margin-left: 0px;margin-right: 0px;">
@@ -115,7 +115,7 @@
                 </div>
             </div>
             <!-- 右サイド -->
-            <div class="col-xs-5 col-sm-5 col-md-6 col-lg-6 mainSpace">
+            <div class="col-xs-5 col-sm-5 col-md-7 col-lg-7 mainSpace">
                 <!-- 状況-->
                 <div class="row tableRow">
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="padding:0;">

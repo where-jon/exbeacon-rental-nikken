@@ -12,6 +12,10 @@ GET     /carSummery                     controllers.CarSummery.index
 GET     /carSummery/getPlotInfo         controllers.CarSummery.getPlotInfo
 # 作業車予約
 GET     /carReserve                     controllers.CarReserve.index
+POST    /carReserve/register            controllers.CarReserve.register
+POST    /carReserve/registerModal       controllers.CarReserve.registerModal
+POST    /carReserve/update              controllers.CarReserve.update
+POST    /carReserve/delete              controllers.CarReserve.delete
 # その他仮設材利用状況
 GET     /otherItem                      controllers.OtherItem.index
 GET     /otherItem/getPlotInfo          controllers.OtherItem.getPlotInfo
