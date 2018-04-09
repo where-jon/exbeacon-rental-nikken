@@ -120,13 +120,14 @@ class btxDAO @Inject() (dbapi: DBApi) {
                   on b.btx_id = c.car_btx_id
               where
                 b.place_id = {placeId}
+                and c.place_id = {placeId}
                 and b.active_flg = true
                 and c.active_flg = true
               union all
               select
                   b.btx_id
                 , 2 as kind_code
-                , cast('' as text) as name
+                , c.car_name as name
                 , c.car_no as note
               from
                 btx_master b
@@ -134,6 +135,7 @@ class btxDAO @Inject() (dbapi: DBApi) {
                   on b.btx_id = c.car_key_btx_id
               where
                 b.place_id = {placeId}
+                and c.place_id = {placeId}
                 and b.active_flg = true
                 and c.active_flg = true
               union all

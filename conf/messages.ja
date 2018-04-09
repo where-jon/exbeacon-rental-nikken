@@ -240,3 +240,16 @@ lang.cms.companyManage.companyUpdate.popup.itemName.placeholder=ダクト1
 lang.cms.companyManage.companyUpdate.popup.biko=備考
 lang.cms.companyManage.companyDelete.popup.title=業者情報削除
 lang.cms.companyManage.companyDelete.popup.message=業者情報を削除します。\nよろしいですか？
+
+# CMS文字列（Beaconタグ一覧）
+lang.cms.companyManage.title=Beaconタグ管理
+lang.cms.companyManage.page.title=Beaconタグ一覧画面
+lang.cms.companyManage.company.list.header.title=Beaconタグ管理
+lang.cms.companyManage.company.list.header.beaconTxNo=BeaconTXタグNo
+lang.cms.companyManage.company.list.header.powerLevel=電池残量
+lang.cms.companyManage.company.list.header.kind=種別
+lang.cms.companyManage.company.list.header.name=名称
+lang.cms.companyManage.company.list.header.biko=備考
+lang.cms.companyManage.company.list.body.undetected=未検知
+lang.cms.companyManage.company.list.body.unused=未使用
+

@@ -40,15 +40,19 @@ class TxTagManage @Inject()(config: Configuration
     // URLを取得
     val url = placeDAO.selectPlaceList(Seq[Int](placeId)).last.btxApiUrl
     // DBからの情報を取得
-    val dbInfo = btxDAO.selectForTelemetry(placeId)
+    var dbInfo = btxDAO.selectForTelemetry(placeId)
 
     // API呼び出し
     ws.url(url).get().map { response =>
       // APIデータ
       val list = Json.parse(response.body).asOpt[List[exCloudBtxData]].getOrElse(Nil)
 
+      // APIのデータをベースにしてDBのデータを表示する
       list.foreach(apiData =>{
         val dbRecords = dbInfo.filter(_.btxId == apiData.btx_id)
+        if (!dbRecords.isEmpty) {
+          dbInfo = dbInfo.filter(_.btxId != apiData.btx_id)
+        }
         if(dbRecords.length > 0){
           resultList :+= BtxTelemetryInfo(
                dbRecords.last.btxId
@@ -66,9 +70,25 @@ class TxTagManage @Inject()(config: Configuration
             , ""
             , ""
             , (apiData.updatetime.isEmpty == false)
+            , false
           )
         }
       })
+
+      // DBにのみに存在するデータを出力する
+      dbInfo.foreach(dbOnlyData => {
+        resultList :+= BtxTelemetryInfo(
+          dbOnlyData.btxId
+          , 0
+          , dbOnlyData.kindName
+          , dbOnlyData.name
+          , dbOnlyData.note
+          , false
+        )
+      })
+
+      resultList.sortBy(_.btxId)
+
       Ok(views.html.cms.txTagManage(resultList, placeId))
     }
   }
