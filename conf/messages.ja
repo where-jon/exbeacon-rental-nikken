@@ -200,8 +200,26 @@ lang.cms.carManage.carUpdate.popup.carTxNo=作業車TxタグNo
 lang.cms.carManage.carUpdate.popup.carTxNo.placeholder=110
 lang.cms.carManage.carUpdate.popup.keyTxNo=鍵TxタグNo
 lang.cms.carManage.carUpdate.popup.keyTxNo.placeholder=101
-
 lang.cms.carManage.carDelete.popup.title=作業車情報削除
 lang.cms.carManage.carDelete.popup.message=作業車情報を削除します。\nよろしいですか？
 
-
+# CMS文字列（仮設材管理）
+lang.cms.itemManage.title=仮設材管理
+lang.cms.itemManage.page.title=仮設材一覧画面
+lang.cms.itemManage.item.list.header.title=仮設材管理
+lang.cms.itemManage.item.list.header.id=ID
+lang.cms.itemManage.item.list.header.name=名称
+lang.cms.itemManage.item.list.header.biko=備考
+lang.cms.itemManage.item.list.header.count=個数
+lang.cms.itemManage.item.button.editItem=選択した仮設材を編集
+lang.cms.itemManage.item.button.addItem=新規仮設材追加
+lang.cms.itemManage.item.button.deleteItem=選択した仮設材を削除
+lang.cms.itemManage.itemUpdate.popup.title=仮設材情報更新
+lang.cms.itemManage.itemUpdate.popup.itemName=名称
+lang.cms.itemManage.itemUpdate.popup.itemName.placeholder=仮設材A
+lang.cms.itemManage.itemUpdate.popup.itemBiko=備考
+lang.cms.itemManage.itemUpdate.popup.itemNo=Txタグ設定
+lang.cms.itemManage.itemUpdate.popup.itemNo.placeholder=管理No
+lang.cms.itemManage.itemUpdate.popup.txNo.placeholder=TxタグNo
+lang.cms.itemManage.itemDelete.popup.title=仮設材情報削除
+lang.cms.itemManage.itemDelete.popup.message=仮設材情報を削除します。\nよろしいですか？

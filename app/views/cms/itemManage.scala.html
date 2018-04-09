@@ -6,7 +6,7 @@
 <!doctype html>
 <html lang="ja">
 <head>
-    @templates.htmlHead(title = "仮設材管理")
+    @templates.htmlHead(title = Messages("lang.cms.itemManage.title"))
     <link rel="stylesheet" href="@routes.MyAssets.css("cms/itemManage.css")"/>
     <script type="text/javascript" src="@routes.MyAssets.lib("jquery.tablefix_1.0.1.js")"></script>
     <script></script>
@@ -25,7 +25,7 @@
                 @views.html.templates.msgDiv()
                 <!-- 画面題字 -->
                 <div class="form-group" style="font-weight:bold;font-size:19px;margin:15px 0px;">
-                    仮設材一覧画面
+                    @Messages("lang.cms.itemManage.page.title")
                 </div>
                 <!-- テーブルのROW -->
                 <div class="row tableRow">
@@ -34,13 +34,13 @@
                             <table class="table table-bordered table-condensed itemTable">
                                 <thead>
                                     <tr>
-                                        <th colspan="4" class="tableTitleTh">仮設材管理</th>
+                                        <th colspan="4" class="tableTitleTh">@Messages("lang.cms.itemManage.item.list.header.title")</th>
                                     </tr>
                                     <tr>
-                                        <th class="tableTh noTh text-center">ID</th>
-                                        <th class="tableTh">名称</th>
-                                        <th class="tableTh">備考</th>
-                                        <th class="tableTh noTh">個数</th>
+                                        <th class="tableTh noTh text-center">@Messages("lang.cms.itemManage.item.list.header.id")</th>
+                                        <th class="tableTh">@Messages("lang.cms.itemManage.item.list.header.name")</th>
+                                        <th class="tableTh">@Messages("lang.cms.itemManage.item.list.header.biko")</th>
+                                        <th class="tableTh noTh">@Messages("lang.cms.itemManage.item.list.header.count")</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -50,10 +50,9 @@
                                             <td class="itemTd text-left itemKindName">@{item.itemKindName}</td>
                                             <td class="itemTd text-left note">@{item.note}</td>
                                             <td class="itemTd text-right itemCount">@{item.itemCount}</span>
-                                                @for(data <- item.actualItemInfoList){
-                                                    <span class="item hidden" data-itemId="@data.itemId" data-itemNo="@data.itemNo" data-itemBtxId="@data.itemBtxId"/>
-                                                }
-                                            </td>
+                                            @for(data <- item.actualItemInfoList){
+                                            <span class="item hidden" data-itemId="@data.itemId" data-itemNo="@data.itemNo" data-itemBtxId="@data.itemBtxId"></span>
+                                            }</td>
                                         </tr>
                                     }
                                 </tbody>
@@ -61,24 +60,16 @@
                         </div>
                     </div>
                 </div>
-                <!-- リンク-->
-                <div class="row tableRow" style="margin-top: 10px;">
-                    <div class="col-xs-4 col-sm-4 col-md-4" style="padding:0;">
-                        <a href="/cms/placeManage/detail">
-                            <i class="fa fa-arrow-left" aria-hidden="true"></i>現場管理に戻る
-                        </a>
-                    </div>
-                </div>
                 <!-- ボタン-->
                 <div class="row tableRow" style="margin-top: 10px;">
                     <div class="text-right col-xs-4 col-sm-4 col-md-4" style="padding:0;">
-                        <a href="javascript:showInputModal('');" class="btn link">選択した仮設材を編集</a>
+                        <a href="javascript:showInputModal(false);" class="btn link">@Messages("lang.cms.itemManage.item.button.editItem")</a>
                     </div>
                     <div class="text-center col-xs-4 col-sm-4 col-md-4" style="padding:0;">
-                        <a href="javascript:showInputModal('');" class="btn link">新規仮設材追加</a>
+                        <a href="javascript:showInputModal(true);" class="btn link">@Messages("lang.cms.itemManage.item.button.addItem")</a>
                     </div>
                     <div class="text-left col-xs-4 col-sm-4 col-md-4" style="padding:0;">
-                        <a href="javascript:showDeleteModal();" class="btn link">選択した仮設材を削除</a>
+                        <a href="javascript:showDeleteModal();" class="btn link">@Messages("lang.cms.itemManage.item.button.deleteItem")</a>
                     </div>
                 </div>
             </div>
@@ -91,32 +82,32 @@
     <div class="modal" id="inputModal" tabindex="-1" role="dialog" aria-labelledby="InputModalLabel" aria-hidden="true" data-show="true" data-keyboard="false" data-backdrop="static">
         <div class="modal-dialog">
             <div class="modal-content">
-                <form id="itemForm" name="itemForm" enctype="multipart/form-data" class="form-horizontal" method="post">
+                <form id="itemForm" name="itemForm" enctype="multipart/form-data" class="form-horizontal" method="post" action="@controllers.cms.routes.ItemManage.update.path">
                     @CSRF.formField
                     <input type="hidden" name="inputPlaceId" value="@placeId">
                     <input type="hidden" id="inputItemKindId" name="inputItemKindId">
                     <input type="hidden" id="actualItemInfoStr" name="actualItemInfoStr">
-                    <div class="modal-header" style="">仮設材情報更新</div>
+                    <div class="modal-header" style="">@Messages("lang.cms.itemManage.itemUpdate.popup.title")</div>
                     <div class="modal-body">
                         <div class="form-group">
-                            <label class="control-label col-xs-4">名称</label>
+                            <label class="control-label col-xs-4">@Messages("lang.cms.itemManage.itemUpdate.popup.itemName")</label>
                             <div class="col-xs-3" style="padding-left: 0px;padding-right: 0px;">
-                                <input type="text" id="inputItemKindName" name="inputItemKindName" class="form-control" placeholder="仮設材A">
+                                <input type="text" id="inputItemKindName" name="inputItemKindName" class="form-control" placeholder="@Messages("lang.cms.itemManage.itemUpdate.popup.itemName.placeholder")">
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="control-label col-xs-4">備考</label>
+                            <label class="control-label col-xs-4">@Messages("lang.cms.itemManage.itemUpdate.popup.itemBiko")</label>
                             <div class="col-xs-5" style="padding-left: 0px;padding-right: 0px;">
                                 <input type="text" id="inputNote" name="inputNote" class="form-control">
                             </div>
                         </div>
                         <div class="form-group" style="margin-bottom: 5px;">
-                            <label class="control-label col-xs-4">Txタグ設定</label>
+                            <label class="control-label col-xs-4">@Messages("lang.cms.itemManage.itemUpdate.popup.itemNo")</label>
                             <div class="col-xs-2" style="padding-left: 0px;padding-right: 0px;margin-right: 10px;">
-                                <input type="text" maxlength="3" id="inputItemNo" class="form-control" placeholder="管理No">
+                                <input type="text" maxlength="3" id="inputItemNo" class="form-control" placeholder="@Messages("lang.cms.itemManage.itemUpdate.popup.itemNo.placeholder")">
                             </div>
                             <div class="col-xs-2" style="padding-left: 0px;padding-right: 0px;margin-right: 10px;">
-                                <input type="text" id="inputItemBtxId" class="form-control" placeholder="TxタグNo">
+                                <input type="text" id="inputItemBtxId" class="form-control" placeholder="@Messages("lang.cms.itemManage.itemUpdate.popup.txNo.placeholder")">
                             </div>
                             <div class="col-xs-2" style="padding-left: 0px;padding-right: 0px;">
                                 <a href="javascript:addTagRow();"class="btn btn-default"><i class="fa fa-plus" aria-hidden="true"></i></a>
@@ -138,13 +129,12 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <div id="itemUpdateFooter">
-                            <div class="col-xs-6 text-center">
-                                <button type="button" class="btn btn-default" data-dismiss="modal">キャンセル</button>
-                            </div>
-                            <div class="col-xs-6 text-center">
-                                <a href="javascript:doSubmit('itemForm', '@controllers.cms.routes.ItemManage.update.path');" class="text-center btn btn-primary">更新</a>
-                            </div>
+                        <div class="col-xs-6 text-center">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">@Messages("cancel")</button>
+                        </div>
+                        <div class="col-xs-6 text-center">
+                            <button id="itemUpdateFooter"  type="submit" class="text-center btn btn-primary hidden">@Messages("update")</button>
+                            <button id="itemRegisterFooter"  type="submit" class="text-center btn btn-primary hidden">@Messages("registration")</button>
                         </div>
                     </div>
                 </form>
@@ -155,19 +145,21 @@
     <div class="modal" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true" data-show="true" data-keyboard="false" data-backdrop="static">
         <div class="modal-dialog">
             <div class="modal-content">
-                <form id="deleteForm" name="deleteForm" class="form-horizontal">
-                    <div class="modal-header">フロア情報削除</div>
+                <form id="deleteForm" name="deleteForm" enctype="multipart/form-data" class="form-horizontal" method="post" action="@controllers.cms.routes.ItemManage.delete.path">
+                    @CSRF.formField
+                    <input type="hidden" id="deleteItemId" name="deleteItemId">
+                    <div class="modal-header">@Messages("lang.cms.itemManage.itemDelete.popup.title")</div>
                     <div class="modal-body">
                         <div class="text-center">
-                            仮設材情報を削除します。<br/>よろしいですか？
+                            @Messages("lang.cms.itemManage.itemDelete.popup.message")
                         </div>
                     </div>
                     <div class="modal-footer">
                         <div class="col-xs-6 text-center">
-                            <button type="button" class="btn btn-default" data-dismiss="modal">キャンセル</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">@Messages("cancel")</button>
                         </div>
                         <div class="col-xs-6 text-center">
-                            <button type="button" class="text-center btn btn-danger">削除</button>
+                            <button type="submit" class="text-center btn btn-danger">@Messages("delete")</button>
                         </div>
                     </div>
                 </form>

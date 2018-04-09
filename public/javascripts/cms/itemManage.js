@@ -7,22 +7,8 @@ function bindMouseAndTouch(){
             'touchstart': function(e) {
                 if(e.originalEvent.touches.length > 1){
                 }else if(e.originalEvent.touches.length == 1){
-<<<<<<< HEAD
-                    $(this).addClass('rowHoverColor');
-                    var itemKindId = $(this).attr('id');
-                    touched = true;
-                    touch_time = 0;
-                    document.interval = setInterval(function(){
-                        touch_time += 100;
-                        if (touch_time == common.longTapTime) {
-                            // ロングタップ時の処理
-                            showInputModal(itemKindId);
-                        }
-                    }, 100)
-=======
                     $(".rowHoverSelectedColor").removeClass('rowHoverSelectedColor');
                     $(this).addClass('rowHoverSelectedColor');
->>>>>>> design
                 }
             }
         });
@@ -36,23 +22,16 @@ function bindMouseAndTouch(){
                 $(this).removeClass('rowHoverColor');
             },
             'click': function(e) {
-<<<<<<< HEAD
-                var itemKindId = $(this).attr('id');
-                showInputModal(itemKindId);
-=======
                 $(".rowHoverSelectedColor").removeClass('rowHoverSelectedColor');
                 $(this).addClass('rowHoverSelectedColor');
->>>>>>> design
             },
         });
     }
 }
 
-
-<<<<<<< HEAD
 // モーダル画面の表示
-function showInputModal(itemKindId){
-    if(itemKindId == ""){
+function showInputModal(isRegister){
+    if(isRegister){
         // 新規
         $('#inputItemKindId').val('');
         $('#actualItemInfoStr').val('');
@@ -64,39 +43,51 @@ function showInputModal(itemKindId){
         // ボタン表示の切り替え
         $('#itemUpdateFooter').addClass('hidden');
         $('#itemRegisterFooter').removeClass('hidden');
+
+        $('#inputModal').modal();
     }else{
-        $('.cloned').remove();
-        $('#inputItemKindId').val(itemKindId);
-        $('#actualItemInfoStr').val('');
-        $('#inputItemKindName').val($('#'+itemKindId).find('.itemKindName').text());
-        $('#inputNote').val($('#'+itemKindId).find('.note').text());
-        $('#inputItemNo').val('');
-        $('#inputItemBtxId').val('');
+        if($('.rowHoverSelectedColor').length > 0){
+            var itemKindId = $('.rowHoverSelectedColor .itemKindId').html();
+            $('.cloned').remove();
+            $('#inputItemKindId').val(itemKindId);
+            $('#actualItemInfoStr').val('');
+            $('#inputItemKindName').val($('#'+itemKindId).find('.itemKindName').text());
+            $('#inputNote').val($('#'+itemKindId).find('.note').text());
+            $('#inputItemNo').val('');
+            $('#inputItemBtxId').val('');
 
-        var spanObjList = $('#'+itemKindId).find('span.item');
-        $(spanObjList).each(function(index, element){
-            var clonedRow = $('.template').clone();
-            clonedRow.addClass('cloned');
-            clonedRow.removeClass('template');
-            clonedRow.find('span.inputItemNoSpan').text($(element).attr('data-itemNo'));
-            clonedRow.find('span.inputItemBtxIdSpan').text($(element).attr('data-itemBtxId'));
-            $('.template').before(clonedRow);
-            var value = $('#actualItemInfoStr').val();
-            $('#actualItemInfoStr').val(value + "-" + $(element).attr('data-itemNo')
-                                                    + ',' + $(element).attr('data-itemBtxId')
-                                                    )
-            clonedRow.removeClass('hidden');
-        });
+            var spanObjList = $('#'+itemKindId).find('span.item');
+            $(spanObjList).each(function(index, element){
+                var clonedRow = $('.template').clone();
+                clonedRow.addClass('cloned');
+                clonedRow.removeClass('template');
+                clonedRow.find('span.inputItemNoSpan').text($(element).attr('data-itemNo'));
+                clonedRow.find('span.inputItemBtxIdSpan').text($(element).attr('data-itemBtxId'));
+                $('.template').before(clonedRow);
+                var value = $('#actualItemInfoStr').val();
+                $('#actualItemInfoStr').val(value + "-" + $(element).attr('data-itemNo')
+                                                        + ',' + $(element).attr('data-itemBtxId')
+                                                        )
+                clonedRow.removeClass('hidden');
+            });
 
-        // ボタン表示の切り替え
-        $('#itemUpdateFooter').removeClass('hidden');
-        $('#itemRegisterFooter').addClass('hidden');
+            // ボタン表示の切り替え
+            $('#itemUpdateFooter').removeClass('hidden');
+            $('#itemRegisterFooter').addClass('hidden');
+
+            $('#inputModal').modal();
+        }
     }
-    $('#inputModal').modal();
 }
 
-=======
->>>>>>> design
+function showDeleteModal(){
+    if($('.rowHoverSelectedColor').length > 0){
+        var itemKindId = $('.rowHoverSelectedColor .itemKindId').html();
+        $('#deleteItemId').val(itemKindId);
+        $('#deleteModal').modal();
+    }
+}
+
 // テーブルの固定
 function fixTable(){
     // 表テーブルの固定
@@ -117,33 +108,6 @@ function fixTable(){
     $('.bodyTableDiv').find('.itemTable').css('margin-bottom','0');
     $('.colTableDiv').css("width","");
 }
-// テーブルのクリア
-function removeTable(){
-    var clonedTable = $('.bodyTableDiv').find('table').clone();
-    $(clonedTable).attr('style', '');
-    $(clonedTable).find('span').remove();
-    $('.baseDiv').remove();
-    $('.table-responsive-body').append(clonedTable.prop("outerHTML"));
-}
-
-<<<<<<< HEAD
-=======
-// モーダル画面の表示
-function showInputModal(isRegister){
-    if(isRegister){
-        $('#inputModal').modal();
-    }else{
-        if($('.rowHoverSelectedColor').length > 0){
-            $('#inputModal').modal();
-        }
-    }
-}
-function showDeleteModal(){
-    if($('.rowHoverSelectedColor').length > 0){
-        $('#deleteModal').modal();
-    }
-}
->>>>>>> design
 
 // 入力モーダルのTxタグの行を追加
 function addTagRow(){
@@ -183,6 +147,7 @@ function addTagRow(){
         }
     }
 }
+
 // 入力モーダルのTxタグの行の削除
 function removeTagRow(obj){
     var clonedRow = $(obj).parent().parent();
@@ -191,12 +156,6 @@ function removeTagRow(obj){
     originalValue = originalValue.replace(value, '');
     $('#actualItemInfoStr').val(originalValue);
     clonedRow.remove();
-}
-
-// サブミット
-function doSubmit(formId, action){
-    $('#' + formId).attr('action', action)
-    $('#' + formId).submit();
 }
 
 $(function(){

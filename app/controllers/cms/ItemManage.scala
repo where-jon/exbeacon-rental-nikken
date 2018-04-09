@@ -132,7 +132,7 @@ class ItemManage @Inject()(config: Configuration
         val originalBtxList = itemDAO.selectActualItemInfo(placeId = f.inputPlaceId.toInt, includeItemKindId = Option(f.inputItemKindId.toInt))
         var dbBtxList :Seq[models.Btx] = btxDAO.select(f.inputPlaceId.toInt)
         dbBtxList = dbBtxList.filter(d=>{
-          (originalBtxList.map{x=>x.itemBtxId} contains d.btxId == false)
+          (originalBtxList.map{x=>x.itemBtxId}.contains(d.btxId) == false)
         })
 
         // 管理Noのチェック
@@ -170,8 +170,8 @@ class ItemManage @Inject()(config: Configuration
   def delete = SecuredAction { implicit request =>
     // フォームの準備
     val inputForm = Form(mapping(
-      "inputPlaceId" -> text
-      , "inputItemKindId" -> text
+      "deleteItemId" -> text
+      , "deleteItemId" -> text
     )(ItemDeleteForm.apply)(ItemDeleteForm.unapply))
 
     // フォームの取得
