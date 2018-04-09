@@ -29,7 +29,7 @@ case class CarUpdateForm(
 )
 
 case class CarDeleteForm(
-  inputCarId: String
+    deleteCarId: String
 )
 
 @Singleton
@@ -119,25 +119,36 @@ class CarManage @Inject()(config: Configuration
         // 変更前タグ情報
         val preCarInfo = carDAO.selectCarInfo(super.getCurrentPlaceId, "", Option(f.inputCarId.toInt)).last
 
-        // タグチェック
-        val checkList = Seq[(Int,Int)](
+        if(f.inputCarKeyBtxId.toInt == preCarInfo.carBtxId && f.inputCarBtxId.toInt == preCarInfo.carKeyBtxId) {
+          // 入力を逆転している場合は何もしない
+        } else {
+          // タグチェック
+          val checkList = Seq[(Int,Int)](
             (preCarInfo.carBtxId, f.inputCarBtxId.toInt)
-          , (preCarInfo.carKeyBtxId, f.inputCarKeyBtxId.toInt)
-        )
-        checkList.zipWithIndex.foreach{case (btxId, i) =>
-          if(btxId._1 == btxId._2){
-            // OK
-          }else{
-            val btxList = btxDAO.select(super.getCurrentPlaceId, Seq[Int](btxId._2))
-            if(btxList.isEmpty == false){
-              // NG
-              if(i == 0){
-                errMsg :+= Messages("error.cms.CarManage.update.inputCarBtxId.duplicate", btxId._2)
-              }else{
-                errMsg :+= Messages("error.cms.CarManage.update.inputCarKeyBtxId.duplicate", btxId._2)
+            , (preCarInfo.carKeyBtxId, f.inputCarKeyBtxId.toInt)
+          )
+          checkList.zipWithIndex.foreach { case (btxId, i) =>
+            if (btxId._1 == btxId._2) {
+              // 変更前と同じの場合何もしない
+            } else {
+              val btxList = btxDAO.select(super.getCurrentPlaceId, Seq[Int](btxId._2))
+              // 対象現場に既存登録がある場合
+              if (!btxList.isEmpty) {
+                  // 登録が重複する場合
+                if (i == 0) {
+                  if (f.inputCarBtxId.toInt == preCarInfo.carKeyBtxId) {
+                      // 作業車Txに変更前の鍵Txを登録する、且つ鍵Txが変更されている場合は何もしない
+                  } else {
+                    errMsg :+= Messages("error.cms.CarManage.update.inputCarBtxId.duplicate", btxId._2)
+                  }
+                } else {
+                  if (f.inputCarKeyBtxId.toInt == preCarInfo.carBtxId) {
+                      // 鍵Txに変更前の作業車Txを登録する場合は何もしない
+                  } else {
+                    errMsg :+= Messages("error.cms.CarManage.update.inputCarKeyBtxId.duplicate", btxId._2)
+                  }
+                }
               }
-            }else{
-              // OK
             }
           }
         }
@@ -155,6 +166,8 @@ class CarManage @Inject()(config: Configuration
             , f.inputCarBtxId.toInt
             , f.inputCarKeyBtxId.toInt
             , super.getCurrentPlaceId
+            , preCarInfo.carBtxId
+            , preCarInfo.carKeyBtxId
           )
 
           Redirect(routes.CarManage.index)
@@ -171,17 +184,15 @@ class CarManage @Inject()(config: Configuration
   def delete = SecuredAction { implicit request =>
     // フォームの準備
     val inputForm = Form(mapping(
-      "inputCarId" -> text
+      "deleteCarId" -> text
     )(CarDeleteForm.apply)(CarDeleteForm.unapply))
 
     // フォームの取得
     val form = inputForm.bindFromRequest
     val f = form.get
 
-    // DB処理
-
     // 検索
-    val carList = carDAO.selectCarInfo(super.getCurrentPlaceId, "", Option(f.inputCarId.toInt))
+    val carList = carDAO.selectCarInfo(super.getCurrentPlaceId, "", Option(f.deleteCarId.toInt))
     // タグ
     var txTagList = Seq[Int]()
     if(carList.length > 0){
@@ -192,7 +203,7 @@ class CarManage @Inject()(config: Configuration
       }
 
       // 削除
-      carDAO.delete(f.inputCarId.toInt, super.getCurrentPlaceId, txTagList)
+      carDAO.delete(f.deleteCarId.toInt, super.getCurrentPlaceId, txTagList)
     }
 
     // リダイレクト

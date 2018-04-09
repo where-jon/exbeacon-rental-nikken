@@ -166,20 +166,24 @@ class carDAO @Inject() (dbapi: DBApi) {
     * 業者の更新
     * @return
     */
-  def update(carId:Int, carNo: String, carName: String, carBtxId:Int, carKeyBtxId:Int, placeId:Int): Unit = {
+  def update(carId:Int, carNo: String, carName: String, carBtxId:Int, carKeyBtxId:Int, placeId:Int,
+             oldBtxId:Int, oldCarKeyBtxId:Int): Unit = {
     db.withTransaction { implicit connection =>
 
-      // BTXマスタの更新
-      val btxList = Seq[Int](carBtxId, carKeyBtxId)
+      // 古い情報でのBTXマスタ更新リスト
+      val oldBtxList = Seq[Int](oldBtxId, oldCarKeyBtxId)
       // 削除
       SQL(
         """
-          delete from btx_master where and btx_id in ({btxIdList}) ;
+          delete from btx_master where btx_id in ({btxIdList}) ;
         """)
-        .on('btxIdList -> btxList).executeUpdate()
+        .on('btxIdList -> oldBtxList).executeUpdate()
+
+      // 新しい情報でのBTXマスタ更新リスト
+      val newBtxList = Seq[Int](carBtxId, carKeyBtxId)
 
       // 登録
-      btxList.foreach( btxId =>{
+      newBtxList.foreach( btxId =>{
         SQL("""insert into btx_master (btx_id, place_id) values ({btxId}, {placeId})""")
           .on('btxId -> btxId, 'placeId -> placeId).executeInsert()
       })

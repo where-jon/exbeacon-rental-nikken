@@ -7,7 +7,6 @@ function bindMouseAndTouch(){
             'touchstart': function(e) {
                 if(e.originalEvent.touches.length > 1){
                 }else if(e.originalEvent.touches.length == 1){
-<<<<<<< HEAD
                     $(this).addClass('rowHoverColor');
                     var id = $(this).attr('id');
                     touched = true;
@@ -16,13 +15,11 @@ function bindMouseAndTouch(){
                         touch_time += 100;
                         if (touch_time == common.longTapTime) {
                             // ロングタップ時の処理
-                            showInputModal(id);
+                            showInputModal(true);
                         }
                     }, 100);
-=======
                     $(".rowHoverSelectedColor").removeClass('rowHoverSelectedColor');
                     $(this).addClass('rowHoverSelectedColor');
->>>>>>> design
                 }
             },
         });
@@ -36,13 +33,8 @@ function bindMouseAndTouch(){
                 $(this).removeClass('rowHoverColor');
             },
             'click': function(e) {
-<<<<<<< HEAD
-                var id = $(this).attr('id');
-                showInputModal(id);
-=======
                 $(".rowHoverSelectedColor").removeClass('rowHoverSelectedColor');
                 $(this).addClass('rowHoverSelectedColor');
->>>>>>> design
             },
         });
     }
@@ -85,45 +77,48 @@ function doSubmit(formId, action){
 }
 
 // モーダル画面の表示
-<<<<<<< HEAD
-function showInputModal(carId){
-    if(carId == ""){
+function showInputModal(isRegister){
+    if(isRegister){
         $('#inputCarId').val('');
         $('#inputCarNo').val('');
         $('#inputCarName').val('');
         $('#inputCarBtxId').val('');
         $('#inputCarKeyBtxId').val('');
 
-        $('#updateFooter').addClass('hidden');
-        $('#registerFooter').removeClass('hidden');
-    }else{
-        $('#inputCarId').val(carId);
-        $('#inputCarNo').val($('#'+carId).find('.carNo').text());
-        $('#inputCarName').val($('#'+carId).find('.carName').text());
-        $('#inputCarBtxId').val($('#'+carId).find('.carBtxId').text());
-        $('#inputCarKeyBtxId').val($('#'+carId).find('.carKeyBtxId').text());
-
-        $('#updateFooter').removeClass('hidden');
-        $('#registerFooter').addClass('hidden');
-    }
-    $('#inputModal').modal();
-}
-=======
-function showInputModal(isRegister){
-    if(isRegister){
+        // ボタン表示の切り替え
+        $('#carRegisterFooter').removeClass('hidden');
+        $('#carUpdateFooter').addClass('hidden');
         $('#inputModal').modal();
     }else{
         if($('.rowHoverSelectedColor').length > 0){
+            var carId = $('.rowHoverSelectedColor').attr('data-carId');
+            $('#inputCarId').val(carId);
+            $('#inputCarNo').val($('#'+carId).find('.carNo').text());
+            $('#inputCarName').val($('#'+carId).find('.carName').text());
+            $('#inputCarBtxId').val($('#'+carId).find('.carBtxId').text());
+            $('#inputCarKeyBtxId').val($('#'+carId).find('.carKeyBtxId').text());
+
+            // ボタン表示の切り替え
+            $('#carUpdateFooter').removeClass('hidden');
+            $('#carRegisterFooter').addClass('hidden');
             $('#inputModal').modal();
         }
     }
 }
+
 function showDeleteModal(){
     if($('.rowHoverSelectedColor').length > 0){
         $('#deleteModal').modal();
     }
 }
->>>>>>> design
+
+function deleteCar(){
+    if($('.rowHoverSelectedColor').length > 0){
+        var carId = $('.rowHoverSelectedColor').attr('data-carId');
+        $('#deleteCarId').val(carId)
+        $('#deleteForm').submit()
+    }
+}
 
 $(function(){
     // テーブルを固定

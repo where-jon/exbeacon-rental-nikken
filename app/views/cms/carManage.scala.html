@@ -6,7 +6,7 @@
 <!doctype html>
 <html lang="ja">
 <head>
-    @templates.htmlHead(title = "作業車管理")
+    @templates.htmlHead(title = Messages("lang.cms.carManage.title"))
     <link rel="stylesheet" href="@routes.MyAssets.css("cms/carManage.css")"/>
     <script type="text/javascript" src="@routes.MyAssets.lib("jquery.tablefix_1.0.1.js")"></script>
     <script></script>
@@ -25,7 +25,7 @@
                 @views.html.templates.msgDiv()
                 <!-- 画面題字 -->
                 <div class="form-group" style="font-weight:bold;font-size:19px;margin:15px 0px;">
-                    作業車一覧画面
+                    @Messages("lang.cms.carManage.page.title")
                 </div>
                 <!-- テーブルのROW -->
                 <div class="row tableRow">
@@ -34,18 +34,18 @@
                             <table class="table table-bordered table-condensed itemTable">
                                 <thead>
                                     <tr>
-                                        <th colspan="4" class="tableTitleTh">作業車管理</th>
+                                        <th colspan="4" class="tableTitleTh">@Messages("lang.cms.carManage.car.list.header.title")</th>
                                     </tr>
                                     <tr>
-                                        <th class="tableTh carNoTh">作業車番号</th>
-                                        <th class="tableTh carNameTh">作業車名称</th>
-                                        <th class="tableTh carTxNoTh">作業車TxタグNo.</th>
-                                        <th class="tableTh keyTxNoTh">鍵TxタグNo.</th>
+                                        <th class="tableTh carNoTh">@Messages("lang.cms.carManage.car.list.header.number")</th>
+                                        <th class="tableTh carNameTh">@Messages("lang.cms.carManage.car.list.header.name")</th>
+                                        <th class="tableTh carTxNoTh">@Messages("lang.cms.carManage.car.list.header.carNumber")</th>
+                                        <th class="tableTh keyTxNoTh">@Messages("lang.cms.carManage.car.list.header.keyNumber")</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @for(car <- carList){
-                                        <tr class="rowColor rowHover" id="@car.carId">
+                                        <tr class="rowColor rowHover" data-carId="@car.carId" id="@car.carId">
                                             <td class="itemTd text-center carNo">@car.carNo</td>
                                             <td class="itemTd text-left carName">@car.carName</td>
                                             <td class="itemTd text-center carBtxId">@car.carBtxId</td>
@@ -57,24 +57,16 @@
                         </div>
                     </div>
                 </div>
-                <!-- リンク-->
-                <div class="row tableRow" style="margin-top: 10px;">
-                    <div class="col-xs-4 col-sm-4 col-md-4" style="padding:0;">
-                        <a href="/cms/placeManage/detail">
-                            <i class="fa fa-arrow-left" aria-hidden="true"></i>現場管理に戻る
-                        </a>
-                    </div>
-                </div>
                 <!-- ボタン-->
                 <div class="row tableRow" style="margin-top: 10px;">
                     <div class="text-right col-xs-4 col-sm-4 col-md-4" style="padding:0;">
-                        <a href="javascript:showInputModal(false);" class="btn link">選択した作業車を編集</a>
+                        <a href="javascript:showInputModal(false);" class="btn link">@Messages("lang.cms.carManage.car.button.editCar")</a>
                     </div>
                     <div class="text-center col-xs-4 col-sm-4 col-md-4" style="padding:0;">
-                        <a href="javascript:showInputModal(true);" class="btn link">新規作業車追加</a>
+                        <a href="javascript:showInputModal(true);" class="btn link">@Messages("lang.cms.carManage.car.button.addCar")</a>
                     </div>
                     <div class="text-left col-xs-4 col-sm-4 col-md-4" style="padding:0;">
-                        <a href="javascript:showDeleteModal();" class="btn link">選択した作業車を削除</a>
+                        <a href="javascript:showDeleteModal();" class="btn link">@Messages("lang.cms.carManage.car.button.deleteCar")</a>
                     </div>
                 </div>
             </div>
@@ -87,43 +79,44 @@
     <div class="modal" id="inputModal" tabindex="-1" role="dialog" aria-labelledby="inputModalLabel" aria-hidden="true" data-show="true" data-keyboard="false" data-backdrop="static">
         <div class="modal-dialog">
             <div class="modal-content">
-                <form id="carForm" name="carForm" enctype="multipart/form-data" class="form-horizontal" method="post">
+                <form id="carForm" name="carForm" enctype="multipart/form-data" class="form-horizontal" method="post" action="@controllers.cms.routes.CarManage.update.path">
                     @CSRF.formField
                     <input type="hidden" name="inputPlaceId" value="@placeId">
                     <input type="hidden" id="inputCarId" name="inputCarId">
-                    <div class="modal-header" style="">作業車情報更新</div>
+                    <div class="modal-header" style="">@Messages("lang.cms.carManage.carUpdate.popup.name")</div>
                     <div class="modal-body">
                         <div class="form-group">
-                            <label class="control-label col-xs-5">作業車番号</label>
+                            <label class="control-label col-xs-5">@Messages("lang.cms.carManage.carUpdate.popup.carNumber")</label>
                             <div class="col-xs-2" style="padding-left: 0px;padding-right: 0px;">
-                                <input type="text" maxlength="3" size="3" name="inputCarNo" id="inputCarNo" class="form-control" placeholder="001">
+                                <input type="text" maxlength="3" size="3" name="inputCarNo" id="inputCarNo" class="form-control" placeholder="@Messages("lang.cms.carManage.carUpdate.popup.carNumber.placeholder")">
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="control-label col-xs-5">作業車名称</label>
+                            <label class="control-label col-xs-5">@Messages("lang.cms.carManage.carUpdate.popup.carName")</label>
                             <div class="col-xs-5" style="padding-left: 0px;padding-right: 0px;">
-                                <input type="text" name="inputCarName" id="inputCarName" class="form-control" placeholder="高所作業車A">
+                                <input type="text" name="inputCarName" id="inputCarName" class="form-control" placeholder="@Messages("lang.cms.carManage.carUpdate.popup.carName.placeholder")">
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="control-label col-xs-5">作業車TxタグNo</label>
+                            <label class="control-label col-xs-5">@Messages("lang.cms.carManage.carUpdate.popup.carTxNo")</label>
                             <div class="col-xs-2" style="padding-left: 0px;padding-right: 0px;">
-                                <input type="text" name="inputCarBtxId" id="inputCarBtxId" class="form-control" placeholder="110">
+                                <input type="text" name="inputCarBtxId" id="inputCarBtxId" class="form-control" placeholder="@Messages("lang.cms.carManage.carUpdate.popup.carTxNo.placeholder")">
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="control-label col-xs-5">鍵TxタグNo</label>
+                            <label class="control-label col-xs-5">@Messages("lang.cms.carManage.carUpdate.popup.keyTxNo")</label>
                             <div class="col-xs-2" style="padding-left: 0px;padding-right: 0px;">
-                                <input type="text" name="inputCarKeyBtxId" id="inputCarKeyBtxId" class="form-control" placeholder="101">
+                                <input type="text" name="inputCarKeyBtxId" id="inputCarKeyBtxId" class="form-control" placeholder="@Messages("lang.cms.carManage.carUpdate.popup.keyTxNo.placeholder")">
                             </div>
                         </div>
                     </div>
                     <div class="modal-footer">
                         <div class="col-xs-6 text-center">
-                            <button type="button" class="btn btn-default" data-dismiss="modal">キャンセル</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">@Messages("cancel")</button>
                         </div>
                         <div class="col-xs-6 text-center">
-                            <button type="button" class="text-center btn btn-primary">更新</button>
+                            <button id="carUpdateFooter"  type="submit" class="text-center btn btn-primary hidden">@Messages("update")</button>
+                            <button id="carRegisterFooter"  type="submit" class="text-center btn btn-primary hidden">@Messages("registration")</button>
                         </div>
                     </div>
                 </form>
@@ -134,19 +127,21 @@
     <div class="modal" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true" data-show="true" data-keyboard="false" data-backdrop="static">
         <div class="modal-dialog">
             <div class="modal-content">
-                <form id="deleteForm" name="deleteForm" class="form-horizontal">
-                    <div class="modal-header">フロア情報削除</div>
+                <form id="deleteForm" name="deleteForm" class="form-horizontal" method="post" enctype="multipart/form-data" action="@controllers.cms.routes.CarManage.delete.path">
+                    @CSRF.formField
+                    <input type="hidden" id="deleteCarId" name="deleteCarId">
+                    <div class="modal-header">@Messages("lang.cms.carManage.carDelete.popup.title")</div>
                     <div class="modal-body">
                         <div class="text-center">
-                            作業車情報を削除します。<br/>よろしいですか？
+                            @Messages("lang.cms.carManage.carDelete.popup.message")
                         </div>
                     </div>
                     <div class="modal-footer">
                         <div class="col-xs-6 text-center">
-                            <button type="button" class="btn btn-default" data-dismiss="modal">キャンセル</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">@Messages("cancel")</button>
                         </div>
                         <div class="col-xs-6 text-center">
-                            <button type="button" class="text-center btn btn-danger">削除</button>
+                            <a href="javascript:deleteCar();" class="text-center btn btn-danger">@Messages("delete")</a>
                         </div>
                     </div>
                 </form>
