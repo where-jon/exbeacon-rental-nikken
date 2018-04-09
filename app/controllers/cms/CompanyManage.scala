@@ -20,7 +20,7 @@ import utils.silhouette.MyEnv
 
 // フォームの定義
 case class CompanyUpdateForm(inputPlaceId: String, inputCompanyId: String, inputCompanyName: String, inputNote: String = "")
-case class CompanyDeleteForm(inputCompanyId: String)
+case class CompanyDeleteForm(deleteCompanyId: String)
 
 @Singleton
 class CompanyManage @Inject()(config: Configuration
@@ -109,14 +109,14 @@ class CompanyManage @Inject()(config: Configuration
   def delete = SecuredAction { implicit request =>
     // フォームの準備
     val inputForm = Form(mapping(
-      "inputCompanyId" -> text
+      "deleteCompanyId" -> text
     )(CompanyDeleteForm.apply)(CompanyDeleteForm.unapply))
 
     // フォームの取得
     val form = inputForm.bindFromRequest
     val f = form.get
     // DB処理
-    companyDAO.deleteById(f.inputCompanyId.toInt)
+    companyDAO.deleteById(f.deleteCompanyId.toInt)
 
     // リダイレクト
     Redirect(routes.CompanyManage.index)

@@ -223,3 +223,20 @@ lang.cms.itemManage.itemUpdate.popup.itemNo.placeholder=管理No
 lang.cms.itemManage.itemUpdate.popup.txNo.placeholder=TxタグNo
 lang.cms.itemManage.itemDelete.popup.title=仮設材情報削除
 lang.cms.itemManage.itemDelete.popup.message=仮設材情報を削除します。\nよろしいですか？
+
+# CMS文字列（仮設材管理）
+lang.cms.companyManage.title=業者管理
+lang.cms.companyManage.page.title=業者一覧画面
+lang.cms.companyManage.company.list.header.title=業者管理
+lang.cms.companyManage.company.list.header.id=ID
+lang.cms.companyManage.company.list.header.name=名称
+lang.cms.companyManage.company.list.header.biko=備考
+lang.cms.companyManage.company.button.editItem=選択した業者を編集
+lang.cms.companyManage.company.button.addItem=新規業者追加
+lang.cms.companyManage.company.button.deleteItem=選択した業者を削除
+lang.cms.companyManage.companyUpdate.popup.title=業者情報更新
+lang.cms.companyManage.companyUpdate.popup.itemName=名称
+lang.cms.companyManage.companyUpdate.popup.itemName.placeholder=ダクト1
+lang.cms.companyManage.companyUpdate.popup.biko=備考
+lang.cms.companyManage.companyDelete.popup.title=業者情報削除
+lang.cms.companyManage.companyDelete.popup.message=業者情報を削除します。\nよろしいですか？

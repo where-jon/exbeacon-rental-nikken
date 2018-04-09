@@ -7,22 +7,8 @@ function bindMouseAndTouch(){
             'touchstart': function(e) {
                 if(e.originalEvent.touches.length > 1){
                 }else if(e.originalEvent.touches.length == 1){
-<<<<<<< HEAD
-                    $(this).addClass('rowHoverColor');
-                    var companyId = $(this).attr('id');
-                    touched = true;
-                    touch_time = 0;
-                    document.interval = setInterval(function(){
-                        touch_time += 100;
-                        if (touch_time == common.longTapTime) {
-                            // ロングタップ時の処理
-                            showInputModal(companyId);
-                        }
-                    }, 100);
-=======
                     $(".rowHoverSelectedColor").removeClass('rowHoverSelectedColor');
                     $(this).addClass('rowHoverSelectedColor');
->>>>>>> design
                 }
             }
         });
@@ -36,13 +22,8 @@ function bindMouseAndTouch(){
                 $(this).removeClass('rowHoverColor');
             },
             'click': function(e) {
-<<<<<<< HEAD
-                var companyId = $(this).attr('id');
-                showInputModal(companyId);
-=======
                 $(".rowHoverSelectedColor").removeClass('rowHoverSelectedColor');
                 $(this).addClass('rowHoverSelectedColor');
->>>>>>> design
             },
         });
     }
@@ -77,49 +58,43 @@ function removeTable(){
     $('.table-responsive-body').append(clonedTable.prop("outerHTML"));
 }
 
-// サブミット
-function doSubmit(formId, action){
-    $('#' + formId).attr('action', action)
-    $('#' + formId).submit();
-}
-
 // モーダル画面の表示
-<<<<<<< HEAD
-function showInputModal(companyId){
-    if(companyId == ""){
+function showInputModal(isRegister){
+    if(isRegister){
         $('#inputCompanyId').val('');
         $('#inputCompanyName').val('');
         $('#inputNote').val('');
 
-        $('#updateFooter').addClass('hidden');
-        $('#registerFooter').removeClass('hidden');
-    }else{
-        $('#inputCompanyId').val(companyId);
-        $('#inputCompanyName').val($('#'+companyId).find('.companyName').text());
-        $('#inputNote').val($('#'+companyId).find('.note').text());
-
-        $('#updateFooter').removeClass('hidden');
-        $('#registerFooter').addClass('hidden');
-    }
-    $('#inputModal').modal();
-}
-
-=======
-function showInputModal(isRegister){
-    if(isRegister){
+        $('#companyUpdateFooter').addClass('hidden');
+        $('#companyRegisterFooter').removeClass('hidden');
         $('#inputModal').modal();
     }else{
         if($('.rowHoverSelectedColor').length > 0){
+            var companyId = $('.rowHoverSelectedColor .companyId').html();
+            $('#inputCompanyId').val(companyId);
+            $('#inputCompanyName').val($('#'+companyId).find('.companyName').text());
+            $('#inputNote').val($('#'+companyId).find('.note').text());
+
+            $('#companyUpdateFooter').removeClass('hidden');
+            $('#companyRegisterFooter').addClass('hidden');
             $('#inputModal').modal();
         }
     }
 }
+
 function showDeleteModal(){
     if($('.rowHoverSelectedColor').length > 0){
         $('#deleteModal').modal();
     }
 }
->>>>>>> design
+
+function deleteCompany() {
+    if($('.rowHoverSelectedColor').length > 0){
+        var companyId = $('.rowHoverSelectedColor .companyId').html();
+        $('#deleteCompanyId').val(companyId);
+        $('#deleteForm').submit();
+    }
+}
 
 $(function(){
     // テーブルを固定
