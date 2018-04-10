@@ -57,26 +57,36 @@ function deleteSelectPlace() {
 
 // 予約テーブルの固定
 function fixTable(){
-    // 予約表テーブルの固定
+    // テーブルの固定
     var h = $(window).height()*0.7;
-    var w = $('#table-responsive-body').width();
-    $('#itemTable').tablefix({height: h, fixRows: 2});
-
-    // 複製テーブルのドラッグ＋ドロップは無効に
-    $('.crossTableDiv, .rowTableDiv, .colTableDiv').find('table').removeAttr('id');
-
-    // Chromeのみ
-    if(window.navigator.userAgent.indexOf('Chrome') !== -1 ){
-        $('.rowTableDiv').width(w);
+    // テーブルの調整
+    var ua = navigator.userAgent;
+    if (ua.indexOf('iPad') > 0 || ua.indexOf('Android') > 0 || ua.indexOf('iPhone') > 0 || ua.indexOf('iPod') > 0){
+        // タッチデバイス
+        var w = $('.mainSpace').width()*0.993;
+        if ($('.mainSpace').height() > h) {
+            $('.itemTable').tablefix({width:w, height: h, fixRows: 2});
+        } else {
+            $('.itemTable').tablefix({width:w, fixRows: 2});
+        }
+    }else{
+        // PCブラウザ
+        var w = $('.mainSpace').width()*1.001; // ヘッダー右側ボーダーが切れる為*1.001
+        if ($('.mainSpace').height() > h) {
+            $('.itemTable').tablefix({height: h, fixRows: 2});
+            $('.rowTableDiv').width(w);
+        } else {
+            $('.rowTableDiv').width(w);
+        }
     }
     $('.bodyTableDiv').find('.itemTable').css('margin-bottom','0');
+    $('.colTableDiv').css("width","");
 
 }
 // 予約テーブルのクリア
 function removeTable(){
     var clonedTable = $('.bodyTableDiv').find('table').clone();
     $(clonedTable).attr('style', '');
-    $(clonedTable).find('span').remove();
     $('.baseDiv').remove();
     $('#table-responsive-body').append(clonedTable.prop("outerHTML"));
 }
