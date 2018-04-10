@@ -9,7 +9,7 @@ function deleteReserve(obj){
     $.ajax({
         type: "POST",
         url: window.location.pathname + "/delete",
-        data:JSON.stringify(data),
+        data: JSON.stringify(data),
         contentType: 'application/json', // リクエストの Content-Type
         dataType: "json",           // レスポンスをJSONとしてパースする
         success: function(json_data) {   // 200 OK時
@@ -44,7 +44,7 @@ function updateReserve(reserveId, floorId, companyId){
     $.ajax({
         type: "POST",
         url: window.location.pathname + "/update",
-        data:JSON.stringify(data),
+        data: JSON.stringify(data),
         contentType: 'application/json',
         dataType: "json",
         success: function(json_data) {

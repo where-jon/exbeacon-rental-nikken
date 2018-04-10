@@ -5,7 +5,7 @@ import javax.inject.{Inject, Singleton}
 import com.mohiva.play.silhouette.api.Silhouette
 import models._
 import play.api._
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.libs.json.Json
 import play.api.libs.ws._
 import utils.silhouette.MyEnv
@@ -127,7 +127,7 @@ class CarSummery @Inject()(config: Configuration
 
       // 全数のレコードを追加
       resultList :+= CarSummeryInfo(
-          "全数"
+          Messages("lang.CarSummery.summeryTotal")
         , reserveCntTotal
         , normalWorkingCntTotal
         , workingOnlyCntTotal

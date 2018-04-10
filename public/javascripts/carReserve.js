@@ -284,18 +284,32 @@ function setSortable(){
                         $('.company_th_' + no).css("min-width", '');
                         $('.company_th_' + no).css("min-width", parent.outerWidth() + "px");
                     }else{
-                        // ただ同じ場所に移動した時
-                        clonedItem.addClass('cloned');
-                        clonedItem.removeClass('original');
-                        // 色付け
-                        setColor();
-                        // 幅を調整
-                        var no = $(this).attr('data-company');
-                        var minWidth = $(this).outerWidth() + "px";
-                        $('.company_th_' + no).css("min-width", '');
-                        $('.company_th_' + no).css("min-width", minWidth);
-                        // 受け取ったクローンをさらにドラッグ可能にする
-                        setDraggableClone(clonedItem);
+                        var dc = clonedItem.attr('data-current');
+                        if($(this).find('[data-current="' + dc + '"]').length > 1){
+                            // ただ同じ場所に移動した時
+                            clonedItem.addClass('cloned');
+                            clonedItem.removeClass('original');
+                            // 色付け
+                            setColor();
+                            // 幅を調整
+                            var no = $(this).attr('data-company');
+                            var minWidth = $(this).outerWidth() + "px";
+                            $('.company_th_' + no).css("min-width", '');
+                            $('.company_th_' + no).css("min-width", minWidth);
+                            // 受け取ったクローンをさらにドラッグ可能にする
+                            setDraggableClone(clonedItem);
+                        }else{
+                            // 違う場所から移動 -> 重複、となった場合
+//                            var parent = $(clonedItem).parent();//.outerWidth() + "px";
+//                            var no = parent.attr('data-company');
+                            deleteReserve($(clonedItem));
+//                            // 色付け
+//                            setColor();
+//                            // 幅の調整
+//                            $('[data-th="th_' + no + '"]').css("min-width", '');
+//                            $('[data-th="th_' + no + '"]').css("min-width", parent.outerWidth()*1 + "px");
+                        }
+
                     }
                 }else{  // ドロップ箇所に同じ作業車がない場合 -> データ的に処理する
                     var floorId = $(this).attr('data-floor');
@@ -314,6 +328,9 @@ function setSortable(){
                     }
                     clonedItem.addClass('cloned');
                     clonedItem.removeClass('original');
+                    var value = $(this).attr('data-floor') +"_"+ $(this).attr('data-company');
+
+                    clonedItem.attr('data-current', value);
                     // 色付け
                     setColor();
                     // 幅を調整
