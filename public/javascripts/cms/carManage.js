@@ -7,17 +7,6 @@ function bindMouseAndTouch(){
             'touchstart': function(e) {
                 if(e.originalEvent.touches.length > 1){
                 }else if(e.originalEvent.touches.length == 1){
-                    $(this).addClass('rowHoverColor');
-                    var id = $(this).attr('id');
-                    touched = true;
-                    touch_time = 0;
-                    document.interval = setInterval(function(){
-                        touch_time += 100;
-                        if (touch_time == common.longTapTime) {
-                            // ロングタップ時の処理
-                            showInputModal(true);
-                        }
-                    }, 100);
                     $(".rowHoverSelectedColor").removeClass('rowHoverSelectedColor');
                     $(this).addClass('rowHoverSelectedColor');
                 }
