@@ -2,6 +2,8 @@
 ################################################################################################
 # COMMON
 
+system.name=仮設材管理システム
+
 field.name=name
 field.email=Email
 field.password=パスワード
@@ -193,7 +195,7 @@ lang.cms.carManage.car.button.addCar=新規作業車追加
 lang.cms.carManage.car.button.deleteCar=選択した作業車を削除
 lang.cms.carManage.carUpdate.popup.name=作業車情報更新
 lang.cms.carManage.carUpdate.popup.carNumber=作業車番号
-lang.cms.carManage.carUpdate.popup.carNumber.placeholder=101
+lang.cms.carManage.carUpdate.popup.carNumber.placeholder=001
 lang.cms.carManage.carUpdate.popup.carName=作業車名称
 lang.cms.carManage.carUpdate.popup.carName.placeholder=高所作業車A
 lang.cms.carManage.carUpdate.popup.carTxNo=作業車TxタグNo

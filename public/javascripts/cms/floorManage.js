@@ -42,7 +42,7 @@ function bindMouseAndTouch(){
 
 // フロア追加・更新モーダル画面の表示
 function showFloorModal(floorId){
-    if(floorId == ""){
+    if(!floorId){
         // 新規
         $('#inputFloorId').val('');
         $('#inputExbDeviceIdListComma').val('');
@@ -50,8 +50,8 @@ function showFloorModal(floorId){
         $('#inputDeviceId').val('');
         $('.cloned').remove();
         // ボタン表示の切り替え
-        $('#floorUpdateFooter').removeClass('hidden');
-        $('#floorRegisterFooter').addClass('hidden');
+        $('#floorUpdateFooter').addClass('hidden');
+        $('#floorRegisterFooter').removeClass('hidden');
     }else{
         $('.cloned').remove();
         $('#inputFloorId').val(floorId);
@@ -79,8 +79,8 @@ function showFloorModal(floorId){
         });
 
         // ボタン表示の切り替え
-        $('#floorUpdateFooter').addClass('hidden');
-        $('#floorRegisterFooter').removeClass('hidden');
+        $('#floorUpdateFooter').removeClass('hidden');
+        $('#floorRegisterFooter').addClass('hidden');
     }
     $('#floorUpdateModal').modal();
 }
@@ -98,15 +98,9 @@ function showFloorUpdateModal(isRegister){
 
 function showFloorDeleteModal(){
     if($('.rowHoverSelectedColor').length > 0){
-        $('#floorDeleteModal').modal();
-    }
-}
-
-function deleteFloor(){
-    if($('.rowHoverSelectedColor').length > 0){
         var floorId = $('.rowHoverSelectedColor').attr('data-floorId');
         $('#deleteFloorId').val(floorId)
-        $('#deleteForm').submit()
+        $('#floorDeleteModal').modal();
     }
 }
 
