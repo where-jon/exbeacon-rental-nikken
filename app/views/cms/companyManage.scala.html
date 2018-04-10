@@ -119,7 +119,7 @@
                     <div class="modal-header">@Messages("lang.cms.companyManage.companyDelete.popup.title")</div>
                     <div class="modal-body">
                         <div class="text-center">
-                            @Messages("lang.cms.companyManage.companyDelete.popup.message")
+                            @Html(Messages("lang.cms.companyManage.companyDelete.popup.message").replaceAll("(\r\n|\r|\n)","<br>"))
                         </div>
                     </div>
                     <div class="modal-footer">

@@ -135,7 +135,7 @@
                     <div class="modal-header">@Messages("lang.cms.floorManage.floorDelete.popup.title")</div>
                     <div class="modal-body">
                         <div class="text-center">
-                            @Messages("lang.cms.floorManage.floorDelete.popup.message")
+                            @Html(Messages("lang.cms.floorManage.floorDelete.popup.message").replaceAll("(\r\n|\r|\n)","<br>"))
                         </div>
                     </div>
                     <div class="modal-footer">
