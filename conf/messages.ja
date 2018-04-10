@@ -253,5 +253,5 @@ lang.cms.companyManage.company.list.header.kind=種別
 lang.cms.companyManage.company.list.header.name=名称
 lang.cms.companyManage.company.list.header.biko=備考
 lang.cms.companyManage.company.list.body.undetected=未検知
-lang.cms.companyManage.company.list.body.unused=未使用
+lang.cms.companyManage.company.list.body.unused=未登録
 
