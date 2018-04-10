@@ -226,7 +226,7 @@ lang.cms.itemManage.itemUpdate.popup.txNo.placeholder=TxタグNo
 lang.cms.itemManage.itemDelete.popup.title=仮設材情報削除
 lang.cms.itemManage.itemDelete.popup.message=仮設材情報を削除します。\nよろしいですか？
 
-# CMS文字列（仮設材管理）
+# CMS文字列（業者管理）
 lang.cms.companyManage.title=業者管理
 lang.cms.companyManage.page.title=業者一覧画面
 lang.cms.companyManage.company.list.header.title=業者管理
@@ -244,14 +244,14 @@ lang.cms.companyManage.companyDelete.popup.title=業者情報削除
 lang.cms.companyManage.companyDelete.popup.message=業者情報を削除します。\nよろしいですか？
 
 # CMS文字列（Beaconタグ一覧）
-lang.cms.companyManage.title=Beaconタグ管理
-lang.cms.companyManage.page.title=Beaconタグ一覧画面
-lang.cms.companyManage.company.list.header.title=Beaconタグ管理
-lang.cms.companyManage.company.list.header.beaconTxNo=BeaconTXタグNo
-lang.cms.companyManage.company.list.header.powerLevel=電池残量
-lang.cms.companyManage.company.list.header.kind=種別
-lang.cms.companyManage.company.list.header.name=名称
-lang.cms.companyManage.company.list.header.biko=備考
-lang.cms.companyManage.company.list.body.undetected=未検知
-lang.cms.companyManage.company.list.body.unused=未登録
+lang.cms.txTagManage.title=Beaconタグ管理
+lang.cms.txTagManage.page.title=Beaconタグ一覧画面
+lang.cms.txTagManage.txTag.list.header.title=Beaconタグ管理
+lang.cms.txTagManage.txTag.list.header.beaconTxNo=BeaconTXタグNo
+lang.cms.txTagManage.txTag.list.header.powerLevel=電池残量
+lang.cms.txTagManage.txTag.list.header.kind=種別
+lang.cms.txTagManage.txTag.list.header.name=名称
+lang.cms.txTagManage.txTag.list.header.biko=備考
+lang.cms.txTagManage.txTag.list.body.undetected=未検知
+lang.cms.txTagManage.txTag.list.body.unused=未登録
 
