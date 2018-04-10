@@ -122,3 +122,61 @@ mail.forgotpwd.postlink2=パスワードのリセットしない場合はURLを�
 mail.sign=日立アプライアンス会議室予約システム管理者
 
 ################################################################################################
+# メイン機能の画面の文言
+# CarSummery
+lang.CarSummery.pageTitle=高所作業者予約
+lang.CarSummery.workingDay=稼働日
+lang.CarSummery.reserveDay=予約日
+lang.CarSummery.summeryTableTitleTh=高所作業車各階稼働状況
+lang.CarSummery.summeryFloorNameTh=階数
+lang.CarSummery.summeryWorkTh=稼働日朝
+lang.CarSummery.summeryTotal=全数
+lang.CarSummery.summeryUnit=台
+lang.CarSummery.example.reserveNormal=予約希望
+lang.CarSummery.example.reserveNone=予約無し
+lang.CarSummery.example.reserveDuplicate=要調整
+lang.CarSummery.example.reserveDone=予約済
+lang.CarSummery.reserveTableTitleTh=高所作業車予約
+lang.CarSummery.noReserveBefore=前日予約無
+lang.CarSummery.reserveTable.reserve=予約
+lang.CarSummery.reserveTable.work=稼働
+
+# CarReserve
+lang.CarReserve.pageTitle=高所作業者予約
+lang.CarReserve.workingDay=稼働日
+lang.CarReserve.reserveDay=予約日
+lang.CarReserve.summeryTableTitleTh=高所作業車各階稼働状況
+lang.CarReserve.summeryFloorNameTh=階数
+lang.CarReserve.summeryWorkTh=稼働日朝
+lang.CarReserve.summeryTotal=全数
+lang.CarReserve.summeryUnit=台
+lang.CarReserve.example.reserveNormal=予約希望
+lang.CarReserve.example.reserveNone=予約無し
+lang.CarReserve.example.reserveDuplicate=要調整
+lang.CarReserve.example.reserveDone=予約済
+lang.CarReserve.example.reserveDiff=前日と異なる階 / 業者で予約
+lang.CarReserve.reserveTableTitleTh=高所作業車予約
+lang.CarReserve.noReserveBefore=前日予約無
+lang.CarReserve.reserveTable.reserve=予約
+lang.CarReserve.reserveTable.work=稼働
+lang.CarReserve.popup.header=予約登録
+lang.CarReserve.popup.carNo=作業車番号
+lang.CarReserve.popup.floor=フロア
+lang.CarReserve.popup.company=業者
+lang.CarReserve.popup.cancelBtn=キャンセル
+lang.CarReserve.popup.registerBtn=登録
+
+# OtherItem
+lang.OtherItem.pageTitle=仮設材利用状況
+lang.OtherItem.summeryTableTitleTh=その他仮設材全体稼働状況
+lang.OtherItem.summeryFloorNameTh=階数
+lang.OtherItem.summeryCountTh=利用状況
+lang.OtherItem.summeryTotal=全数
+lang.OtherItem.summeryUnit=台
+lang.OtherItem.example=仮設材管理No.
+lang.OtherItem.itemTableTitleTh=各階利用状況
+lang.OtherItem.itemTableTitle.name=資材名
+lang.OtherItem.itemTableTitle.value=利用状況
+
+
+

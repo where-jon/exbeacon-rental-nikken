@@ -7,7 +7,7 @@
 <!doctype html>
 <html lang="ja">
 <head>
-    @templates.htmlHead(title = "仮設材利用状況")
+    @templates.htmlHead(title = Messages("lang.OtherItem.pageTitle"))
     <link rel="stylesheet" href="@routes.MyAssets.css("otherItem.css")"/>
     <script type="text/javascript" src="@routes.MyAssets.lib("jquery.tablefix_1.0.1.js")"></script>
     <script></script>
@@ -15,7 +15,7 @@
 <body>
     <!-- content -->
     <div class="container">
-        <!-- ナビバー  -->
+        <!-- ナビバー -->
         @templates.navBar()
         <div class="row" style="margin-top: 50px;">
             <!-- 左サイド -->
@@ -41,11 +41,11 @@
                             <table class="table table-condensed sideSummeryTable">
                                 <thead>
                                     <tr>
-                                        <th colspan="2" class="summeryTableTitleTh">その他仮設材全体稼働状況</th>
+                                        <th colspan="2" class="summeryTableTitleTh">@Messages("lang.OtherItem.summeryTableTitleTh")</th>
                                     </tr>
                                     <tr>
-                                        <th class="floorNameTh">階数</th>
-                                        <th style="white-space: nowrap;">利用状況</th>
+                                        <th class="floorNameTh">@Messages("lang.OtherItem.summeryFloorNameTh")</th>
+                                        <th style="white-space: nowrap;">@Messages("lang.OtherItem.summeryCountTh")</th>
                                     </tr>
                                 </thead>
                                 <tbody class="text-right">
@@ -55,22 +55,22 @@
                                                 <td class="floorNameTd summerySelected">@info.floorName</td>
                                                 <td class="itemTd summerySelected">
                                                     @if(info.count > 0){
-                                                    <span>@{info.count}台</span>
+                                                        <span>@{info.count}@Messages("lang.OtherItem.summeryUnit")</span>
                                                     }
                                                 </td>
                                             }else{
                                                 <td style="cursor:pointer;" class="floorNameTd">@info.floorName</td>
                                                 <td style="cursor:pointer;" class="itemTd">
                                                     @if(info.count > 0){
-                                                    <span>@{info.count}台</span>
+                                                        <span>@{info.count}@Messages("lang.OtherItem.summeryUnit")</span>
                                                     }
                                                 </td>
                                             }
                                         </tr>
                                     }
                                     <tr>
-                                        <td class="floorNameTd">全数</td>
-                                        <td class="itemTd">@{totalCount}台</td>
+                                        <td class="floorNameTd">@Messages("lang.OtherItem.summeryTotal")</td>
+                                        <td class="itemTd">@{totalCount}@Messages("lang.OtherItem.summeryUnit")</td>
                                         <input type="hidden" id="floorId" value="@floorId">
                                     </tr>
                                 </tbody>
@@ -86,7 +86,7 @@
                                 <div class="row" style="margin-left: 0px;margin-right: 0px;">
                                     <div class="col-xs-12 col-sm-12 col-md-12" style="padding: 0px;">
                                         <div class="part pull-left">No.</div>
-                                        <div class="partExFont">:仮設材管理No.</div>
+                                        <div class="partExFont">:@Messages("lang.OtherItem.example")</div>
                                     </div>
                                 </div>
                             </div>
@@ -104,11 +104,11 @@
                                 <table id="itemTable" class="table table-bordered table-condensed itemTable">
                                     <thead>
                                         <tr>
-                                            <th colspan="2" class="tableTitleTh">各階利用状況</th>
+                                            <th colspan="2" class="tableTitleTh">@Messages("lang.OtherItem.itemTableTitleTh")</th>
                                         </tr>
                                         <tr>
-                                            <th style="min-width:40%"class="tableSubTitleTh">資材名</th>
-                                            <th class="tableSubTitleTh">利用状況</th>
+                                            <th style="min-width:40%"class="tableSubTitleTh">@Messages("lang.OtherItem.itemTableTitle.name")</th>
+                                            <th class="tableSubTitleTh">@Messages("lang.OtherItem.itemTableTitle.value")</th>
                                         </tr>
                                     </thead>
                                     <tbody>
