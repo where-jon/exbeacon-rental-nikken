@@ -184,31 +184,39 @@ class CarManage @Inject()(config: Configuration
   def delete = SecuredAction { implicit request =>
     // フォームの準備
     val inputForm = Form(mapping(
-      "deleteCarId" -> text
+      "deleteCarId" -> text.verifying(Messages("error.cms.CarManage.delete.empty"), {
+        !_.isEmpty
+      })
     )(CarDeleteForm.apply)(CarDeleteForm.unapply))
 
     // フォームの取得
     val form = inputForm.bindFromRequest
-    val f = form.get
+    if (form.hasErrors) {
+      // エラーメッセージ
+      val errMsg = form.errors.map(_.message).mkString(HTML_BR)
+      // リダイレクトで画面遷移
+      Redirect(routes.CarManage.index).flashing(ERROR_MSG_KEY -> errMsg)
+    } else {
+      val f = form.get
 
-    // 検索
-    val carList = carDAO.selectCarInfo(super.getCurrentPlaceId, "", Option(f.deleteCarId.toInt))
-    // タグ
-    var txTagList = Seq[Int]()
-    if(carList.length > 0){
-      // タグ情報収集
-      carList.map{ car =>
-        txTagList :+= car.carBtxId
-        txTagList :+= car.carKeyBtxId
+      // 検索
+      val carList = carDAO.selectCarInfo(super.getCurrentPlaceId, "", Option(f.deleteCarId.toInt))
+      // タグ
+      var txTagList = Seq[Int]()
+      if (carList.length > 0) {
+        // タグ情報収集
+        carList.map { car =>
+          txTagList :+= car.carBtxId
+          txTagList :+= car.carKeyBtxId
+        }
+
+        // 削除
+        carDAO.delete(f.deleteCarId.toInt, super.getCurrentPlaceId, txTagList)
       }
 
-      // 削除
-      carDAO.delete(f.deleteCarId.toInt, super.getCurrentPlaceId, txTagList)
+      // リダイレクト
+      Redirect(routes.CarManage.index)
+        .flashing(SUCCESS_MSG_KEY -> Messages("success.cms.CarManage.delete"))
     }
-
-    // リダイレクト
-    Redirect(routes.CarManage.index)
-      .flashing(SUCCESS_MSG_KEY -> Messages("success.cms.CarManage.delete"))
   }
-
 }

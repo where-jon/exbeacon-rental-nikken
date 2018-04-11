@@ -86,6 +86,7 @@ error.cms.CarManage.update.inputCarBtxId.inputCarKeyBtxId.duplicate=作業車Tx�
 error.cms.CarManage.update.inputCarNo.duplicate=作業車番号が重複しています。(作業車番号：{0})
 error.cms.CarManage.update.inputCarBtxId.duplicate=作業車TxタグNoが重複しています。(作業車TxタグNo.{0})
 error.cms.CarManage.update.inputCarKeyBtxId.duplicate=鍵TxタグNoが重複しています。(作業車TxタグNo.{0})
+error.cms.CarManage.delete.empty=削除対象作業車を選択してください。
 
 error.cms.ItemManage.update.inputItemKindName.empty=仮設材名称を入力してください。
 error.cms.ItemManage.update.inputItemKindName.duplicate=仮設材名称が重複しています。
