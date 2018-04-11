@@ -7,5 +7,5 @@ import javax.inject.Inject
 import filters.ExampleFilter
 
 class Filters @Inject() (csrfFilter: CSRFFilter, exampleFilter: ExampleFilter) extends HttpFilters {
-  def filters = Seq(csrfFilter, exampleFilter)
+  def filters = Seq(csrfFilter)
 }
