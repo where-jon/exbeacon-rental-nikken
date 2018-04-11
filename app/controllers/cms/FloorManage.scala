@@ -34,27 +34,22 @@ class FloorManage @Inject()(config: Configuration
 
   /** 初期表示 */
   def index = SecuredAction { implicit request =>
-    if(securedRequest2User.isSysMng){
-      // 選択されている現場の現場ID
-      var placeId = securedRequest2User.currentPlaceId.get
+    // 選択されている現場の現場ID
+    var placeId = securedRequest2User.currentPlaceId.get
 
-      // 現場情報の取得
-      val placeList = placeDAO.selectPlaceList(Seq[Int](placeId))
-      // フロア情報の取得
-      val floorInfoList = floorDAO.selectFloorInfo(placeId)
-      // 現場状態の選択肢リスト
-      val statusList = PlaceEnum().map
+    // 現場情報の取得
+    val placeList = placeDAO.selectPlaceList(Seq[Int](placeId))
+    // フロア情報の取得
+    val floorInfoList = floorDAO.selectFloorInfo(placeId)
+    // 現場状態の選択肢リスト
+    val statusList = PlaceEnum().map
 
-      if (placeList.isEmpty) {
-        // 管理可能な情報が無ければログアウト
-        Redirect("/signout")
-      } else {
-        // 画面遷移
-        Ok(views.html.cms.floorManage(placeList.last, floorInfoList, statusList))
-      }
-    }else{
-      // シス管でなければログアウト
+    if (placeList.isEmpty) {
+      // 管理可能な情報が無ければログアウト
       Redirect("/signout")
+    } else {
+      // 画面遷移
+      Ok(views.html.cms.floorManage(placeList.last, floorInfoList, statusList))
     }
   }
 
@@ -65,7 +60,7 @@ class FloorManage @Inject()(config: Configuration
         "inputPlaceId" -> text
       , "inputFloorId" -> text
       , "inputFloorName" -> text.verifying(Messages("error.cms.floorManage.floorUpdate.inputFloorName.empty"), {!_.isEmpty})
-      , "inputExbDeviceIdListComma" -> text.verifying(Messages("error.cms.PlaceManage.floorUpdate.inputExbDeviceIdListComma.empty"), {!_.isEmpty})
+      , "inputExbDeviceIdListComma" -> text.verifying(Messages("error.cms.floorManage.floorUpdate.inputExbDeviceIdListComma.empty"), {!_.isEmpty})
     )(FloorUpdateForm.apply)(FloorUpdateForm.unapply))
 
     // フォームの取得
@@ -121,7 +116,7 @@ class FloorManage @Inject()(config: Configuration
         val inputExbDeviceIdList = f.inputExbDeviceIdListComma.split("-").toSeq
         val errDeviceIdList = inputExbDeviceIdList.filter(exbDeviceIdList.contains(_))
         if(errDeviceIdList.isEmpty == false){
-          errMsg :+= Messages("error.cms.FloorManage.floorUpdate.inputDeviceId.duplicate", errDeviceIdList.mkString(","))
+          errMsg :+= Messages("error.cms.floorManage.floorUpdate.inputDeviceId.duplicate", errDeviceIdList.mkString(","))
         }
         if(errMsg.isEmpty == false){
           // エラーで遷移
@@ -142,21 +137,26 @@ class FloorManage @Inject()(config: Configuration
   /** フロア削除 */
   def floorDelete = SecuredAction { implicit request =>
     // フォームの準備
-    val inputForm = Form(mapping(
-        "deleteFloorId" -> text
+    val deleteForm = Form(mapping(
+        "deleteFloorId" -> text.verifying(Messages("error.cms.floorManage.floorUpdate.delete.empty"), {!_.isEmpty})
     )(FloorDeleteForm.apply)(FloorDeleteForm.unapply))
 
     // フォームの取得
-    val form = inputForm.bindFromRequest
-    val f = form.get
+    val form = deleteForm.bindFromRequest
+    if (form.hasErrors){
+      // エラーメッセージ
+      val errMsg = form.errors.map(_.message).mkString(HTML_BR)
+      // リダイレクトで画面遷移
+      Redirect(routes.FloorManage.index()).flashing(ERROR_MSG_KEY -> errMsg)
+    }else {
+      val f = form.get
+      val placeId = securedRequest2User.currentPlaceId.get
 
-    val placeId = securedRequest2User.currentPlaceId.get
-
-    // DB処理
-    floorDAO.deleteById(f.deleteFloorId.toInt)
-
-    // リダイレクト
-    Redirect(s"""${routes.FloorManage.index().path()}?${KEY_PLACE_ID}=${placeId}""")
-      .flashing(SUCCESS_MSG_KEY -> Messages("success.cms.FloorManage.floorDelete"))
+      // DB処理
+      floorDAO.deleteById(f.deleteFloorId.toInt)
+      // リダイレクト
+      Redirect(s"""${routes.FloorManage.index().path()}?${KEY_PLACE_ID}=${placeId}""")
+        .flashing(SUCCESS_MSG_KEY -> Messages("success.cms.FloorManage.floorDelete"))
+    }
   }
 }
