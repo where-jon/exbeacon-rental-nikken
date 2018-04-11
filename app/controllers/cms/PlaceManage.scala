@@ -49,8 +49,8 @@ class PlaceManage @Inject()(config: Configuration
     if(securedRequest2User.isSysMng){
       Redirect(routes.PlaceManage.sortPlaceListWith(selectedSortType))
     }else{
-      // シス管でなければログアウト
-      Redirect("/signout")
+      // シス管でなければ登録されている現場の管理画面へ遷移
+      Redirect(s"""${routes.PlaceManage.detail().path()}?${KEY_PLACE_ID}=${securedRequest2User.currentPlaceId.get}""")
     }
   }
 
@@ -61,8 +61,8 @@ class PlaceManage @Inject()(config: Configuration
       selectedSortType = sortType
       Ok(views.html.cms.placeManage(placeList))
     }else{
-      // シス管でなければログアウト
-      Redirect("/signout")
+      // シス管でなければ登録されている現場の管理画面へ遷移
+      Redirect(s"""${routes.PlaceManage.detail().path()}?${KEY_PLACE_ID}=${securedRequest2User.currentPlaceId.get}""")
     }
   }
 
@@ -95,10 +95,15 @@ class PlaceManage @Inject()(config: Configuration
     val statusList = PlaceEnum().map
 
     if (placeList.isEmpty) {
-      // エラーメッセージ
-      val errMsg =  Messages("error.cms.placeManage.move.empty")
-      // リダイレクトで画面遷移
-      Redirect(routes.PlaceManage.sortPlaceListWith(selectedSortType)).flashing(ERROR_MSG_KEY -> errMsg)
+      if(securedRequest2User.isSysMng) {
+        // エラーメッセージ
+        val errMsg = Messages("error.cms.placeManage.move.empty")
+        // リダイレクトで画面遷移
+        Redirect(routes.PlaceManage.sortPlaceListWith(selectedSortType)).flashing(ERROR_MSG_KEY -> errMsg)
+      } else {
+        // 対象の現場にアクセス不可＆システム管理者出ない場合はログアウト
+        Redirect("/signout")
+      }
     } else {
       // 画面遷移
       Ok(views.html.cms.placeManageDetail(placeList.last, floorInfoList, statusList, securedRequest2User.isSysMng))
@@ -192,7 +197,7 @@ class PlaceManage @Inject()(config: Configuration
   def delete = SecuredAction { implicit request =>
     // フォームの準備
     val inputForm = Form(mapping(
-      "inputPlaceId" -> text
+      "deletePlaceId" -> text.verifying(Messages("error.cms.placeManage.delete.empty"), {!_.isEmpty})
     )(PlaceDeleteForm.apply)(PlaceDeleteForm.unapply))
 
     // フォームの取得
@@ -201,7 +206,7 @@ class PlaceManage @Inject()(config: Configuration
       // エラーメッセージ
       val errMsg = form.errors.map(_.message).mkString(HTML_BR)
       // リダイレクトで画面遷移
-      Redirect(routes.PlaceManage.detail()).flashing(ERROR_MSG_KEY -> errMsg)
+      Redirect(routes.PlaceManage.sortPlaceListWith(selectedSortType)).flashing(ERROR_MSG_KEY -> errMsg)
     }else{
       val f = form.get
       // DB処理

@@ -94,6 +94,7 @@ error.cms.ItemManage.update.inputBtxId.duplicate=TxタグNoが重複していま
 error.cms.ItemManage.update.actualItemInfoStr.empty=Txタグ設定を入力してください。
 
 error.cms.placeManage.move.empty=選択された建築現場は既に削除されています
+error.cms.placeManage.delete.empty=削除対象の建築現場が選択されていません
 
 ################################################################################################
 # SUCCESS

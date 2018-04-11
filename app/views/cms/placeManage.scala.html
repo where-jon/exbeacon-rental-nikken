@@ -118,7 +118,7 @@
             <div class="modal-content">
                 <form id="deleteForm" name="PlaceDeleteForm" class="form-horizontal" enctype="multipart/form-data" method="post" action="@controllers.cms.routes.PlaceManage.delete.path">
                     @CSRF.formField
-                    <input type="hidden" id="deletePlaceId" name="inputPlaceId" value="">
+                    <input type="hidden" id="deletePlaceId" name="deletePlaceId" value="">
                     <div class="modal-header">@Messages("lang.cms.placeManage.delete.popup.title")</div>
                     <div class="modal-body">
                         <div class="text-center">
