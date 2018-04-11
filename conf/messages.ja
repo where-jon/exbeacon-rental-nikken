@@ -72,6 +72,7 @@ error.cms.PlaceManage.passwordUpdate.notEqual=再入力されたパスワード�
 
 error.cms.floorManage.floorUpdate.inputFloorName.empty=フロア名を入力してください。
 error.cms.floorManage.floorUpdate.inputFloorName.duplicate=フロア名が重複しています。
+error.cms.floorManage.floorUpdate.inputDeviceId.notNumeric=EXBeaconデバイスIDを半角数字で入力してください。
 error.cms.floorManage.floorUpdate.inputDeviceId.duplicate=EXBeaconデバイスIDが重複しています。(デバイスID：{0})
 error.cms.floorManage.floorUpdate.inputExbDeviceIdListComma.empty=EXBeaconデバイスIDを入力してください。
 error.cms.floorManage.floorUpdate.delete.empty=削除対象フロアを選択してください。

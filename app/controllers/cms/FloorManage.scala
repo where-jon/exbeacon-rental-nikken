@@ -78,18 +78,24 @@ class FloorManage @Inject()(config: Configuration
 
         // フロア名称重複チェック
         val floorList = floorDAO.selectFloorInfo(f.inputPlaceId.toInt, f.inputFloorName)
-        if(floorList.length > 0){
+        if(floorList.nonEmpty){
           errMsg :+= Messages("error.cms.floorManage.floorUpdate.inputFloorName.duplicate")
         }
 
         // デバイスID重複チェック
         val exbDeviceIdList = exbDAO.selectExb(f.inputPlaceId.toInt).map(exb =>{exb.exbDeviceId})
         val inputExbDeviceIdList = f.inputExbDeviceIdListComma.split("-").filter(_.isEmpty == false).toSeq
-        val errDeviceIdList = inputExbDeviceIdList.filter(exbDeviceIdList.contains(_))
-        if(errDeviceIdList.isEmpty == false){
-          errMsg :+= Messages("error.cms.floorManage.floorUpdate.inputDeviceId.duplicate", errDeviceIdList.mkString(","))
+
+        if(inputExbDeviceIdList.exists(!_.matches("^[0-9]+$"))){
+          errMsg :+= Messages("error.cms.floorManage.floorUpdate.inputDeviceId.notNumeric")
+        } else {
+          val errDeviceIdList = inputExbDeviceIdList.filter(exbDeviceIdList.contains(_))
+          if(errDeviceIdList.nonEmpty) {
+            errMsg :+= Messages("error.cms.floorManage.floorUpdate.inputDeviceId.duplicate", errDeviceIdList.mkString(","))
+          }
         }
-        if(errMsg.isEmpty == false){
+
+        if(errMsg.nonEmpty){
           // エラーで遷移
           Redirect(s"""${routes.FloorManage.index().path()}?${KEY_PLACE_ID}=${f.inputPlaceId}""")
             .flashing(ERROR_MSG_KEY -> errMsg.mkString(HTML_BR))
@@ -107,7 +113,7 @@ class FloorManage @Inject()(config: Configuration
         // フロア名称重複チェック
         val floorList = floorDAO.selectFloorInfo(f.inputPlaceId.toInt)
         val rest = floorList.filter(_.floorId != f.inputFloorId.toInt).filter(_.floorName == f.inputFloorName)
-        if(rest.length > 0){
+        if(rest.nonEmpty){
           errMsg :+= Messages("error.cms.floorManage.floorUpdate.inputFloorName.duplicate")
         }
 
@@ -115,10 +121,17 @@ class FloorManage @Inject()(config: Configuration
         val exbDeviceIdList = exbDAO.selectExb(f.inputPlaceId.toInt).filter(_.floorId != f.inputFloorId.toInt).map(exb =>{exb.exbDeviceId})
         val inputExbDeviceIdList = f.inputExbDeviceIdListComma.split("-").toSeq
         val errDeviceIdList = inputExbDeviceIdList.filter(exbDeviceIdList.contains(_))
-        if(errDeviceIdList.isEmpty == false){
-          errMsg :+= Messages("error.cms.floorManage.floorUpdate.inputDeviceId.duplicate", errDeviceIdList.mkString(","))
+        if(inputExbDeviceIdList.exists(!_.matches("^[0-9]+$"))){
+          errMsg :+= Messages("error.cms.floorManage.floorUpdate.inputDeviceId.notNumeric")
+        } else {
+          val errDeviceIdList = inputExbDeviceIdList.filter(exbDeviceIdList.contains(_))
+          if(errDeviceIdList.nonEmpty) {
+            errMsg :+= Messages("error.cms.floorManage.floorUpdate.inputDeviceId.duplicate", errDeviceIdList.mkString(","))
+          }
         }
-        if(errMsg.isEmpty == false){
+
+
+        if(errMsg.nonEmpty){
           // エラーで遷移
           Redirect(s"""${routes.FloorManage.index().path()}?${KEY_PLACE_ID}=${f.inputPlaceId}""")
             .flashing(ERROR_MSG_KEY -> errMsg.mkString(HTML_BR))
