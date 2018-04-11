@@ -116,6 +116,8 @@
             </div>
             <!-- 右サイド -->
             <div class="col-xs-5 col-sm-5 col-md-7 col-lg-7 mainSpace">
+                <!-- メッセージ -->
+                @views.html.templates.msgDiv()
                 <!-- 状況-->
                 <div class="row tableRow">
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="padding:0;">
@@ -174,6 +176,7 @@
             </div>
         </div>
     </div>
+    @templates.cmsLoginModal(content = CSRF.formField)
     <script type="text/javascript" src="@routes.MyAssets.js("carSummery.js")"></script>
     <script></script>
 </body>

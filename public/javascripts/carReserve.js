@@ -434,6 +434,8 @@ function setSummeryCount(){
         total += count;
         if(count > 0){
             $('#summery_floorId_'+floorId+' > .carExistCountStr > span').text(count + "台");
+        }else{
+            $('#summery_floorId_'+floorId+' > .carExistCountStr > span').text("");
         }
     }
     $('#summery_floorId_total > .carExistCountStr > span').text(total);
@@ -449,6 +451,8 @@ function setSummeryCount(){
         total += count;
         if(count > 0){
             $('#summery_floorId_'+floorId+' > .todayReserveCount > span').text(count + "台");
+        }else{
+            $('#summery_floorId_'+floorId+' > .todayReserveCount > span').text("");
         }
     }
     $('#summery_floorId_total > .todayReserveCount > span').text(total);

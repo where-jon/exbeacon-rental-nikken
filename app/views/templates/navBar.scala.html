@@ -37,10 +37,21 @@
             @if(request.path contains "/cms/"){
                 <a class="text-center tabSelected" style="margin-left:1px;">管理ページ</a>
             }else{
-                <a href="@controllers.cms.routes.PlaceManage.detail.path" class="text-center cmsTab" style="margin-left:1px;">管理ページ</a>
+                @if(user.isSysMng){
+                    <a href="@controllers.cms.routes.PlaceManage.detail.path" class="text-center cmsTab" style="margin-left:1px;">管理ページ</a>
+                }else{
+                    @request.session.get("cmsLogged").map { data =>
+                        <a href="@controllers.cms.routes.PlaceManage.detail.path" class="text-center cmsTab" style="margin-left:1px;">管理ページ</a>
+                    }.getOrElse {
+                        <a href="javascript:showCmsLoginModal();" class="text-center cmsTab" style="margin-left:1px;">管理ページ</a>
+                    }
+                }
             }
         </li>
     </ul>
-    <span style="float: right;">ログインID：@user.email</span><br/>
+    <div class="text-right" style="width: 100%;position: absolute;">
+        <span>ログインID：@user.email</span>
+    </div>
+    <br/>
     <a class="btn btn-navbar btn-signout" href="/signout">ログアウト</a>
 </div>
