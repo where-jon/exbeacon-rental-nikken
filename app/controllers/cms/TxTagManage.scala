@@ -50,17 +50,17 @@ class TxTagManage @Inject()(config: Configuration
       // APIのデータをベースにしてDBのデータを表示する
       list.foreach(apiData =>{
         val dbRecords = dbInfo.filter(_.btxId == apiData.btx_id)
-        if (!dbRecords.isEmpty) {
+        if (dbRecords.nonEmpty) {
           dbInfo = dbInfo.filter(_.btxId != apiData.btx_id)
         }
-        if(dbRecords.length > 0){
+        if(dbRecords.nonEmpty){
           resultList :+= BtxTelemetryInfo(
                dbRecords.last.btxId
             ,  apiData.power_level
             ,  dbRecords.last.kindName
             ,  dbRecords.last.name
             ,  dbRecords.last.note
-            ,  (apiData.updatetime.isEmpty == false)
+            ,  apiData.updatetime.nonEmpty
           )
         }else{
           resultList :+= BtxTelemetryInfo(
@@ -69,7 +69,7 @@ class TxTagManage @Inject()(config: Configuration
             , ""
             , ""
             , ""
-            , (apiData.updatetime.isEmpty == false)
+            , apiData.updatetime.nonEmpty
             , false
           )
         }
