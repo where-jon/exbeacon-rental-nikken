@@ -18,7 +18,7 @@ import utils.silhouette.MyEnv
   *
   */
 // フォーム定義
-case class ItemDeleteForm(inputPlaceId: String, inputItemKindId: String)
+case class ItemDeleteForm(deleteItemId: String)
 case class ItemUpdateForm(inputPlaceId: String, inputItemKindId: String, inputItemKindName: String, inputNote: String, actualItemInfoStr: String)
 
 @Singleton
@@ -65,7 +65,7 @@ class ItemManage @Inject()(config: Configuration
 
         // 名称重複チェック
         val list = itemDAO.selectItemInfo(f.inputPlaceId.toInt, f.inputItemKindName, None)
-        if(list.length > 0){
+        if(list.nonEmpty){
           errMsg :+= Messages("error.cms.ItemManage.update.inputItemKindName.duplicate", f.inputItemKindName)
         }
         // 管理No / BTXタグ
@@ -82,24 +82,28 @@ class ItemManage @Inject()(config: Configuration
         val dbBtxList = btxDAO.select(super.getCurrentPlaceId)
 
         // 管理Noのチェック
-        if(itemNoList.filter(_.matches("^[0-9]+$")).isEmpty){
+        if(itemNoList.exists(!_.matches("^[0-9]+$"))){
           errMsg :+= Messages("error.cms.ItemManage.update.inputItemNo.notNumeric")
-        }
-        if(itemNoList.filter(dbItemNoList.map{d => d.itemNo} contains _).isEmpty == false){
-          errMsg :+= Messages("error.cms.ItemManage.update.inputItemNo.duplicate")
-        }
-        // BTXタグのチェック
-        if(btxList.filter(_.matches("^[0-9]+$")).isEmpty){
-          errMsg :+= Messages("error.cms.ItemManage.update.inputBtxId.notNumeric")
-        }
-        if(btxList.filter(dbBtxList.map{d => d.btxId} contains _.toInt).isEmpty == false){
-          errMsg :+= Messages("error.cms.ItemManage.update.inputBtxId.duplicate")
+        } else {
+          val duplicateList = itemNoList.filter(dbItemNoList.map{d => d.itemNo} contains _)
+          if(duplicateList.nonEmpty) {
+            errMsg :+= Messages("error.cms.ItemManage.update.inputItemNo.duplicate", duplicateList.mkString(","))
+          }
         }
 
-        if(errMsg.isEmpty == false){
+        // BTXタグのチェック
+        if(btxList.exists(!_.matches("^[0-9]+$"))){
+          errMsg :+= Messages("error.cms.ItemManage.update.inputBtxId.notNumeric")
+        } else {
+          val duplicateList = btxList.filter(dbBtxList.map{d => d.btxId} contains _.toInt)
+          if(duplicateList.nonEmpty){
+            errMsg :+= Messages("error.cms.ItemManage.update.inputBtxId.duplicate", duplicateList.mkString(","))
+          }
+        }
+
+        if(errMsg.nonEmpty){
           // エラーで遷移
-          Redirect(routes.ItemManage.index)
-            .flashing(ERROR_MSG_KEY -> errMsg.mkString(HTML_BR))
+          Redirect(routes.ItemManage.index).flashing(ERROR_MSG_KEY -> errMsg.mkString(HTML_BR))
         }else{
           // 登録の実行
           itemDAO.insert(f.inputItemKindName, f.inputNote, f.inputPlaceId.toInt, lineList, btxList.map{b=>b.toInt})
@@ -114,7 +118,7 @@ class ItemManage @Inject()(config: Configuration
         // 名称重複チェック
         var list = itemDAO.selectItemInfo(f.inputPlaceId.toInt, f.inputItemKindName, None)
         list = list.filter(_.itemKindId != f.inputItemKindId.toInt).filter(_.itemKindName == f.inputItemKindName)
-        if(list.length > 0){
+        if(list.nonEmpty){
           errMsg :+= Messages("error.cms.ItemManage.update.inputItemKindName.duplicate", f.inputItemKindName)
         }
 
@@ -136,21 +140,25 @@ class ItemManage @Inject()(config: Configuration
         })
 
         // 管理Noのチェック
-        if(itemNoList.filter(_.matches("^[0-9]+$")).isEmpty){
+        if(itemNoList.exists(!_.matches("^[0-9]+$"))){
           errMsg :+= Messages("error.cms.ItemManage.update.inputItemNo.notNumeric")
-        }
-        if(itemNoList.filter(dbItemNoList.map{d => d.itemNo} contains _).isEmpty == false){
-          errMsg :+= Messages("error.cms.ItemManage.update.inputItemNo.duplicate")
+        } else {
+          val duplicateList = itemNoList.filter(dbItemNoList.map{d => d.itemNo} contains _)
+          if(duplicateList.nonEmpty) {
+            errMsg :+= Messages("error.cms.ItemManage.update.inputItemNo.duplicate", duplicateList.mkString(","))
+          }
         }
         // BTXタグのチェック
-        if(btxList.filter(_.matches("^[0-9]+$")).isEmpty){
+        if(btxList.exists(!_.matches("^[0-9]+$"))){
           errMsg :+= Messages("error.cms.ItemManage.update.inputBtxId.notNumeric")
-        }
-        if(btxList.filter(dbBtxList.map{d => d.btxId} contains _.toInt).isEmpty == false){
-          errMsg :+= Messages("error.cms.ItemManage.update.inputBtxId.duplicate")
+        } else {
+          val duplicateList = btxList.filter(dbBtxList.map{d => d.btxId} contains _.toInt)
+          if(duplicateList.nonEmpty){
+            errMsg :+= Messages("error.cms.ItemManage.update.inputBtxId.duplicate", duplicateList.mkString(","))
+          }
         }
 
-        if(errMsg.isEmpty == false){
+        if(errMsg.nonEmpty){
           // エラーで遷移
           Redirect(routes.ItemManage.index)
             .flashing(ERROR_MSG_KEY -> errMsg.mkString(HTML_BR))
@@ -169,19 +177,26 @@ class ItemManage @Inject()(config: Configuration
   /** 削除 */
   def delete = SecuredAction { implicit request =>
     // フォームの準備
-    val inputForm = Form(mapping(
-      "deleteItemId" -> text
-      , "deleteItemId" -> text
+    val deleteForm = Form(mapping(
+      "deleteItemId" -> text.verifying(Messages("error.cms.CarManage.delete.empty"), {
+        !_.isEmpty
+      })
     )(ItemDeleteForm.apply)(ItemDeleteForm.unapply))
 
     // フォームの取得
-    val form = inputForm.bindFromRequest
-    val f = form.get
-    // DB処理
-    itemDAO.deleteById(f.inputItemKindId.toInt)
+    val form = deleteForm.bindFromRequest
+    if (form.hasErrors) {
+      // エラーメッセージ
+      val errMsg = form.errors.map(_.message).mkString(HTML_BR)
+      // リダイレクトで画面遷移
+      Redirect(routes.ItemManage.index).flashing(ERROR_MSG_KEY -> errMsg)
+    } else {
+      val f = form.get
+      // DB処理
+      itemDAO.deleteById(f.deleteItemId.toInt)
 
-    // リダイレクト
-    Redirect(routes.ItemManage.index)
-      .flashing(SUCCESS_MSG_KEY -> Messages("success.cms.ItemManage.delete"))
+      // リダイレクト
+      Redirect(routes.ItemManage.index).flashing(SUCCESS_MSG_KEY -> Messages("success.cms.ItemManage.delete"))
+    }
   }
 }
