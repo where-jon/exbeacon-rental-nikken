@@ -138,7 +138,7 @@ class PlaceManage @Inject()(config: Configuration
     val inputForm = Form(mapping(
         "inputPlaceId" -> text
       , "inputPlaceName" -> text.verifying(Messages("error.cms.PlaceManage.register.inputPlaceName.empty"), {!_.isEmpty})
-      , "inputPlaceStatus" -> text
+      , "inputPlaceStatus" -> text.verifying(Messages("error.cms.PlaceManage.register.inputPlaceStatus.empty"), {!_.isEmpty})
     )(PlaceUpdateForm.apply)(PlaceUpdateForm.unapply))
 
     // フォームの取得
@@ -181,8 +181,7 @@ class PlaceManage @Inject()(config: Configuration
         Redirect(routes.PlaceManage.detail()).flashing(ERROR_MSG_KEY -> Messages("error.cms.PlaceManage.passwordUpdate.notEqual"))
       }else{
         // DB登録
-        val passwordInfo = passwordHasherRegistry.current.hash(f.inputPassword)
-        placeDAO.updatePassword(f.inputPlaceId.toInt, passwordInfo.password)
+        placeDAO.updatePassword(f.inputPlaceId.toInt, f.inputPassword)
 
         Redirect(s"""${routes.PlaceManage.detail().path()}?${KEY_PLACE_ID}=${f.inputPlaceId}""")
           .flashing(SUCCESS_MSG_KEY -> Messages("success.cms.PlaceManage.passwordUpdate"))
