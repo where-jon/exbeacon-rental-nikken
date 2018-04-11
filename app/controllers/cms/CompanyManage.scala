@@ -66,10 +66,10 @@ class CompanyManage @Inject()(config: Configuration
         // 新規登録の場合 --------------------------
         // 名称重複チェック
         val companyList = companyDAO.selectCompany(super.getCurrentPlaceId, f.inputCompanyName)
-        if(companyList.length > 0){
-          errMsg :+= Messages("error.cms.CompanyManage.update.inputCompanyName.duplicate")
+        if(companyList.nonEmpty){
+          errMsg :+= Messages("error.cms.CompanyManage.update.inputCompanyName.duplicate", f.inputCompanyName)
         }
-        if(errMsg.isEmpty == false){
+        if(errMsg.nonEmpty){
           // エラーで遷移
           Redirect(routes.CompanyManage.index)
             .flashing(ERROR_MSG_KEY -> errMsg.mkString(HTML_BR))
@@ -86,10 +86,10 @@ class CompanyManage @Inject()(config: Configuration
         // 名称重複チェック
         var companyList = companyDAO.selectCompany(super.getCurrentPlaceId)
         companyList = companyList.filter(_.companyId != f.inputCompanyId.toInt).filter(_.companyName == f.inputCompanyName)
-        if(companyList.length > 0){
+        if(companyList.nonEmpty){
           errMsg :+= Messages("error.cms.CompanyManage.update.inputCompanyName.duplicate", f.inputCompanyName)
         }
-        if(errMsg.isEmpty == false){
+        if(errMsg.nonEmpty){
           // エラーで遷移
           Redirect(routes.CompanyManage.index)
             .flashing(ERROR_MSG_KEY -> errMsg.mkString(HTML_BR))
@@ -109,18 +109,24 @@ class CompanyManage @Inject()(config: Configuration
   def delete = SecuredAction { implicit request =>
     // フォームの準備
     val inputForm = Form(mapping(
-      "deleteCompanyId" -> text
+      "deleteCompanyId" -> text.verifying(Messages("error.cms.CarManage.delete.empty"), {!_.isEmpty})
     )(CompanyDeleteForm.apply)(CompanyDeleteForm.unapply))
 
     // フォームの取得
     val form = inputForm.bindFromRequest
-    val f = form.get
-    // DB処理
-    companyDAO.deleteById(f.deleteCompanyId.toInt)
+    if (form.hasErrors) {
+      // エラーメッセージ
+      val errMsg = form.errors.map(_.message).mkString(HTML_BR)
+      // リダイレクトで画面遷移
+      Redirect(routes.CompanyManage.index).flashing(ERROR_MSG_KEY -> errMsg)
+    } else {
+      val f = form.get
+      // DB処理
+      companyDAO.deleteById(f.deleteCompanyId.toInt)
 
-    // リダイレクト
-    Redirect(routes.CompanyManage.index)
-      .flashing(SUCCESS_MSG_KEY -> Messages("success.cms.CompanyManage.delete"))
+      // リダイレクト
+      Redirect(routes.CompanyManage.index).flashing(SUCCESS_MSG_KEY -> Messages("success.cms.CompanyManage.delete"))
+    }
   }
 
 }
