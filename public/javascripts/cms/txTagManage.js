@@ -17,7 +17,9 @@ function fixTable(){
         // PCブラウザ
         var w = $('.mainSpace').width()*1.001; // ヘッダー右側ボーダーが切れる為*1.001
         if ($('.mainSpace').height() > h) {
-            $('.itemTable').tablefix({height: h, fixRows: 2});
+            w = $('.mainSpace').width()-5;
+            $('.itemTable').tablefix({width:w, height: h, fixRows: 2});
+            w = $('.mainSpace').width()-14;
             $('.rowTableDiv').width(w);
         } else {
             $('.rowTableDiv').width(w);
