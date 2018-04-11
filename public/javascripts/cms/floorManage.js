@@ -147,7 +147,7 @@ function fixTable(){
     var ua = navigator.userAgent;
     if (ua.indexOf('iPad') > 0 || ua.indexOf('Android') > 0 || ua.indexOf('iPhone') > 0 || ua.indexOf('iPod') > 0){
         // タッチデバイス
-        var w = $('.mainSpace').width()*0.993;
+        var w = $('.mainSpace').width()*0.995;
         if ($('.mainSpace').height() > h) {
             $('.itemTable').tablefix({width:w, height: h, fixRows: 2});
         } else {
