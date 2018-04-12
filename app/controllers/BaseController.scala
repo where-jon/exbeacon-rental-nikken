@@ -13,6 +13,9 @@ import models.User
   */
 trait BaseController extends AuthController {
 
+  val CMS_LOGGED_SESSION_KEY = "cmsLogged"
+  val CMS_NOT_LOGGED_RETURN_PATH = "/carSummery"
+
   val HTML_BR = "<br/>"
 
   val ERROR_MSG_KEY = "errMsg"
@@ -47,6 +50,22 @@ trait BaseController extends AuthController {
       securedRequest2User.currentPlaceId.get
     }else{
       1
+    }
+  }
+
+  /**
+    * 管理ページ認証済みかどうかを判定する
+    *
+    */
+  implicit def isCmsLogged[A](implicit request: SecuredRequest[MyEnv, A]): Boolean = {
+    if(securedRequest2User.isSysMng){
+      true
+    }else{
+      request.session.get(CMS_LOGGED_SESSION_KEY).map { data =>
+        true
+      }.getOrElse {
+        false
+      }
     }
   }
 }

@@ -31,14 +31,16 @@ COMMENT ON COLUMN reserve_table.updatetime IS 'データ更新日時';
 
 CREATE TABLE exb_master
 (
+  place_id integer NOT NULL,
   exb_device_id text NOT NULL,
   floor_id integer NOT NULL,
-  CONSTRAINT exb_master_pkey PRIMARY KEY (exb_device_id)
+  CONSTRAINT exb_master_pkey PRIMARY KEY (place_id, exb_device_id)
 )
 WITH (
   OIDS=FALSE
 );
 COMMENT ON TABLE exb_master IS 'EXBeaconマスタ';
+COMMENT ON COLUMN exb_master.place_id IS '現場ID';
 COMMENT ON COLUMN exb_master.exb_device_id IS 'EXBeaconデバイスID';
 COMMENT ON COLUMN exb_master.floor_id IS 'フロアID';
 

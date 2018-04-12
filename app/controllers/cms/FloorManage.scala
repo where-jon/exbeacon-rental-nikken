@@ -34,22 +34,27 @@ class FloorManage @Inject()(config: Configuration
 
   /** 初期表示 */
   def index = SecuredAction { implicit request =>
-    // 選択されている現場の現場ID
-    var placeId = securedRequest2User.currentPlaceId.get
 
-    // 現場情報の取得
-    val placeList = placeDAO.selectPlaceList(Seq[Int](placeId))
-    // フロア情報の取得
-    val floorInfoList = floorDAO.selectFloorInfo(placeId)
-    // 現場状態の選択肢リスト
-    val statusList = PlaceEnum().map
+    if(super.isCmsLogged){
+      // 選択されている現場の現場ID
+      val placeId = securedRequest2User.currentPlaceId.get
 
-    if (placeList.isEmpty) {
-      // 管理可能な情報が無ければログアウト
-      Redirect("/signout")
-    } else {
-      // 画面遷移
-      Ok(views.html.cms.floorManage(placeList.last, floorInfoList, statusList))
+      // 現場情報の取得
+      val placeList = placeDAO.selectPlaceList(Seq[Int](placeId))
+      // フロア情報の取得
+      val floorInfoList = floorDAO.selectFloorInfo(placeId)
+      // 現場状態の選択肢リスト
+      val statusList = PlaceEnum().map
+
+      if (placeList.isEmpty) {
+        // 管理可能な情報が無ければログアウト
+        Redirect("/signout")
+      } else {
+        // 画面遷移
+        Ok(views.html.cms.floorManage(placeList.last, floorInfoList, statusList))
+      }
+    }else{
+      Redirect(CMS_NOT_LOGGED_RETURN_PATH).flashing(ERROR_MSG_KEY -> Messages("error.cmsLogged.invalid"))
     }
   }
 

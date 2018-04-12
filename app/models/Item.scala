@@ -42,8 +42,10 @@ class itemDAO @Inject() (dbapi: DBApi) {
           var actualItemInfoList = Seq[ActualItemInfo]()
 
           actual_item_info_str.split(",").toSeq.foreach(line =>{
-            val array = line.split("\t")
-            actualItemInfoList :+= ActualItemInfo(array(0).toInt, array(1), array(2).toInt)
+            if(line.isEmpty == false){
+              val array = line.split("\t")
+              actualItemInfoList :+= ActualItemInfo(array(0).toInt, array(1), array(2).toInt)
+            }
           })
 
           ItemListInfo(item_kind_id, item_kind_name, note, actualItemInfoList.length, actualItemInfoList)

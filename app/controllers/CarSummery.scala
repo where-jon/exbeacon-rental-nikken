@@ -5,7 +5,7 @@ import javax.inject.{Inject, Singleton}
 import com.mohiva.play.silhouette.api.Silhouette
 import models._
 import play.api._
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.libs.json.Json
 import play.api.libs.ws._
 import utils.silhouette.MyEnv
@@ -53,7 +53,11 @@ class CarSummery @Inject()(config: Configuration
     var noReserveNoWorkingCntTotal = 0
 
     // API呼び出し
-    ws.url(place.btxApiUrl).get().map { response =>
+    var url = place.btxApiUrl
+    if(url.isEmpty){
+      url = config.getString("excloud.dummy.url").get
+    }
+    ws.url(url).get().map { response =>
 
       // APIデータ
       val list = Json.parse(response.body).asOpt[List[exCloudBtxData]].getOrElse(Nil)
@@ -127,7 +131,7 @@ class CarSummery @Inject()(config: Configuration
 
       // 全数のレコードを追加
       resultList :+= CarSummeryInfo(
-          "全数"
+          Messages("lang.CarSummery.summeryTotal")
         , reserveCntTotal
         , normalWorkingCntTotal
         , workingOnlyCntTotal
@@ -163,7 +167,11 @@ class CarSummery @Inject()(config: Configuration
     val carList = carDAO.selectCarInfo(placeId)
 
     // API呼び出し
-    ws.url(place.btxApiUrl).get().map { response =>
+    var url = place.btxApiUrl
+    if(url.isEmpty){
+      url = config.getString("excloud.dummy.url").get
+    }
+    ws.url(url).get().map { response =>
 
       // APIデータ
       val list = Json.parse(response.body).asOpt[List[exCloudBtxData]].getOrElse(Nil)

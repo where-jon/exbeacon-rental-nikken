@@ -12,6 +12,10 @@ GET     /carSummery                     controllers.CarSummery.index
 GET     /carSummery/getPlotInfo         controllers.CarSummery.getPlotInfo
 # 作業車予約
 GET     /carReserve                     controllers.CarReserve.index
+POST    /carReserve/register            controllers.CarReserve.register
+POST    /carReserve/registerModal       controllers.CarReserve.registerModal
+POST    /carReserve/update              controllers.CarReserve.update
+POST    /carReserve/delete              controllers.CarReserve.delete
 # その他仮設材利用状況
 GET     /otherItem                      controllers.OtherItem.index
 GET     /otherItem/getPlotInfo          controllers.OtherItem.getPlotInfo
@@ -19,13 +23,14 @@ GET     /otherItem/getPlotInfo          controllers.OtherItem.getPlotInfo
 ###  CMS　#################################
 # 現場管理
 GET     /cms/placeManage                controllers.cms.PlaceManage.index
-GET     /cms/sortPlaceListWith/:number   controllers.cms.PlaceManage.sortPlaceListWith(number: Int)
+GET     /cms/sortPlaceListWith/:number  controllers.cms.PlaceManage.sortPlaceListWith(number: Int)
 GET     /cms/placeManage/detail         controllers.cms.PlaceManage.detail
 POST    /cms/placeManage/register       controllers.cms.PlaceManage.register
 POST    /cms/placeManage/change         controllers.cms.PlaceManage.change
 POST    /cms/placeManage/update         controllers.cms.PlaceManage.update
 POST    /cms/placeManage/delete         controllers.cms.PlaceManage.delete
 POST    /cms/placeManage/passwordUpdate controllers.cms.PlaceManage.passwordUpdate
+POST    /cms/placeManage/cmsLogin       controllers.cms.PlaceManage.cmsLogin
 
 # フロア管理
 GET     /cms/floorManage                controllers.cms.FloorManage.index

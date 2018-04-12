@@ -12,7 +12,6 @@ function fixTable(){
     $('.crossTableDiv, .rowTableDiv, .colTableDiv').find('span').removeAttr('id data-originalId data-carNo data-before');
 
     $('.crossTableDiv, .rowTableDiv, .colTableDiv').find('td').removeClass('reserveTdHover');
-//    $('.crossTableDiv, .rowTableDiv, .colTableDiv').find('th').removeClass('draggable');
     $('.crossTableDiv, .rowTableDiv, .colTableDiv').find('tr').removeClass('reserveRow');
 }
 
@@ -20,7 +19,6 @@ function fixTable(){
 function removeTable(){
     var clonedTable = $('.bodyTableDiv').find('table').clone();
     $(clonedTable).attr('style', '');
-    $(clonedTable).find('span.part').remove();
     $('.baseDiv').remove();
     $('#table-responsive-body').append(clonedTable.prop("outerHTML"));
 }
@@ -30,7 +28,7 @@ function drawCar(){
     // APIからデータを取得
     $.ajax({
         type: "GET",
-        url: "/carSummery/getPlotInfo?placeId=" + $('#placeId').val(),
+        url: window.location.pathname + "/getPlotInfo",
         cache: false,
         datatype: 'json',
         success: function (json) {
@@ -83,7 +81,6 @@ $(function(){
             // 処理の再実行
             removeTable();
             fixTable();
-
         }, 200);
     });
 });

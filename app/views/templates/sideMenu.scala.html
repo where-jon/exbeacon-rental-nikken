@@ -67,9 +67,15 @@
                             </div>
                             <div class="row" style="margin: 0px;">
                                 <div class="text-center col-xs-12 col-sm-12 col-md-12" style="padding:0px 3px;">
-                                    <a href="/cms/placeManage/detail" class="btn cmsBtn">
-                                        管理ページ
-                                    </a>
+                                    @if(user.isSysMng){
+                                        <a href="/cms/placeManage/detail" class="btn cmsBtn">管理ページ</a>
+                                    }else{
+                                        @request.session.get("cmsLogged").map { data =>
+                                            <a href="/cms/placeManage/detail" class="btn cmsBtn">管理ページ</a>
+                                        }.getOrElse {
+                                            <a href="javascript:showCmsLoginModal();" class="btn cmsBtn">管理ページ</a>
+                                        }
+                                    }
                                 </div>
                             </div>
                         </div>

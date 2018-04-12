@@ -3,7 +3,6 @@ package controllers.cms
 import javax.inject.{Inject, Singleton}
 
 import com.mohiva.play.silhouette.api.Silhouette
-import com.mohiva.play.silhouette.api.util.PasswordHasherRegistry
 import controllers.BaseController
 import models.PlaceEnum
 import play.api._
@@ -22,6 +21,7 @@ import utils.silhouette.MyEnv
 
 // フォーム定義
 case class PlaceChangeForm(inputPlaceId: String)
+case class CmsLoginForm(inputPlaceId: String, inputCmsLoginPassword: String, inputReturnPath:String)
 case class PlaceRegisterForm(placeName: String)
 case class PlaceUpdateForm(inputPlaceId: String, inputPlaceName: String, inputPlaceStatus: String)
 case class PasswordUpdateForm(inputPlaceId: String, inputPassword: String, inputRePassword: String)
@@ -35,11 +35,8 @@ class PlaceManage @Inject()(config: Configuration
                             , placeDAO: models.placeDAO
                             , floorDAO: models.floorDAO
                             , exbDAO: models.exbModelDAO
-                            , passwordHasherRegistry: PasswordHasherRegistry
                                ) extends BaseController with I18nSupport {
 
-  // FIXME: matsumura 実証実験では固定登録とする
-  val BTX_API_URL = "https://demo6743258.mockable.io/getTakasagoBtx"
 
   /** 選択されている並び順 */
   var selectedSortType = 0
@@ -50,7 +47,11 @@ class PlaceManage @Inject()(config: Configuration
       Redirect(routes.PlaceManage.sortPlaceListWith(selectedSortType))
     }else{
       // シス管でなければ登録されている現場の管理画面へ遷移
-      Redirect(s"""${routes.PlaceManage.detail().path()}?${KEY_PLACE_ID}=${securedRequest2User.currentPlaceId.get}""")
+      if(super.isCmsLogged){
+        Redirect(routes.PlaceManage.detail)
+      }else{
+        Redirect(CMS_NOT_LOGGED_RETURN_PATH).flashing(ERROR_MSG_KEY -> Messages("error.cmsLogged.invalid"))
+      }
     }
   }
 
@@ -61,12 +62,16 @@ class PlaceManage @Inject()(config: Configuration
       selectedSortType = sortType
       Ok(views.html.cms.placeManage(placeList))
     }else{
-      // シス管でなければ登録されている現場の管理画面へ遷移
-      Redirect(s"""${routes.PlaceManage.detail().path()}?${KEY_PLACE_ID}=${securedRequest2User.currentPlaceId.get}""")
+      if(super.isCmsLogged){
+        // シス管でなければ登録されている現場の管理画面へ遷移
+        Redirect(routes.PlaceManage.detail)
+      }else{
+        Redirect(CMS_NOT_LOGGED_RETURN_PATH).flashing(ERROR_MSG_KEY -> Messages("error.cmsLogged.invalid"))
+      }
     }
   }
 
-  /** 詳細 */
+  /** 管理現場変更 */
   def change = SecuredAction { implicit request =>
     // フォームの準備
     val inputForm = Form(mapping(
@@ -79,34 +84,60 @@ class PlaceManage @Inject()(config: Configuration
     // 現在の現場IDを更新
     placeDAO.updateCurrentPlaceId(f.inputPlaceId.toInt, securedRequest2User.id.get.toInt)
 
-    Redirect(s"""${routes.PlaceManage.detail().path()}?${KEY_PLACE_ID}=${f.inputPlaceId}""")
-
+    Redirect(routes.PlaceManage.detail)
   }
-    /** 詳細 */
+
+  /** 管理ページログイン */
+  def cmsLogin = SecuredAction { implicit request =>
+    // フォームの準備
+    val inputForm = Form(mapping(
+      "inputPlaceId" -> text
+      ,"inputCmsLoginPassword" -> text
+      ,"inputReturnPath" -> text
+    )(CmsLoginForm.apply)(CmsLoginForm.unapply))
+
+    val form = inputForm.bindFromRequest
+    val f = form.get
+
+    if(placeDAO.isExist(f.inputPlaceId.toInt, f.inputCmsLoginPassword)){
+      // 詳細画面にセッションを付与して遷移
+      Redirect(routes.PlaceManage.detail).withSession(request.session + (CMS_LOGGED_SESSION_KEY -> "yes"))
+    }else{
+      // 元来た画面に遷移
+      Redirect(f.inputReturnPath).flashing(ERROR_MSG_KEY -> Messages("error.cms.PlaceManage.cmsLogin"))
+    }
+  }
+
+
+  /** 詳細 */
   def detail = SecuredAction { implicit request =>
-    // 選択された現場の現場ID
-    var placeId = securedRequest2User.currentPlaceId.get
+    if(super.isCmsLogged){
+      // 選択された現場の現場ID
+      val placeId = securedRequest2User.currentPlaceId.get
 
-    // 現場情報の取得
-    val placeList = placeDAO.selectPlaceList(Seq[Int](placeId))
-    // フロア情報の取得
-    val floorInfoList = floorDAO.selectFloorInfo(placeId)
-    // 現場状態の選択肢リスト
-    val statusList = PlaceEnum().map
+      // 現場情報の取得
+      val placeList = placeDAO.selectPlaceList(Seq[Int](placeId))
+      // フロア情報の取得
+      val floorInfoList = floorDAO.selectFloorInfo(placeId)
+      // 現場状態の選択肢リスト
+      val statusList = PlaceEnum().map
 
-    if (placeList.isEmpty) {
-      if(securedRequest2User.isSysMng) {
-        // エラーメッセージ
-        val errMsg = Messages("error.cms.placeManage.move.empty")
-        // リダイレクトで画面遷移
-        Redirect(routes.PlaceManage.sortPlaceListWith(selectedSortType)).flashing(ERROR_MSG_KEY -> errMsg)
+      if (placeList.isEmpty) {
+        if(securedRequest2User.isSysMng) {
+          // エラーメッセージ
+          val errMsg = Messages("error.cms.placeManage.move.empty")
+          // リダイレクトで画面遷移
+          Redirect(routes.PlaceManage.sortPlaceListWith(selectedSortType)).flashing(ERROR_MSG_KEY -> errMsg)
+        } else {
+          // 対象の現場にアクセス不可＆システム管理者出ない場合はログアウト
+          Redirect("/signout")
+        }
       } else {
-        // 対象の現場にアクセス不可＆システム管理者出ない場合はログアウト
-        Redirect("/signout")
+        // 画面遷移
+        Ok(views.html.cms.placeManageDetail(placeList.last, floorInfoList, statusList, securedRequest2User.isSysMng))
       }
-    } else {
-      // 画面遷移
-      Ok(views.html.cms.placeManageDetail(placeList.last, floorInfoList, statusList, securedRequest2User.isSysMng))
+    }else{
+      Redirect(CMS_NOT_LOGGED_RETURN_PATH).flashing(ERROR_MSG_KEY -> Messages("error.cmsLogged.invalid"))
     }
   }
 
@@ -126,7 +157,7 @@ class PlaceManage @Inject()(config: Configuration
       Redirect(routes.PlaceManage.sortPlaceListWith(selectedSortType)).flashing(ERROR_MSG_KEY -> errMsg)
     }else{
       // DB登録
-      placeDAO.insert(form.get.placeName, BTX_API_URL)
+      placeDAO.insert(form.get.placeName)
 
       Redirect(routes.PlaceManage.sortPlaceListWith(selectedSortType)).flashing(SUCCESS_MSG_KEY -> Messages("success.cms.PlaceManage.register"))
     }

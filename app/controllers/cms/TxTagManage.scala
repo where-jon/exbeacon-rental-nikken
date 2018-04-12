@@ -6,7 +6,7 @@ import com.mohiva.play.silhouette.api.Silhouette
 import controllers.BaseController
 import models.{BtxTelemetryInfo, exCloudBtxData}
 import play.api._
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.libs.json.Json
 import play.api.libs.ws._
 import utils.silhouette.MyEnv
@@ -32,17 +32,21 @@ class TxTagManage @Inject()(config: Configuration
     * @return
     */
   def index = SecuredAction.async { implicit request =>
+
     // 戻り値
     var resultList = Seq[BtxTelemetryInfo]()
 
     // 選択された現場の現場ID
     val placeId = super.getCurrentPlaceId
     // URLを取得
-    val url = placeDAO.selectPlaceList(Seq[Int](placeId)).last.btxApiUrl
+    var url = placeDAO.selectPlaceList(Seq[Int](placeId)).last.btxApiUrl
     // DBからの情報を取得
     var dbInfo = btxDAO.selectForTelemetry(placeId)
 
     // API呼び出し
+    if(url.isEmpty){
+      url = config.getString("excloud.dummy.url").get
+    }
     ws.url(url).get().map { response =>
       // APIデータ
       val list = Json.parse(response.body).asOpt[List[exCloudBtxData]].getOrElse(Nil)
@@ -89,7 +93,11 @@ class TxTagManage @Inject()(config: Configuration
 
       resultList.sortBy(_.btxId)
 
-      Ok(views.html.cms.txTagManage(resultList, placeId))
+      if(super.isCmsLogged){
+        Ok(views.html.cms.txTagManage(resultList, placeId))
+      }else{
+        Redirect(CMS_NOT_LOGGED_RETURN_PATH).flashing(ERROR_MSG_KEY -> Messages("error.cmsLogged.invalid"))
+      }
     }
   }
 }

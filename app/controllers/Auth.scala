@@ -149,7 +149,7 @@ class Auth @Inject() (
    */
   def signOut = SecuredAction.async { implicit request =>
     env.eventBus.publish(LogoutEvent(request.identity, request))
-    env.authenticatorService.discard(request.authenticator, Redirect(routes.Application.index))
+    env.authenticatorService.discard(request.authenticator, Redirect(routes.Application.index).withNewSession)
   }
 
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

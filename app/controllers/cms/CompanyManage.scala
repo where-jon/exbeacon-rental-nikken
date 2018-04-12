@@ -32,13 +32,19 @@ class CompanyManage @Inject()(config: Configuration
 
   /** 初期表示 */
   def index = SecuredAction { implicit request =>
-    // 選択された現場の現場ID
-    val placeId = super.getCurrentPlaceId
 
-    // 業者情報
-    val companyList = companyDAO.selectCompany(placeId)
+    if(super.isCmsLogged){
+      // 選択された現場の現場ID
+      val placeId = super.getCurrentPlaceId
 
-    Ok(views.html.cms.companyManage(companyList, placeId))
+      // 業者情報
+      val companyList = companyDAO.selectCompany(placeId)
+
+      Ok(views.html.cms.companyManage(companyList, placeId))
+    }else{
+      Redirect(CMS_NOT_LOGGED_RETURN_PATH).flashing(ERROR_MSG_KEY -> Messages("error.cmsLogged.invalid"))
+    }
+
   }
 
 

@@ -62,6 +62,12 @@ error.unknown.title=Oops, an error occurred
 error.unknown.text=This exception has been logged with id <strong>{0}</strong>.
 error.notfound.title=ページが見つかりません。
 error.notfound.text=For request ''{0}''
+error.cmsLogged.invalid=管理ページを参照するにはパスワード認証が必要です。
+
+# 予約入力エラー
+error.CarReserve.registerModal.inputCarNo.format=作業車番号を半角数字で入力してください。
+error.CarReserve.registerModal.inputCarNo.exist=入力された作業車は存在しません。
+error.CarReserve.registerModal.inputCarNo.duplicate=入力された作業車は既に同フロア、同業者で予約されています。
 
 # CMS入力エラー
 error.cms.PlaceManage.register.inputPlaceName.empty=現場名称を入力してください。
@@ -69,6 +75,7 @@ error.cms.PlaceManage.register.inputPlaceStatus.empty=状態を選択してく�
 error.cms.PlaceManage.passwordUpdate.inputPassword.empty=パスワードを入力してください。
 error.cms.PlaceManage.passwordUpdate.inputRePassword.empty=パスワード再入力を入力してください。
 error.cms.PlaceManage.passwordUpdate.notEqual=再入力されたパスワードが異なります。
+error.cms.PlaceManage.cmsLogin=入力されたパスワードに誤りがあります。
 
 error.cms.floorManage.floorUpdate.inputFloorName.empty=フロア名を入力してください。
 error.cms.floorManage.floorUpdate.inputFloorName.duplicate=フロア名が重複しています。
@@ -102,6 +109,8 @@ error.cms.placeManage.delete.empty=削除対象の建築現場が選択されて
 
 ################################################################################################
 # SUCCESS
+success.CarReserve.registerModal=予約を登録しました。
+
 success.cms.PlaceManage.register=現場情報を登録しました。
 success.cms.PlaceManage.update=現場情報を更新しました。
 success.cms.PlaceManage.passwordUpdate=パスワードを更新しました。
@@ -133,6 +142,7 @@ mail.forgotpwd.postlink2=パスワードのリセットしない場合はURLを�
 mail.sign=日立アプライアンス会議室予約システム管理者
 
 ################################################################################################
+
 # 各画面文言
 
 # CMS文字列（現場一覧）
@@ -259,4 +269,70 @@ lang.cms.txTagManage.txTag.list.header.name=名称
 lang.cms.txTagManage.txTag.list.header.biko=備考
 lang.cms.txTagManage.txTag.list.body.undetected=未検知
 lang.cms.txTagManage.txTag.list.body.unused=未登録
+
+# メイン機能の画面の文言
+# CarSummery
+lang.CarSummery.pageTitle=高所作業車各階稼働状況
+lang.CarSummery.lastUpdate=最終更新日時
+lang.CarSummery.summeryTableTitleTh=高所作業車全体稼働状況
+lang.CarSummery.summeryFloorNameTh=階<br/>数
+
+lang.CarSummery.summeryThReserve=予約
+lang.CarSummery.summeryThWorking=稼働中
+lang.CarSummery.summeryThNoReserveWorking=予約無<br/>稼働
+lang.CarSummery.summeryThReserveNoWorking=予約済<br/>非稼働
+lang.CarSummery.summeryThNoReserveNoWorking=予約無<br/>非稼働
+
+lang.CarSummery.summeryTotal=全数
+lang.CarSummery.summeryUnit=台
+lang.CarSummery.summeryAllTotal=合計
+
+lang.CarSummery.example=No.
+lang.CarSummery.example.working=稼働中
+lang.CarSummery.example.reserveContent=予約内容
+lang.CarSummery.example.noWorking=非稼働
+lang.CarSummery.example.reserveNone=予約なし
+
+lang.CarSummery.reserveTableTitleTh=高所作業車各階稼働状況
+lang.CarSummery.noReserveBefore=前日予約無
+lang.CarSummery.reserveTable.reserve=予約
+lang.CarSummery.reserveTable.work=稼働
+
+# CarReserve
+lang.CarReserve.pageTitle=高所作業者予約
+lang.CarReserve.workingDay=稼働日
+lang.CarReserve.reserveDay=予約日
+lang.CarReserve.summeryTableTitleTh=高所作業車各階稼働状況
+lang.CarReserve.summeryFloorNameTh=階数
+lang.CarReserve.summeryWorkTh=稼働日朝
+lang.CarReserve.summeryTotal=全数
+lang.CarReserve.summeryUnit=台
+lang.CarReserve.example.reserveNormal=予約希望
+lang.CarReserve.example.reserveNone=予約無し
+lang.CarReserve.example.reserveDuplicate=要調整
+lang.CarReserve.example.reserveDone=予約済
+lang.CarReserve.example.reserveDiff=前日と異なる階 / 業者で予約
+lang.CarReserve.reserveTableTitleTh=高所作業車予約
+lang.CarReserve.noReserveBefore=前日予約無
+lang.CarReserve.reserveTable.reserve=予約
+lang.CarReserve.reserveTable.work=稼働
+lang.CarReserve.popup.header=予約登録
+lang.CarReserve.popup.carNo=作業車番号
+lang.CarReserve.popup.floor=フロア
+lang.CarReserve.popup.company=業者
+lang.CarReserve.popup.cancelBtn=キャンセル
+lang.CarReserve.popup.registerBtn=登録
+
+# OtherItem
+lang.OtherItem.pageTitle=仮設材利用状況
+lang.OtherItem.summeryTableTitleTh=その他仮設材全体稼働状況
+lang.OtherItem.summeryFloorNameTh=階数
+lang.OtherItem.summeryCountTh=利用状況
+lang.OtherItem.summeryTotal=全数
+lang.OtherItem.summeryUnit=台
+lang.OtherItem.example=仮設材管理No.
+lang.OtherItem.itemTableTitleTh=各階利用状況
+lang.OtherItem.itemTableTitle.name=資材名
+lang.OtherItem.itemTableTitle.value=利用状況
+
 

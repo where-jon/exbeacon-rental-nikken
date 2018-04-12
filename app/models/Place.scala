@@ -142,21 +142,44 @@ class placeDAO @Inject() (dbapi: DBApi) {
   }
 
   /**
+    * パスワードで検索し存在を確認する
+    * @return
+    */
+  def isExist(placeId: Int, password: String): Boolean = {
+    val count = db.withConnection { implicit connection =>
+      val query =
+        """
+        select
+          count(*)
+        from
+          place_master
+        where
+          place_id = {placeId}
+          and cms_password = {password}
+          and active_flg = true
+      """
+
+      SQL(query).on('placeId -> placeId, 'password -> password).as(scalar[Long].single)
+    }
+
+    count.toInt > 0
+  }
+
+  /**
     * 現場の新規登録
     * @return
     */
-  def insert(placeName: String, btxApiUrl: String): Int = {
+  def insert(placeName: String): Int = {
     db.withTransaction { implicit connection =>
       // パラメータのセット
       val params: Seq[NamedParameter] = Seq(
-        "placeName" -> placeName,
-        "btxApiUrl" -> btxApiUrl
+        "placeName" -> placeName
       )
       // クエリ
       var sql = SQL(
         """
-          insert into place_master (place_name, btx_api_url)
-          values ({placeName}, {btxApiUrl})
+          insert into place_master (place_name)
+          values ({placeName})
         """
       ).on(params:_*)
 

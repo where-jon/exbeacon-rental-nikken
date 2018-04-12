@@ -41,7 +41,9 @@ class OtherItem @Inject()(config: Configuration
     if (request.getQueryString("floorId").isEmpty == false) {
       floorId = request.getQueryString("floorId").get.toInt
     }else{
-      floorId = floorInfoList(0).floorId
+      if(floorInfoList.nonEmpty){
+        floorId = floorInfoList(0).floorId
+      }
     }
 
     // DBデータ
@@ -49,7 +51,11 @@ class OtherItem @Inject()(config: Configuration
     val itemMap = otherItemDAO.selectItemMap(placeId)
 
     // API呼び出し
-    ws.url(place.btxApiUrl).get().map { response =>
+    var url = place.btxApiUrl
+    if(url.isEmpty){
+      url = config.getString("excloud.dummy.url").get
+    }
+    ws.url(url).get().map { response =>
 
       // APIデータ
       val list = Json.parse(response.body).asOpt[List[exCloudBtxData]].getOrElse(Nil)
@@ -79,7 +85,7 @@ class OtherItem @Inject()(config: Configuration
   }
 
   /**
-    * 作業車稼働情報のJSON出力
+    * 仮設材位置情報のJSON出力
     *
     * @return
     */
@@ -99,7 +105,11 @@ class OtherItem @Inject()(config: Configuration
     val itemDbList = otherItemDAO.selectItemInfo(placeId)
 
     // API呼び出し
-    ws.url(place.btxApiUrl).get().map { response =>
+    var url = place.btxApiUrl
+    if(url.isEmpty){
+      url = config.getString("excloud.dummy.url").get
+    }
+    ws.url(url).get().map { response =>
       // APIデータ
       val list = Json.parse(response.body).asOpt[List[exCloudBtxData]].getOrElse(Nil)
 

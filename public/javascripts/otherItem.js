@@ -5,21 +5,17 @@ function bindMouseAndTouch(){
         // タッチデバイスの場合
         $(".rowHover").bind({
             'touchstart': function(e) {
-                if(e.originalEvent.touches.length == 1){
-<<<<<<< HEAD
-                    var floorId = $(this).attr('id');
-                    moveTo(window.location.pathname + "?floorId" + floorId);
-=======
-                    $(this).find('td').addClass('rowHoverColor');
-                    //showInputModal();
->>>>>>> design
-                }
+                $(this).find('td').addClass('summerySelected');
             },
             'touchend': function(e) {
-                $(this).find('td').removeClass('rowHoverColor');
+                $(this).find('td').removeClass('summerySelected');
+                var floorId = $(this).attr('id');
+                moveTo(window.location.pathname + "?floorId=" + floorId);
             },
             'touchmove': function(e) {
-                $(this).find('td').removeClass('rowHoverColor');
+                $(this).find('td').removeClass('summerySelected');
+                var floorId = $(this).attr('id');
+                moveTo(window.location.pathname + "?floorId=" + floorId);
             }
         });
     }else{
@@ -60,7 +56,6 @@ function removeTable(){
     $('#table-responsive-body').append(clonedTable.prop("outerHTML"));
 }
 
-<<<<<<< HEAD
 // 仮設材マークの描画
 function drawItem(){
     // APIからデータを取得
@@ -72,7 +67,7 @@ function drawItem(){
         success: function (json) {
             // 仮設材情報を表示
             $.each(json, function(i, record){
-                var htmlStr = '<span class="itemPart">'+record.itemNo+'</span>';
+                var htmlStr = '<span class="part">'+record.itemNo+'</span>';
                 var id = 'td_' + record.itemKindId;
                 $("#" + id).append(htmlStr);
             });
@@ -81,20 +76,6 @@ function drawItem(){
             console.dir(e);
         }
     });
-=======
-
-// テーブルのクリア
-function addDummyItem(){
-    $("#td_0").append('<span class="part">001</span>');
-    $("#td_0").append('<span class="part">002</span>');
-    $("#td_0").append('<span class="part">003</span>');
-    $("#td_0").append('<span class="part">004</span>');
-    $("#td_1").append('<span class="part">005</span>');
-    $("#td_1").append('<span class="part">006</span>');
-    $("#td_2").append('<span class="part">007</span>');
-    $("#td_3").append('<span class="part">008</span>');
-    $("#td_4").append('<span class="part">009</span>');
->>>>>>> design
 }
 
 $(function(){

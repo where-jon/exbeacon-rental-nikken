@@ -9,7 +9,7 @@ import play.api.db._
 import play.api.libs.json.{JsPath, Json, Reads}
 import play.api.libs.functional.syntax._
 
-// JSON用 ----------------------------------
+//  画面に渡す稼働情報JSONオブジェクト -------------------
 case class CarSummeryWorkPlotInfo(
     floorId: String
   , carId: String
@@ -19,18 +19,11 @@ case class CarSummeryWorkPlotInfo(
 )
 
 object CarSummeryWorkPlotInfo {
-//
-//  implicit val jsonReads: Reads[CarPlotInfo] = (
-//      ((JsPath \ "floorId").read[String] | Reads.pure("")) ~
-//      ((JsPath \ "carId").read[String] | Reads.pure("")) ~
-//      ((JsPath \ "carNo").read[String] | Reads.pure("")) ~
-//      ((JsPath \ "companyId").read[String] | Reads.pure("")) ~
-//      ((JsPath \ "isWorking").read[Boolean] | Reads.pure(false))
-//    )(CarPlotInfo.apply _)
 
   implicit def jsonWrites = Json.writes[CarSummeryWorkPlotInfo]
 }
 
+//  画面に渡す予約情報JSONオブジェクト -------------------
 case class CarSummeryReservePlotInfo(
   carId: String
   , carNo: String
@@ -39,32 +32,17 @@ case class CarSummeryReservePlotInfo(
 )
 
 object CarSummeryReservePlotInfo {
-  //
-  //  implicit val jsonReads: Reads[CarPlotInfo] = (
-  //      ((JsPath \ "floorId").read[String] | Reads.pure("")) ~
-  //      ((JsPath \ "carId").read[String] | Reads.pure("")) ~
-  //      ((JsPath \ "carNo").read[String] | Reads.pure("")) ~
-  //      ((JsPath \ "companyId").read[String] | Reads.pure("")) ~
-  //      ((JsPath \ "isWorking").read[Boolean] | Reads.pure(false))
-  //    )(CarPlotInfo.apply _)
 
   implicit def jsonWrites = Json.writes[CarSummeryReservePlotInfo]
 }
 
+//  画面に渡すJSONオブジェクト -------------------
 case class CarSummeryPlotInfo(
     workInfoList: List[CarSummeryWorkPlotInfo]
   , reserveInfoList: List[CarSummeryReservePlotInfo]
 )
 
 object CarSummeryPlotInfo {
-  //
-  //  implicit val jsonReads: Reads[CarPlotInfo] = (
-  //      ((JsPath \ "floorId").read[String] | Reads.pure("")) ~
-  //      ((JsPath \ "carId").read[String] | Reads.pure("")) ~
-  //      ((JsPath \ "carNo").read[String] | Reads.pure("")) ~
-  //      ((JsPath \ "companyId").read[String] | Reads.pure("")) ~
-  //      ((JsPath \ "isWorking").read[Boolean] | Reads.pure(false))
-  //    )(CarPlotInfo.apply _)
 
   implicit def jsonWrites = Json.writes[CarSummeryPlotInfo]
 }
@@ -79,7 +57,7 @@ case class CarSummeryInfo(
   , noReserveNoWorkingCnt: Int
 )
 
-case class ReserveInfo(
+case class CarSummeryModelReserveInfo(
     reserveId: Int
   , carId: Int
   , carBtxId: Int
@@ -98,7 +76,7 @@ class carSummeryDAO @Inject() (dbapi: DBApi) {
     * 予約情報の取得
     * @return
     */
-  def selectReserve(floorId:Option[Int] = None, companyId:Option[Int] = None, dateStr:String = ""): Seq[ReserveInfo] = {
+  def selectReserve(floorId:Option[Int] = None, companyId:Option[Int] = None, dateStr:String = ""): Seq[CarSummeryModelReserveInfo] = {
 
     val simple = {
       get[Int]("reserve_id") ~
@@ -109,7 +87,7 @@ class carSummeryDAO @Inject() (dbapi: DBApi) {
         get[Int]("company_id") ~
         get[String]("reserve_date") map {
         case reserve_id ~ car_id ~ car_btx_id ~ car_key_btx_id ~ floor_id ~ company_id ~ reserve_date  =>
-          ReserveInfo(reserve_id, car_id, car_btx_id, car_key_btx_id, floor_id, company_id, reserve_date)
+          CarSummeryModelReserveInfo(reserve_id, car_id, car_btx_id, car_key_btx_id, floor_id, company_id, reserve_date)
       }
     }
 

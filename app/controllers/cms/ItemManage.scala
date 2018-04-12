@@ -31,12 +31,16 @@ class ItemManage @Inject()(config: Configuration
 
   /** 初期表示 */
   def index = SecuredAction { implicit request =>
-    // 選択された現場の現場ID
-    val placeId = super.getCurrentPlaceId
-    // 仮設材情報
-    val itemList = itemDAO.selectItemInfo(placeId)
+    if(super.isCmsLogged){
+      // 選択された現場の現場ID
+      val placeId = super.getCurrentPlaceId
+      // 仮設材情報
+      val itemList = itemDAO.selectItemInfo(placeId)
 
-    Ok(views.html.cms.itemManage(itemList, placeId))
+      Ok(views.html.cms.itemManage(itemList, placeId))
+    }else{
+      Redirect(CMS_NOT_LOGGED_RETURN_PATH).flashing(ERROR_MSG_KEY -> Messages("error.cmsLogged.invalid"))
+    }
   }
 
   /** 更新 */
