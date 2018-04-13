@@ -1,4 +1,4 @@
-@(companyList: Seq[Company], floorList:Seq[FloorInfo], reservePlotList:Seq[CarReserveModelPlotInfo], workPlotList:Seq[CarReserveModelPlotInfo])(implicit user: User, messages: Messages, request: RequestHeader, flash: Flash)
+@(companyList: Seq[Company], floorList:Seq[FloorInfo], reservePlotList:Seq[CarReserveModelPlotInfo], workPlotList:Seq[CarReserveModelPlotInfo], reserveDateObj: org.joda.time.DateTime)(implicit user: User, messages: Messages, request: RequestHeader, flash: Flash)
 
 @import controllers.routes
 @import helper._
@@ -10,9 +10,12 @@
     @templates.htmlHead(title = Messages("lang.CarReserve.pageTitle"))
     <link rel="stylesheet" href="@routes.MyAssets.lib("jquery-ui/jquery-ui.theme.min.css")"/>
     <link rel="stylesheet" href="@routes.MyAssets.css("carReserve.css")"/>
+    <link rel="stylesheet" media="screen" href="@routes.MyAssets.lib("bootstrap-datepicker-1.6.4-dist/css/bootstrap-datepicker.min.css")">
     <script type="text/javascript" src="@routes.MyAssets.lib("jquery-ui/jquery-ui.min.js")"></script>
     <script type="text/javascript" src="@routes.MyAssets.lib("jquery-ui/jquery.ui.touch-punch.min.js")"></script>
     <script type="text/javascript" src="@routes.MyAssets.lib("jquery.tablefix_1.0.1.js")"></script>
+    <script type="text/javascript" src="@routes.MyAssets.lib("bootstrap-datepicker-1.6.4-dist/js/bootstrap-datepicker.min.js")"></script>
+    <script type="text/javascript" src="@routes.MyAssets.lib("bootstrap-datepicker-1.6.4-dist/locales/bootstrap-datepicker.ja.min.js")"></script>
     <script></script>
 </head>
 <body>
@@ -31,9 +34,15 @@
                          style="border-radius: 10px;padding:0;background-color:#F2F2F2;">
                         <div class="row" style="margin-bottom:5px;">
                             <div class="col-xs-8 col-xs-offset-4" style="padding:0;">
-                                <p class="dateFont" style="margin-top: 20px;"><i class="fa fa-caret-right" aria-hidden="true"></i>@Messages("lang.CarReserve.workingDay")：@{new DateTime().toString("M/d")}</p>
-                                <p class="dateFont" style="margin-bottom: 20px;"><i class="fa fa-caret-right" aria-hidden="true"></i>@Messages("lang.CarReserve.reserveDay")：@{new DateTime().plusDays(1).toString("M/d")}</p>
-
+                                <p class="dateFont" style="margin-top: 20px;">
+                                    <i class="fa fa-caret-right" aria-hidden="true"></i>
+                                    @Messages("lang.CarReserve.workingDay")：@{new DateTime().toString("M/d(E)")}
+                                </p>
+                                <p class="dateFont datePickerArea">
+                                    <i class="fa fa-caret-right" aria-hidden="true"></i>
+                                    @Messages("lang.CarReserve.reserveDay")：@{reserveDateObj.toString("M/d(E)")}
+                                </p>
+                                <!--<input type="text" class="inputReserveDate" id="inputReserveDate">-->
                             </div>
                         </div>
                     </div>
@@ -235,7 +244,7 @@
             <div class="modal-content">
                 <form id="inputForm" name="inputForm" enctype="multipart/form-data" class="form-horizontal" method="post" action="@routes.CarReserve.registerModal.path">
                     @CSRF.formField
-                    <input type="hidden" id="reserveDate" name="reserveDate" value="@{new DateTime().plusDays(1).toString("yyyyMMdd")}">
+                    <input type="hidden" id="reserveDate" name="reserveDate" value="@{reserveDateObj.toString("yyyyMMdd")}">
                     <div class="modal-header" style="">@Messages("lang.CarReserve.popup.header")</div>
                     <div class="modal-body">
                         <div class="form-group">

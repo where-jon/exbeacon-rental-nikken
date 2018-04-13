@@ -144,6 +144,29 @@ mail.sign=日立アプライアンス会議室予約システム管理者
 ################################################################################################
 
 # 各画面文言
+# リンク文言
+lang.navbar.link.name.carSummery=作業車当日
+lang.navbar.link.name.carReserve=作業車予約
+lang.navbar.link.name.otherItem=仮設材利用状況
+lang.navbar.link.name.cms=管理ページ
+lang.navbar.link.name.signout=ログアウト
+lang.navbar.name.loginId=ログインID
+
+lang.sideMenu.mainTitle.carSummery=作業車当日稼働状況
+lang.sideMenu.mainTitle.carReserve=高所作業車予約
+lang.sideMenu.mainTitle.otherItem=仮設材利用状況
+lang.sideMenu.mainTitle.cms=管理ページ
+lang.sideMenu.menuTitle=作業車当日稼働状況
+lang.sideMenu.link.name.carSummery=当日
+lang.sideMenu.link.name.carReserve=予約
+lang.sideMenu.link.name.otherItem=その他仮設材利用状況
+lang.sideMenu.link.name.cms=管理ページ
+lang.sideMenu.link.name.cms.placeManage=現場管理
+lang.sideMenu.link.name.cms.floorManage=フロア情報管理
+lang.sideMenu.link.name.cms.carManage=作業車管理
+lang.sideMenu.link.name.cms.itemManage=仮設材管理
+lang.sideMenu.link.name.cms.companyManage=業者管理
+lang.sideMenu.link.name.cms.txTagManage=Beaconタグ一覧
 
 # CMS文字列（現場一覧）
 lang.cms.placeManage.tabName=現場一覧

@@ -76,7 +76,7 @@ class carSummeryDAO @Inject() (dbapi: DBApi) {
     * 予約情報の取得
     * @return
     */
-  def selectReserve(floorId:Option[Int] = None, companyId:Option[Int] = None, dateStr:String = ""): Seq[CarSummeryModelReserveInfo] = {
+  def selectReserve(floorId:Option[Int] = None, companyId:Option[Int] = None, dateStr:String = "", placeId:Option[Int] = None): Seq[CarSummeryModelReserveInfo] = {
 
     val simple = {
       get[Int]("reserve_id") ~
@@ -102,6 +102,7 @@ class carSummeryDAO @Inject() (dbapi: DBApi) {
             , r.floor_id
             , r.company_id
             , to_char(r.reserve_date, 'YYYYMMDD') as reserve_date
+            , r.updatetime
           from
             reserve_table r
             inner join car_master c
@@ -119,10 +120,13 @@ class carSummeryDAO @Inject() (dbapi: DBApi) {
       if(dateStr.isEmpty == false){
         wherePh += s""" and r.reserve_date = to_date('${dateStr}', 'YYYYMMDD') """
       }
+      if(placeId != None){
+        wherePh += s""" and c.place_id = ${placeId.get} """
+      }
       val orderPh =
         """
           order by
-            r.reserve_id
+            r.updatetime, r.reserve_id
         """
       SQL(selectPh + wherePh + orderPh).as(simple.*)
     }

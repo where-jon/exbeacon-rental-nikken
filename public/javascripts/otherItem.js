@@ -71,6 +71,14 @@ function drawItem(){
                 var id = 'td_' + record.itemKindId;
                 $("#" + id).append(htmlStr);
             });
+            // 作業車が多い場合は改行をつけて見やすくする
+            $.each($('.plottedTd'), function(i, td){
+                $.each($(td).find('span'), function(idx, span){
+                    if(idx == 10){
+                        $(span).before('<br/><br/>');
+                    }
+                });
+            });
         },
         error: function (e) {
             console.dir(e);

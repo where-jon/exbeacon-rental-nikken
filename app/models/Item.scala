@@ -171,7 +171,9 @@ Logger.debug(selectPh + addWherePh + orderPh)
       ).on('itemKindId -> itemKindId).as(parser.*)
 
       // BTXマスタの削除
-      SQL("""delete from btx_master where btx_id in ({btxList}) ;""").on('btxList -> btxList).executeUpdate()
+      if(btxList.nonEmpty){
+        SQL("""delete from btx_master where btx_id in ({btxList}) ;""").on('btxList -> btxList).executeUpdate()
+      }
       // 仮設材マスタの削除
       SQL("""delete from item_kind_master where item_kind_id = {itemKindId} ;""").on('itemKindId -> itemKindId).executeUpdate()
       // 仮設材テーブルの削除

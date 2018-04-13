@@ -459,7 +459,30 @@ function setSummeryCount(){
 }
 
 // 初期表示時の処理
+var dispFlg = false;
 $(function(){
+
+    $('.datePickerArea').datepicker({
+        language: "ja",
+        orientation: "bottom auto",
+        clearBtn: true,
+        autoclose: true,
+    }).on('changeDate', function(e){
+        if(e.format('yyyymmdd') != ""){
+            location.href = window.location.pathname + "?reserveDate=" + e.format('yyyymmdd')
+        }
+
+    });
+//    $('.datePickerArea').on('click', function(){
+//        if(dispFlg){
+//            $('#inputReserveDate').datepicker("hide");
+//            dispFlg = false;
+//        }else{
+//            $('#inputReserveDate').datepicker("show");
+//            dispFlg = true;
+//        }
+//    });
+
     // テーブルを固定
     fixTable();
     // マウス・タッチの動作のバインド

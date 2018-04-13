@@ -64,9 +64,9 @@ class carReserveDAO @Inject() (dbapi: DBApi) {
     * 予約情報の取得
     * @return
     */
-  def selectReserveForPlot(placeId: Int, date:org.joda.time.DateTime): Seq[CarReserveModelPlotInfo] = {
+  def selectReserveForPlot(placeId: Int, dateStr:String): Seq[CarReserveModelPlotInfo] = {
 
-    val dateStrTomorrow = date.plusDays(1).toString("yyyyMMdd")
+    val dateStrTomorrow = dateStr
 
     val simple = {
         get[Int]("reserve_id") ~

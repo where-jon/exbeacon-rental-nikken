@@ -4,7 +4,8 @@ import javax.inject.{Inject, Singleton}
 
 import com.mohiva.play.silhouette.api.Silhouette
 import models._
-import org.joda.time.DateTime
+import org.joda.time.{DateTime, DateTimeConstants}
+import org.joda.time.format.DateTimeFormat
 import play.api._
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.libs.json.Json
@@ -46,9 +47,24 @@ class CarReserve @Inject()(config: Configuration
                                ) extends BaseController with I18nSupport {
   // レスポンスのコンテントタイプ
   val RESPONSE_CONTENT_TYPE = "application/json;charset=UTF-8"
+  val DATE_FORMAT = "yyyyMMdd"
 
   /** 初期表示 */
   def index = SecuredAction.async { implicit request =>
+
+    // 入力予約日
+    var reserveDateStr = new DateTime().plusDays(1).toString(DATE_FORMAT)
+    if(new DateTime().getDayOfWeek() == DateTimeConstants.FRIDAY){
+      reserveDateStr = new DateTime().plusDays(3).toString(DATE_FORMAT)
+    }
+    val reserveDateOpt = request.getQueryString("reserveDate")
+    if (reserveDateOpt.isEmpty == false) {
+      reserveDateStr = reserveDateOpt.get
+    }
+
+    // 予約日オブジェクト
+    val reserveDateObj = DateTime.parse(reserveDateStr, DateTimeFormat.forPattern(DATE_FORMAT))
+
     // 現場情報
     val placeId = super.getCurrentPlaceId
     val place = placeDAO.selectPlaceList(Seq[Int](placeId)).last
@@ -60,8 +76,8 @@ class CarReserve @Inject()(config: Configuration
     // 作業車情報
     val carList = carDAO.selectCarInfo(placeId)
     // 予約情報
-    var reserveInfoList = carReserveDAO.selectReserveForPlot(placeId, new DateTime)
-    // 前日の予約情報
+    var reserveInfoList = carReserveDAO.selectReserveForPlot(placeId, reserveDateObj.toString(DATE_FORMAT))
+    // 前日の予約情報 TODO
     val beforeReserveList = reserveDAO.selectReserve(placeId, floorInfoList.map{f => f.floorId}, new DateTime().toString("yyyyMMdd"))
     // 稼働情報
     var workList = Seq[CarReserveModelPlotInfo]()
@@ -115,7 +131,7 @@ class CarReserve @Inject()(config: Configuration
           r
         }
       }
-      Ok(views.html.carReserve(companyList, floorInfoList, reserveInfoList, workList))
+      Ok(views.html.carReserve(companyList, floorInfoList, reserveInfoList, workList, reserveDateObj))
     }
   }
 

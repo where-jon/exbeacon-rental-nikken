@@ -1,4 +1,4 @@
-@()(implicit user: User, request: RequestHeader)
+@()(implicit user: User, messages: Messages, request: RequestHeader)
 
 @import controllers.routes
 
@@ -10,16 +10,16 @@
                 <div class="row text-center">
                     <span class="currentTitle">
                         @if(request.path == routes.CarSummery.index.path) {
-                            作業車当日稼働状況
+                            @Messages("lang.sideMenu.mainTitle.carSummery")
                         }
                         @if(request.path == routes.CarReserve.index.path) {
-                            高所作業車予約
+                            @Messages("lang.sideMenu.mainTitle.carReserve")
                         }
                         @if(request.path == routes.OtherItem.index.path) {
-                            仮設材利用状況
+                            @Messages("lang.sideMenu.mainTitle.otherItem")
                         }
                         @if(request.path contains "/cms/") {
-                            管理ページ
+                            @Messages("lang.sideMenu.mainTitle.cms")
                         }
                     </span>
                 </div>
@@ -29,13 +29,13 @@
             <div class="menuBtnsDiv">
                 <div class="menuBtnWrapper">
                     <div class="row text-center">
-                        <span class="menuTitle">作業車当日稼働状況</span>
+                        <span class="menuTitle">@Messages("lang.sideMenu.menuTitle")</span>
                     </div>
                     <div class="row" style="margin: 10px 0px 0px 0px;">
                         <div class="text-center col-xs-6 col-sm-6 col-md-6" style="padding:0;">
                             <div class="row" style="margin: 0px;">
                                 <div class="text-center col-xs-12 col-sm-12 col-md-12" style="padding:0px 3px;">
-                                    <a href="@routes.CarSummery.index.path" class="btn menuBtn">当日</a>
+                                    <a href="@routes.CarSummery.index.path" class="btn menuBtn">@Messages("lang.sideMenu.link.name.carSummery")</a>
                                 </div>
 
                             </div>
@@ -43,7 +43,7 @@
                         <div class="text-center col-xs-6 col-sm-6 col-md-6" style="padding:0;">
                             <div class="row" style="margin: 0px;">
                                 <div class="text-center col-xs-12 col-sm-12 col-md-12" style="padding:0px 3px;">
-                                    <a href="@routes.CarReserve.index.path" class="btn menuBtn">予約</a>
+                                    <a href="@routes.CarReserve.index.path" class="btn menuBtn">@Messages("lang.sideMenu.link.name.carReserve")</a>
                                 </div>
 
                             </div>
@@ -61,19 +61,19 @@
                             <div class="row" style="margin: 0px 0px 60px 0px;">
                                 <div class="text-center col-xs-12 col-sm-12 col-md-12" style="padding:0px 3px;">
                                     <a href="@routes.OtherItem.index.path" class="btn menuBtn">
-                                        その他仮設材利用状況
+                                        @Messages("lang.sideMenu.link.name.otherItem")
                                     </a>
                                 </div>
                             </div>
                             <div class="row" style="margin: 0px;">
                                 <div class="text-center col-xs-12 col-sm-12 col-md-12" style="padding:0px 3px;">
                                     @if(user.isSysMng){
-                                        <a href="/cms/placeManage/detail" class="btn cmsBtn">管理ページ</a>
+                                        <a href="/cms/placeManage/detail" class="btn cmsBtn">@Messages("lang.sideMenu.link.name.cms")</a>
                                     }else{
                                         @request.session.get("cmsLogged").map { data =>
-                                            <a href="/cms/placeManage/detail" class="btn cmsBtn">管理ページ</a>
+                                            <a href="/cms/placeManage/detail" class="btn cmsBtn">@Messages("lang.sideMenu.link.name.cms")</a>
                                         }.getOrElse {
-                                            <a href="javascript:showCmsLoginModal();" class="btn cmsBtn">管理ページ</a>
+                                            <a href="javascript:showCmsLoginModal();" class="btn cmsBtn">@Messages("lang.sideMenu.link.name.cms")</a>
                                         }
                                     }
                                 </div>
@@ -91,42 +91,42 @@
                             <div class="row" style="margin: 0px 0px 10px 0px;">
                                 <div class="text-center col-xs-12 col-sm-12 col-md-12" style="padding:0px 3px;">
                                     <a href="/cms/placeManage/detail" class="btn menuBtn">
-                                        現場管理
+                                        @Messages("lang.sideMenu.link.name.cms.placeManage")
                                     </a>
                                 </div>
                             </div>
                             <div class="row" style="margin: 0px 0px 10px 0px;">
                                 <div class="text-center col-xs-12 col-sm-12 col-md-12" style="padding:0px 3px;">
                                     <a href="/cms/floorManage" class="btn menuBtn">
-                                        フロア情報管理
+                                        @Messages("lang.sideMenu.link.name.cms.floorManage")
                                     </a>
                                 </div>
                             </div>
                             <div class="row" style="margin: 0px 0px 10px 0px;">
                                 <div class="text-center col-xs-12 col-sm-12 col-md-12" style="padding:0px 3px;">
                                     <a href="/cms/carManage" class="btn menuBtn">
-                                        作業車管理
+                                        @Messages("lang.sideMenu.link.name.cms.carManage")
                                     </a>
                                 </div>
                             </div>
                             <div class="row" style="margin: 0px 0px 10px 0px;">
                                 <div class="text-center col-xs-12 col-sm-12 col-md-12" style="padding:0px 3px;">
                                     <a href="/cms/itemManage" class="btn menuBtn">
-                                        仮設材管理
+                                        @Messages("lang.sideMenu.link.name.cms.itemManage")
                                     </a>
                                 </div>
                             </div>
                             <div class="row" style="margin: 0px 0px 10px 0px;">
                                 <div class="text-center col-xs-12 col-sm-12 col-md-12" style="padding:0px 3px;">
                                     <a href="/cms/companyManage" class="btn menuBtn">
-                                        業者管理
+                                        @Messages("lang.sideMenu.link.name.cms.companyManage")
                                     </a>
                                 </div>
                             </div>
                             <div class="row" style="margin: 0px 0px 10px 0px;">
                                 <div class="text-center col-xs-12 col-sm-12 col-md-12" style="padding:0px 3px;">
                                     <a href="/cms/txTagManage" class="btn menuBtn">
-                                        Beaconタグ一覧
+                                        @Messages("lang.sideMenu.link.name.cms.txTagManage")
                                     </a>
                                 </div>
                             </div>

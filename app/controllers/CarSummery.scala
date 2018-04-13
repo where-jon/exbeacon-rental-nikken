@@ -45,6 +45,9 @@ class CarSummery @Inject()(config: Configuration
     // 業者情報
     val companyList = companyDAO.selectCompany(placeId)
 
+    // そのフロアの予約を取得
+    val reserveInfo = carSummeryDAO.selectReserve(dateStr = new DateTime().toString("yyyyMMdd"), placeId = Option(placeId))
+
     // 全数情報
     var reserveCntTotal = 0
     var normalWorkingCntTotal = 0
@@ -69,10 +72,6 @@ class CarSummery @Inject()(config: Configuration
         var reserveOnlyCnt = 0
         var noReserveNoWorkingCnt = 0
 
-        // そのフロアの予約を取得
-        val reserveInfo = carSummeryDAO.selectReserve(  floorId = Option(floor.floorId)
-                                                      , dateStr = new DateTime().minusDays(1).toString("yyyyMMdd"))
-
         // 実際の作業車Tx
         val carsAtFloor = list
           .filter(floor.exbDeviceIdList contains _.device_id.toString) // フロアのEXBデバイスIDに合致するもの
@@ -87,7 +86,7 @@ class CarSummery @Inject()(config: Configuration
         carsAtFloor.foreach(car => { // -- foreach start --
           val carRest = carList.filter(_.carBtxId == car.btx_id)
           if(carRest.length > 0){
-            val rest = reserveInfo.filter(_.carBtxId == car.btx_id)
+            val rest = reserveInfo.filter(_.carBtxId == car.btx_id).filter(_.floorId == floor.floorId)
             if (rest.isEmpty == false) {
               // 予約あり
               val result = keysAtFloor.filter(_.btx_id == rest.last.carKeyBtxId)
@@ -112,7 +111,7 @@ class CarSummery @Inject()(config: Configuration
         })// -- foreach end --
 
         // 各々の全数の値に加算
-        reserveCntTotal += reserveInfo.length
+        reserveCntTotal += reserveInfo.filter(_.floorId == floor.floorId).length
         normalWorkingCntTotal += normalWorkingCnt
         workingOnlyCntTotal += workingOnlyCnt
         reserveOnlyCntTotal += reserveOnlyCnt
@@ -121,7 +120,7 @@ class CarSummery @Inject()(config: Configuration
         // レコード生成
         CarSummeryInfo(
             floor.floorName
-          , reserveInfo.length
+          , reserveInfo.filter(_.floorId == floor.floorId).length
           , normalWorkingCnt
           , workingOnlyCnt
           , reserveOnlyCnt
@@ -165,6 +164,8 @@ class CarSummery @Inject()(config: Configuration
     val floorInfoList = floorDAO.selectFloorInfo(placeId)
     // 作業車情報
     val carList = carDAO.selectCarInfo(placeId)
+    // 予約情報
+    val reserveInfo = carSummeryDAO.selectReserve(dateStr = new DateTime().toString("yyyyMMdd"), placeId = Option(placeId))
 
     // API呼び出し
     var url = place.btxApiUrl
@@ -193,11 +194,7 @@ class CarSummery @Inject()(config: Configuration
         val keysAtFloor = list
           .filter(floor.exbDeviceIdList contains _.device_id.toString) // フロアのEXBデバイスIDに合致するもの
           .filter(carList.map{c => c.carKeyBtxId} contains _.btx_id)  // 予約作業車鍵のBTXidに合致するもの
-        // そのフロアの予約情報
-        val reserveInfo = carSummeryDAO.selectReserve(
-            floorId = Option(floor.floorId)
-          , dateStr = new DateTime().toString("yyyyMMdd")
-        )
+
 
         // 実体の車
         carsAtFloor.foreach(car =>{
@@ -211,7 +208,7 @@ class CarSummery @Inject()(config: Configuration
             val restReserveInfo = reserveInfo.filter(_.carId == carInfoList.last.carId)
             if(restReserveInfo.isEmpty == false){
               // 予約あり
-              companyIdStr = restReserveInfo.last.companyId.toString//
+              companyIdStr = restReserveInfo(0).companyId.toString//
             }else{
               // 前日予約無
             }
