@@ -300,16 +300,8 @@ function setSortable(){
                             setDraggableClone(clonedItem);
                         }else{
                             // 違う場所から移動 -> 重複、となった場合
-//                            var parent = $(clonedItem).parent();//.outerWidth() + "px";
-//                            var no = parent.attr('data-company');
                             deleteReserve($(clonedItem));
-//                            // 色付け
-//                            setColor();
-//                            // 幅の調整
-//                            $('[data-th="th_' + no + '"]').css("min-width", '');
-//                            $('[data-th="th_' + no + '"]').css("min-width", parent.outerWidth()*1 + "px");
                         }
-
                     }
                 }else{  // ドロップ箇所に同じ作業車がない場合 -> データ的に処理する
                     var floorId = $(this).attr('data-floor');
@@ -459,29 +451,22 @@ function setSummeryCount(){
 }
 
 // 初期表示時の処理
-var dispFlg = false;
+
 $(function(){
+    var dt = new Date;
+    dt.setDate(dt.getDate() + 1);
 
     $('.datePickerArea').datepicker({
         language: "ja",
         orientation: "bottom auto",
         clearBtn: true,
         autoclose: true,
+        startDate: dt
     }).on('changeDate', function(e){
         if(e.format('yyyymmdd') != ""){
             location.href = window.location.pathname + "?reserveDate=" + e.format('yyyymmdd')
         }
-
     });
-//    $('.datePickerArea').on('click', function(){
-//        if(dispFlg){
-//            $('#inputReserveDate').datepicker("hide");
-//            dispFlg = false;
-//        }else{
-//            $('#inputReserveDate').datepicker("show");
-//            dispFlg = true;
-//        }
-//    });
 
     // テーブルを固定
     fixTable();
