@@ -106,4 +106,8 @@ $(function(){
 
         }, 200);
     });
+
+    // 10分毎にリロード
+    setInterval("location.reload();", 1000 * 60 * 10);
+    //setInterval("location.reload();", 5000);
 });
