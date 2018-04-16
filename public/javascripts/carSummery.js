@@ -35,6 +35,9 @@ function drawCar(){
             // 予約情報
             $.each(json.reserveInfoList, function(i, record){
                 var htmlStr = '<span class="part reserveContent">'+record.carNo+'</span>';
+                if(record.carNo.length == 1){
+                    htmlStr = '<span class="part reserveContent">&nbsp;'+record.carNo+'&nbsp;</span>';
+                }
                 var id = 'reserveTd_' + record.floorId + '_' + record.companyId;
                 $("#" + id).append(htmlStr);
                 $('[data-id="th_'+ record.companyId +'"]').css("min-width", $("#" + id).outerWidth() + "px");
@@ -54,6 +57,9 @@ function drawCar(){
                     }
                 }
                 var htmlStr = '<span class="part '+ clsNm + '">'+record.carNo+'</span>';
+                if(record.carNo.length == 1){
+                    htmlStr = '<span class="part '+ clsNm + '">&nbsp;'+record.carNo+'&nbsp;</span>';
+                }
                 var id = 'useTd_' + record.floorId + '_' + record.companyId;
                 $("#" + id).append(htmlStr);
                 $('[data-id="th_'+ record.companyId +'"]').css("min-width", $("#" + id).outerWidth() + "px");

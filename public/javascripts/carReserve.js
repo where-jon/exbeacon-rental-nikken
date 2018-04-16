@@ -313,7 +313,7 @@ function setSortable(){
                     }else{
                         // 更新
                         var carNo = clonedItem.attr('data-carNo');
-                        if($(this).find('[data-carId="' + carNo + '"]').length == 0){
+                        if($(this).find('[data-carId="' + carNo + '"]').length == 1){
                             var reserveId = clonedItem.attr('data-reserveId');
                             updateReserve(reserveId, floorId, companyId);
                         }
@@ -321,7 +321,6 @@ function setSortable(){
                     clonedItem.addClass('cloned');
                     clonedItem.removeClass('original');
                     var value = $(this).attr('data-floor') +"_"+ $(this).attr('data-company');
-
                     clonedItem.attr('data-current', value);
                     // 色付け
                     setColor();

@@ -181,9 +181,9 @@
                                                                    data-carId="@d.carIdStr"
                                                                    data-carNo="@d.carNo"
                                                                    data-reserveId="@d.reserveIdStr"
+                                                                   data-current="@{floor.floorId}_@{company.companyId}"
                                                                    data-before="@{d.dataBefore}">
-
-                                                                   <span class="carNoTxtCls">@d.carNo</span>
+                                                                   <span class="carNoTxtCls">@if(d.carNo.length == 1){&nbsp;@{d.carNo}&nbsp;}else{@{d.carNo}}</span>
                                                                    <span class="badgeCls"></span>
                                                              </span>
                                                          }
@@ -191,6 +191,7 @@
                                                 }
                                             </tr>
                                             <tr class="workRow" data-floorId="@floor.floorId">
+                                                @*** 前日予約なし ***@
                                                 <td nowrap class="useNameTd removable">
                                                     @Messages("lang.CarReserve.reserveTable.work")<span class="hiddenPart"></span>
                                                 </td>
@@ -202,11 +203,12 @@
                                                           data-carId="@w.carIdStr"
                                                           data-carNo="@w.carNo"
                                                           data-before="@{w.floorIdStr}/@{w.companyIdStr}">
-                                                               <span class="carNoTxtCls">@w.carNo</span>
+                                                               <span class="carNoTxtCls">@if(w.carNo.length == 1){&nbsp;@{w.carNo}&nbsp;}else{@{w.carNo}}</span>
                                                                <span class="badgeCls"></span>
                                                            </span>
                                                     }
                                                 </td>
+                                                @*** original ***@
                                                 @for(company <- companyList){
                                                     <td class="useTd removable" id="useTd_@{floor.floorId}_@{company.companyId}">
                                                         @workPlotList.filter(_.floorIdStr == floor.floorId.toString).filter(_.companyIdStr == company.companyId.toString).map{ data =>
@@ -215,7 +217,7 @@
                                                                   data-carId="@data.carIdStr"
                                                                   data-carNo="@data.carNo"
                                                                   data-before="@{data.floorIdStr}/@{data.companyIdStr}">
-                                                               <span class="carNoTxtCls">@data.carNo</span>
+                                                               <span class="carNoTxtCls">@if(data.carNo.length == 1){&nbsp;@{data.carNo}&nbsp;}else{@{data.carNo}}</span>
                                                                <span class="badgeCls"></span>
                                                            </span>
                                                         }

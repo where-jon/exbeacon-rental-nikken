@@ -180,12 +180,6 @@ class CarSummery @Inject()(config: Configuration
       // フロア毎に見てく
       floorInfoList.foreach { floor =>
 
-        var floorIdStr = ""
-        var carIdStr = ""
-        var carNoStr = ""
-        var companyIdStr = ""
-        var isWorking = false
-
         // 作業車
         val carsAtFloor = list
           .filter(floor.exbDeviceIdList contains _.device_id.toString) // フロアのEXBデバイスIDに合致するもの
@@ -195,9 +189,14 @@ class CarSummery @Inject()(config: Configuration
           .filter(floor.exbDeviceIdList contains _.device_id.toString) // フロアのEXBデバイスIDに合致するもの
           .filter(carList.map{c => c.carKeyBtxId} contains _.btx_id)  // 予約作業車鍵のBTXidに合致するもの
 
-
         // 実体の車
         carsAtFloor.foreach(car =>{
+
+          var floorIdStr = ""
+          var carIdStr = ""
+          var carNoStr = ""
+          var companyIdStr = ""
+          var isWorking = false
 
           val carInfoList = carList.filter(_.carBtxId == car.btx_id)
           if(carInfoList.isEmpty == false){
