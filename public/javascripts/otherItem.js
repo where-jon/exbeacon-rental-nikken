@@ -68,6 +68,9 @@ function drawItem(){
             // 仮設材情報を表示
             $.each(json, function(i, record){
                 var htmlStr = '<span class="part">'+record.itemNo+'</span>';
+                if(record.itemNo.length == 1){
+                    htmlStr = '<span class="part">&nbsp;'+record.itemNo+'&nbsp;</span>';
+                }
                 var id = 'td_' + record.itemKindId;
                 $("#" + id).append(htmlStr);
             });
