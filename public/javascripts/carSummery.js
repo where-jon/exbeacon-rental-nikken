@@ -28,7 +28,7 @@ function fixTable(){
 
 // テーブルのクリア
 function removeTable(){
-    if($('.bodyTableDiv')){
+    if($('.bodyTableDiv').length > 0){
         var clonedTable = $('.bodyTableDiv').find('table').clone();
         $(clonedTable).attr('style', '');
         $('.baseDiv').remove();

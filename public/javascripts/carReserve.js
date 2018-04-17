@@ -160,7 +160,7 @@ function fixTable(){
 }
 // 予約テーブルのクリア
 function removeTable(){
-    if($('.bodyTableDiv')){
+    if($('.bodyTableDiv').length > 0){
         var clonedTable = $('.bodyTableDiv').find('table').clone();
         $(clonedTable).attr('style', '');
 
@@ -351,7 +351,12 @@ function setSortable(){
 // 全体の色付け
 function setColor(){
     // 予約のコマの色付け
-    var rsvObjArray = $('.bodyTableDiv').find('.reserveRow').find('.cloned');
+    var rsvObjArray;
+    if($('.bodyTableDiv').length > 0){
+        rsvObjArray = $('.bodyTableDiv').find('.reserveRow').find('.cloned');
+    }else{
+        rsvObjArray = $('.reserveRow').find('.cloned');
+    }
     var rsvObjArray_length = rsvObjArray.length;
 
     // 一旦色を消す
