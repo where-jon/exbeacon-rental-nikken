@@ -48,6 +48,7 @@ class CarReserve @Inject()(config: Configuration
   // レスポンスのコンテントタイプ
   val RESPONSE_CONTENT_TYPE = "application/json;charset=UTF-8"
   val DATE_FORMAT = "yyyyMMdd"
+  val RESERVE_DATE_PARAM_KEY = "reserveDate"
 
   /** 初期表示 */
   def index = SecuredAction.async { implicit request =>
@@ -57,7 +58,7 @@ class CarReserve @Inject()(config: Configuration
     if(new DateTime().getDayOfWeek() == DateTimeConstants.FRIDAY){
       reserveDateStr = new DateTime().plusDays(3).toString(DATE_FORMAT)
     }
-    val reserveDateOpt = request.getQueryString("reserveDate")
+    val reserveDateOpt = request.getQueryString(RESERVE_DATE_PARAM_KEY)
     if (reserveDateOpt.isEmpty == false) {
       reserveDateStr = reserveDateOpt.get
     }
@@ -186,7 +187,9 @@ class CarReserve @Inject()(config: Configuration
     val form = inputForm.bindFromRequest
     if (form.hasErrors){
       // エラーでリダイレクト遷移
-      Redirect(routes.CarReserve.index()).flashing(ERROR_MSG_KEY -> form.errors.map(_.message).mkString(HTML_BR))
+      val reserveDate: String = form.data("reserveDate")
+      Redirect(s"""${routes.CarReserve.index().path}?${RESERVE_DATE_PARAM_KEY}=${reserveDate}""")
+        .flashing(ERROR_MSG_KEY -> form.errors.map(_.message).mkString(HTML_BR))
     }else{
       var errMsg = Seq[String]()
       val f = form.get
@@ -213,12 +216,14 @@ class CarReserve @Inject()(config: Configuration
 
       if(errMsg.isEmpty == false){
         // エラーで遷移
-        Redirect(routes.CarReserve.index).flashing(ERROR_MSG_KEY -> errMsg.mkString(HTML_BR))
+        Redirect(s"""${routes.CarReserve.index().path}?${RESERVE_DATE_PARAM_KEY}=${f.reserveDate}""")
+          .flashing(ERROR_MSG_KEY -> errMsg.mkString(HTML_BR))
       }else{
         // DB登録実行
         reserveDAO.insert(carList.last.carId, f.inputFloorId.toInt, f.inputCompanyId.toInt, f.reserveDate)
         // 成功で遷移
-        Redirect(routes.CarReserve.index()).flashing(SUCCESS_MSG_KEY -> Messages("success.CarReserve.registerModal"))
+        Redirect(s"""${routes.CarReserve.index().path}?${RESERVE_DATE_PARAM_KEY}=${f.reserveDate}""")
+          .flashing(SUCCESS_MSG_KEY -> Messages("success.CarReserve.registerModal"))
       }
     }
   }

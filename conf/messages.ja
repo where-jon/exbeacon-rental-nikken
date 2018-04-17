@@ -322,7 +322,7 @@ lang.CarSummery.reserveTable.reserve=予約
 lang.CarSummery.reserveTable.work=稼働
 
 # CarReserve
-lang.CarReserve.pageTitle=高所作業者予約
+lang.CarReserve.pageTitle=高所作業車予約
 lang.CarReserve.workingDay=稼働日
 lang.CarReserve.reserveDay=予約日
 lang.CarReserve.summeryTableTitleTh=高所作業車各階稼働状況
