@@ -2,7 +2,7 @@
 --# --- !Ups
 INSERT INTO user_master (email, name, password, place_id, current_place_id) VALUES ('exb@where123.jp', 'exb', '$2a$10$3Gyu0kfE2oaTHfQfg6saZ.9A3eCGBF.6enfUtA7jRv0Y9Qd3prGnK', null, 1);
 INSERT INTO user_master (email, name, password, place_id, current_place_id) VALUES ('takasago@example.jp', 'takasago', '$2a$10$oTBngKMZ36yDidDupqb5G.aQQaviFKS/xdEWnJbbH5jjYarGE0aV6', null, 1);
-INSERT INTO user_master (email, name, password, place_id, current_place_id) VALUES ('tohoku@example.jp', 'tohoku', '$2a$10$KsK4Hxcz78G0CUQAKIYDHOwJ6ne.73Wkxw4aUJHyrClYwxRYOz0Su', 1, 1);
+INSERT INTO user_master (email, name, password, place_id, current_place_id) VALUES ('tohoku@example.jp', 'tohoku', '$2a$10$zAqLi0NmVKs3Mhn1izD2EeJ3s2AEg888QvzJDu/AZUmjB119MSqhy', 1, 1);
 --
 
  -- place_master
