@@ -105,15 +105,20 @@ function fixTable(){
         }
     }else{
         // PCブラウザ
-        var w = $('.mainSpace').width()*1.001; // ヘッダー右側ボーダーが切れる為*1.001
-        if ($('.mainSpace').height() > h) {
-            w = $('.mainSpace').width()-5;
-            $('.itemTable').tablefix({width:w, height: h, fixRows: 2});
-            w = $('.mainSpace').width()-14;
-            $('.rowTableDiv').width(w);
-        } else {
-            $('.rowTableDiv').width(w);
-        }
+//        var w = $('.mainSpace').width()*1.001; // ヘッダー右側ボーダーが切れる為*1.001
+//        if ($('.mainSpace').height() > h) {
+//            w = $('.mainSpace').width()-5;
+//            $('.itemTable').tablefix({width:w, height: h, fixRows: 2});
+//            w = $('.mainSpace').width()-14;
+//            $('.rowTableDiv').width(w);
+//        } else {
+//            $('.rowTableDiv').width(w);
+//        }
+
+        // PCブラウザ
+        var w = $('.mainSpace').width();
+        $('.itemTable').tablefix({height: h, fixRows: 2});
+        $('.rowTableDiv').width(w);
     }
     $('.bodyTableDiv').find('.itemTable').css('margin-bottom','0');
     $('.colTableDiv').css("width","");

@@ -131,6 +131,16 @@ function setDeleteBadge(obj){
 // 予約テーブルの固定
 function fixTable(){
     // 予約表テーブルの固定
+    var reserveTableW = 0
+    $.each($("#reserveTable").find('.companyThRow').find('th'), function(i, th){
+        reserveTableW += $(th).outerWidth();
+    });
+    var divW = $('.mainSpace').outerWidth();
+
+    if(divW >= reserveTableW){
+        return false;
+    }
+
     var h = $("#reserveTable").height();
     var w = $('.mainSpace').width() * 0.96;
     $('#reserveTable').tablefix({width: w, height: h, fixCols: 3, fixRows: 2});
@@ -150,11 +160,13 @@ function fixTable(){
 }
 // 予約テーブルのクリア
 function removeTable(){
-    var clonedTable = $('.bodyTableDiv').find('table').clone();
-    $(clonedTable).attr('style', '');
+    if($('.bodyTableDiv')){
+        var clonedTable = $('.bodyTableDiv').find('table').clone();
+        $(clonedTable).attr('style', '');
 
-    $('.baseDiv').remove();
-    $('#table-responsive-body').append(clonedTable.prop("outerHTML"));
+        $('.baseDiv').remove();
+        $('#table-responsive-body').append(clonedTable.prop("outerHTML"));
+    }
 }
 
 // ドラッグ設定

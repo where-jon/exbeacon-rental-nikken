@@ -17,7 +17,6 @@ $(function(){
           $(this).removeClass('btnTappedClass');
         }
     });
-
 });
 
 function hasVerticalScrollBar(div, table){

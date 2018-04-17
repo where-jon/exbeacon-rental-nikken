@@ -1,6 +1,16 @@
 // テーブルの固定
 function fixTable(){
     // 表テーブルの固定
+    var reserveTableW = 0
+    $.each($("#reserveTable").find('.companyThRow').find('th'), function(i, th){
+        reserveTableW += $(th).outerWidth();
+    });
+    var divW = $('.mainSpace').outerWidth();
+
+    if(divW >= reserveTableW){
+        return false;
+    }
+
     var h = $("#reserveTable").height();
     var w = $('.mainSpace').width() * 0.95;
     $('#reserveTable').tablefix({width: w, height: h, fixCols: 3, fixRows: 2});
@@ -13,14 +23,17 @@ function fixTable(){
 
     $('.crossTableDiv, .rowTableDiv, .colTableDiv').find('td').removeClass('reserveTdHover');
     $('.crossTableDiv, .rowTableDiv, .colTableDiv').find('tr').removeClass('reserveRow');
+
 }
 
 // テーブルのクリア
 function removeTable(){
-    var clonedTable = $('.bodyTableDiv').find('table').clone();
-    $(clonedTable).attr('style', '');
-    $('.baseDiv').remove();
-    $('#table-responsive-body').append(clonedTable.prop("outerHTML"));
+    if($('.bodyTableDiv')){
+        var clonedTable = $('.bodyTableDiv').find('table').clone();
+        $(clonedTable).attr('style', '');
+        $('.baseDiv').remove();
+        $('#table-responsive-body').append(clonedTable.prop("outerHTML"));
+    }
 }
 
 //
@@ -40,7 +53,9 @@ function drawCar(){
                 }
                 var id = 'reserveTd_' + record.floorId + '_' + record.companyId;
                 $("#" + id).append(htmlStr);
-                $('[data-id="th_'+ record.companyId +'"]').css("min-width", $("#" + id).outerWidth() + "px");
+                if($('.baseDiv')){
+                    $('[data-id="th_'+ record.companyId +'"]').css("min-width", $("#" + id).outerWidth() + "px");
+                }
             });
 
             // 稼働情報
@@ -62,7 +77,11 @@ function drawCar(){
                 }
                 var id = 'useTd_' + record.floorId + '_' + record.companyId;
                 $("#" + id).append(htmlStr);
-                $('[data-id="th_'+ record.companyId +'"]').css("min-width", $("#" + id).outerWidth() + "px");
+
+                if($('.baseDiv')){
+                    $('[data-id="th_'+ record.companyId +'"]').css("min-width", $("#" + id).outerWidth() + "px");
+                }
+
             });
         },
         error: function (e) {
