@@ -2,23 +2,24 @@
 
 # --- !Ups
 
--- Table: btx_history (Txビーコン検知履歴)
+-- Table: btx_last_position (Txビーコン最新位置)
 
-CREATE TABLE btx_history
+CREATE TABLE btx_last_position
 (
-  btx_history_id serial NOT NULL,
   btx_id integer NOT NULL,
+  place_id integer NOT NULL,
   floor_id integer NOT NULL,
   updatetime timestamp without time zone DEFAULT now(),
-  CONSTRAINT btx_history_pkey PRIMARY KEY (btx_history_id)
+  CONSTRAINT btx_last_position_pkey PRIMARY KEY (btx_id, place_id)
 )
 WITH (
   OIDS=FALSE
 );
-COMMENT ON TABLE btx_history IS 'Txビーコン検知履歴';
-COMMENT ON COLUMN btx_history.btx_id IS 'TxビーコンID';
-COMMENT ON COLUMN btx_history.floor_id IS 'フロアID';
-COMMENT ON COLUMN btx_history.updatetime IS 'データ更新日時';
+COMMENT ON TABLE btx_last_position IS 'Txビーコン最新位置';
+COMMENT ON COLUMN btx_last_position.btx_id IS 'TxビーコンID';
+COMMENT ON COLUMN btx_last_position.place_id IS '現場ID';
+COMMENT ON COLUMN btx_last_position.floor_id IS 'フロアID';
+COMMENT ON COLUMN btx_last_position.updatetime IS 'データ更新日時';
 
 -- Table: reserve_table (予約テーブル)
 

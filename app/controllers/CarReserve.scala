@@ -44,6 +44,7 @@ class CarReserve @Inject()(config: Configuration
                            , placeDAO: models.placeDAO
                            , carDAO: models.carDAO
                            , companyDAO: models.companyDAO
+                           , btxLastPositionDAO: models.btxLastPositionDAO
                                ) extends BaseController with I18nSupport {
   // レスポンスのコンテントタイプ
   val RESPONSE_CONTENT_TYPE = "application/json;charset=UTF-8"
@@ -76,12 +77,14 @@ class CarReserve @Inject()(config: Configuration
     val companyList = companyDAO.selectCompany(placeId)
     // 作業車情報
     val carList = carDAO.selectCarInfo(placeId)
-    // 予約情報
+    // 指定日の予約情報
     var reserveInfoList = carReserveDAO.selectReserveForPlot(placeId, reserveDateObj.toString(DATE_FORMAT))
-    // 前日の予約情報 TODO
+    // 今日の予約情報（稼働用）
     val beforeReserveList = reserveDAO.selectReserve(placeId, floorInfoList.map{f => f.floorId}, new DateTime().toString("yyyyMMdd"))
     // 稼働情報
     var workList = Seq[CarReserveModelPlotInfo]()
+    // 履歴input
+    var inputPosition = Seq[BtxLastPosition]()
 
     // API呼び出し
     var url = place.btxApiUrl
@@ -92,37 +95,58 @@ class CarReserve @Inject()(config: Configuration
       // APIデータ
       val list = Json.parse(response.body).asOpt[List[exCloudBtxData]].getOrElse(Nil)
 
-      // 稼働情報をフロア毎に生成
-      floorInfoList.foreach { floor => // -- ループ start --
-        // 実際の作業車Tx
-        val carsAtFloor = list
-          .filter(floor.exbDeviceIdList contains _.device_id.toString) // フロアのEXBデバイスIDに合致するもの
-          .filter(carList.map{c => c.carBtxId} contains _.btx_id)  // 予約作業車のBTXidに合致するもの
+      // 稼働情報生成
+      list.foreach { apiData =>
+        var floorIdStr: String = ""
+        var companyIdStr: String = ""
+        var carIdStr: String = ""
+        var carNo: String = ""
+        //var reserveIdStr: String = ""
+        //var dataBefore: String = ""
 
-        var carExistCountAtFloor = 0
-        carsAtFloor.foreach{carBtx =>
-            val rest = carList.filter(_.carBtxId == carBtx.btx_id)
-            if(rest.isEmpty == false) { // -- if start --
-              val c = rest.last
-
-              // リストにデータを詰める
-              carExistCountAtFloor += 1
-              workList :+= CarReserveModelPlotInfo( //--- 設定
-                                floor.floorId.toString
-                              , companyIdStr = {
-                                  val ddd = beforeReserveList.filter(_.floorId == floor.floorId).filter(_.carId == c.carId)
-                                  if (ddd.isEmpty == false) {
-                                    ddd.last.companyId.toString
-                                  } else {
-                                    ""
-                                  }
-                                }
-                              , c.carId.toString
-                              , c.carNo
-                          ) // --設定
-            } // -- if end --
+        val car = carList.filter(_.carBtxId == apiData.btx_id)
+        if(car.nonEmpty){
+          // ID, 作業車番号 --
+          carIdStr = car.last.carId.toString
+          carNo = car.last.carNo
+          // フロア --
+          val floor = floorInfoList.filter(_.exbDeviceIdList contains apiData.device_id.toString)
+          if(floor.nonEmpty){
+            floorIdStr = floor.last.floorId.toString//
+          }else{
+            // 履歴DBから取得
+            val hist = btxLastPositionDAO.find(car.last.carBtxId, Seq[Int](placeId))
+            if(hist.nonEmpty){
+              floorIdStr = hist.last.floorId.toString()
+            }else{
+              // 表示なし
+            }
           }
-      } // -- ループ end --
+          // 業者 --
+          val beforeReserve = beforeReserveList.filter(_.carId == car.last.carId)
+          if(beforeReserve.nonEmpty){
+            // 予約あり
+            companyIdStr = beforeReserve(0).companyId.toString()
+          }else{
+            // 前日予約無
+          }
+
+          workList :+= CarReserveModelPlotInfo(floorIdStr, companyIdStr, carIdStr, carNo)
+        }else{
+          // 作業車DB未登録
+        }
+
+        // 履歴のインプットを貯める
+        val floors = floorInfoList.filter(_.exbDeviceIdList contains apiData.device_id.toString)
+        if(floors.nonEmpty){
+          inputPosition :+= BtxLastPosition(apiData.btx_id, placeId, floors.last.floorId)
+        }
+      }//-- loop end
+
+      // 履歴の登録
+      btxLastPositionDAO.update(inputPosition)
+
+      // 予約情報生成
       reserveInfoList = reserveInfoList.map { r =>
         val rest = workList.filter(_.carIdStr == r.carIdStr)
         if(rest.isEmpty == false){

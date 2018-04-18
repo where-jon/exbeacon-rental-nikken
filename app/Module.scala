@@ -1,8 +1,9 @@
-import com.google.inject.AbstractModule
 
-//import java.time.Clock
-//
-//import services.{ApplicationTimer, AtomicCounter, Counter}
+import com.google.inject.AbstractModule
+import play.api.libs.concurrent.AkkaGuiceSupport
+
+import actors.{SaveBtxDataActor}
+import services.{Cron, CronJob}
 
 /**
  * This class is a Guice module that tells Guice how to bind several
@@ -14,17 +15,13 @@ import com.google.inject.AbstractModule
  * adding `play.modules.enabled` settings to the `application.conf`
  * configuration file.
  */
-class Module extends AbstractModule {
+class Module extends AbstractModule with AkkaGuiceSupport{
 
   override def configure() = {
-//    // Use the system clock as the default implementation of Clock
-//    bind(classOf[Clock]).toInstance(Clock.systemDefaultZone)
-//    // Ask Guice to create an instance of ApplicationTimer when the
-//    // application starts.
-//    bind(classOf[ApplicationTimer]).asEagerSingleton()
-//    // Set AtomicCounter as the implementation for Counter.
-//    bind(classOf[Counter]).to(classOf[AtomicCounter])
-//    bind(classOf[Cron]).to(classOf[CronJob]).asEagerSingleton()
+    // cronで動かすバッチクラスの設定
+    bindActor[SaveBtxDataActor]("SaveBtxDataActor")
+    // cron設定
+    bind(classOf[Cron]).to(classOf[CronJob]).asEagerSingleton()
   }
 
 }

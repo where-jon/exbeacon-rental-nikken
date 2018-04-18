@@ -27,122 +27,24 @@ class CarSummery @Inject()(config: Configuration
                            , placeDAO: models.placeDAO
                            , carDAO: models.carDAO
                            , companyDAO: models.companyDAO
+                           , btxLastPositionDAO: models.btxLastPositionDAO
                                ) extends BaseController with I18nSupport {
 
   /**
     * 初期表示
     * @return
     */
-
-  def index = SecuredAction.async { implicit request =>
+  def index = SecuredAction { implicit request =>
     val placeId = super.getCurrentPlaceId
-    // 現場情報
-    val place = placeDAO.selectPlaceList(Seq[Int](placeId)).last
     // フロア情報
     val floorInfoList = floorDAO.selectFloorInfo(placeId)
-    // 作業車情報
-    val carList = carDAO.selectCarInfo(placeId)
     // 業者情報
     val companyList = companyDAO.selectCompany(placeId)
 
-    // そのフロアの予約を取得
-    val reserveInfo = carSummeryDAO.selectReserve(dateStr = new DateTime().toString("yyyyMMdd"), placeId = Option(placeId))
+    // 非稼働時間かどうか
+    val isNoWorkTime = (new DateTime().toString("HHmm") < config.getString("noWorkTimeEnd").get)
 
-    // 全数情報
-    var reserveCntTotal = 0
-    var normalWorkingCntTotal = 0
-    var workingOnlyCntTotal = 0
-    var reserveOnlyCntTotal = 0
-    var noReserveNoWorkingCntTotal = 0
-
-    // API呼び出し
-    var url = place.btxApiUrl
-    if(url.isEmpty){
-      url = config.getString("excloud.dummy.url").get
-    }
-    ws.url(url).get().map { response =>
-
-      // APIデータ
-      val list = Json.parse(response.body).asOpt[List[exCloudBtxData]].getOrElse(Nil)
-
-      // フロア毎に処理
-      var resultList = floorInfoList.map{floor => // -- ループ start --
-        var normalWorkingCnt = 0
-        var workingOnlyCnt = 0
-        var reserveOnlyCnt = 0
-        var noReserveNoWorkingCnt = 0
-
-        // 実際の作業車Tx
-        val carsAtFloor = list
-          .filter(floor.exbDeviceIdList contains _.device_id.toString) // フロアのEXBデバイスIDに合致するもの
-          .filter(carList.map{c => c.carBtxId} contains _.btx_id)  // 予約作業車のBTXidに合致するもの
-
-        // 実際の鍵Tx
-        val keysAtFloor = list
-          .filter(floor.exbDeviceIdList contains _.device_id.toString) // フロアのEXBデバイスIDに合致するもの
-          .filter(carList.map{c => c.carKeyBtxId} contains _.btx_id)  // 予約作業車鍵のBTXidに合致するもの
-
-        // 実際の作業車毎に処理
-        carsAtFloor.foreach(car => { // -- foreach start --
-          val carRest = carList.filter(_.carBtxId == car.btx_id)
-          if(carRest.length > 0){
-            val rest = reserveInfo.filter(_.carBtxId == car.btx_id).filter(_.floorId == floor.floorId)
-            if (rest.isEmpty == false) {
-              // 予約あり
-              val result = keysAtFloor.filter(_.btx_id == rest.last.carKeyBtxId)
-              if (result.length > 0) {
-                // 稼働中
-                normalWorkingCnt += 1
-              } else {
-                // 非稼働
-                reserveOnlyCnt += 1
-              }
-            } else {
-              // 予約なし
-              val keyRest = keysAtFloor.filter(_.btx_id == carRest.last.carKeyBtxId)
-              if(keyRest.length > 0){
-                // 稼働中
-                workingOnlyCnt += 1
-              }else{
-                noReserveNoWorkingCnt += 1
-              }
-            }
-          }
-        })// -- foreach end --
-
-        // 各々の全数の値に加算
-        reserveCntTotal += reserveInfo.filter(_.floorId == floor.floorId).length
-        normalWorkingCntTotal += normalWorkingCnt
-        workingOnlyCntTotal += workingOnlyCnt
-        reserveOnlyCntTotal += reserveOnlyCnt
-        noReserveNoWorkingCntTotal += noReserveNoWorkingCnt
-
-        // レコード生成
-        CarSummeryInfo(
-            floor.floorName
-          , reserveInfo.filter(_.floorId == floor.floorId).length
-          , normalWorkingCnt
-          , workingOnlyCnt
-          , reserveOnlyCnt
-          , noReserveNoWorkingCnt
-        )
-      } // -- ループ end --
-
-      // 全数のレコードを追加
-      resultList :+= CarSummeryInfo(
-          Messages("lang.CarSummery.summeryTotal")
-        , reserveCntTotal
-        , normalWorkingCntTotal
-        , workingOnlyCntTotal
-        , reserveOnlyCntTotal
-        , noReserveNoWorkingCntTotal
-      )
-
-      // 合計値の算出
-      val allTotal = (normalWorkingCntTotal + workingOnlyCntTotal + reserveOnlyCntTotal + noReserveNoWorkingCntTotal)
-
-      Ok(views.html.carSummery(companyList, floorInfoList, resultList, allTotal))
-    }
+    Ok(views.html.carSummery(companyList, floorInfoList, isNoWorkTime))
   }
 
   /**
@@ -154,10 +56,8 @@ class CarSummery @Inject()(config: Configuration
 
     // 予約情報
     val carSummeryReservePlotInfoList = carSummeryDAO.selectReserveForPlot(placeId, new DateTime().toString("yyyyMMdd"))
-
     // 稼働情報
     var carSummeryWorkPlotInfoList = Seq[CarSummeryWorkPlotInfo]()
-
     // 現場の情報を取得
     val place = placeDAO.selectPlaceList(Seq[Int](placeId)).last
     // フロア情報
@@ -166,12 +66,15 @@ class CarSummery @Inject()(config: Configuration
     val carList = carDAO.selectCarInfo(placeId)
     // 予約情報
     val reserveInfo = carSummeryDAO.selectReserve(dateStr = new DateTime().toString("yyyyMMdd"), placeId = Option(placeId))
+    // 履歴input
+    var inputPosition = Seq[BtxLastPosition]()
 
     // API呼び出し
     var url = place.btxApiUrl
     if(url.isEmpty){
       url = config.getString("excloud.dummy.url").get
     }
+    // API呼び出し実行
     ws.url(url).get().map { response =>
 
       // APIデータ
@@ -187,29 +90,35 @@ class CarSummery @Inject()(config: Configuration
 
         val car = carList.filter(_.carBtxId == apiData.btx_id)
         if(car.nonEmpty){
-          // ID, 作業車番号
+          // ID, 作業車番号 --
           carIdStr = car.last.carId.toString//
           carNoStr = car.last.carNo//
-          // フロア
-          val floor = floorInfoList.filter(_.exbDeviceIdList contains apiData.device_id)
+          // フロア --
+          val floor = floorInfoList.filter(_.exbDeviceIdList contains apiData.device_id.toString)
           if(floor.nonEmpty){
             floorIdStr = floor.last.floorId.toString//
           }else{
-            //TODO DBから取得
+            // 履歴DBから取得
+            val hist = btxLastPositionDAO.find(placeId, Seq[Int](car.last.carBtxId))
+            if(hist.nonEmpty){
+              floorIdStr = hist.last.floorId.toString
+            }else{
+              // 表示なし
+            }
           }
-          // 業者
+          // 業者 --
           val restReserveInfo = reserveInfo.filter(_.carId == car.last.carId)
-          if(restReserveInfo.isEmpty == false){
+          if(restReserveInfo.nonEmpty){
             // 予約あり
             companyIdStr = restReserveInfo(0).companyId.toString//
           }else{
             // 前日予約無
           }
-          // 稼働・非稼働
+          // 稼働・非稼働 --
           val keyBtx = list.filter(_.btx_id == car.last.carKeyBtxId)
           if(keyBtx.nonEmpty){
             if(keyBtx.last.device_id != 0){
-              val floor = floorInfoList.filter(_.exbDeviceIdList contains keyBtx.last.device_id)
+              val floor = floorInfoList.filter(_.exbDeviceIdList contains keyBtx.last.device_id.toString)
               if(floor.nonEmpty){
                 isWorking = (floor.last.floorId.toString == floorIdStr)
               }else{
@@ -217,8 +126,13 @@ class CarSummery @Inject()(config: Configuration
                 isWorking = false
               }
             }else{
-              // TODO 未検知のため、DB履歴から取得
-
+              // 未検知のため、DB履歴から取得
+              val hist = btxLastPositionDAO.find(placeId, Seq[Int](keyBtx.last.btx_id))
+              if(hist.nonEmpty){
+                isWorking = (hist.last.floorId.toString == floorIdStr)
+              }else{
+                isWorking = false
+              }
             }
           }else{
             // 登録してる鍵TXがAPIにない
@@ -234,85 +148,34 @@ class CarSummery @Inject()(config: Configuration
           Logger.debug(s"""作業車としてのDB未登録。btx_id：${apiData.btx_id}""")
         }
 
-        // TODO DBに履歴を登録する
+        // 履歴のインプットを貯める
+        val floors = floorInfoList.filter(_.exbDeviceIdList contains apiData.device_id.toString)
+        if(floors.nonEmpty){
+          inputPosition :+= BtxLastPosition(apiData.btx_id, placeId, floors.last.floorId)
+        }
+      }//-- loop end
 
-
-      }
-
-      var a, b ,c, d, e = 0
-      var aa, bb ,cc, dd, ee = 0
+      // 履歴の登録
+      btxLastPositionDAO.update(inputPosition)
 
       // 集計
+      var a, b ,c, d, e = 0
+      var aa, bb ,cc, dd, ee = 0
       var carSummeryInfo = floorInfoList.map { f =>
-
-        a = carSummeryReservePlotInfoList.filter(_.floorId == f.floorId).length
-        b = carSummeryWorkPlotInfoList.filter(_.floorId == f.floorId.toString).filter(_.isWorking == true).length
+        a = carSummeryReservePlotInfoList.filter(_.floorId == f.floorId.toString).length
+        b = carSummeryWorkPlotInfoList.filter(_.floorId == f.floorId.toString).filter(_.isWorking == true).filter(_.companyId.nonEmpty).length
         c = carSummeryWorkPlotInfoList.filter(_.floorId == f.floorId.toString).filter(_.isWorking == true).filter(_.companyId.isEmpty).length
         d = carSummeryWorkPlotInfoList.filter(_.floorId == f.floorId.toString).filter(_.isWorking == false).filter(_.companyId.nonEmpty).length
         e = carSummeryWorkPlotInfoList.filter(_.floorId == f.floorId.toString).filter(_.isWorking == false).filter(_.companyId.isEmpty).length
-
         aa += a
         bb += b
         cc += c
         dd += d
         ee += e
-
         CarSummeryInfo(f.floorName,a,b,c,d,e)
       }
       carSummeryInfo :+= CarSummeryInfo(Messages("lang.CarSummery.summeryTotal"), aa, bb, cc, dd, ee)
 
-// -- 保持しないversion
-//      // フロア毎に見てく
-//      floorInfoList.foreach { floor =>
-//
-//        // 作業車
-//        val carsAtFloor = list
-//          .filter(floor.exbDeviceIdList contains _.device_id.toString) // フロアのEXBデバイスIDに合致するもの
-//          .filter(carList.map{c => c.carBtxId} contains _.btx_id)  // 予約作業車のBTXidに合致するもの
-//        // 鍵
-//        val keysAtFloor = list
-//          .filter(floor.exbDeviceIdList contains _.device_id.toString) // フロアのEXBデバイスIDに合致するもの
-//          .filter(carList.map{c => c.carKeyBtxId} contains _.btx_id)  // 予約作業車鍵のBTXidに合致するもの
-//
-//        // 実体の車
-//        carsAtFloor.foreach(car =>{
-//
-//          var floorIdStr = ""
-//          var carIdStr = ""
-//          var carNoStr = ""
-//          var companyIdStr = ""
-//          var isWorking = false
-//
-//          val carInfoList = carList.filter(_.carBtxId == car.btx_id)
-//          if(carInfoList.isEmpty == false){
-//            floorIdStr = floor.floorId.toString//
-//            carIdStr = carInfoList.last.carId.toString//
-//            carNoStr = carInfoList.last.carNo//
-//
-//            val restReserveInfo = reserveInfo.filter(_.carId == carInfoList.last.carId)
-//            if(restReserveInfo.isEmpty == false){
-//              // 予約あり
-//              companyIdStr = restReserveInfo(0).companyId.toString//
-//            }else{
-//              // 前日予約無
-//            }
-//
-//            val existList = keysAtFloor.filter(_.btx_id == carInfoList.last.carKeyBtxId)
-//            if(existList.isEmpty == false){
-//              // 稼働中
-//              isWorking = true
-//            }else{
-//              // 非稼働
-//              isWorking = false
-//            }
-//            // 値のセット
-//            carSummeryWorkPlotInfoList :+= CarSummeryWorkPlotInfo(floorIdStr, carIdStr, carNoStr, companyIdStr, isWorking)
-//          }else{
-//            // DB登録なし
-//          }
-//        })
-//      }
-//
       // 最終結果
       val resultList = CarSummeryPlotInfo(
         carSummeryWorkPlotInfoList.toList

@@ -1,4 +1,4 @@
-@(companyList: Seq[Company], floorList:Seq[FloorInfo], summeryInfoList: Seq[CarSummeryInfo], allTotal:Int)(implicit user: User, messages: Messages, request: RequestHeader, flash: Flash)
+@(companyList: Seq[Company], floorList:Seq[FloorInfo], isNoWorkTime:Boolean)(implicit user: User, messages: Messages, request: RequestHeader, flash: Flash)
 
 @import controllers.routes
 @import helper._
@@ -35,6 +35,9 @@
                             <div class="col-xs-8 col-xs-offset-4" style="padding:0;">
                                 <p class="dateFont" style="margin-top: 20px;">@Messages("lang.CarSummery.lastUpdate")</p>
                                 <p class="dateFont" style="margin-bottom: 20px;">@{new DateTime().toString("M月d日 H:mm")}</p>
+                                @if(isNoWorkTime){
+                                    <input type="hidden" id="isNoWorkTime" value="@isNoWorkTime">
+                                }
                             </div>
                         </div>
                     </div>
@@ -58,22 +61,33 @@
                                     </tr>
                                 </thead>
                                 <tbody class="text-right">
-                                    @for(info <- summeryInfoList){
-                                        <tr>
-                                            <td class="floorNameTd">@{info.floorName}</td>
-                                            <td>@{info.reserveCnt}@Messages("lang.CarSummery.summeryUnit")</td>
-                                            <td class="summeryColoredTd">@{info.normalWorkingCnt}@Messages("lang.CarSummery.summeryUnit")</td>
-                                            <td>@{info.workingOnlyCnt}@Messages("lang.CarSummery.summeryUnit")</td>
-                                            <td class="summeryColoredTd">@{info.reserveOnlyCnt}@Messages("lang.CarSummery.summeryUnit")</td>
-                                            <td>@{info.noReserveNoWorkingCnt}@Messages("lang.CarSummery.summeryUnit")</td>
-                                        </tr>
-                                    }
+                                    <tr class="template hidden">
+                                        <td class="floorNameTd summeryFloorName"></td>
+                                        <td>
+                                            <span class="summeryReserveCnt"></span>@Messages("lang.CarSummery.summeryUnit")
+                                        </td>
+                                        <td class="summeryColoredTd">
+                                            <span class="summeryNormalWorkingCnt"></span>@Messages("lang.CarSummery.summeryUnit")
+                                        </td>
+                                        <td>
+                                            <span class="summeryWorkingOnlyCnt"></span>@Messages("lang.CarSummery.summeryUnit")
+                                        </td>
+                                        <td class="summeryColoredTd">
+                                            <span class="summeryReserveOnlyCnt"></span>@Messages("lang.CarSummery.summeryUnit")
+                                        </td>
+                                        <td>
+                                            <span class="summeryNoReserveNoWorkingCnt"></span>@Messages("lang.CarSummery.summeryUnit")
+                                        </td>
+                                    </tr>
                                     <tr>
                                         <td style="font-size:calc(100%);" class="text-center" colspan="2">@Messages("lang.CarSummery.summeryAllTotal")</td>
                                         <td></td>
                                         <td></td>
                                         <td></td>
-                                        <td>@{allTotal}@Messages("lang.CarSummery.summeryUnit")</td>
+                                        <td>
+                                            <span class="allTotal"></span>
+                                            @Messages("lang.CarSummery.summeryUnit")
+                                        </td>
                                     </tr>
                                 </tbody>
                             </table>

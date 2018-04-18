@@ -38,7 +38,7 @@ libraryDependencies ++= Seq(
   "joda-time" % "joda-time" % "2.9.2",
   "org.joda" % "joda-convert" % "1.8",
   //"com.enragedginger" %% "akka-quartz-scheduler" % "1.6.0-akka-2.4.x",
-  //"com.enragedginger" % "akka-quartz-scheduler_2.11" % "1.3.0-akka-2.3.x",
+  "com.enragedginger" % "akka-quartz-scheduler_2.11" % "1.3.0-akka-2.3.x",
 
   "org.postgresql" % "postgresql" % "9.4.1212",
   "org.webjars" % "requirejs" % "2.3.1",

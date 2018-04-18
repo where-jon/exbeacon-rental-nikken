@@ -58,6 +58,11 @@ case class CarSummeryInfo(
   , reserveOnlyCnt: Int
   , noReserveNoWorkingCnt: Int
 )
+object CarSummeryInfo {
+
+  implicit def jsonWrites = Json.writes[CarSummeryInfo]
+}
+
 
 case class CarSummeryModelReserveInfo(
     reserveId: Int
