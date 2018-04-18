@@ -40,6 +40,8 @@ object CarSummeryReservePlotInfo {
 case class CarSummeryPlotInfo(
     workInfoList: List[CarSummeryWorkPlotInfo]
   , reserveInfoList: List[CarSummeryReservePlotInfo]
+  , summeryInfoList: List[CarSummeryInfo]
+  , allTotal: Int
 )
 
 object CarSummeryPlotInfo {
