@@ -65,24 +65,30 @@ function drawCar(){
             $.each(json.workInfoList, function(i, record){
                 // 色付け
                 var clsNm = "";
-//                if(record.companyId == ""){
-//                    //予約なし
-//                    clsNm = "reserveNone";
-//                }else{
-//                    if(record.isWorking){
-//                        clsNm = "useWorking";
-//                    }else{
-//                        clsNm = "useNotWorking";
-//                    }
-//                }
-                // 非稼働時間
-                if($('#isNoWorkTime').length > 0){
-                    clsNm = "useNotWorking";
-                }else{
-                    if(record.isWorking){
-                        clsNm = "useWorking";
-                    }else{
+                // 予約あり
+                if(record.companyId != ""){
+                    if($('#isNoWorkTime').length > 0){
                         clsNm = "useNotWorking";
+                    }else{
+                        if(record.isWorking){
+                            clsNm = "useWorking";
+                        }else{
+                            clsNm = "useNotWorking";
+                        }
+                    }
+                }else{
+                    // 予約なし
+                    if($('#isNoWorkTime').length > 0){
+                        //「予約なし」
+                        clsNm = "reserveNone";
+                    }else{
+                        if(record.isWorking){
+                            // 稼働中
+                            clsNm = "useWorking";
+                        }else{
+                            //「予約なし」
+                            clsNm = "reserveNone";
+                        }
                     }
                 }
 

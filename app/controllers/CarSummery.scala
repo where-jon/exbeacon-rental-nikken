@@ -120,7 +120,16 @@ class CarSummery @Inject()(config: Configuration
             if(keyBtx.last.device_id != 0){
               val floor = floorInfoList.filter(_.exbDeviceIdList contains keyBtx.last.device_id.toString)
               if(floor.nonEmpty){
-                isWorking = (floor.last.floorId.toString == floorIdStr)
+                if(floor.last.floorId.toString == floorIdStr){
+                  val isNoWorkTime = (new DateTime().toString("HHmm") < config.getString("noWorkTimeEnd").get)
+                  if(isNoWorkTime){
+                    isWorking = false
+                  }else{
+                    isWorking = true
+                  }
+                }else{
+                  isWorking = false
+                }
               }else{
                 //フロア外デバイス、つまり鍵保管庫
                 isWorking = false
@@ -129,7 +138,16 @@ class CarSummery @Inject()(config: Configuration
               // 未検知のため、DB履歴から取得
               val hist = btxLastPositionDAO.find(placeId, Seq[Int](keyBtx.last.btx_id))
               if(hist.nonEmpty){
-                isWorking = (hist.last.floorId.toString == floorIdStr)
+                if(hist.last.floorId.toString == floorIdStr){
+                  val isNoWorkTime = (new DateTime().toString("HHmm") < config.getString("noWorkTimeEnd").get)
+                  if(isNoWorkTime){
+                    isWorking = false
+                  }else{
+                    isWorking = true
+                  }
+                }else{
+                  isWorking = false
+                }
               }else{
                 isWorking = false
               }
