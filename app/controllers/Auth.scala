@@ -41,12 +41,6 @@ class Auth @Inject() (
     clock: Clock
 ) extends AuthController {
 
-  // 定数
-  private val LOGIN_SUCCESS = 0
-  private val LOGIN_FAIL_ACCOUNT = 1
-  private val LOGIN_FAIL_PASSWORD = 2
-
-
   // UTILITIES
 
   implicit val ms = mailService
@@ -99,16 +93,12 @@ class Auth @Inject() (
             =>
               // アカウントなしエラー
               Logger.debug("アカウントなし：" + identifier + " / " + password + " / " + ie.getMessage )
-//              // ログイン履歴を残す
-//              userService.saveLoginHistory(identifier, LOGIN_FAIL_ACCOUNT)
 
               Redirect(routes.Auth.signIn).flashing("error" -> Messages("auth.credentials.incorrect"))
           case pe: InvalidPasswordException
             =>
               // パスワード違いエラー
               Logger.debug("パスワード違い：" + identifier + " / " + password + " / " + pe.getMessage)
-//              // ログイン履歴を残す
-//              userService.saveLoginHistory(identifier, LOGIN_FAIL_PASSWORD)
 
               Redirect(routes.Auth.signIn).flashing("error" -> Messages("auth.credentials.incorrect"))
           case e: ProviderException

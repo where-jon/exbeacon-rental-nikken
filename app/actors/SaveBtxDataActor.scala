@@ -48,15 +48,18 @@ class SaveBtxDataActor @Inject()(    config: Configuration
 
         // API通信実行
         if(place.btxApiUrl.nonEmpty){
-          Logger.info(s""" ${BATCH_NAME} _ ${place.placeName} を処理""")
-
           // API呼び出し
           ws.url(place.btxApiUrl).get().map { response =>
             // フロア情報
             val floorInfoList = floorDAO.selectFloorInfo(place.placeId)
             // APIからのデータ
             val apiDataList = Json.parse(response.body).asOpt[List[models.exCloudBtxData]].getOrElse(Nil)
-
+Logger.info(
+  place.placeName + " _ 取得JSON _ " +
+    (apiDataList.map(d =>{
+      s"""{btx_id=${d.btx_id}, pos_id=${d.pos_id}, device_id=${d.device_id}, updatetime=${d.updatetime}, nearest.deviceId=(${d.nearest.map{n=>n.device_id}.mkString(",")}), power_level=${d.power_level}}"""
+    }).mkString("\n"))
+)
             // 履歴のインプットを貯める
             apiDataList.foreach{d =>
               val floors = floorInfoList.filter(_.exbDeviceIdList contains d.device_id.toString)
@@ -71,7 +74,7 @@ class SaveBtxDataActor @Inject()(    config: Configuration
             case e: Exception => Logger.error(s"""${BATCH_NAME}にてエラーが発生""", e)
           }
         }else{
-          Logger.warn(s""" API_URL未設定：現場ID：${place.placeId} """)
+          Logger.warn(s""" API_URL未設定：現場：${place.placeName} """)
         }
       }// for - end
 
