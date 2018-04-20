@@ -115,11 +115,12 @@ class CarReserve @Inject()(config: Configuration
             floorIdStr = floor.last.floorId.toString//
           }else{
             // 履歴DBから取得
-            val hist = btxLastPositionDAO.find(car.last.carBtxId, Seq[Int](placeId))
+            val hist = btxLastPositionDAO.find(placeId, Seq[Int](car.last.carBtxId))
             if(hist.nonEmpty){
               floorIdStr = hist.last.floorId.toString()
             }else{
               // 表示なし
+              Logger.warn(s"履歴が無いため表示なし。現場ID = ${placeId}, 作業車番号 = ${carNo}, btx_id = ${apiData.btx_id}")
             }
           }
           // 業者 --

@@ -470,7 +470,7 @@ function setSummeryCount(){
 
 $(function(){
     var dt = new Date;
-    dt.setDate(dt.getDate() + 1);
+    dt.setDate(dt.getDate());
 
     $('.datePickerArea').datepicker({
         language: "ja",

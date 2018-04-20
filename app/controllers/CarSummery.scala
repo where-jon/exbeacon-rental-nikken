@@ -104,6 +104,7 @@ class CarSummery @Inject()(config: Configuration
               floorIdStr = hist.last.floorId.toString
             }else{
               // 表示なし
+              Logger.warn(s"履歴が無いため表示なし。現場ID = ${placeId}, 作業車番号 = ${carNoStr}, btx_id = ${apiData.btx_id}")
             }
           }
           // 業者 --
