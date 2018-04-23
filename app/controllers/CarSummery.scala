@@ -93,8 +93,9 @@ class CarSummery @Inject()(config: Configuration
           // ID, 作業車番号 --
           carIdStr = car.last.carId.toString//
           carNoStr = car.last.carNo//
-          // フロア --
-          val floor = floorInfoList.filter(_.exbDeviceIdList contains apiData.device_id.toString)
+          // フロア -- TODO
+          //val floor = floorInfoList.filter(_.exbDeviceIdList contains apiData.device_id.toString)
+          val floor = super.getNearestFloor(floorInfoList, apiData)
           if(floor.nonEmpty){
             floorIdStr = floor.last.floorId.toString//
           }else{
@@ -119,7 +120,8 @@ class CarSummery @Inject()(config: Configuration
           val keyBtx = list.filter(_.btx_id == car.last.carKeyBtxId)
           if(keyBtx.nonEmpty){
             if(keyBtx.last.device_id != 0){
-              val floor = floorInfoList.filter(_.exbDeviceIdList contains keyBtx.last.device_id.toString)
+              //val floor = floorInfoList.filter(_.exbDeviceIdList contains keyBtx.last.device_id.toString)
+              val floor = super.getNearestFloor(floorInfoList, keyBtx.last)
               if(floor.nonEmpty){
                 if(floor.last.floorId.toString == floorIdStr){
                   val isNoWorkTime = (new DateTime().toString("HHmm") < config.getString("noWorkTimeEnd").get)

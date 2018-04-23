@@ -3,7 +3,7 @@ package controllers
 import javax.inject.{Inject, Singleton}
 
 import com.mohiva.play.silhouette.api.Silhouette
-import models.{BtxLastPosition, OtherItemInfo, OtherItemSummeryInfo, exCloudBtxData}
+import models._
 import play.api._
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
@@ -68,7 +68,8 @@ class OtherItem @Inject()(config: Configuration
 
         // 仮設材用のBTXを取得
         val itemsBtx = list.filter(itemDbList.map{i=>i.item_btx_id} contains _.btx_id)
-        val itemDetected = itemsBtx.filter(floor.exbDeviceIdList contains _.device_id.toString) // フロアのEXBデバイスIDに合致するもの
+        //val itemDetected = itemsBtx.filter(floor.exbDeviceIdList contains _.device_id.toString) // フロアのEXBデバイスIDに合致するもの
+        val itemDetected = super.getItemBtxDetected(itemsBtx, floor) // TODO
         val itemUnDetected = itemsBtx.filter(_.device_id == 0)
 
         // 検知できたもの
@@ -143,7 +144,8 @@ class OtherItem @Inject()(config: Configuration
 
       // 仮設材用のBTXを取得
       val itemsBtx = list.filter(itemDbList.map{i=>i.item_btx_id} contains _.btx_id)
-      val itemDetected = itemsBtx.filter(floor.exbDeviceIdList contains _.device_id.toString) // フロアのEXBデバイスIDに合致するもの
+      //val itemDetected = itemsBtx.filter(floor.exbDeviceIdList contains _.device_id.toString) // フロアのEXBデバイスIDに合致するもの
+      val itemDetected = super.getItemBtxDetected(itemsBtx, floor) // TODO
       val itemUnDetected = itemsBtx.filter(_.device_id == 0)
 
       // 検知できたもの

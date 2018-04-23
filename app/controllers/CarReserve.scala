@@ -109,8 +109,9 @@ class CarReserve @Inject()(config: Configuration
           // ID, 作業車番号 --
           carIdStr = car.last.carId.toString
           carNo = car.last.carNo
-          // フロア --
-          val floor = floorInfoList.filter(_.exbDeviceIdList contains apiData.device_id.toString)
+          // フロア -- TODO
+          //val floor = floorInfoList.filter(_.exbDeviceIdList contains apiData.device_id.toString)
+          val floor = super.getNearestFloor(floorInfoList, apiData)
           if(floor.nonEmpty){
             floorIdStr = floor.last.floorId.toString//
           }else{
