@@ -195,7 +195,7 @@
                                                 <td nowrap class="useNameTd removable">
                                                     @Messages("lang.CarReserve.reserveTable.work")<span class="hiddenPart"></span>
                                                 </td>
-                                                <td class="blankTd" style="background-color:#E7E6E6;"></td>
+                                                <td class="blankTd"></td>
                                                 <td class="useTd removable" id="useTd_@{floor.floorId}_">
                                                     @workPlotList.filter(_.floorIdStr == floor.floorId.toString).filter(_.companyIdStr.isEmpty).map{ w =>
                                                     <span class="part draggable original "
