@@ -21,7 +21,7 @@ import utils.silhouette.MyEnv
 
 // フォーム定義
 case class FloorDeleteForm(deleteFloorId: String)
-case class FloorUpdateForm(inputPlaceId: String, inputFloorId: String, inputFloorName: String, inputExbDeviceIdListComma: String)
+case class FloorUpdateForm(inputPlaceId: String, inputFloorId: String, inputFloorName: String, inputExbDeviceNoListComma: String)
 
 @Singleton
 class FloorManage @Inject()(config: Configuration
@@ -30,6 +30,7 @@ class FloorManage @Inject()(config: Configuration
                             , placeDAO: models.placeDAO
                             , floorDAO: models.floorDAO
                             , exbDAO: models.exbModelDAO
+                            , exbDeviceDAO: models.exbDeviceModelDAO
                                ) extends BaseController with I18nSupport {
 
   /** 初期表示 */
@@ -65,7 +66,7 @@ class FloorManage @Inject()(config: Configuration
         "inputPlaceId" -> text
       , "inputFloorId" -> text
       , "inputFloorName" -> text.verifying(Messages("error.cms.floorManage.floorUpdate.inputFloorName.empty"), {!_.isEmpty})
-      , "inputExbDeviceIdListComma" -> text.verifying(Messages("error.cms.floorManage.floorUpdate.inputExbDeviceIdListComma.empty"), {!_.isEmpty})
+      , "inputExbDeviceNoListComma" -> text.verifying(Messages("error.cms.floorManage.floorUpdate.inputExbDeviceNoListComma.empty"), {!_.isEmpty})
     )(FloorUpdateForm.apply)(FloorUpdateForm.unapply))
 
     // フォームの取得
@@ -77,6 +78,7 @@ class FloorManage @Inject()(config: Configuration
       Redirect(routes.FloorManage.index()).flashing(ERROR_MSG_KEY -> errMsg)
     }else{
       var errMsg = Seq[String]()
+      var paramDeviceList = Seq[(Int,Int)]()
       val f = form.get
       if(f.inputFloorId.isEmpty){
         // 新規フロア登録の場合 --------------------------
@@ -87,16 +89,29 @@ class FloorManage @Inject()(config: Configuration
           errMsg :+= Messages("error.cms.floorManage.floorUpdate.inputFloorName.duplicate")
         }
 
-        // デバイスID重複チェック
-        val exbDeviceIdList = exbDAO.selectExb(f.inputPlaceId.toInt).map(exb =>{exb.exbDeviceId})
-        val inputExbDeviceIdList = f.inputExbDeviceIdListComma.split("-").filter(_.isEmpty == false).toSeq
+        // デバイスNo重複チェック
+        val exbDeviceNoList = exbDAO.selectExb(f.inputPlaceId.toInt).map(exb =>{exb.exbDeviceNo})
+        val inputExbDeviceNoList:Seq[String] = f.inputExbDeviceNoListComma.split("-").filter(_.isEmpty == false).toSeq
 
-        if(inputExbDeviceIdList.exists(!_.matches("^[0-9]+$"))){
-          errMsg :+= Messages("error.cms.floorManage.floorUpdate.inputDeviceId.notNumeric")
+        if(inputExbDeviceNoList.exists(!_.matches("^[0-9]+$"))){
+          errMsg :+= Messages("error.cms.floorManage.floorUpdate.inputDeviceNo.notNumeric")
         } else {
-          val errDeviceIdList = inputExbDeviceIdList.filter(exbDeviceIdList.contains(_))
-          if(errDeviceIdList.nonEmpty) {
-            errMsg :+= Messages("error.cms.floorManage.floorUpdate.inputDeviceId.duplicate", errDeviceIdList.mkString(","))
+          var errDeviceNoList = inputExbDeviceNoList.filter(exbDeviceNoList contains _.toInt)
+          if(errDeviceNoList.nonEmpty) {
+            errMsg :+= Messages("error.cms.floorManage.floorUpdate.inputDeviceNo.duplicate", errDeviceNoList.mkString(","))
+          }else{
+            // デバイスIDの取得
+            inputExbDeviceNoList.foreach{e =>
+              val retList = exbDeviceDAO.select(f.inputPlaceId.toInt, Option(e.toInt))
+              if(retList.nonEmpty){
+                paramDeviceList :+= (retList.last.exbDeviceNo, retList.last.exbDeviceId)
+              }else{
+                errDeviceNoList :+= e
+              }
+            }
+            if(errDeviceNoList.nonEmpty) {
+              errMsg :+= Messages("error.cms.floorManage.floorUpdate.DeviceId.notfound", errDeviceNoList.mkString(","))
+            }
           }
         }
 
@@ -106,7 +121,7 @@ class FloorManage @Inject()(config: Configuration
             .flashing(ERROR_MSG_KEY -> errMsg.mkString(HTML_BR))
         }else{
           // DB処理
-          floorDAO.insert(f.inputFloorName, f.inputPlaceId.toInt, inputExbDeviceIdList)
+          floorDAO.insert(f.inputFloorName, f.inputPlaceId.toInt, paramDeviceList)
           // 成功で遷移
           Redirect(s"""${routes.FloorManage.index().path()}?${KEY_PLACE_ID}=${f.inputPlaceId}""")
             .flashing(SUCCESS_MSG_KEY -> Messages("success.cms.FloorManage.floorUpdate"))
@@ -124,26 +139,37 @@ class FloorManage @Inject()(config: Configuration
 
         // デバイスID重複チェック
         val exbDeviceIdList = exbDAO.selectExb(f.inputPlaceId.toInt).filter(_.floorId != f.inputFloorId.toInt).map(exb =>{exb.exbDeviceId})
-        val inputExbDeviceIdList = f.inputExbDeviceIdListComma.split("-").toSeq
-        val errDeviceIdList = inputExbDeviceIdList.filter(exbDeviceIdList.contains(_))
-        if(inputExbDeviceIdList.exists(!_.matches("^[0-9]+$"))){
+        val inputExbDeviceNoList:Seq[String] = f.inputExbDeviceNoListComma.split("-").toSeq
+        //val errDeviceNoList = inputExbDeviceNoList.filter(exbDeviceIdList contains _.toInt)
+        if(inputExbDeviceNoList.exists(!_.matches("^[0-9]+$"))){
           errMsg :+= Messages("error.cms.floorManage.floorUpdate.inputDeviceId.notNumeric")
         } else {
-          val errDeviceIdList = inputExbDeviceIdList.filter(exbDeviceIdList.contains(_))
-          if(errDeviceIdList.nonEmpty) {
-            errMsg :+= Messages("error.cms.floorManage.floorUpdate.inputDeviceId.duplicate", errDeviceIdList.mkString(","))
+          var errDeviceNoList = inputExbDeviceNoList.filter(exbDeviceIdList contains _.toInt)
+          if(errDeviceNoList.nonEmpty) {
+            errMsg :+= Messages("error.cms.floorManage.floorUpdate.inputDeviceId.duplicate", errDeviceNoList.mkString(","))
+          }else{
+            // デバイスIDの取得
+            inputExbDeviceNoList.foreach{e =>
+              val retList = exbDeviceDAO.select(f.inputPlaceId.toInt, Option(e.toInt))
+              if(retList.nonEmpty){
+                paramDeviceList :+= (retList.last.exbDeviceNo, retList.last.exbDeviceId)
+              }else{
+                errDeviceNoList :+= e
+              }
+            }
+            if(errDeviceNoList.nonEmpty) {
+              errMsg :+= Messages("error.cms.floorManage.floorUpdate.DeviceId.notfound", errDeviceNoList.mkString(","))
+            }
           }
         }
-
 
         if(errMsg.nonEmpty){
           // エラーで遷移
           Redirect(s"""${routes.FloorManage.index().path()}?${KEY_PLACE_ID}=${f.inputPlaceId}""")
             .flashing(ERROR_MSG_KEY -> errMsg.mkString(HTML_BR))
         }else{
-          var placeId = securedRequest2User.currentPlaceId.get
           // DB処理
-          floorDAO.updateById(placeId, f.inputFloorId.toInt, f.inputFloorName, inputExbDeviceIdList)
+          floorDAO.updateById(securedRequest2User.currentPlaceId.get, f.inputFloorId.toInt, f.inputFloorName, paramDeviceList)
           // 成功で遷移
           Redirect(s"""${routes.FloorManage.index().path()}?${KEY_PLACE_ID}=${f.inputPlaceId}""")
             .flashing(SUCCESS_MSG_KEY -> Messages("success.cms.FloorManage.floorUpdate"))

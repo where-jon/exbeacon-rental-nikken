@@ -79,9 +79,10 @@ error.cms.PlaceManage.cmsLogin=入力されたパスワードに誤りがあり�
 
 error.cms.floorManage.floorUpdate.inputFloorName.empty=フロア名を入力してください。
 error.cms.floorManage.floorUpdate.inputFloorName.duplicate=フロア名が重複しています。
-error.cms.floorManage.floorUpdate.inputDeviceId.notNumeric=EXBeaconデバイスIDを半角数字で入力してください。
-error.cms.floorManage.floorUpdate.inputDeviceId.duplicate=EXBeaconデバイスIDが重複しています。(デバイスID：{0})
-error.cms.floorManage.floorUpdate.inputExbDeviceIdListComma.empty=EXBeaconデバイスIDを入力してください。
+error.cms.floorManage.floorUpdate.inputDeviceNo.notNumeric=EXBeaconデバイスNoは半角数字で入力してください。
+error.cms.floorManage.floorUpdate.inputDeviceNo.duplicate=EXBeaconデバイスNoが重複しています。(デバイスNo：{0})
+error.cms.floorManage.floorUpdate.DeviceId.notfound=EXBeaconデバイスID設定がありません。管理者に問い合わせてください。(デバイスNo：{0})
+error.cms.floorManage.floorUpdate.inputExbDeviceNoListComma.empty=EXBeaconデバイスNoを入力してください。
 error.cms.floorManage.floorUpdate.delete.empty=削除対象フロアを選択してください。
 
 error.cms.CompanyManage.update.inputCompanyName.empty=業者名を入力してください。
@@ -104,8 +105,8 @@ error.cms.ItemManage.update.inputBtxId.notNumeric=TxタグNoを半角数字で�
 error.cms.ItemManage.update.inputBtxId.duplicate=TxタグNoが重複しています。(TxタグNo.{0})
 error.cms.ItemManage.update.actualItemInfoStr.empty=Txタグ設定を入力してください。
 
-error.cms.placeManage.move.empty=選択された建築現場は既に削除されています
-error.cms.placeManage.delete.empty=削除対象の建築現場が選択されていません
+error.cms.placeManage.move.empty=選択された建築現場は既に削除されています。
+error.cms.placeManage.delete.empty=削除対象の建築現場が選択されていません。
 
 ################################################################################################
 # SUCCESS
@@ -208,15 +209,15 @@ lang.cms.placeManage.passwordUpdate.popup.reEnter=パスワード再入力
 lang.cms.floorManage.title=フロア管理画面
 lang.cms.floorManage.floor.list.header.title=フロア情報
 lang.cms.floorManage.floor.list.header.floorName=フロア名
-lang.cms.floorManage.floor.list.header.deviceID=EXBeaconデバイスID
+lang.cms.floorManage.floor.list.header.deviceNo=EXBeaconデバイスNo
 lang.cms.floorManage.floor.button.floorEdit=選択したフロアを編集
 lang.cms.floorManage.floor.button.addFloor=新規フロア追加
 lang.cms.floorManage.floor.button.deleteFloor=選択したフロアを削除
 lang.cms.floorManage.floorUpdate.popup.title=フロア情報更新
 lang.cms.floorManage.floorUpdate.popup.name=フロア名
 lang.cms.floorManage.floorUpdate.popup.name.placeholder=8F
-lang.cms.floorManage.floorUpdate.popup.deviceID=EXBeaconデバイスID
-lang.cms.floorManage.floorUpdate.popup.deviceID.placeholder=半角英数のみ
+lang.cms.floorManage.floorUpdate.popup.deviceNo=EXBeaconデバイスNo
+lang.cms.floorManage.floorUpdate.popup.deviceNo.placeholder=半角数字のみ
 lang.cms.floorManage.floorDelete.popup.title=フロア情報削除
 lang.cms.floorManage.floorDelete.popup.message=フロア情報を削除します。\nよろしいですか？
 
