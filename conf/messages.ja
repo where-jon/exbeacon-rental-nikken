@@ -319,7 +319,7 @@ lang.CarSummery.example.reserveNone=予約なし
 lang.CarSummery.reserveTableTitleTh=高所作業車各階稼働状況
 lang.CarSummery.noReserveBefore=前日予約無
 lang.CarSummery.reserveTable.reserve=予約
-lang.CarSummery.reserveTable.work=稼働
+lang.CarSummery.reserveTable.work=状況
 
 # CarReserve
 lang.CarReserve.pageTitle=高所作業車予約
