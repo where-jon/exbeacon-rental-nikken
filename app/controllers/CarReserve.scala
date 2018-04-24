@@ -47,7 +47,7 @@ class CarReserve @Inject()(config: Configuration
                            , btxLastPositionDAO: models.btxLastPositionDAO
                                ) extends BaseController with I18nSupport {
   // レスポンスのコンテントタイプ
-  val RESPONSE_CONTENT_TYPE = "application/json;charset=UTF-8"
+
   val DATE_FORMAT = "yyyyMMdd"
   val RESERVE_DATE_PARAM_KEY = "reserveDate"
 

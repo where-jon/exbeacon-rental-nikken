@@ -24,6 +24,8 @@ trait BaseController extends AuthController {
   val KEY_PLACE_ID = "placeId"
   val CURRENT_PLACE_ID = "currentPlaceId"
 
+  val RESPONSE_CONTENT_TYPE = "application/json;charset=UTF-8"
+
   /**
     * 選択現場ID取得メソッド
     *

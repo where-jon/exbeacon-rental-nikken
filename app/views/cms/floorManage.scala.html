@@ -7,10 +7,7 @@
 <html lang="ja">
 <head>
     @templates.htmlHead(title = Messages("lang.cms.placeManage.tabName"))
-    <link rel="stylesheet" href="@routes.MyAssets.lib("jquery-ui/jquery-ui.theme.min.css")"/>
     <link rel="stylesheet" href="@routes.MyAssets.css("cms/placeManageDetail.css")"/>
-    <script type="text/javascript" src="@routes.MyAssets.lib("jquery-ui/jquery-ui.min.js")"></script>
-    <script type="text/javascript" src="@routes.MyAssets.lib("jquery-ui/jquery.ui.touch-punch.min.js")"></script>
     <script type="text/javascript" src="@routes.MyAssets.lib("jquery.tablefix_1.0.1.js")"></script>
     <script></script>
 </head>
@@ -44,7 +41,7 @@
                                         <th class="tableTh deviceTh">@Messages("lang.cms.floorManage.floor.list.header.deviceNo")</th>
                                     </tr>
                                 </thead>
-                                <tbody id="sortable">
+                                <tbody class="sortable">
                                     @for(floor <- floorInfoList){
                                         <tr class="rowColor rowHover" id="@floor.floorId" data-floorId="@floor.floorId">
                                             <td class="itemTd text-center floorName">@floor.floorName</td>

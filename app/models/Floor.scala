@@ -9,21 +9,19 @@ import play.api.db._
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, Json, Reads}
 
-//case class roomPosition(
-//  room_id: String,
-//  room_name: String,
-//  description: String
-//)
-//object roomPosition {
-//
-//  implicit val jsonReads: Reads[roomPosition] = (
-//      ((JsPath \ "room_id").read[String] | Reads.pure("")) ~
-//      ((JsPath \ "room_name").read[String] | Reads.pure(""))~
-//      ((JsPath \ "description").read[String] | Reads.pure(""))
-//    )(roomPosition.apply _)
-//
-//  implicit def jsonWrites = Json.writes[roomPosition]
-//}
+case class FloorSortPostJsonRequestObj(
+   floorIdComma: String
+  ,placeId: Int = 0
+)
+object FloorSortPostJsonRequestObj {
+
+  implicit val jsonReads: Reads[FloorSortPostJsonRequestObj] = (
+    ((JsPath \ "floorIdComma").read[String] | Reads.pure("")) ~
+      ((JsPath \ "placeId").read[Int] | Reads.pure(0))
+    )(FloorSortPostJsonRequestObj.apply _)
+
+  implicit def jsonWrites = Json.writes[FloorSortPostJsonRequestObj]
+}
 
 case class FloorSummery(
   floor: String,
@@ -139,7 +137,7 @@ class floorDAO @Inject() (dbapi: DBApi) {
 
     db.withTransaction { implicit connection =>
       // 順序の取得
-      val selectQuery = "select coalesce(max(display_order), 0) from floor_master where place_id = " + placeId
+      val selectQuery = s"""select coalesce(max(display_order), 0) from floor_master where place_id = ${placeId}"""
       var cnt = SQL(selectQuery).as(scalar[Int].single)
 
       cnt = cnt + 1
@@ -150,7 +148,7 @@ class floorDAO @Inject() (dbapi: DBApi) {
         "displayOrder" -> cnt,
         "placeId" -> placeId
       )
-      var insertSql = SQL(
+      val insertSql = SQL(
         """
           insert into floor_master (floor_name, display_order, place_id)
           values ({floorName}, {displayOrder}, {placeId})
@@ -236,6 +234,24 @@ Logger.debug(s"""フロアを更新、ID：" + ${floorId}""")
       // コミット
       connection.commit()
 Logger.debug(s"""EXBマスタを更新""")
+    }
+  }
+
+  /**
+    * フロアの表示順の更新
+    * @return
+    */
+  def updateOrder(floorIdList: Seq[Int]) = {
+    db.withTransaction { implicit connection =>
+
+      floorIdList.zipWithIndex.foreach{ case (floorId:Int, i:Int) =>
+        SQL("update floor_master set display_order = {i}, updatetime = now() where floor_id = {floorId}")
+            .on('i -> i, 'floorId -> floorId)
+              .executeUpdate()
+      }
+
+      // コミット
+      connection.commit()
     }
   }
 

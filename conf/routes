@@ -36,6 +36,7 @@ POST    /cms/placeManage/cmsLogin       controllers.cms.PlaceManage.cmsLogin
 GET     /cms/floorManage                controllers.cms.FloorManage.index
 POST    /cms/floorManage/floorUpdate    controllers.cms.FloorManage.floorUpdate
 POST    /cms/floorManage/floorDelete    controllers.cms.FloorManage.floorDelete
+#  POST    /cms/floorManage/sort           controllers.cms.FloorManage.sort
 
 
 # 作業車管理
@@ -53,8 +54,6 @@ POST    /cms/companyManage/delete       controllers.cms.CompanyManage.delete
 
 # Beaconタグ管理
 GET     /cms/txTagManage                controllers.cms.TxTagManage.index
-
-
 
 
 ## 認証周り（日立APから移植）

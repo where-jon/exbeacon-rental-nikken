@@ -1,3 +1,41 @@
+//function bindSortable(){
+//    $('.sortable').bind('sortstop', function (e, ui) {
+//        // ソートが完了したら実行される。
+//        var rows;
+//        if($('.bodyTableDiv').length > 0){
+//            rows = $('.bodyTableDiv').find('.sortable').find('tr');
+//        }else{
+//            rows = $('.sortable').find('tr');
+//        }
+//
+//        var floorIdComma = "";
+//        $(rows).each(function(index, r){
+//            if(index == 0){
+//                floorIdComma += $(r).attr('id');
+//            }else{
+//                floorIdComma += "," + $(r).attr('id');
+//            }
+//        });
+//
+//        $.ajax({
+//            type: "POST",
+//            url: window.location.pathname + "/sort",
+//            data: JSON.stringify({floorIdComma: floorIdComma}),
+//            contentType: 'application/json', // リクエストの Content-Type
+//            dataType: "json",           // レスポンスをJSONとしてパースする
+//            success: function(json_data) {   // 200 OK時
+//                console.log("sort - OK");
+//            },
+//            error: function(e) {         // HTTPエラー時
+//                alert("エラーが発生");
+//                console.log("sort - NG");
+//            },
+//            complete: function() {      // 成功・失敗に関わらず通信が終了した際の処理
+//            }
+//        });
+//    })
+//}
+
 // マウス・タッチの動作のバインド
 function bindMouseAndTouch(){
     var ua = navigator.userAgent;
@@ -178,9 +216,11 @@ $(function(){
     fixTable();
     // マウス操作とタップ操作をバインド
     bindMouseAndTouch();
-    //
-    $('#sortable').sortable();
-    $('#sortable').disableSelection();
+
+//    // ソート設定
+//    $('.sortable').sortable();
+//    $('.sortable').disableSelection();
+//    bindSortable();
 
     // リサイズ対応
     var timer = false;
@@ -193,6 +233,10 @@ $(function(){
             removeTable();
             fixTable();
             bindMouseAndTouch();
+            $('#sortable').sortable();
+            $('#sortable').disableSelection();
+            bindSortable();
+
         }, 200);
     });
 });

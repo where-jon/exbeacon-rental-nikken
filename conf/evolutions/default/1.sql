@@ -286,6 +286,7 @@ DROP TABLE item_kind_master;
 DROP TABLE item_table;
 DROP TABLE btx_master;
 DROP TABLE exb_master;
+DROP TABLE exb_device_master;
 DROP TABLE reserve_table;
 DROP TABLE user_master;
 
