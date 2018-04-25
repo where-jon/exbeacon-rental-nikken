@@ -233,9 +233,9 @@ $(function(){
             removeTable();
             fixTable();
             bindMouseAndTouch();
-            $('#sortable').sortable();
-            $('#sortable').disableSelection();
-            bindSortable();
+//            $('#sortable').sortable();
+//            $('#sortable').disableSelection();
+//            bindSortable();
 
         }, 200);
     });
