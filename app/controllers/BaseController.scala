@@ -6,7 +6,7 @@ import utils.silhouette.{AuthController, MyEnv}
 import play.api.mvc.{Request, Session}
 import com.mohiva.play.silhouette.api.actions
 import com.mohiva.play.silhouette.api.actions.SecuredRequest
-import models.{FloorInfo, User, exCloudBtxData}
+import models.{FloorInfo, User, exCloudBtxData, nearestData}
 
 /**
   * 基底クラス
@@ -106,12 +106,13 @@ trait BaseController extends AuthController {
   implicit def getItemBtxDetected[A](apiDataList: List[exCloudBtxData], floor:FloorInfo): List[exCloudBtxData] = {
     var result = List[exCloudBtxData]()
     apiDataList.foreach{d =>
-      var flg = false
-      d.nearest.foreach{n =>
-        if(floor.exbDeviceIdList contains n.device_id.toString){
-          flg = true
-        }else{
 
+      var flg = false
+      val nearestDeviceIdList = Seq[Int](d.device_id) union d.nearest.map{n => n.device_id}
+
+      nearestDeviceIdList.foreach{deviceId =>
+        if(floor.exbDeviceIdList contains deviceId.toString){
+          flg = true
         }
       }
       if(flg){
