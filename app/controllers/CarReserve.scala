@@ -80,7 +80,7 @@ class CarReserve @Inject()(config: Configuration
     // 指定日の予約情報
     var reserveInfoList = carReserveDAO.selectReserveForPlot(placeId, reserveDateObj.toString(DATE_FORMAT))
     // 今日の予約情報（稼働用）
-    val beforeReserveList = reserveDAO.selectReserve(placeId, floorInfoList.map{f => f.floorId}, new DateTime().toString("yyyyMMdd"))
+    val beforeReserveList = reserveDAO.selectReserve(placeId, floorInfoList.map{f => f.floorId}, new DateTime().toString(DATE_FORMAT))
     // 稼働情報
     var workList = Seq[CarReserveModelPlotInfo]()
     // 履歴input

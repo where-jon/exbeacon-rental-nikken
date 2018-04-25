@@ -1,12 +1,8 @@
 package controllers
 
-import java.math.BigDecimal
-
 import utils.silhouette.{AuthController, MyEnv}
-import play.api.mvc.{Request, Session}
-import com.mohiva.play.silhouette.api.actions
 import com.mohiva.play.silhouette.api.actions.SecuredRequest
-import models.{FloorInfo, User, exCloudBtxData, nearestData}
+import models.{FloorInfo, exCloudBtxData}
 
 /**
   * 基底クラス
@@ -20,9 +16,7 @@ trait BaseController extends AuthController {
 
   val ERROR_MSG_KEY = "errMsg"
   val SUCCESS_MSG_KEY = "successMsg"
-
   val KEY_PLACE_ID = "placeId"
-  val CURRENT_PLACE_ID = "currentPlaceId"
 
   val RESPONSE_CONTENT_TYPE = "application/json;charset=UTF-8"
 
@@ -72,7 +66,7 @@ trait BaseController extends AuthController {
   }
 
   /**
-    * APIデータ最適化
+    * APIデータからフロアを検出する（仮設材用）
     *
     */
   implicit def getNearestFloor[A](floorInfoList: Seq[FloorInfo], apiData: exCloudBtxData): Seq[FloorInfo] = {
@@ -103,12 +97,16 @@ trait BaseController extends AuthController {
     }
   }
 
+  /**
+    * APIデータから指定フロアにある仮設材を検出する
+    *
+    */
   implicit def getItemBtxDetected[A](apiDataList: List[exCloudBtxData], floor:FloorInfo): List[exCloudBtxData] = {
     var result = List[exCloudBtxData]()
-    apiDataList.foreach{d =>
 
+    apiDataList.foreach{apiData =>
       var flg = false
-      val nearestDeviceIdList = Seq[Int](d.device_id) union d.nearest.map{n => n.device_id}
+      val nearestDeviceIdList = Seq[Int](apiData.device_id) union apiData.nearest.map{n => n.device_id}
 
       nearestDeviceIdList.foreach{deviceId =>
         if(floor.exbDeviceIdList contains deviceId.toString){
@@ -116,7 +114,7 @@ trait BaseController extends AuthController {
         }
       }
       if(flg){
-        result :+= d
+        result :+= apiData
       }
     }
     result
