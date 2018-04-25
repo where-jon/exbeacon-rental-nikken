@@ -11,7 +11,8 @@ import play.api.libs.functional.syntax._
 
 case class ExbInfo(
   floorId: Int,
-  exbDeviceId: String
+  exbDeviceNo: Int,
+  exbDeviceId: Int
 )
 
 @javax.inject.Singleton
@@ -27,9 +28,10 @@ class exbModelDAO @Inject() (dbapi: DBApi) {
 
     val simple = {
       get[Int]("floor_id") ~
-        get[String]("exb_device_id")  map {
-        case floor_id ~ exb_device_id  =>
-          ExbInfo(floor_id, exb_device_id)
+        get[Int]("exb_device_no") ~
+        get[Int]("exb_device_id")  map {
+        case floor_id ~ exb_device_no ~ exb_device_id  =>
+          ExbInfo(floor_id, exb_device_no, exb_device_id)
       }
     }
 
@@ -38,6 +40,7 @@ class exbModelDAO @Inject() (dbapi: DBApi) {
         """
           select
               e.floor_id
+            , e.exb_device_no
             , e.exb_device_id
           from
             place_master p
@@ -57,7 +60,7 @@ class exbModelDAO @Inject() (dbapi: DBApi) {
       val orderPh =
         """
           order by
-            e.floor_id, e.exb_device_id
+            e.floor_id, e.exb_device_no
         """
       SQL(selectPh + wherePh + orderPh).on('placeId -> placeId).as(simple.*)
     }

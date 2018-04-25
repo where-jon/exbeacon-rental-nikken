@@ -9,21 +9,19 @@ import play.api.db._
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, Json, Reads}
 
-//case class roomPosition(
-//  room_id: String,
-//  room_name: String,
-//  description: String
-//)
-//object roomPosition {
-//
-//  implicit val jsonReads: Reads[roomPosition] = (
-//      ((JsPath \ "room_id").read[String] | Reads.pure("")) ~
-//      ((JsPath \ "room_name").read[String] | Reads.pure(""))~
-//      ((JsPath \ "description").read[String] | Reads.pure(""))
-//    )(roomPosition.apply _)
-//
-//  implicit def jsonWrites = Json.writes[roomPosition]
-//}
+case class FloorSortPostJsonRequestObj(
+   floorIdComma: String
+  ,placeId: Int = 0
+)
+object FloorSortPostJsonRequestObj {
+
+  implicit val jsonReads: Reads[FloorSortPostJsonRequestObj] = (
+    ((JsPath \ "floorIdComma").read[String] | Reads.pure("")) ~
+      ((JsPath \ "placeId").read[Int] | Reads.pure(0))
+    )(FloorSortPostJsonRequestObj.apply _)
+
+  implicit def jsonWrites = Json.writes[FloorSortPostJsonRequestObj]
+}
 
 case class FloorSummery(
   floor: String,
@@ -34,6 +32,7 @@ case class FloorSummery(
 case class FloorInfo(
   floorId: Int,
   floorName: String,
+  exbDeviceNoList: Seq[String],
   exbDeviceIdList: Seq[String]
 )
 
@@ -51,9 +50,10 @@ class floorDAO @Inject() (dbapi: DBApi) {
     val simple = {
       get[Int]("floor_id") ~
         get[String]("floor_name") ~
-        get[String]("exb_device_id_str") map {
-        case floor_id ~ floor_name ~ exb_device_id_str  =>
-          FloorInfo(floor_id, floor_name, exb_device_id_str.split(",").toSeq)
+        get[String]("exb_device_no_str") ~
+        get[String]("exb_device_id_str")  map {
+        case floor_id ~ floor_name ~ exb_device_no_str ~ exb_device_id_str  =>
+          FloorInfo(floor_id, floor_name, exb_device_no_str.split(",").toSeq, exb_device_id_str.split(",").toSeq)
       }
     }
 
@@ -66,11 +66,25 @@ class floorDAO @Inject() (dbapi: DBApi) {
             , ARRAY_TO_STRING(
                 ARRAY(
                   SELECT
+                    e.exb_device_no
+                  FROM
+                    exb_master e
+                  WHERE
+                    e.floor_id = f.floor_id
+                    and e.place_id = {placeId}
+                  ORDER BY
+                    e.exb_device_no
+                )
+              , ',') as exb_device_no_str
+            , ARRAY_TO_STRING(
+                ARRAY(
+                  SELECT
                     e.exb_device_id
                   FROM
                     exb_master e
                   WHERE
                     e.floor_id = f.floor_id
+                    and e.place_id = {placeId}
                   ORDER BY
                     e.exb_device_id
                 )
@@ -119,11 +133,11 @@ class floorDAO @Inject() (dbapi: DBApi) {
     * フロアの新規登録
     * @return
     */
-  def insert(floorName:String, placeId: Int, deviceIdList: Seq[String]) = {
+  def insert(floorName:String, placeId: Int, deviceList: Seq[(Int,Int)]) = {
 
     db.withTransaction { implicit connection =>
       // 順序の取得
-      val selectQuery = "select coalesce(max(display_order), 0) from floor_master where place_id = " + placeId
+      val selectQuery = s"""select coalesce(max(display_order), 0) from floor_master where place_id = ${placeId}"""
       var cnt = SQL(selectQuery).as(scalar[Int].single)
 
       cnt = cnt + 1
@@ -134,7 +148,7 @@ class floorDAO @Inject() (dbapi: DBApi) {
         "displayOrder" -> cnt,
         "placeId" -> placeId
       )
-      var insertSql = SQL(
+      val insertSql = SQL(
         """
           insert into floor_master (floor_name, display_order, place_id)
           values ({floorName}, {displayOrder}, {placeId})
@@ -145,23 +159,24 @@ class floorDAO @Inject() (dbapi: DBApi) {
       val floorId: Option[Long] = insertSql.executeInsert()
 Logger.debug(s"""フロアを登録、ID：" + ${floorId.get.toInt}""")
 
-      // exbマスタへの登録
-      val indexedValues = deviceIdList.zipWithIndex
+      // EXBマスタへの登録 ---------------
+      val indexedValues = deviceList.zipWithIndex
 
       val rows = indexedValues.map{ case (value, i) =>
-          s"""({place_id_${i}}, {exb_device_id_${i}}, {floor_id_${i}})"""
+          s"""({place_id_${i}}, {exb_device_no_${i}}, {exb_device_id_${i}}, {floor_id_${i}})"""
       }.mkString(",")
 
       val parameters = indexedValues.flatMap{ case(value, i) =>
         Seq(
           NamedParameter(s"place_id_${i}" , placeId),
-          NamedParameter(s"exb_device_id_${i}" , value),
+          NamedParameter(s"exb_device_no_${i}" , value._1),
+          NamedParameter(s"exb_device_id_${i}" , value._2),
           NamedParameter(s"floor_id_${i}" , floorId.get.toInt)
         )
       }
 
       // SQL実行
-      BatchSql(s""" insert into exb_master (place_id, exb_device_id, floor_id) values ${rows} """, parameters).execute
+      BatchSql(s""" insert into exb_master (place_id, exb_device_no, exb_device_id, floor_id) values ${rows} """, parameters).execute
 
       // コミット
       connection.commit()
@@ -174,7 +189,7 @@ Logger.debug(s"""EXBマスタを登録""")
     * フロアの新規登録
     * @return
     */
-  def updateById(placeId: Int, floorId: Int, floorName: String, deviceIdList: Seq[String]) = {
+  def updateById(placeId: Int, floorId: Int, floorName: String, deviceList: Seq[(Int,Int)]) = {
 
     db.withTransaction { implicit connection =>
       // フロアの更新
@@ -198,26 +213,45 @@ Logger.debug(s"""フロアを更新、ID：" + ${floorId}""")
       ).on('floorId -> floorId).executeUpdate()
 
       // EXBマスタの登録
-      val indexedValues = deviceIdList.zipWithIndex
+      val indexedValues = deviceList.zipWithIndex
 
       val rows = indexedValues.map{ case (value, i) =>
-        s"""({place_id_${i}}, {exb_device_id_${i}}, {floor_id_${i}})"""
+        s"""({place_id_${i}}, {exb_device_no_${i}}, {exb_device_id_${i}}, {floor_id_${i}})"""
       }.mkString(",")
 
       val parameters = indexedValues.flatMap{ case(value, i) =>
         Seq(
           NamedParameter(s"place_id_${i}" , placeId),
-          NamedParameter(s"exb_device_id_${i}" , value),
+          NamedParameter(s"exb_device_no_${i}" , value._1),
+          NamedParameter(s"exb_device_id_${i}" , value._2),
           NamedParameter(s"floor_id_${i}" , floorId)
         )
       }
 
       // SQL実行
-      BatchSql(s""" insert into exb_master (place_id, exb_device_id, floor_id) values ${rows} """, parameters).execute
+      BatchSql(s""" insert into exb_master (place_id, exb_device_no, exb_device_id, floor_id) values ${rows} """, parameters).execute
 
       // コミット
       connection.commit()
 Logger.debug(s"""EXBマスタを更新""")
+    }
+  }
+
+  /**
+    * フロアの表示順の更新
+    * @return
+    */
+  def updateOrder(floorIdList: Seq[Int]) = {
+    db.withTransaction { implicit connection =>
+
+      floorIdList.zipWithIndex.foreach{ case (floorId:Int, i:Int) =>
+        SQL("update floor_master set display_order = {i}, updatetime = now() where floor_id = {floorId}")
+            .on('i -> i, 'floorId -> floorId)
+              .executeUpdate()
+      }
+
+      // コミット
+      connection.commit()
     }
   }
 

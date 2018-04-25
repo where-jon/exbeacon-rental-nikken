@@ -1,3 +1,41 @@
+//function bindSortable(){
+//    $('.sortable').bind('sortstop', function (e, ui) {
+//        // ソートが完了したら実行される。
+//        var rows;
+//        if($('.bodyTableDiv').length > 0){
+//            rows = $('.bodyTableDiv').find('.sortable').find('tr');
+//        }else{
+//            rows = $('.sortable').find('tr');
+//        }
+//
+//        var floorIdComma = "";
+//        $(rows).each(function(index, r){
+//            if(index == 0){
+//                floorIdComma += $(r).attr('id');
+//            }else{
+//                floorIdComma += "," + $(r).attr('id');
+//            }
+//        });
+//
+//        $.ajax({
+//            type: "POST",
+//            url: window.location.pathname + "/sort",
+//            data: JSON.stringify({floorIdComma: floorIdComma}),
+//            contentType: 'application/json', // リクエストの Content-Type
+//            dataType: "json",           // レスポンスをJSONとしてパースする
+//            success: function(json_data) {   // 200 OK時
+//                console.log("sort - OK");
+//            },
+//            error: function(e) {         // HTTPエラー時
+//                alert("エラーが発生");
+//                console.log("sort - NG");
+//            },
+//            complete: function() {      // 成功・失敗に関わらず通信が終了した際の処理
+//            }
+//        });
+//    })
+//}
+
 // マウス・タッチの動作のバインド
 function bindMouseAndTouch(){
     var ua = navigator.userAgent;
@@ -34,9 +72,9 @@ function showFloorModal(floorId){
     if(!floorId){
         // 新規
         $('#inputFloorId').val('');
-        $('#inputExbDeviceIdListComma').val('');
+        $('#inputExbDeviceNoListComma').val('');
         $('#inputFloorName').val('');
-        $('#inputDeviceId').val('');
+        $('#inputDeviceNo').val('');
         $('.cloned').remove();
         // ボタン表示の切り替え
         $('#floorUpdateFooter').addClass('hidden');
@@ -44,9 +82,9 @@ function showFloorModal(floorId){
     }else{
         $('.cloned').remove();
         $('#inputFloorId').val(floorId);
-        $('#inputExbDeviceIdListComma').val('');
+        $('#inputExbDeviceNoListComma').val('');
         $('#inputFloorName').val($('#'+floorId).find('.floorName').text());
-        $('#inputDeviceId').val('');
+        $('#inputDeviceNo').val('');
 
         var spanObjList = $('#'+floorId).find('span');
         $(spanObjList).each(function(index, element){
@@ -55,13 +93,13 @@ function showFloorModal(floorId){
             clonedRow.removeClass('template');
             var deviceIds = $.trim($(element).text());
             if (deviceIds != "") {
-                clonedRow.find('span.inputDeviceIdSpan').text(deviceIds);
+                clonedRow.find('span.inputDeviceNoSpan').text(deviceIds);
                 $('.template').before(clonedRow);
-                var value = $('#inputExbDeviceIdListComma').val();
+                var value = $('#inputExbDeviceNoListComma').val();
                 if (value != "") {
                     value = value + "-";
                 }
-                $('#inputExbDeviceIdListComma').val(value + $.trim($(element).text()))
+                $('#inputExbDeviceNoListComma').val(value + $.trim($(element).text()))
 
                 clonedRow.removeClass('hidden');
             }
@@ -96,17 +134,17 @@ function showFloorDeleteModal(){
 // 入力モーダルのEXBデバイスの行を追加
 function addTagRow(){
     if($('#inputDeviceId').val() != ''){
-        if($('#inputDeviceId').val().match(/[0-9a-zA-Z]/)){
+        if($('#inputDeviceNo').val().match(/[0-9a-zA-Z]/)){
             var duplicateFlg = false;
             $('.cloned').each(function(index, element){
-                if($(element).find('span').text() == $('#inputDeviceId').val()){
+                if($(element).find('span').text() == $('#inputDeviceNo').val()){
                     duplicateFlg = true;
                     return false;
                 }
             });
 
             if(duplicateFlg){
-                $('#inputDeviceId').val('');
+                $('#inputDeviceNo').val('');
                 return false;
             }
 
@@ -114,17 +152,17 @@ function addTagRow(){
             clonedRow.addClass('cloned');
             clonedRow.removeClass('template');
             // 表示文字列の設定
-            clonedRow.find('span.inputDeviceIdSpan').text($.trim($('#inputDeviceId').val()));
+            clonedRow.find('span.inputDeviceNoSpan').text($.trim($('#inputDeviceNo').val()));
             // 値の設定
-            var value = $('#inputExbDeviceIdListComma').val();
+            var value = $('#inputExbDeviceNoListComma').val();
             if (value != "") {
                 value = value + "-";
             }
-            $('#inputExbDeviceIdListComma').val(value + $.trim($('#inputDeviceId').val()));
+            $('#inputExbDeviceNoListComma').val(value + $.trim($('#inputDeviceNo').val()));
 
             clonedRow.removeClass('hidden');
             $('.template').before(clonedRow);
-            $('#inputDeviceId').val('');
+            $('#inputDeviceNo').val('');
         }
     }
 }
@@ -132,10 +170,10 @@ function addTagRow(){
 // 入力モーダルのEXBデバイスの行の削除
 function removeTagRow(obj){
     var clonedRow = $(obj).parent().parent();
-    var value = $.trim(clonedRow.find('span.inputDeviceIdSpan').text());
-    var originalValue = $('#inputExbDeviceIdListComma').val();
+    var value = $.trim(clonedRow.find('span.inputDeviceNoSpan').text());
+    var originalValue = $('#inputExbDeviceNoListComma').val();
     var replaceReg = new RegExp("(-" + value + "|" + value + "-|" + value + ")", '');
-    $('#inputExbDeviceIdListComma').val(originalValue.replace(replaceReg, ''));
+    $('#inputExbDeviceNoListComma').val(originalValue.replace(replaceReg, ''));
     clonedRow.remove();
 }
 
@@ -155,16 +193,6 @@ function fixTable(){
             $('.itemTable').tablefix({width:w, fixRows: 2});
         }
     }else{
-//        // PCブラウザ
-//        var w = $('.mainSpace').width()*1.001; // ヘッダー右側ボーダーが切れる為*1.001
-//        if ($('.mainSpace').height() > h) {
-//            w = $('.mainSpace').width()-5;
-//            $('.itemTable').tablefix({width:w, height: h, fixRows: 2});
-//            w = $('.mainSpace').width()-14;
-//            $('.rowTableDiv').width(w);
-//        } else {
-//            $('.rowTableDiv').width(w);
-//        }
         // PCブラウザ
         var w = $('.mainSpace').width();
         $('.itemTable').tablefix({height: h, fixRows: 2});
@@ -189,6 +217,11 @@ $(function(){
     // マウス操作とタップ操作をバインド
     bindMouseAndTouch();
 
+//    // ソート設定
+//    $('.sortable').sortable();
+//    $('.sortable').disableSelection();
+//    bindSortable();
+
     // リサイズ対応
     var timer = false;
     $(window).resize(function() {
@@ -200,6 +233,10 @@ $(function(){
             removeTable();
             fixTable();
             bindMouseAndTouch();
+//            $('#sortable').sortable();
+//            $('#sortable').disableSelection();
+//            bindSortable();
+
         }, 200);
     });
 });

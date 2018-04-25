@@ -54,7 +54,7 @@ class SaveBtxDataActor @Inject()(    config: Configuration
             val floorInfoList = floorDAO.selectFloorInfo(place.placeId)
             // APIからのデータ
             val apiDataList = Json.parse(response.body).asOpt[List[models.exCloudBtxData]].getOrElse(Nil)
-Logger.info(
+Logger.debug(
   place.placeName + " _ 取得JSON _ " +
     (apiDataList.map(d =>{
       s"""{btx_id=${d.btx_id}, pos_id=${d.pos_id}, device_id=${d.device_id}, updatetime=${d.updatetime}, nearest.deviceId=(${d.nearest.map{n=>n.device_id}.mkString(",")}), power_level=${d.power_level}}"""
@@ -71,7 +71,7 @@ Logger.info(
             btxLastPositionDAO.update(inputHistoryList)
 
           }recover {
-            case e: Exception => Logger.error(s"""${BATCH_NAME}にてエラーが発生""", e)
+            case e: Exception => Logger.error(s"""${BATCH_NAME}、現場：${place.placeName}にてエラーが発生""", e)
           }
         }else{
           Logger.warn(s""" API_URL未設定：現場：${place.placeName} """)
