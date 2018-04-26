@@ -57,7 +57,7 @@ class SaveBtxDataActor @Inject()(    config: Configuration
 
             // ---- ログ ------ start ---
             val logMsg =
-              place.placeName + " _ 取得JSON _ " +
+              s"""${place.placeName} _ 取得JSON _ """+
                 (
                   apiDataList.map(d =>{
                     if(d.pos_id > 0){
@@ -65,7 +65,7 @@ class SaveBtxDataActor @Inject()(    config: Configuration
                     }else{
                       s"""{btx_id=${d.btx_id}, pos_id=${d.pos_id}, power_lv=${d.power_level}}"""
                     }
-                  }).mkString("---")
+                  }).mkString("--")
                 )
             val logLevel = config.getString("batchLogLevel")
             if(logLevel == None){
