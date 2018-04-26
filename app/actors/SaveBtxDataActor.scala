@@ -67,7 +67,7 @@ class SaveBtxDataActor @Inject()(    config: Configuration
                     }
                   }).mkString("---")
                 )
-            val logLevel = config.getString("BATCH_LOG_LEVEL")
+            val logLevel = config.getString("batchLogLevel")
             if(logLevel == None){
               Logger.debug(logMsg)
             }else{
