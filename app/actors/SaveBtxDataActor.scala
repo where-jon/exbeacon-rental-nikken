@@ -54,19 +54,33 @@ class SaveBtxDataActor @Inject()(    config: Configuration
             val floorInfoList = floorDAO.selectFloorInfo(place.placeId)
             // APIからのデータ
             val apiDataList = Json.parse(response.body).asOpt[List[models.exCloudBtxData]].getOrElse(Nil)
-Logger.debug(
-  place.placeName + " _ 取得JSON _ " +
-    (
-      apiDataList.map(d =>{
-        if(d.pos_id > 0){
-          s"""{btx_id=${d.btx_id}, pos_id=${d.pos_id}, device_id=${d.device_id}, updatetime=${d.updatetime}, nearest=(${d.nearest.map{n=>n.device_id}.mkString(",")}), power_lv=${d.power_level}}"""
-        }else{
-          s"""{btx_id=${d.btx_id}, pos_id=${d.pos_id}, power_lv=${d.power_level}}"""
-        }
 
-      }).mkString("---")
-    )
-)
+            // ---- ログ ------ start ---
+            val logMsg =
+              place.placeName + " _ 取得JSON _ " +
+                (
+                  apiDataList.map(d =>{
+                    if(d.pos_id > 0){
+                      s"""{btx_id=${d.btx_id}, pos_id=${d.pos_id}, device_id=${d.device_id}, updatetime=${d.updatetime}, nearest=(${d.nearest.map{n=>n.device_id}.mkString(",")}), power_lv=${d.power_level}}"""
+                    }else{
+                      s"""{btx_id=${d.btx_id}, pos_id=${d.pos_id}, power_lv=${d.power_level}}"""
+                    }
+                  }).mkString("---")
+                )
+            val logLevel = config.getString("BATCH_LOG_LEVEL")
+            if(logLevel == None){
+              Logger.debug(logMsg)
+            }else{
+              if(logLevel.get=="INFO"){
+                Logger.info(logMsg)
+              }else if(logLevel.get=="DEBUG"){
+                Logger.debug(logMsg)
+              }else{
+                Logger.debug(logMsg)
+              }
+            }
+            // ---- ログ ------ end ---
+
             // 履歴のインプットを貯める
             apiDataList.foreach{d =>
               val floors = floorInfoList.filter(_.exbDeviceIdList contains d.device_id.toString)

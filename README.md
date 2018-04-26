@@ -38,6 +38,7 @@ Heroku環境
 |----------|------|------|
 | DATABASE_URL | データベース接続先URL |  |
 | BATCH_INTERVAL | 測位APIデータ保存バッチのスケジュール | バッチによって最新のデータを保存する。（履歴は貯めない） |
+| BATCH_LOG_LEVEL | 測位APIデータ保存バッチのログ設定(INFO/DEBUG) | INFO=出力する、DEBUG=出力しない |
 
 
 ＜本番用の環境変数の値＞
@@ -46,6 +47,7 @@ Heroku環境
 |----------|------|------|
 | DATABASE_URL | herokuダッシュボード参照 |  |
 | BATCH_INTERVAL | 0 0,10,20,30,40,50 8-23 ? * * | 10分おき, 8:00-24:00に実行|
+| BATCH_LOG_LEVEL | INFO=出力する、DEBUG=出力しない | 状況によって判断 |
 
 
 環境構築
