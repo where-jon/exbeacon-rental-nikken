@@ -56,9 +56,16 @@ class SaveBtxDataActor @Inject()(    config: Configuration
             val apiDataList = Json.parse(response.body).asOpt[List[models.exCloudBtxData]].getOrElse(Nil)
 Logger.debug(
   place.placeName + " _ 取得JSON _ " +
-    (apiDataList.map(d =>{
-      s"""{btx_id=${d.btx_id}, pos_id=${d.pos_id}, device_id=${d.device_id}, updatetime=${d.updatetime}, nearest.deviceId=(${d.nearest.map{n=>n.device_id}.mkString(",")}), power_level=${d.power_level}}"""
-    }).mkString("\n"))
+    (
+      apiDataList.map(d =>{
+        if(d.pos_id > 0){
+          s"""{btx_id=${d.btx_id}, pos_id=${d.pos_id}, device_id=${d.device_id}, updatetime=${d.updatetime}, nearest=(${d.nearest.map{n=>n.device_id}.mkString(",")}), power_lv=${d.power_level}}"""
+        }else{
+          s"""{btx_id=${d.btx_id}, pos_id=${d.pos_id}, power_lv=${d.power_level}}"""
+        }
+
+      }).mkString("---")
+    )
 )
             // 履歴のインプットを貯める
             apiDataList.foreach{d =>
