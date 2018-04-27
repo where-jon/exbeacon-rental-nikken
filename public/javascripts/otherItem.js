@@ -65,8 +65,34 @@ function drawItem(){
         cache: false,
         datatype: 'json',
         success: function (json) {
+            // 集計情報を表示
+            $.each(json.summeryInfo, function(i, record){
+                // 行の生成
+                var row = $('.template').clone();
+                $(row).removeClass('template');
+                $(row).find('.floorNameTd').text(record.floorName);
+                if(record.count > 0){
+                    var unit = $(row).find('.itemCountSpan').attr('data-unit');
+                    $(row).find('.itemCountSpan').text(record.count + unit);
+                }
+                // 色付け
+                if(record.floorId == Number($('#floorId').val())){
+                    $(row).find('.floorNameTd').addClass("summerySelected");
+                    $(row).find('.itemTd').addClass("summerySelected");
+                }else{
+                    $(row).find('.floorNameTd').css("cursor", "pointer");
+                    $(row).find('.itemTd').css("cursor", "pointer");
+                }
+
+                $(row).attr('id', record.floorId);
+                $(row).removeClass('hidden');
+                $('.template').before(row);
+            });
+            // 合計の表示
+            $('#totalCountSpan').text(json.allCount);
+
             // 仮設材情報を表示
-            $.each(json, function(i, record){
+            $.each(json.itemInfo, function(i, record){
                 var htmlStr = '<span class="part">'+record.itemNo+'</span>';
                 if(record.itemNo.length == 1){
                     htmlStr = '<span class="part">&nbsp;'+record.itemNo+'&nbsp;</span>';
@@ -82,6 +108,9 @@ function drawItem(){
                     }
                 });
             });
+
+            // クリック可能にする
+            bindMouseAndTouch();
         },
         error: function (e) {
             console.dir(e);
@@ -93,7 +122,6 @@ $(function(){
     // テーブルを固定
     fixTable();
     drawItem();
-    bindMouseAndTouch();
 
     // リサイズ対応
     var timer = false;
@@ -105,12 +133,9 @@ $(function(){
             // 処理の再実行
             removeTable();
             fixTable();
-            bindMouseAndTouch();
-
         }, 200);
     });
 
     // 10分毎にリロード
     setInterval("location.reload();", 1000 * 60 * 10);
-    //setInterval("location.reload();", 5000);
 });

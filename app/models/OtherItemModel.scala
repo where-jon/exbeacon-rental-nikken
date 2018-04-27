@@ -18,16 +18,33 @@ case class OtherItemSummeryInfo(
   , floorName: String
   , count: Int
 )
+
+object OtherItemSummeryInfo {
+  implicit def jsonWrites = Json.writes[OtherItemSummeryInfo]
+}
+
 // 仮設材情報
 case class OtherItemInfo(
      itemNo: String = ""
    , itemKindId: Int = 0
    , itemKindName: String = ""
-   , item_btx_id: Int = 0
+   , itemBtxId: Int = 0
+   , floorIdStr: String = ""
 )
 
 object OtherItemInfo {
   implicit def jsonWrites = Json.writes[OtherItemInfo]
+}
+
+// 仮設材情報(総合)
+case class OtherItemPlotInfo(
+    itemInfo: List[OtherItemInfo] = List[OtherItemInfo]()
+  , summeryInfo : List[OtherItemSummeryInfo] = List[OtherItemSummeryInfo]()
+  , allCount: Int = 0
+)
+
+object OtherItemPlotInfo {
+  implicit def jsonWrites = Json.writes[OtherItemPlotInfo]
 }
 
 @javax.inject.Singleton

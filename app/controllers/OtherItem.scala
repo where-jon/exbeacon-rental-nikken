@@ -3,7 +3,7 @@ package controllers
 import javax.inject.{Inject, Singleton}
 
 import com.mohiva.play.silhouette.api.Silhouette
-import models._
+import models.{OtherItemInfo, _}
 import play.api._
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
@@ -28,11 +28,9 @@ class OtherItem @Inject()(config: Configuration
                                ) extends BaseController with I18nSupport {
 
   /** 初期表示 */
-  def index = SecuredAction.async { implicit request =>
+  def index = SecuredAction { implicit request =>
     // 現場ID
     val placeId = super.getCurrentPlaceId
-    // 建築現場情報
-    val place = placeDAO.selectPlaceList(Seq[Int](placeId)).last
     // フロア情報
     val floorInfoList = floorDAO.selectFloorInfo(placeId)
 
@@ -47,68 +45,9 @@ class OtherItem @Inject()(config: Configuration
     }
 
     // DBデータ
-    val itemDbList = otherItemDAO.selectItemInfo(placeId)
     val itemMap = otherItemDAO.selectItemMap(placeId)
 
-    // API呼び出し
-    var url = place.btxApiUrl
-    if(url.isEmpty){
-      url = config.getString("excloud.dummy.url").get
-    }
-    ws.url(url).get().map { response =>
-
-      // APIデータ
-      val list = Json.parse(response.body).asOpt[List[exCloudBtxData]].getOrElse(Nil)
-      // 総件数
-      var totalCount = 0
-      // フロア毎に処理
-      val resultList = floorInfoList.map{ floor => // ループ - start
-        // 件数
-        var count = 0
-
-        // 仮設材用のBTXを取得
-        val itemsBtx = list.filter(itemDbList.map{i=>i.item_btx_id} contains _.btx_id)
-        //val itemDetected = itemsBtx.filter(floor.exbDeviceIdList contains _.device_id.toString) // フロアのEXBデバイスIDに合致するもの
-        val itemDetected = super.getItemBtxDetected(itemsBtx, floor) // TODO
-        val itemUnDetected = itemsBtx.filter(_.device_id == 0)
-
-        // 検知できたもの
-        itemDetected.foreach(i => { // loop start
-          val rest = itemDbList.filter(_.item_btx_id == i.btx_id)
-          if(rest.isEmpty == false){
-            count += 1
-          }
-        })
-
-        // 未検知
-        itemUnDetected.foreach(i => { // loop start
-          val hist = btxLastPositionDAO.find(placeId, Seq[Int](i.btx_id))
-          if(hist.nonEmpty){
-            if(hist.last.floorId == floor.floorId){
-              val rest = itemDbList.filter(_.item_btx_id == i.btx_id)
-              if(rest.isEmpty == false){
-                count += 1
-              }
-            }
-          }
-        })
-        totalCount += count
-        OtherItemSummeryInfo(floor.floorId, floor.floorName, count)
-      }// foreach - start
-
-      var inputPosition = Seq[BtxLastPosition]()
-      list.foreach { apiData =>
-        // 履歴のインプットを貯める
-        val floors = floorInfoList.filter(_.exbDeviceIdList contains apiData.device_id.toString)
-        if(floors.nonEmpty){
-          inputPosition :+= BtxLastPosition(apiData.btx_id, placeId, floors.last.floorId)
-        }
-      }
-      // 履歴の登録
-      btxLastPositionDAO.update(inputPosition)
-
-      Ok(views.html.otherItem(resultList, itemMap, totalCount, floorId))
-    }
+    Ok(views.html.otherItem(itemMap, floorId))
   }
 
   /**
@@ -117,21 +56,27 @@ class OtherItem @Inject()(config: Configuration
     * @return
     */
   def getPlotInfo = SecuredAction.async { implicit request =>
-    var resultList = Seq[OtherItemInfo]()
+    // 結果
+    var otherItemInfoList = Seq[OtherItemInfo]()
 
     // 現場ID
     val placeId = super.getCurrentPlaceId
     // 建築現場情報
     val place = placeDAO.selectPlaceList(Seq[Int](placeId)).last
     // フロア情報
-    var floorIdOpt: Option[Int] = None
-    if (request.getQueryString("floorId").isEmpty == false) {
-      floorIdOpt = Option(request.getQueryString("floorId").get.toInt)
-    }
-    val floor = floorDAO.selectFloorInfo(placeId = placeId, floorId = floorIdOpt).last
-
+    val floorInfoList = floorDAO.selectFloorInfo(placeId = placeId)
     // 仮設材情報
     val itemDbList = otherItemDAO.selectItemInfo(placeId)
+    // 履歴input
+    var inputPosition = Seq[BtxLastPosition]()
+
+    // パラメータ
+    var paramFloorId = ""
+    if (request.getQueryString("floorId").isEmpty == false) {
+      paramFloorId = request.getQueryString("floorId").get
+    }else{
+      paramFloorId = floorInfoList(0).floorId.toString
+    }
 
     // API呼び出し
     var url = place.btxApiUrl
@@ -140,36 +85,74 @@ class OtherItem @Inject()(config: Configuration
     }
     ws.url(url).get().map { response =>
       // APIデータ
-      val list = Json.parse(response.body).asOpt[List[exCloudBtxData]].getOrElse(Nil)
+      var list = Json.parse(response.body).asOpt[List[exCloudBtxData]].getOrElse(Nil)
+      // 中身を仮設材のBTXのもののみにする
+      list = list.filter(itemDbList.map{i=>i.itemBtxId} contains _.btx_id)
 
-      // 仮設材用のBTXを取得
-      val itemsBtx = list.filter(itemDbList.map{i=>i.item_btx_id} contains _.btx_id)
-      //val itemDetected = itemsBtx.filter(floor.exbDeviceIdList contains _.device_id.toString) // フロアのEXBデバイスIDに合致するもの
-      val itemDetected = super.getItemBtxDetected(itemsBtx, floor) // TODO
-      val itemUnDetected = itemsBtx.filter(_.device_id == 0)
+      list.foreach { apiData => // -- foreach start --
+        var itemNo: String = ""
+        var itemKindId: Int = 0
+        var itemKindName: String = ""
+        var itemBtxId: Int = 0
+        var floorIdStr: String = ""
 
-      // 検知できたもの
-      itemDetected.foreach(i => { // loop start
-        val rest = itemDbList.filter(_.item_btx_id == i.btx_id)
-        if(rest.isEmpty == false){
-          resultList :+= rest.last
-        }
-      })// loop end
+        val item = itemDbList.filter(_.itemBtxId == apiData.btx_id)
+        if(item.nonEmpty){
+          // 仮設材情報
+          itemNo = item.last.itemNo
+          itemKindId = item.last.itemKindId
+          itemKindName = item.last.itemKindName
+          itemBtxId = item.last.itemBtxId
 
-      // 未検知
-      itemUnDetected.foreach(i => { // loop start
-        val hist = btxLastPositionDAO.find(placeId, Seq[Int](i.btx_id))
-        if(hist.nonEmpty){
-          if(hist.last.floorId == floor.floorId){
-            val rest = itemDbList.filter(_.item_btx_id == i.btx_id)
-            if(rest.isEmpty == false){
-              resultList :+= rest.last
+          // フロア決定
+          val nearestFloors = utils.BtxUtil.getNearestFloor(floorInfoList, apiData)
+          if(nearestFloors.nonEmpty){
+            floorIdStr = nearestFloors.last.floorId.toString
+          }else{
+            // 履歴DBから取得
+            val hist = btxLastPositionDAO.find(placeId, Seq[Int](itemBtxId))
+            if(hist.nonEmpty){
+              floorIdStr = hist.last.floorId.toString
+            }else{
+              // 表示なし
+              Logger.warn(s"履歴が無いため表示なし。現場ID = ${placeId}, 仮設材管理No = ${itemNo}, btx_id = ${itemBtxId}")
             }
           }
-        }
-      })// loop end
 
-      Ok(Json.toJson(resultList))
+          // 値のセット
+          otherItemInfoList :+= OtherItemInfo(itemNo, itemKindId, itemKindName, itemBtxId, floorIdStr)
+
+        }else{
+          // 仮設材としてのDB未登録
+          Logger.debug(s"""仮設材としてのDB未登録。btx_id：${apiData.btx_id}""")
+        }
+
+        // 履歴のインプットを貯める
+        val floors = utils.BtxUtil.getNearestFloor(floorInfoList, apiData)
+        if(floors.nonEmpty){
+          inputPosition :+= BtxLastPosition(apiData.btx_id, placeId, floors.last.floorId)
+        }
+      }// -- foreach end --
+
+      // 履歴の登録
+      btxLastPositionDAO.update(inputPosition)
+
+      // 集計 ------------------------
+      var allCount = 0
+      val otherItemSummeryInfoList = floorInfoList.map { f =>
+        val count = otherItemInfoList.filter(_.floorIdStr == f.floorId.toString).length
+        allCount += count
+        OtherItemSummeryInfo(f.floorId, f.floorName, count)
+      }
+
+      // 最終結果
+      val result = OtherItemPlotInfo(
+        otherItemInfoList.filter(_.floorIdStr == paramFloorId).toList
+        , otherItemSummeryInfoList.toList
+        , allCount
+      )
+
+      Ok(Json.toJson(result))
     }
   }
 }

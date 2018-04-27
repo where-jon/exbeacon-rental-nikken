@@ -93,9 +93,8 @@ class CarSummery @Inject()(config: Configuration
           // ID, 作業車番号 --
           carIdStr = car.last.carId.toString//
           carNoStr = car.last.carNo//
-          // フロア -- TODO
-          //val floor = floorInfoList.filter(_.exbDeviceIdList contains apiData.device_id.toString)
-          val floor = super.getNearestFloor(floorInfoList, apiData)
+          // フロア --
+          val floor = utils.BtxUtil.getNearestFloor(floorInfoList, apiData)
           if(floor.nonEmpty){
             floorIdStr = floor.last.floorId.toString//
           }else{
@@ -121,7 +120,7 @@ class CarSummery @Inject()(config: Configuration
           if(keyBtx.nonEmpty){
             if(keyBtx.last.device_id != 0){
               //val floor = floorInfoList.filter(_.exbDeviceIdList contains keyBtx.last.device_id.toString)
-              val floor = super.getNearestFloor(floorInfoList, keyBtx.last)
+              val floor = utils.BtxUtil.getNearestFloor(floorInfoList, keyBtx.last)
               if(floor.nonEmpty){
                 if(floor.last.floorId.toString == floorIdStr){
                   val isNoWorkTime = (new DateTime().toString("HHmm") < config.getString("noWorkTimeEnd").get)
@@ -170,7 +169,7 @@ class CarSummery @Inject()(config: Configuration
         }
 
         // 履歴のインプットを貯める
-        val floors = floorInfoList.filter(_.exbDeviceIdList contains apiData.device_id.toString)
+        val floors = utils.BtxUtil.getNearestFloor(floorInfoList, apiData)
         if(floors.nonEmpty){
           inputPosition :+= BtxLastPosition(apiData.btx_id, placeId, floors.last.floorId)
         }

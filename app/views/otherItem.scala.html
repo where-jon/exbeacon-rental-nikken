@@ -1,4 +1,4 @@
-@(otherItemSummeryInfoList: Seq[models.OtherItemSummeryInfo], itemMap: scala.collection.immutable.ListMap[Int,String], totalCount: Int, floorId: Int)(implicit user: User, messages: Messages, request: RequestHeader, flash: Flash)
+@(itemMap: scala.collection.immutable.ListMap[Int,String], floorId: Int)(implicit user: User, messages: Messages, request: RequestHeader, flash: Flash)
 
 
 @import controllers.routes
@@ -38,6 +38,7 @@
                 <div class="row" style="margin-top: 5%;">
                     <div class="col-xs-10 col-sm-10 col-md-10 col-xs-offset-1 col-sm-offset-1 col-md-offset-1" style="padding:0;">
                         <div>
+                            <!-- 集計テーブル -->
                             <table class="table table-condensed sideSummeryTable">
                                 <thead>
                                     <tr>
@@ -49,28 +50,17 @@
                                     </tr>
                                 </thead>
                                 <tbody class="text-right">
-                                    @for(info <- otherItemSummeryInfoList){
-                                        <tr class="rowHover" id="@info.floorId">
-                                            @if(floorId == info.floorId){
-                                                <td class="floorNameTd summerySelected">@info.floorName</td>
-                                                <td class="itemTd summerySelected">
-                                                    @if(info.count > 0){
-                                                        <span>@{info.count}@Messages("lang.OtherItem.summeryUnit")</span>
-                                                    }
-                                                </td>
-                                            }else{
-                                                <td style="cursor:pointer;" class="floorNameTd">@info.floorName</td>
-                                                <td style="cursor:pointer;" class="itemTd">
-                                                    @if(info.count > 0){
-                                                        <span>@{info.count}@Messages("lang.OtherItem.summeryUnit")</span>
-                                                    }
-                                                </td>
-                                            }
-                                        </tr>
-                                    }
+                                    <tr class="rowHover hidden template">
+                                        <td class="floorNameTd"></td>
+                                        <td class="itemTd">
+                                            <span class="itemCountSpan" data-unit="@Messages("lang.OtherItem.summeryUnit")"></span>
+                                        </td>
+                                    </tr>
                                     <tr>
                                         <td class="floorNameTd">@Messages("lang.OtherItem.summeryTotal")</td>
-                                        <td class="itemTd">@{totalCount}@Messages("lang.OtherItem.summeryUnit")</td>
+                                        <td class="itemTd" id="totalCountTd">
+                                            <span id="totalCountSpan"></span>
+                                            @Messages("lang.OtherItem.summeryUnit")</td>
                                         <input type="hidden" id="floorId" value="@floorId">
                                     </tr>
                                 </tbody>

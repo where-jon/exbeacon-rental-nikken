@@ -109,9 +109,8 @@ class CarReserve @Inject()(config: Configuration
           // ID, 作業車番号 --
           carIdStr = car.last.carId.toString
           carNo = car.last.carNo
-          // フロア -- TODO
-          //val floor = floorInfoList.filter(_.exbDeviceIdList contains apiData.device_id.toString)
-          val floor = super.getNearestFloor(floorInfoList, apiData)
+          // フロア --
+          val floor = utils.BtxUtil.getNearestFloor(floorInfoList, apiData)
           if(floor.nonEmpty){
             floorIdStr = floor.last.floorId.toString//
           }else{
@@ -139,7 +138,7 @@ class CarReserve @Inject()(config: Configuration
         }
 
         // 履歴のインプットを貯める
-        val floors = floorInfoList.filter(_.exbDeviceIdList contains apiData.device_id.toString)
+        val floors = utils.BtxUtil.getNearestFloor(floorInfoList, apiData)
         if(floors.nonEmpty){
           inputPosition :+= BtxLastPosition(apiData.btx_id, placeId, floors.last.floorId)
         }

@@ -82,10 +82,10 @@ class SaveBtxDataActor @Inject()(    config: Configuration
             // ---- ログ ------ end ---
 
             // 履歴のインプットを貯める
-            apiDataList.foreach{d =>
-              val floors = floorInfoList.filter(_.exbDeviceIdList contains d.device_id.toString)
+            apiDataList.foreach{apiData =>
+              val floors = utils.BtxUtil.getNearestFloor(floorInfoList, apiData)
               if(floors.nonEmpty){
-                inputHistoryList :+= BtxLastPosition(d.btx_id, place.placeId, floors.last.floorId)
+                inputHistoryList :+= BtxLastPosition(apiData.btx_id, place.placeId, floors.last.floorId)
               }
             }
             // 履歴の登録
