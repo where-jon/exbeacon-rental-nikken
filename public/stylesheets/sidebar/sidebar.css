@@ -1,0 +1,62 @@
+button {
+    outline: none;
+}
+button .sidebar-btn {
+    color: #fff;
+    font-weight: bold;
+}
+.sidebar {
+    background-color: #595959;
+    width: 350px;
+    height: 100%;
+    position: fixed;
+    top: 54px;
+    left: -350px;
+    z-index: 9999;
+}
+
+
+.sidebar > .sidebar-content {
+    position: absolute;
+    top: 20px;
+    left: 90px;
+    color: #fff;
+}
+.sidebar__btn--frame{
+    background-color: #b4c7e7;
+    display: block;
+    position: fixed;
+    left: 10px;
+    top: 15px;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+    border: none;
+    z-index: 10000;
+}
+/*
+
+@media (min-width: 768px){
+    .sidebar {
+        width:100px;
+    }
+}
+
+@media (min-width: 992px){
+    .sidebar {
+        width:200px;
+    }
+}
+
+@media (min-width: 1200px){
+    .sidebar {
+        width:300px;
+    }
+}
+
+@media (min-width: 168px) and (max-width: 1200px) {
+
+}
+*/
+
+

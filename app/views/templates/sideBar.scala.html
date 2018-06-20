@@ -1,0 +1,24 @@
+@()(implicit user: User, messages: Messages, request: RequestHeader)
+
+@import controllers.routes
+<head>
+    <link rel="stylesheet" href="@routes.MyAssets.css("sidebar/sidebar.css")"/>
+    <link rel="stylesheet" media="screen" href="@routes.MyAssets.lib("fontawesome/css/font-awesome.min.css")">
+    <script type="text/javascript" src="@routes.MyAssets.js("sidebar/jquery-ui.js")"></script>
+    <script type="text/javascript" src="@routes.MyAssets.js("sidebar/sidebar.js")"></script>
+    <script></script>
+</head>
+<body>
+
+<button id="sidebarBtn" class = "sidebar__btn--frame" >
+    <i class="fa fa-bars" aria-hiden="true"></i>
+    <!--<span class="sidebar-btn">OPEN</span>-->
+
+</button>
+<aside class="sidebar">
+    <div class="sidebar-content">
+        sidebar2
+    </div>
+
+</aside>
+
