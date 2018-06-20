@@ -2,15 +2,15 @@
 
 @import controllers.routes
 
-<div class="navbarCorner navbar navbar-default navbar-fixed-top col-xs-3 col-sm-3 col-md-2 col-lg-2">
+<div class="navbarCorner navbar navbar-default navbar-fixed-top ">
     <div class="navbar-brand">
         <div>
             <span>@Messages("system.name")</span>
         </div>
     </div>
 </div>
-<div class="navbar navbar-default navbar-fixed-top col-xs-9 col-sm-9 col-md-10 col-lg-10 col-xs-offset-3 col-sm-offset-3 col-md-offset-2 col-lg-offset-2"
-        style="padding:0;">
+
+<div class=" navbar-top navbar-fixed-top">
     <ul class="nav navbar-nav">
         <li class="pull-left">
             @if(request.path == routes.CarSummery.index.path){
@@ -55,3 +55,6 @@
     <br/>
     <a class="btn btn-navbar btn-signout" href="/signout">@Messages("lang.navbar.link.name.signout")</a>
 </div>
+
+@views.html.templates.sideBar()
+
