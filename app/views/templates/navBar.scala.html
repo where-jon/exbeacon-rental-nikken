@@ -1,8 +1,8 @@
 @()(implicit user: User, messages: Messages, request: RequestHeader)
 
 @import controllers.routes
-
-<div class="navbarCorner navbar navbar-default navbar-fixed-top ">
+<!--タイトル-->
+<div class="navbarCorner navbar navbar-default navbar-fixed-top">
     <div class="navbar-brand">
         <div>
             <span>@Messages("system.name")</span>
@@ -10,7 +10,9 @@
     </div>
 </div>
 
+<!--header-->
 <div class=" navbar-top navbar-fixed-top">
+
     <ul class="nav navbar-nav">
         <li class="pull-left">
             @if(request.path == routes.CarSummery.index.path){
