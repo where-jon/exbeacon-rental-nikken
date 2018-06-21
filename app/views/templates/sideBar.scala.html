@@ -1,55 +1,83 @@
 @()(implicit user: User, messages: Messages, request: RequestHeader)
 
 @import controllers.routes
+
 <head>
-    <link rel="stylesheet" href="@routes.MyAssets.css("sidebar/sidebar.css")"/>
-    <link rel="stylesheet" href="@routes.MyAssets.css("common/main.css")"/>
-    <link rel="stylesheet" href="@routes.MyAssets.css("common/drawer.css")"/>
+    <link rel="stylesheet" href="@routes.MyAssets.css("sidebar/main.css")"/>
+    <link rel="stylesheet" href="@routes.MyAssets.css("sidebar/drawer.css")"/>
     <link rel="stylesheet" media="screen" href="@routes.MyAssets.lib("fontawesome/css/font-awesome.min.css")">
     <script type="text/javascript" src="@routes.MyAssets.js("sidebar/jquery-ui.js")"></script>
-    <script type="text/javascript" src="@routes.MyAssets.js("sidebar/sidebar.js")"></script>
+    <script type="text/javascript" src="@routes.MyAssets.js("sidebar/iscroll.min.js")"></script>
     <script type="text/javascript" src="@routes.MyAssets.js("sidebar/drawer.min.js")"></script>
     <script type="text/javascript" src="@routes.MyAssets.js("sidebar/drawer-setting.js")"></script>
-
     <script></script>
 </head>
-<body>
 
-<button id="sidebarBtn" class = "sidebar__btn--frame" >
-    <i class="fa fa-bars" aria-hiden="true"></i>
-    <!--<span class="sidebar-btn">OPEN</span>-->
+<body class="drawer drawer--left">
 
-</button>
-<aside class="sidebar">
-    <div class="sidebar-content">
-        <nav class="drawer-nav" role="navigation">
-            <ul class="drawer-menu">
-                <li class="acc">
-                    <a class="menu-title"><i class="fa fa-eye"></i>&nbsp;&nbsp;仮設材管理<span class="open-state"><i class="open-state fa fa-angle-down" style="margin-left:10px;"></i></span></a>
-                    <ul class="menu-items" style="display: block;">
-                        <li><a href="/"><i class="fa fa-circle-o"></i>&nbsp;現場状況</a></li>
-                        <li><a href="/"><i class="fa fa-circle-o"></i>&nbsp;作業車・立馬一覧</a></li>
-                        <li><a href="/"><i class="fa fa-circle-o"></i>&nbsp;作業車・立馬予約</a></li>
-                        <li><a href="/"><i class="fa fa-circle-o"></i>&nbsp;作業車・立馬予約取消</a></li>
-                        <li><a href="/"><i class="fa fa-circle-o"></i>&nbsp;作業車仮設材一覧</a></li>
-                        <li><a href="/"><i class="fa fa-circle-o"></i>&nbsp;仮設材予約</a></li>
-                        <li><a href="/"><i class="fa fa-circle-o"></i>&nbsp;仮設材予約取消</a></li>
-                        <li><a href="/"><i class="fa fa-circle-o"></i>&nbsp;未検出の仮設材</a></li>
-                        <li><a href="/"><i class="fa fa-circle-o"></i>&nbsp;ビーコンタグ電池残量確認</a></li>
-                    </ul>
-                </li>
-                <li class="acc">
-                    <a class="menu-title"><i class="fa fa-bar-chart"></i>&nbsp;&nbsp;分析
-                        <span class="open-state"><i class="open-state fa fa-angle-left" style="margin-left:10px;"></i></span></a>
-                    <ul class="menu-items">
-                        <li><a href="/"><i class="fa fa-circle-o"></i>&nbsp;作業車稼働状況</a></li>
-                    </ul>
-                </li>
-            </ul>
-        </nav>
-    </div>
+<header id="header">
+    <button type="button" class="drawer-toggle drawer-hamburger" style="">
+        <i class="fa fa-bars" aria-hiden="true"></i>
+        <span class="sr-only">toggle navigation</span>
+    </button>
+    <nav class="drawer-nav" role="navigation">
+        <ul class="drawer-menu">
+            <li class="acc">
+                <a class="menu-title"><i class="fa fa-eye"></i>&nbsp;&nbsp;仮設材管理<span class="open-state"><i class="open-state fa fa-angle-down" style="margin-left:10px;"></i></span></a>
+                <ul class="menu-items" style="display: block;">
+                    <li style = "text-decoration:line-through;" ><a href="/"><i class="fa fa-circle-o"></i>&nbsp;現場状況</a></li>
+                    <li style = "text-decoration:line-through;" ><a href="/"><i class="fa fa-circle-o"></i>&nbsp;作業車・立馬一覧</a></li>
+                    <li ><a href="/carReserve"><i class="fa fa-circle-o"></i>&nbsp;作業車・立馬予約</a></li>
+                    <li style = "text-decoration:line-through;" ><a href="/"><i class="fa fa-circle-o"></i>&nbsp;作業車・立馬予約取消</a></li>
+                    <li style = "text-decoration:line-through;" ><a href="/"><i class="fa fa-circle-o"></i>&nbsp;作業車仮設材一覧</a></li>
+                    <li style = "text-decoration:line-through;" ><a href="/"><i class="fa fa-circle-o"></i>&nbsp;仮設材予約</a></li>
+                    <li style = "text-decoration:line-through;" ><a href="/"><i class="fa fa-circle-o"></i>&nbsp;仮設材予約取消</a></li>
+                    <li style = "text-decoration:line-through;" ><a href="/"><i class="fa fa-circle-o"></i>&nbsp;未検出の仮設材</a></li>
+                    <li><a href="/cms/txTagManage"><i class="fa fa-circle-o"></i>&nbsp;ビーコンタグ電池残量確認</a></li>
+                </ul>
+            </li>
+            <li class="acc">
+                <a class="menu-title"><i class="fa fa-bar-chart"></i>&nbsp;&nbsp;分析
+                    <span class="open-state"><i class="open-state fa fa-angle-left" style="margin-left:10px;"></i></span></a>
+                <ul class="menu-items">
+                    <li><a href="/"><i class="fa fa-circle-o"></i>&nbsp;作業車稼働状況</a></li>
+                </ul>
+            </li>
 
+            <li class="acc">
+                <a class="menu-title"><i class="fa fa-gear"></i>&nbsp;&nbsp;メンテナンス<span class="open-state"><i class="open-state fa fa-angle-left" style="margin-left:10px;"></i></span></a>
+                <ul class="menu-items">
+                    <li><a href="/cms/floorManage"><i class="fa fa-circle-o"></i>&nbsp;フロアとエリア</a></li>
+                    <li><a href="/cms/txTagManage"><i class="fa fa-circle-o"></i>&nbsp;EXBeacon一覧</a></li>
+                    <li><a href="/cms/carManage"><i class="fa fa-circle-o"></i>&nbsp;作業車</a></li>
+                    <li><a href="cms/itemManage"><i class="fa fa-circle-o"></i>&nbsp;仮設材</a></li>
+                    <li style = "text-decoration:line-through;" ><a href="/"><i class="fa fa-circle-o"></i>&nbsp;仮設材種別</a></li>
+                    <li><a href="/cms/companyManage"><i class="fa fa-circle-o"></i>&nbsp;業者</a></li>
+                    <li><a href="/"><i class="fa fa-circle-o"></i>&nbsp;現場アカウント</a></li>
+                </ul>
+            </li>
 
+            <li class="acc">
+                <a class="menu-title"><i class="fa fa-wrench"></i>&nbsp;&nbsp;現場管理<span class="open-state"><i class="open-state fa fa-angle-left" style="margin-left:10px;"></i></span></a>
+                <ul class="menu-items">
+                    <li style = "text-decoration:line-through;"><a href="/"><i class="fa fa-circle-o"></i>&nbsp;現場</a></li>
+                    <li style = "text-decoration:line-through;"><a href="/"><i class="fa fa-circle-o"></i>&nbsp;アカウント管理</a></li>
+                </ul>
+            </li>
+
+            <li class="acc">
+                <a class="menu-title"><i class="fa fa-eye"></i>&nbsp;&nbsp;exb管理<span class="open-state"><i class="open-state fa fa-angle-left" style="margin-left:10px;"></i></span></a>
+                <ul class="menu-items">
+                    <li><a href="/manage/mapManager"><i class="fa fa-circle-o"></i>&nbsp;マップマネージャー</a></li>
+                    <li style = "text-decoration:line-through;"><a href="/"><i class="fa fa-circle-o"></i>&nbsp;exb座標マネージャー</a></li>
+                </ul>
+            </li>
+
+        </ul>
+    </nav>
+</header>
+
+</body>
 
 </aside>
 

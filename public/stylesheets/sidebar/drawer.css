@@ -17,12 +17,12 @@
 .drawer-nav {
   position: fixed;
   z-index: 101;
-  top: 50px;
   overflow: hidden;
   width: 24.25rem;
-  height: 100%;
   color: #222;
   background-color: #fff;
+  top: 50px;
+  height: calc(100% - 50px);
   overflow-y: auto;
 }
 
