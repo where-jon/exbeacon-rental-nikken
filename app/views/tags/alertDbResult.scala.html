@@ -1,0 +1,25 @@
+@(msg: String, key: String)(implicit user: User, messages: Messages)
+@alertType = @{ (if (key == "resultNG") "resultNG" else key) }
+<div class="hidden" id = "dbResult">
+	@alertType
+</div>
+<div class="hidden" id="dbMessage">
+	@msg
+</div>
+
+<div id="resultModal" class="bootbox modal fade in" tabindex="-1" role="dialog" style="display: block;">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" id="alertClose" class="bootbox-close-button close" data-dismiss="modal" aria-hidden="true">×</button>
+				<h4 class="modal-title">@Messages("dialog.db.result")</h4>
+			</div>
+			<div class="modal-body">
+				<div class="bootbox-body"><p><i class="fa fa-spin fa-spinner"></i> Loading...</p></div>
+			</div>
+			<div class="alert__modal--footer">
+				<button id="alertOk" data-bb-handler="ok" type="button" class="btn btn-primary">OK</button>
+			</div>
+		</div>
+	</div>
+</div>

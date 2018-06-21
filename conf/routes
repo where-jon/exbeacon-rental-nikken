@@ -38,9 +38,14 @@ POST    /cms/floorManage/floorUpdate    controllers.cms.FloorManage.floorUpdate
 POST    /cms/floorManage/floorDelete    controllers.cms.FloorManage.floorDelete
 #  POST    /cms/floorManage/sort           controllers.cms.FloorManage.sort
 
+# マップマネージャー
+GET     /cms/floorManage                controllers.cms.FloorManage.index
+
+GET    /cms/testMap              controllers.cms.TestMap.index
+GET    /manage/mapManager              controllers.manage.MapManager.index
 
 # 作業車管理・立馬一覧
-GET     /cms/carManage2                  controllers.cms.CarManage.index
+#GET     /cms/carManage2                  controllers.cms.CarManage.index
 
 # 作業車管理
 GET     /cms/carManage                  controllers.cms.CarManage.index

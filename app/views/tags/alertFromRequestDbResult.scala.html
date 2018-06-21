@@ -1,0 +1,2 @@
+@(request: RequestHeader, key: String)(implicit user: User, messages: Messages)
+@request.flash.get(key).map { msg => @alertDbResult(msg, key) }
