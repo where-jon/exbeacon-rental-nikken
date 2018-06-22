@@ -360,3 +360,8 @@ lang.OtherItem.itemTableTitle.name=資材名
 lang.OtherItem.itemTableTitle.value=利用状況
 
 
+# Manage
+lang.manage.mapManager = マップマネージャー
+
+#dialog
+dialog.db.result  = 処理結果

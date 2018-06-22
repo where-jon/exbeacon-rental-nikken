@@ -49,3 +49,36 @@
     border-radius: 5px;
 }
 /* manager関連.end */
+
+
+/*bootbox関連.start*/
+.alert__result--frame{
+ 	left:33%;
+    position: absolute;
+}
+
+.alert__result--ng{
+    color: #a94442 !important;
+    background-color: #f1cece !important;
+    border-color: #876d6d !important;
+}
+
+
+.alert__modal--footer{
+    padding: 7px;
+    text-align: right;
+    border-top: 1px solid #e5e5e5;
+}
+.alert__result--ok{
+ 	color: #3c763d;
+   	background-color: #cde3c4 !important;
+    border-color: #98a28f !important;
+}
+
+.alert__frame{
+ 	margin-top: 46px;
+    position: absolute;
+    width: 465px;
+    z-index: 10000;
+}
+/*bootbox関連.end*/
