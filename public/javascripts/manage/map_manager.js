@@ -11,7 +11,7 @@ $( window ).resize(function() {
 $(function () {
 
     // 一覧ボタンイベント
-    gInit.backBtnStopEvent();
+    //gInit.backBtnStopEvent();
 
     // 初期表示
     var beaconMapFrame = document.getElementById("beaconMap-1");
@@ -112,7 +112,7 @@ $(function () {
         /* btnイベント .end*/
 
 
-        gTopMenu.setMenuSelect();
+        //gTopMenu.setMenuSelect();
 
         gResize.mapCenterMove();
 
