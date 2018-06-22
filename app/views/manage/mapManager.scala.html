@@ -8,20 +8,22 @@
 <html lang="ja">
 <head>
     @templates.htmlHead(title = Messages("lang.cms.carManage.title"))
-    <link rel="stylesheet" href="@routes.MyAssets.css("common/building-main.css")"/>
-    <script type="text/javascript" src="@routes.MyAssets.js("manage/map_manage.js")"></script>
+    <script type="text/javascript" src="@routes.MyAssets.js("manage/map_manager.js")"></script>
     <script></script>
 </head>
 
 <body>
+
+@views.html.templates.navBar()
+
 @mapViewerForm.globalError.map { error =>
 @tags.alert(error.message, "error")
 }
 
 <div class="top-area">
     <div class="top__btn--area ">
-        <div id="top-title" class="top__btn--text">@Messages("lang.title.mapManager")</div>
-        <div class=" top__manager__btn--area">
+        <div id="top-title" class="top__btn--text">@Messages("lang.manage.mapManager")</div>
+        <div class=" top__map__btn--area">
 
             <select id="floor-category" class=" manager__data--floor">
                 @mapViewer.zipWithIndex.map { case(map, i) =>
@@ -36,7 +38,7 @@
 <br/>
 <br/>
 
-<form id="viewForm" method="post" action=/mapManager/uploadMap" class = "hidden">
+<form id="viewForm" method="post" action=/manage/uploadMap" class = "hidden">
     <tbody class="scrollBodyT" id = "tBody">
     <table class="table table-condensed table-bordered">
         <thead class="scrollHead">
@@ -79,16 +81,14 @@
     @CSRF.formField
 </form>
 <div class="map__main--frame" id ="map__main--frame">
-    @views.html.templates.navBar()
     <div class = "alert__result--frame">
         @tags.alertFromRequestDbResult(request, "resultOK")
         @tags.alertFromRequestDbResult(request, "resultNG")
     </div>
-
     @mapViewer.zipWithIndex.map { case(map, i) =>
     <div id="beaconMap-@(i+1)" class = "hidden level level--@i layer-beacon" aria-label="Level @i">
 
-        <form action="/mapManager/uploadMap" method="POST" enctype="multipart/form-data" class="img__area--frame">
+        <form action="/manage/uploadMap" method="POST" enctype="multipart/form-data" class="img__area--frame">
             <div class = "inputFrame map__input--frame">
                 <input id="inputNum-@i" class="map__image--input"   type="file" name="map_image[@i]" accept="image/gif,image/jpeg,image/png"  >
                 <input id="map_id" class ="hidden"  type="text"  value=@map.map_id  name="map_id[@i]">
