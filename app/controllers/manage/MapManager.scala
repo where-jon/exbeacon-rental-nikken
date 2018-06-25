@@ -20,7 +20,7 @@ import play.api.libs.json.Json
 import java.awt.image.BufferedImage
 
 /**
-  * Created by ep-146 on 2018/06/21.
+  * マップ登録クラス.
   */
 class MapManager @Inject()(config: Configuration
                            , val silhouette: Silhouette[MyEnv]
