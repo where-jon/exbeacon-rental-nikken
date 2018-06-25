@@ -1,0 +1,147 @@
+@(exbForm: Form[ExbData],exbs: Seq[Exb])(implicit user: User, messages: Messages, request: RequestHeader, flash: Flash)
+
+@import controllers.routes
+@import helper._
+
+
+<!doctype html>
+<html lang="ja" style = "overflow: hidden;">
+<head>
+    @templates.htmlHead(title = Messages("lang.cms.carManage.title"))
+    <script type="text/javascript" src="@routes.MyAssets.js("manage/exb_manager.js")"></script>
+<script></script>
+</head>
+
+<body>
+
+	@views.html.templates.navBar()
+	<div class="top__btn--area">
+		<div id ="top-title" class = "top__btn--text">
+			@Messages("lang.manage.exbManager")
+		</div>
+		<div class = "top__map__btn--area">
+
+			<button id ="update-btn" class="btn__type default__btn">@Messages("lang.btn.update")</button>
+			<button id ="delete-btn" class="btn__type default__btn">@Messages("lang.btn.delete")</button>
+			<button id ="insert-btn" class="btn__type default__insert--btn">@Messages("lang.btn.addRow")</button>
+			<button id = "csvImportBtn" class="hidden btn__type default__csv--btn">@Messages("lang.btn.csvImport")</button>
+			<a id="csvExport" href="exb/export">
+				<button id = "csvExportBtn" class="hidden btn__type default__csv--btn">@Messages("lang.btn.csvExport")</button>
+			</a>
+			<a id="btn-update" class="btn__update--style">
+				<i class="btn__icon--style btn__telemetry__icon--style fa fa-refresh fa-3x"></i>
+				<!--   <div class="date"></div>
+                <div class="time"></div> -->
+			</a>
+		</div>
+
+	</div>
+	<div class = "main--frame">
+		<form id="viewForm" method="post" action="">
+			<table class="table table-condensed table-bordered">
+				<thead class="scrollHead">
+				<tr>
+					<div class = "alert__result--frame">
+						@tags.alertFromRequestDbResult(request, "resultOK")
+						@tags.alertFromRequestDbResult(request, "resultNG")
+					</div>
+					<th class="table__flame--title common__check--frame">
+						<input class= "checkTotal" type="checkbox" name="chk_total" value="">
+					</th>
+					<th class="hidden table__flame--title exb__no--frame" >cId</th>
+					<th class="table__flame--title exb__no--frame" >@Messages("lang.number")</th>
+					<th class="table__flame--title exb__deviceId--frame" >@Messages("lang.deviceID")</th>
+					<th class="table__flame--title exb__name--frame" >@Messages("lang.deviceName")</th>
+					<th class="table__flame--title exb__pos--Name">@Messages("lang.siteName")</th>
+
+				</tr>
+				</thead>
+
+
+				<tbody class="scrollBody" id = "tBody">
+				@exbs.zipWithIndex.map { case(exb, i) =>
+				<tr class = "pos-search">
+					<!-- checkbox -->
+					<td class="item common__check--frame" id="check-@i">
+						<input class= "checkTotal" type="checkbox" name="chk_info" value="@(i+1)">
+					</td>
+
+					<!-- check id  -->
+					<td class="hidden item exb__no--frame" id="id-@i">
+						<input class="form-control input-sm" type="text" id="id-@i" value="@exb.exb_id"></input>
+						<!--
+                        <div class="">
+                        @exb.exb_id
+                    </div>-->
+
+					</td>
+
+					<!-- editid -->
+					<td class="item exb__no--frame" >
+						<input class="form-control input-sm edit-check" type="text" id="edit-id-@i" value="@exb.exb_id"></input>
+					</td>
+
+					<!-- device_id -->
+					<td class="item exb__deviceId--frame">
+						<input class="form-control input-sm" type="text" id="device-id-@i" value="@exb.exb_device_id">
+					</td>
+
+					<!-- exb_name -->
+					<td class="item exb__name--frame">
+						<input class="form-control input-sm" type="text" id="exb-name-@i" value="@exb.exb_name">
+					</td>
+
+					<!-- 部署名 -->
+					<td class="item exb__pos--Name">
+						<input class="form-control input-sm" type="text" id="pos-name-@i" value="@exb.exb_pos_name">
+					</td>
+
+				</tr>
+				}
+
+				<tr class="common__clone--frame hidden" id = "cloneElement">
+					<td class="item common__check--frame" id="check">
+						<input class= "" type="checkbox" name="" value="">
+					</td>
+
+					<!-- check id  -->
+					<td class="hidden item exb__no--frame">
+						<!--<div class="">
+                    </div>-->
+						<input class="form-control input-sm" type="text" id="id" value=""></input>
+
+					</td>
+
+					<!-- editid -->
+					<td class="item exb__no--frame" >
+						<input class="form-control input-sm" type="text" id="edit-id" value=""></input>
+					</td>
+
+					<!-- device_id -->
+					<td class="item exb__deviceId--frame">
+						<input class="form-control input-sm" type="text" id="device-id" value="">
+					</td>
+
+					<!-- exb_name -->
+					<td class="item exb__name--frame">
+						<input class="form-control input-sm" type="text" id="exb-name" value="">
+					</td>
+
+					<!-- 部署名 -->
+					<td class="item exb__pos--Name">
+						<input class="form-control input-sm" type="text" id="pos-name" value="">
+					</td>
+				</tr>
+
+				</tbody>
+			</table>
+			@CSRF.formField
+		</form>
+	</div>
+
+
+
+</body>
+</html>
+
+
