@@ -24,6 +24,38 @@
 .wrapper__img--canvas {
    text-align:center;
 }
+.no--scroll--frame{
+    overflow: hidden;
+}
+.main--frame{
+    margin-top: 115px;
+    left: 0;
+    overflow: hidden;
+    width: inherit;
+    background-size: cover;
+    padding-right: 8px;
+    padding-left: 10px;
+}
+
+.pos-search {
+  display: table;
+  width: 100%;
+}
+
+.scrollBody{
+  overflow-y:scroll;
+  display:block;
+}
+/*幅調整*/
+td,th{
+  table-layout:fixed;
+}
+
+thead.scrollHead{
+  display:inherit;
+  position: relative;
+  width:100%;
+}
 
 /* mapManager関連.start */
 .map__main--frame{
@@ -76,9 +108,67 @@
 }
 
 .alert__frame{
- 	margin-top: 46px;
+    margin-top: 46px;
     position: absolute;
     width: 465px;
     z-index: 10000;
 }
 /*bootbox関連.end*/
+
+
+.table__flame--title{
+    vertical-align: inherit !important;
+    text-align: center;
+    background:#bababa;
+    border-top: 2px solid #000000 !important;
+    border-bottom: 2px solid #000000 !important;
+
+}
+.common__check--frame{
+    text-align: center;
+}
+
+/*btn.start*/
+.btn__type {
+    margin-left: 1em;
+    width: 8em;
+    color: white;
+    background: #545454;
+    left: 10px;
+    height: 37px;
+    font-size: 12px;
+    text-decoration: none;
+    -moz-border-radius: 5px;
+    -o-border-radius: 5px;
+}
+.default__btn {
+    background: #c0504d !important;
+}
+
+.btn__icon--style {
+    font-size: 2em !important;
+    margin-left: 20px !important;
+    float: right !important;
+    margin-top: 4px;
+}
+/*btn.end*/
+
+/*Exbマスター画面column幅 .start*/
+.common__check--frame{
+ width:3% !important;
+ text-align: center !important;
+ line-height: 2.5 !important;
+}
+
+.exb__no--frame{
+  width:8% !important;
+}
+.exb__deviceId--frame{
+  width:7% !important;
+}
+
+.exb__name--frame{
+  width:10% !important;
+}
+
+/*EXB状態監視画面column幅 .end*/

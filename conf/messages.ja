@@ -362,6 +362,19 @@ lang.OtherItem.itemTableTitle.value=利用状況
 
 # Manage
 lang.manage.mapManager = マップマネージャー
+lang.manage.exbManager = EXBマネージャー
 
 #dialog
 dialog.db.result  = 処理結果
+
+
+#button
+lang.btn.addRow = 行追加
+lang.btn.update = 更新
+lang.btn.delete = 削除
+
+
+lang.deviceID = 端末ID
+lang.number = 番号
+lang.deviceName = 端末名
+lang.siteName = 設置場所名

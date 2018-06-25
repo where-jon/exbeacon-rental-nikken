@@ -38,9 +38,17 @@ POST    /cms/floorManage/floorUpdate    controllers.cms.FloorManage.floorUpdate
 POST    /cms/floorManage/floorDelete    controllers.cms.FloorManage.floorDelete
 #  POST    /cms/floorManage/sort           controllers.cms.FloorManage.sort
 
+
+# 現場状況
+GET    /site/workPlace                 controllers.site.WorkPlace.index
+
 # マップマネージャー
 GET    /manage/mapManager              controllers.manage.MapManager.index
 POST   /manage/uploadMap               controllers.manage.MapManager.uploadMap
+# exbマネージャー
+GET    /manage/exbManager              controllers.manage.ExbManager.index
+POST   /exb/deleteExb      		       controllers.manage.ExbManager.deleteExb
+POST   /exb/updateExb      		       controllers.manage.ExbManager.updateExb
 
 # 作業車管理
 GET     /cms/carManage                  controllers.cms.CarManage.index
