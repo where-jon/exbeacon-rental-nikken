@@ -1,0 +1,187 @@
+@(exbViewerForm: Form[ExbViewerData],exbViewer: Seq[ExbViewerTotal],mapViewer: Seq[MapViewer],viewType: Seq[ViewType])(implicit user: User, messages: Messages, request: RequestHeader, flash: Flash)
+
+@import controllers.routes
+@import helper._
+
+
+<!doctype html>
+<html lang="ja" style = "overflow: hidden;">
+<head>
+    @templates.htmlHead(title = Messages("lang.cms.carManage.title"))
+    <script type="text/javascript" src="@routes.MyAssets.js("manage/exb_viewer_manager.js")"></script>
+<script></script>
+</head>
+
+<body>
+
+	@views.html.templates.navBar()
+	<div class="top__btn--area">
+		<div id ="top-title" class = "top__btn--text">
+			@Messages("lang.manage.exbViewerManager")
+		</div>
+		<div class = "top__map__btn--area">
+
+			<button id="update-btn" class="btn__type default__btn">@Messages("lang.btn.update")</button>
+			<button id="reset-btn" class="btn__type default__csv--btn">@Messages("lang.btn.reload")</button>
+
+			<select id="floor-category" class=" manager__data--floor">
+				@mapViewer.zipWithIndex.map { case(map, i) =>
+					<option value="@map.map_id" @{if(map.map_id == 3) "selected" else ""}>@map.map_position</option>
+				}
+			</select>
+		</div>
+
+	</div>
+	<!-- 部署マスター -->
+	<div class = "db__common--frame hidden">
+		<table class="table"  >
+			<tbody>
+
+			@exbViewer.zipWithIndex.map { case(viewer, i) =>
+			<tr class = "exbViewer">
+				<td class="item" id="viewer_id-@i">@viewer.exb_id</td>
+				<td class="item" id="viewer_visible-@i">@viewer.viewer_visible</td>
+				<td class="item" id="viewer_pos_type-@i">@viewer.viewer_pos_type</td>
+				<td class="item" id="viewer_pos_x-@i">@viewer.viewer_pos_x</td>
+				<td class="item" id="viewer_pos_y-@i">@viewer.viewer_pos_y</td>
+				<td class="item" id="viewer_pos_margin-@i">@viewer.viewer_pos_margin</td>
+				<td class="item" id="viewer_pos_count-@i">@viewer.viewer_pos_count</td>
+				<td class="item" id="viewer_pos_floor-@i">@viewer.viewer_pos_floor</td>
+				<td class="item" id="viewer_pos_size-@i">@viewer.viewer_pos_size</td>
+				<td class="item" id="exb_pos_name-@i">@viewer.exb_pos_name</td>
+				<td class="item" id="exb_id-@i">@viewer.exb_id</td>
+			</tr>
+			}
+			</tbody>
+		</table>
+	</div>
+
+	<div class="manager__data--frame">
+
+		<form id="viewForm" method="post" action="">
+			<table class="table table-condensed table-bordered">
+				<thead class="scrollHead">
+				<tr>
+					<div class = "alert__result--frame">
+						@tags.alertFromRequestDbResult(request, "resultOK")
+						@tags.alertFromRequestDbResult(request, "resultNG")
+					</div>
+					<!--
+                    <th class="table__flame--title viewer__id--frame" >Id</th>
+                    -->
+					<th class="table__flame--title viewer__posNum--frame" >posNum</th>
+					<th class="table__flame--title viewer__visible--frame" >visible</th>
+					<th class="table__flame--title viewer__posFloor--frame">floor</th>
+					<th class="table__flame--title viewer__posType--frame" >posType</th>
+					<th class="table__flame--title viewer__posCount--frame" >posCnt</th>
+					<th class="table__flame--title viewer__posX--frame" >pos_x</th>
+					<th class="table__flame--title viewer__posY--frame">pos_y</th>
+					<th class="table__flame--title viewer__posSize--frame">size</th>
+					<th class="table__flame--title viewer__margin--frame">margin</th>
+
+				</tr>
+				</thead>
+
+				<tbody class="scrollBodyT" id = "tBody">
+				@exbViewer.zipWithIndex.map { case(viewer, i) =>
+				<tr class = "hidden pos-search" id = "viewer-list-@viewer.exb_id">
+					<td class="item viewer__posId--frame hidden">
+						<input class="hidden form-control input-sm" type="text" id="input_viewer_id-@viewer.exb_id" value="@viewer.exb_id" name="viewerId[@i]" >
+					</td>
+					<!-- viewer_pos_num  -->
+					<td class="item viewer__posNum--frame">
+						<input class="hidden form-control input-sm" type="text" id="input_viewer_pos_num-@viewer.exb_id" value="@viewer.exb_id" name="viewerPosNum[@i]" >
+
+						<select id="input-num-category-@viewer.exb_id" class="exb__select--category inputNum">
+							@exbViewer.zipWithIndex.map { case(viewer2, j) =>
+							<option class ="" value="@viewer2.exb_id"  @{if(viewer2.exb_id == viewer.exb_id) "selected" else ""}>@viewer2.exb_id</option>
+							}
+						</select>
+					</td>
+
+
+					<!-- viewer_visible  -->
+					<td class="item viewer__visible--frame">
+						<input class="hidden form-control input-sm" type="text"　data-type = "visible-form" id="input_viewer_visible-@viewer.exb_id" value="@viewer.viewer_visible" name="viewerVisible[@i]">
+						<select id="input-visible-category-@i" class="exb__select--category inputVisible">
+							<option value="true" @{if(viewer.viewer_visible) "selected" else ""}>表示</option>
+							<option value="false"  @{if(!viewer.viewer_visible) "selected" else ""}>非表示</option>
+						</select>
+					</td>
+
+					<!-- viewer_pos_floor  -->
+					<td class="item viewer__posFloor--frame">
+						<input class="hidden form-control input-sm" type="text" data-type = "floor-form" id="input_viewer_pos_floor-@viewer.exb_id" value="@viewer.viewer_pos_floor" name="viewerPosFloor[@i]">
+						<select id="input-floor-category-@i" class="exb__select--category inputFloor">
+							@mapViewer.zipWithIndex.map { case(map, i) =>
+							<option value="@map.map_id"  @{if(map.map_id == viewer.viewer_pos_floor.toInt) "selected" else ""}>@map.map_position</option>
+							}
+						</select>
+					</td>
+
+					<!-- viewer_pos_type  -->
+					<td class="item viewer__posType--frame">
+						<input class="form-control input-sm hidden" type="text" data-type = "type-form" id="input_viewer_pos_type-@viewer.exb_id" value="@viewer.viewer_pos_type" name="viewerPosType[@i]">
+						<select id="input-view-category-@i" class="exb__select--category inputPosType">
+							@viewType.zipWithIndex.map { case(view, i) =>
+							<option value="@view.view_type_name"  @{if(view.view_type_name == viewer.viewer_pos_type) "selected" else ""}>@view.view_type_name</option>
+							}
+						</select>
+					</td>
+
+					<!-- viewer_pos_count  -->
+					<td class="item viewer__posCount--frame">
+						<input class="form-control input-sm" type="text" data-type = "count-form" id="input_viewer_pos_count-@viewer.exb_id" value="@viewer.viewer_pos_count" name="viewerPosCount[@i]">
+					</td>
+
+					<!-- viewer_pos_x  -->
+					<td class="item viewer__posX--frame">
+						<input class="form-control input-sm" type="text" id="input_viewer_pos_x-@viewer.exb_id" value="@viewer.viewer_pos_x" name="viewerPosX[@i]">
+					</td>
+
+					<!-- viewer_pos_y  -->
+					<td class="item viewer__posY--frame">
+						<input class="form-control input-sm" type="text" id="input_viewer_pos_y-@viewer.exb_id" value="@viewer.viewer_pos_y" name="viewerPosY[@i]">
+					</td>
+
+
+					<!-- viewer_pos_size  -->
+					<td class="item viewer__posSize--frame">
+						<input class="form-control input-sm" type="text" id="input_viewer_pos_size-@viewer.exb_id" value="@viewer.viewer_pos_size" name="viewerPosSize[@i]">
+					</td>
+
+
+					<!-- viewer_pos_margin  -->
+					<td class="item viewer__margin--frame">
+						<input class="form-control input-sm" type="text" id="input_viewer_pos_margin-@viewer.exb_id" value="@viewer.viewer_pos_margin" name="viewerPosMargin[@i]">
+					</td>
+
+
+				</tr>
+				}
+
+				</tbody>
+			</table>
+
+			@CSRF.formField
+		</form>
+
+
+
+	</div>
+	<div class="manager__main--frame" id ="map__main--frame">
+		@mapViewer.zipWithIndex.map { case(map, i) =>
+		<div id="beaconMap-@map.map_id" class = "hidden level level--@i layer-beacon" aria-label="Level @i">
+			<div class="wrapper__img--canvas" >
+				<img id ="imgFrame-@i" class="img__map__manager--style" src=@map.map_image />
+			</div>
+		</div>
+		}
+	</div>
+
+
+
+</body>
+</html>
+
+
