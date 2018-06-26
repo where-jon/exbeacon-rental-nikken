@@ -45,10 +45,15 @@ GET    /site/workPlace                 controllers.site.WorkPlace.index
 # マップマネージャー
 GET    /manage/mapManager              controllers.manage.MapManager.index
 POST   /manage/uploadMap               controllers.manage.MapManager.uploadMap
+
 # exbマネージャー
 GET    /manage/exbManager              controllers.manage.ExbManager.index
 POST   /exb/deleteExb      		       controllers.manage.ExbManager.deleteExb
 POST   /exb/updateExb      		       controllers.manage.ExbManager.updateExb
+
+# exb座標マネージャー
+GET    /manage/exbViewerManager        controllers.manage.ExbViewerManager.index
+POST   /manage/updateExbViewer         controllers.manage.ExbViewerManager.updateViewerManager
 
 # 作業車管理
 GET     /cms/carManage                  controllers.cms.CarManage.index
