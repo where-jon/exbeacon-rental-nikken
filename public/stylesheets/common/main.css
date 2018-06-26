@@ -172,3 +172,42 @@ thead.scrollHead{
 }
 
 /*EXB状態監視画面column幅 .end*/
+
+/*EXB座標マネージャー.start*/
+.manager__data--frame {
+    width: 100%;
+    height: 75px;
+    left: 0;
+    z-index: 1;
+    top: 100px;
+    position: absolute;
+    background: #ffffff;
+}
+.manager__main--frame {
+    position:absolute;
+    top: 180px;
+    width:100%;top:
+
+}
+.exb__viewer--frame {
+    background: #ffeb3b;
+	display: inline-block;
+	position: absolute;
+	color: black;
+	text-align: center;
+	border-radius: 4.0vmin;
+	-moz-border-radius:  4.0vmin;
+	-webkit-border-radius: 4.0vmin;
+	-o-border-radius: 4.0vmin;
+}
+.exb__pin--active {
+    opacity: 1;
+    -ms-transform: scale(1.2);
+    -webkit-transform: scale(1.2);
+    transform: scale(1.2);
+    border-width: thick;
+    z-index: 10;
+    border: medium solid #ff5555;
+}
+
+/*EXB座標マネージャー.end*/
