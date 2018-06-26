@@ -25,9 +25,7 @@ import java.awt.image.BufferedImage
 class MapManager @Inject()(config: Configuration
                            , val silhouette: Silhouette[MyEnv]
                            , val messagesApi: MessagesApi
-                           , carDAO: models.carDAO
                            , ws: WSClient
-                           , btxDAO: models.btxDAO
                            , mapViewerDAO: models.MapViewerDAO
                           ) extends BaseController with I18nSupport {
 
@@ -129,14 +127,8 @@ class MapManager @Inject()(config: Configuration
 
     if (super.isCmsLogged) {
       // 選択された現場の現場ID
-      val placeId = super.getCurrentPlaceId
-      // 業者情報
-      val carList = carDAO.selectCarInfo(placeId = placeId)
-
-
       val mapViewer = mapViewerDAO.selectAll()
       Ok(views.html.manage.mapManager(mapViewerForm, mapViewer))
-      //k(views.html.manage.mapManager(carList, placeId))
     } else {
       Redirect(CMS_NOT_LOGGED_RETURN_PATH).flashing(ERROR_MSG_KEY -> Messages("error.cmsLogged.invalid"))
     }
