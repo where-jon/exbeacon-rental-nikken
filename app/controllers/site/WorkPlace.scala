@@ -10,7 +10,7 @@ import play.api.libs.ws.WSClient
 import utils.silhouette.MyEnv
 
 /**
-  * マップ登録クラス.
+  * 現場状況クラス.
   */
 class WorkPlace @Inject()(config: Configuration
                           , val silhouette: Silhouette[MyEnv]
@@ -19,7 +19,7 @@ class WorkPlace @Inject()(config: Configuration
                           , ws: WSClient
                           , btxDAO: models.btxDAO
                           , mapViewerDAO: models.MapViewerDAO
-                          ) extends BaseController with I18nSupport {
+                         ) extends BaseController with I18nSupport {
 
 
   /** 初期表示 */
@@ -27,7 +27,7 @@ class WorkPlace @Inject()(config: Configuration
 
     if (super.isCmsLogged) {
       val mapViewer = mapViewerDAO.selectAll()
-      Ok(views.html.site.workPlace( mapViewer))
+      Ok(views.html.site.workPlace(mapViewer))
     } else {
       Redirect(CMS_NOT_LOGGED_RETURN_PATH).flashing(ERROR_MSG_KEY -> Messages("error.cmsLogged.invalid"))
     }
