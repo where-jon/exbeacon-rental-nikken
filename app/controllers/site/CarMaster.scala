@@ -4,7 +4,7 @@ import javax.inject.{Inject, Singleton}
 
 import com.mohiva.play.silhouette.api.Silhouette
 import controllers.BaseController
-import models.{Car, CarData}
+import models.CarData
 import play.api._
 import play.api.data.Form
 import play.api.data.Forms._
@@ -39,17 +39,13 @@ class CarMaster @Inject()(config: Configuration
     System.out.println("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------start updateExbViewer:");
     // 部署情報
     var carFormData = carForm.bindFromRequest.get;
-    var vPlaceId = carFormData.placeId
-    FILTER1 = vPlaceId
-
-    var carList: Seq[Car] = null
-
-    if(vPlaceId!=0){
-      carList = carDAO.selectCarMasterInfo(vPlaceId)
-
-    }else{
-      carList = carDAO.selectCarMasterAll()
+    FILTER1 = carFormData.placeId
+    //var carList: Seq[Car] = null
+    var carList = carDAO.selectCarMasterAll()
+    if(FILTER1!=0){
+      carList = carList.filter(_.placeId == FILTER1)
     }
+
     Ok(views.html.site.carMaster(FILTER1,carList))
   }
 
