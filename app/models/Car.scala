@@ -6,25 +6,6 @@ import anorm.SqlParser._
 import anorm.{~, _}
 import play.api.Logger
 import play.api.db._
-import play.api.libs.functional.syntax._
-import play.api.libs.json.{JsPath, Json, Reads}
-
-//case class roomPosition(
-//  room_id: String,
-//  room_name: String,
-//  description: String
-//)
-//object roomPosition {
-//
-//  implicit val jsonReads: Reads[roomPosition] = (
-//      ((JsPath \ "room_id").read[String] | Reads.pure("")) ~
-//      ((JsPath \ "room_name").read[String] | Reads.pure(""))~
-//      ((JsPath \ "description").read[String] | Reads.pure(""))
-//    )(roomPosition.apply _)
-//
-//  implicit def jsonWrites = Json.writes[roomPosition]
-//}
-
 
 
 case class Car(
@@ -36,28 +17,56 @@ case class Car(
   placeId: Int
 )
 
+/*作業車・立馬一覧用formクラス*/
+case class CarData(
+  placeId: Int
+)
+
 @javax.inject.Singleton
 class carDAO @Inject() (dbapi: DBApi) {
 
   private val db = dbapi.database("default")
+
+  val simple = {
+    get[Int]("car_id") ~
+      get[String]("car_no") ~
+      get[String]("car_name") ~
+      get[Int]("car_btx_id") ~
+      get[Int]("car_key_btx_id") ~
+      get[Int]("place_id") map {
+      case car_id ~ car_no ~ car_name ~ car_btx_id ~ car_key_btx_id ~ place_id  =>
+        Car(car_id, car_no, car_name, car_btx_id, car_key_btx_id, place_id)
+    }
+  }
+
+  def selectCarMasterAll(): Seq[Car] = {
+    db.withConnection { implicit connection =>
+      val sql = SQL("""
+		          select car_id,car_no,car_name,car_btx_id,car_key_btx_id,place_id
+		          from car_master order by car_id;
+		          """)
+
+      sql.as(simple.*)
+    }
+  }
+
+  def selectCarMasterInfo(placeId: Int): Seq[Car] = {
+    db.withConnection { implicit connection =>
+      val sql = SQL("""
+		          select car_id,car_no,car_name,car_btx_id,car_key_btx_id,place_id
+		          from car_master where place_id = {placeId} order by car_id ;
+		          """).on(
+        "placeId" -> placeId
+      )
+      sql.as(simple.*)
+    }
+  }
 
   /**
     * 作業車情報の取得
     * @return
     */
   def selectCarInfo(placeId: Int, carNo: String = "", carId: Option[Int] = None): Seq[Car] = {
-
-    val simple = {
-      get[Int]("car_id") ~
-        get[String]("car_no") ~
-        get[String]("car_name") ~
-        get[Int]("car_btx_id") ~
-        get[Int]("car_key_btx_id") ~
-        get[Int]("place_id") map {
-        case car_id ~ car_no ~ car_name ~ car_btx_id ~ car_key_btx_id ~ place_id  =>
-          Car(car_id, car_no, car_name, car_btx_id, car_key_btx_id, place_id)
-      }
-    }
 
     db.withConnection { implicit connection =>
       val selectPh =
