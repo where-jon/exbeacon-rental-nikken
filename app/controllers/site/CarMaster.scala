@@ -34,7 +34,12 @@ class CarMaster @Inject()(config: Configuration
     "placeId" -> number
   )(CarData.apply)(CarData.unapply))
 
-  /**　検索ロジック*/
+  /**　初期化 */
+  def init()  {
+    FILTER1 = 0
+  }
+
+  /**　検索ロジック */
   def search = SecuredAction { implicit request =>
     // 部署情報
     var carFormData = carForm.bindFromRequest.get;
@@ -52,6 +57,9 @@ class CarMaster @Inject()(config: Configuration
   def index = SecuredAction { implicit request =>
     if (super.isCmsLogged) {
 
+      // 初期化
+      init();
+      // dbデータ取得
       val carList = carDAO.selectCarMasterAll()
       Ok(views.html.site.carMaster(FILTER1,carList))
     } else {
