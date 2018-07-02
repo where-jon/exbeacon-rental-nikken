@@ -36,7 +36,6 @@ class CarMaster @Inject()(config: Configuration
 
   /**　検索ロジック*/
   def search = SecuredAction { implicit request =>
-    System.out.println("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------start updateExbViewer:");
     // 部署情報
     var carFormData = carForm.bindFromRequest.get;
     FILTER1 = carFormData.placeId
