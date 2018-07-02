@@ -41,8 +41,9 @@ class CarMaster @Inject()(config: Configuration
 
   /**　検索ロジック */
   def search = SecuredAction { implicit request =>
+    System.out.println("start search:")
     // 部署情報
-    var carFormData = carForm.bindFromRequest.get;
+    var carFormData = carForm.bindFromRequest.get
     FILTER1 = carFormData.placeId
     //var carList: Seq[Car] = null
     var carList = carDAO.selectCarMasterAll()
