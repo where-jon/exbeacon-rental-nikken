@@ -43,7 +43,7 @@ POST    /cms/floorManage/floorDelete    controllers.cms.FloorManage.floorDelete
 GET    /site/workPlace                 controllers.site.WorkPlace.index
 # 作業車・立馬一覧
 GET    /site/carMaster                 controllers.site.CarMaster.index
-POST   /site/serchCarMaster            controllers.site.CarMaster.search
+POST   /site/carMaster                 controllers.site.CarMaster.search
 
 # マップマネージャー
 GET    /manage/mapManager              controllers.manage.MapManager.index

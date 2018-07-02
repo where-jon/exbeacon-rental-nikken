@@ -96,7 +96,7 @@ $(function(){
         var inputPlace = document.getElementById("placeId")
         inputPlace.value = result
         var formElement = $("#viewForm")
-        formElement[0].action = "../site/serchCarMaster"
+        formElement[0].action = "../site/carMaster"
 
         // 送信ボタン生成
         var vButton = document.createElement("button");
