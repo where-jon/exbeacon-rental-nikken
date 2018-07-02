@@ -59,9 +59,10 @@
                         <table class="table table-bordered table-condensed itemTable">
                             <thead>
                             <tr>
-                                <th colspan="4" class="tableTitleTh">@Messages("lang.site.carManage.car.list.header.title")</th>
+                                <th colspan="5" class="tableTitleTh">@Messages("lang.site.carManage.car.list.header.title")</th>
                             </tr>
                             <tr>
+                                <th class="tableTh carNoTh">id</th>
                                 <th class="tableTh carNoTh">@Messages("lang.cms.carManage.car.list.header.number")</th>
                                 <th class="tableTh carNameTh">@Messages("lang.cms.carManage.car.list.header.name")</th>
                                 <th class="tableTh carTxNoTh">@Messages("lang.cms.carManage.car.list.header.carNumber")</th>
@@ -69,8 +70,9 @@
                             </tr>
                             </thead>
                             <tbody>
-                            @for(car <- carList){
+                            @carList.zipWithIndex.map { case(car, i) =>
                                 <tr class="rowColor rowHover" data-carId="@car.carId" id="@car.carId">
+                                    <td class="itemTd text-center carId">@(i+1)</td>
                                     <td class="itemTd text-center carNo">@car.carNo</td>
                                     <td class="itemTd text-left carName">@car.carName</td>
                                     <td class="itemTd text-center carBtxId">@car.carBtxId</td>
