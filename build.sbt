@@ -1,4 +1,4 @@
-name := """exbeacon-takasago-web"""
+name := """exbeacon-daidan-web"""
 
 version := "1.0-SNAPSHOT"
 
