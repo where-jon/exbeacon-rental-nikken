@@ -1,5 +1,5 @@
-# exbeacon-takasago-web
-高砂熱学工業：建設現場の高所作業車及び仮設材管理システム
+# exbeacon-daidan-web
+ダイダン株式会社：建設現場の高所作業車及び仮設材管理システム
 
 PCブラウザ（Chrome）、iPad対応（1024x768）
 
@@ -26,8 +26,8 @@ Heroku環境
 
 | アプリ名 | 目的 | 対応ブランチ | Herokuグループ（アカウント） |
 |----------|------|--------------|------|
-| exbeacon-takasago-web | 本番環境 | master | Whereオーガナイゼーション(予定) |
-| exbeacon-takasago-web-stage | 動作確認・検証環境 | develop | developer@where123.jp |
+| exbeacon-daidan-web | 本番環境 | master | Whereオーガナイゼーション(予定) |
+| exbeacon-daidan-web-stage | 動作確認・検証環境 | develop | developer@where123.jp |
 
 環境変数
 --------
