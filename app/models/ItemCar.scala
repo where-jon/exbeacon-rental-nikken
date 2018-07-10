@@ -126,7 +126,7 @@ class itemCarDAO @Inject()(dbapi: DBApi) {
     * 作業車の新規登録
     * @return
     */
-  def insert(carNo: String, carName: String, carBtxId: Int, carKeyBtxId: Int, placeId: Int): Int = {
+  def insert(carNo: String, carName: String, carBtxId: Int, carKeyBtxId: Int, placeId: Int, itemTypeId: Int): Int = {
     db.withTransaction { implicit connection =>
 
       // BTXマスタの登録
@@ -144,12 +144,13 @@ class itemCarDAO @Inject()(dbapi: DBApi) {
         ,"carBtxId" -> carBtxId
         ,"carKeyBtxId" -> carKeyBtxId
         ,"placeId" -> placeId
+        ,"itemTypeId" -> itemTypeId
       )
       // クエリ
       val sql = SQL(
         """
-          insert into item_car_master (item_car_no, item_car_name, item_car_btx_id, item_car_key_btx_id, place_id)
-          values ({carNo}, {carName}, {carBtxId}, {carKeyBtxId}, {placeId})
+          insert into item_car_master (item_car_no,item_type_id, item_car_name, item_car_btx_id, item_car_key_btx_id, place_id)
+          values ({carNo}, {itemTypeId}, {carName}, {carBtxId}, {carKeyBtxId}, {placeId})
         """)
         .on(params:_*)
 

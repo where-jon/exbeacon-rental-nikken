@@ -105,7 +105,7 @@ class CarManage @Inject()(config: Configuration
             .flashing(ERROR_MSG_KEY -> errMsg.mkString(HTML_BR))
         }else{
           // DB処理
-          carDAO.insert(f.inputCarNo, f.inputCarName, f.inputCarBtxId.toInt, f.inputCarKeyBtxId.toInt, f.inputPlaceId.toInt)
+          carDAO.insert(f.inputCarNo, f.inputCarName, f.inputCarBtxId.toInt, f.inputCarKeyBtxId.toInt, f.inputPlaceId.toInt,1)
 
           Redirect(routes.CarManage.index)
             .flashing(SUCCESS_MSG_KEY -> Messages("success.cms.CarManage.update"))
