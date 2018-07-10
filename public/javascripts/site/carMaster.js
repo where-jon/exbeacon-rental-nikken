@@ -81,9 +81,9 @@ function doSubmit(formId, action){
 
 // サブミット
 function getFilterCheck(){
-    var inputPlace = document.getElementById("placeId")
-    if(inputPlace!=-1){
-         $('#filter1').val(inputPlace.value)
+    var inputItemType = document.getElementById("itemTypeId")
+    if(inputItemType!=-1){
+         $('#filter1').val(inputItemType.value)
     }
 }
 
@@ -93,8 +93,8 @@ $(function(){
 
     $('#filter1').change(function() {
         var result = $('#filter1 option:selected').val();
-        var inputPlace = document.getElementById("placeId")
-        inputPlace.value = result
+        var inputItemType = document.getElementById("itemTypeId")
+        inputItemType.value = result
         var formElement = $("#viewForm")
         formElement[0].action = "../site/carMaster"
 

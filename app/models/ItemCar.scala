@@ -17,9 +17,19 @@ case class Car(
   placeId: Int
 )
 
-/*作業車・立馬一覧用formクラス*/
-case class CarData(
+case class ItemCar(
+  carId: Int,
+  itemTypeId: Int,
+  carNo: String,
+  carName: String,
+  carBtxId: Int,
+  carKeyBtxId: Int,
   placeId: Int
+)
+
+/*作業車・立馬一覧用formクラス*/
+case class ItemCarData(
+  itemTypeId: Int
 )
 
 @javax.inject.Singleton
@@ -28,37 +38,39 @@ class carDAO @Inject() (dbapi: DBApi) {
   private val db = dbapi.database("default")
 
   val simple = {
-    get[Int]("car_id") ~
-      get[String]("car_no") ~
-      get[String]("car_name") ~
-      get[Int]("car_btx_id") ~
-      get[Int]("car_key_btx_id") ~
+    get[Int]("item_car_id") ~
+      get[String]("item_car_no") ~
+      get[String]("item_car_name") ~
+      get[Int]("item_car_btx_id") ~
+      get[Int]("item_car_key_btx_id") ~
       get[Int]("place_id") map {
-      case car_id ~ car_no ~ car_name ~ car_btx_id ~ car_key_btx_id ~ place_id  =>
-        Car(car_id, car_no, car_name, car_btx_id, car_key_btx_id, place_id)
+      case item_car_id ~ item_car_no ~ item_car_name ~ item_car_btx_id ~ item_car_key_btx_id ~ place_id  =>
+        Car(item_car_id, item_car_no, item_car_name, item_car_btx_id, item_car_key_btx_id, place_id)
     }
   }
 
-  def selectCarMasterAll(): Seq[Car] = {
-    db.withConnection { implicit connection =>
-      val sql = SQL("""
-		          select car_id,car_no,car_name,car_btx_id,car_key_btx_id,place_id
-		          from car_master order by car_id;
-		          """)
-
-      sql.as(simple.*)
+  val simple2 = {
+    get[Int]("item_car_id") ~
+      get[Int]("item_type_id") ~
+      get[String]("item_car_no") ~
+      get[String]("item_car_name") ~
+      get[Int]("item_car_btx_id") ~
+      get[Int]("item_car_key_btx_id") ~
+      get[Int]("place_id") map {
+      case item_car_id ~ item_type_id ~ item_car_no ~ item_car_name ~ item_car_btx_id ~ item_car_key_btx_id ~ place_id  =>
+        ItemCar(item_car_id, item_type_id,item_car_no, item_car_name, item_car_btx_id, item_car_key_btx_id, place_id)
     }
   }
 
-  def selectCarMasterInfo(placeId: Int): Seq[Car] = {
+  def selectCarMasterInfo(placeId: Int): Seq[ItemCar] = {
     db.withConnection { implicit connection =>
       val sql = SQL("""
-		          select car_id,car_no,car_name,car_btx_id,car_key_btx_id,place_id
-		          from car_master where place_id = {placeId} order by car_id ;
+		          select item_car_id, item_type_id,item_car_no,item_car_name,item_car_btx_id,item_car_key_btx_id,place_id
+		          from item_car_master where place_id = {placeId} order by item_car_id ;
 		          """).on(
         "placeId" -> placeId
       )
-      sql.as(simple.*)
+      sql.as(simple2.*)
     }
   }
 
@@ -72,15 +84,15 @@ class carDAO @Inject() (dbapi: DBApi) {
       val selectPh =
         """
           select
-                c.car_id
-              , c.car_no
-              , c.car_name
-              , c.car_btx_id
-              , c.car_key_btx_id
+                c.item_car_id
+              , c.item_car_no
+              , c.item_car_name
+              , c.item_car_btx_id
+              , c.item_car_key_btx_id
               , c.place_id
           from
             place_master p
-            inner join car_master c
+            inner join item_car_master c
               on p.place_id = c.place_id
               and p.active_flg = true
               and c.active_flg = true
@@ -88,15 +100,15 @@ class carDAO @Inject() (dbapi: DBApi) {
 
       var wherePh = """ where p.place_id = {placeId} """
       if(carNo.isEmpty == false){
-        wherePh += s""" and c.car_no = '${carNo}' """
+        wherePh += s""" and c.item_car_no = '${carNo}' """
       }
       if(carId != None){
-        wherePh += s""" and c.car_id = ${carId.get} """
+        wherePh += s""" and c.item_car_id = ${carId.get} """
       }
       val orderPh =
         """
           order by
-            c.car_id
+            c.item_car_id
         """
       SQL(selectPh + wherePh + orderPh).on('placeId -> placeId).as(simple.*)
     }
@@ -118,7 +130,7 @@ class carDAO @Inject() (dbapi: DBApi) {
         .on('placeId -> placeId, 'btxIdList -> btxIdList).executeUpdate()
 
       // 作業車の削除
-      SQL("""delete from car_master where car_id = {carId} ;""").on('carId -> carId).executeUpdate()
+      SQL("""delete from item_car_master where item_car_id = {carId} ;""").on('carId -> carId).executeUpdate()
 
       // コミット
       connection.commit()
@@ -139,13 +151,13 @@ class carDAO @Inject() (dbapi: DBApi) {
       val btxList = Seq[Int](carBtxId, carKeyBtxId)
       btxList.foreach( btxId =>{
         SQL("""insert into btx_master (btx_id, place_id) values ({btxId}, {placeId})""")
-            .on('btxId -> btxId, 'placeId -> placeId).executeInsert()
+          .on('btxId -> btxId, 'placeId -> placeId).executeInsert()
       })
 
       // 作業車マスタの登録
       // パラメータのセット
       val params: Seq[NamedParameter] = Seq(
-         "carNo" -> carNo
+        "carNo" -> carNo
         ,"carName" -> carName
         ,"carBtxId" -> carBtxId
         ,"carKeyBtxId" -> carKeyBtxId
@@ -154,7 +166,7 @@ class carDAO @Inject() (dbapi: DBApi) {
       // クエリ
       val sql = SQL(
         """
-          insert into car_master (car_no, car_name, car_btx_id, car_key_btx_id, place_id)
+          insert into item_car_master (item_car_no, item_car_name, item_car_btx_id, item_car_key_btx_id, place_id)
           values ({carNo}, {carName}, {carBtxId}, {carKeyBtxId}, {placeId})
         """)
         .on(params:_*)
@@ -201,13 +213,13 @@ class carDAO @Inject() (dbapi: DBApi) {
       // 作業車マスタの更新
       SQL(
         """
-          update car_master set
-              car_no = {carNo}
-            , car_name = {carName}
-            , car_btx_id = {carBtxId}
-            , car_key_btx_id = {carKeyBtxId}
+          update item_car_master set
+              item_car_no = {carNo}
+            , item_car_name = {carName}
+            , item_car_btx_id = {carBtxId}
+            , item_car_key_btx_id = {carKeyBtxId}
             , updatetime = now()
-          where car_id = {carId} ;
+          where item_car_id = {carId} ;
         """).on(
         'carNo -> carNo, 'carName -> carName, 'carBtxId -> carBtxId, 'carKeyBtxId -> carKeyBtxId, 'carId -> carId
       ).executeUpdate()
