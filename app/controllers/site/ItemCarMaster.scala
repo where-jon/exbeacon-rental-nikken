@@ -25,7 +25,8 @@ class ItemCarMaster @Inject()(config: Configuration
                               , val messagesApi: MessagesApi
                               , carDAO: models.itemCarDAO
                               , btxDAO: models.btxDAO
-                         ) extends BaseController with I18nSupport {
+                              , itemTypeDAO: models.ItemTypeDAO
+                             ) extends BaseController with I18nSupport {
 
   var FILTER1 = 0
 
@@ -33,12 +34,12 @@ class ItemCarMaster @Inject()(config: Configuration
     "itemTypeId" -> number
   )(ItemCarData.apply)(ItemCarData.unapply))
 
-  /**　初期化 */
-  def init()  {
+  /** 　初期化 */
+  def init() {
     FILTER1 = 0
   }
 
-  /**　検索ロジック */
+  /** 　検索ロジック */
   def search = SecuredAction { implicit request =>
     System.out.println("start search:")
     // 部署情報
@@ -47,11 +48,11 @@ class ItemCarMaster @Inject()(config: Configuration
     //var carList: Seq[Car] = null
     val placeId = super.getCurrentPlaceId
     var carList = carDAO.selectCarMasterInfo(placeId)
-    if(FILTER1!=0){
+    if (FILTER1 != 0) {
       carList = carList.filter(_.itemTypeId == FILTER1)
     }
-
-    Ok(views.html.site.itemCarMaster(FILTER1,carList))
+    val itemTypeList = itemTypeDAO.selectAll();
+    Ok(views.html.site.itemCarMaster(FILTER1, carList,itemTypeList))
   }
 
   /** 初期表示 */
@@ -62,10 +63,11 @@ class ItemCarMaster @Inject()(config: Configuration
       init();
 
       val placeId = super.getCurrentPlaceId
-      System.out.println("placeId:" + placeId)
       // dbデータ取得
       val carList = carDAO.selectCarMasterInfo(placeId)
-      Ok(views.html.site.itemCarMaster(FILTER1,carList))
+      val itemTypeList = itemTypeDAO.selectAll();
+      //System.out.println("itemTypeList:" + itemTypeList)
+      Ok(views.html.site.itemCarMaster(FILTER1, carList,itemTypeList))
     } else {
       Redirect(CMS_NOT_LOGGED_RETURN_PATH).flashing(ERROR_MSG_KEY -> Messages("error.cmsLogged.invalid"))
     }

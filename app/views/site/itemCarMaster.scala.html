@@ -1,4 +1,4 @@
-@(filter1: Int, carList: Seq[ItemCar])(implicit user: User, messages: Messages, request: RequestHeader, flash: Flash)
+@(filter1: Int, carList: Seq[ItemCar], itemTypeList: Seq[ItemType])(implicit user: User, messages: Messages, request: RequestHeader, flash: Flash)
 
 @import controllers.routes
 @import helper._
@@ -32,13 +32,11 @@
                     <div class="text-right col-xs-4 col-sm-4 col-md-4" style="padding:0;">
                         種別 :
                         <select id="filter1" class="">
+                            <!--仮設材種別テーブルから検索フィルタを設置-->
                             <option value="0"></option>
-                            <option value="1">itemType1</option>
-                            <option value="2">itemType2</option>
-                            <option value="3">itemType3</option>
-                            <option value="4">itemType4</option>
-                            <option value="5">itemType5</option>
-                            <option value="6">itemType6</option>
+                            @itemTypeList.zipWithIndex.map { case(itemType, i) =>
+                                <option value="@itemType.item_type_id">@itemType.item_type_name</option>
+                            }
                         </select>
                         <input class="hidden form-control input-sm" type="text" id="itemTypeId" name="itemTypeId" value="@filter1">
                     </div>
