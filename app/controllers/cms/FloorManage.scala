@@ -34,7 +34,6 @@ class FloorManage @Inject()(config: Configuration
                             , placeDAO: models.placeDAO
                             , floorDAO: models.floorDAO
                             , exbDAO: models.exbModelDAO
-                            , exbDeviceDAO: models.exbDeviceModelDAO
                                ) extends BaseController with I18nSupport {
 
   /** 初期表示 */
@@ -106,7 +105,7 @@ class FloorManage @Inject()(config: Configuration
           }else{
             // デバイスIDの取得
             inputExbDeviceNoList.foreach{e =>
-              val retList = exbDeviceDAO.select(f.inputPlaceId.toInt, Option(e.toInt))
+              val retList = exbDAO.select(f.inputPlaceId.toInt, Option(e.toInt))
               if(retList.nonEmpty){
                 paramDeviceList :+= (retList.last.exbDeviceNo, retList.last.exbDeviceId)
               }else{
@@ -153,7 +152,7 @@ class FloorManage @Inject()(config: Configuration
           }else{
             // デバイスIDの取得
             inputExbDeviceNoList.foreach{e =>
-              val retList = exbDeviceDAO.select(f.inputPlaceId.toInt, Option(e.toInt))
+              val retList = exbDAO.select(f.inputPlaceId.toInt, Option(e.toInt))
               if(retList.nonEmpty){
                 paramDeviceList :+= (retList.last.exbDeviceNo, retList.last.exbDeviceId)
               }else{
