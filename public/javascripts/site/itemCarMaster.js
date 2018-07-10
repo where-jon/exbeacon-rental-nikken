@@ -96,7 +96,7 @@ $(function(){
         var inputItemType = document.getElementById("itemTypeId")
         inputItemType.value = result
         var formElement = $("#viewForm")
-        formElement[0].action = "../site/carMaster"
+        formElement[0].action = "../site/itemCarMaster"
 
         // 送信ボタン生成
         var vButton = document.createElement("button");

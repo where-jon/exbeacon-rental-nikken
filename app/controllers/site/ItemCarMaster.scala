@@ -20,11 +20,11 @@ import utils.silhouette.MyEnv
 
 
 @Singleton
-class CarMaster @Inject()(config: Configuration
-                          , val silhouette: Silhouette[MyEnv]
-                          , val messagesApi: MessagesApi
-                          , carDAO: models.itemCarDAO
-                          , btxDAO: models.btxDAO
+class ItemCarMaster @Inject()(config: Configuration
+                              , val silhouette: Silhouette[MyEnv]
+                              , val messagesApi: MessagesApi
+                              , carDAO: models.itemCarDAO
+                              , btxDAO: models.btxDAO
                          ) extends BaseController with I18nSupport {
 
   var FILTER1 = 0
@@ -51,7 +51,7 @@ class CarMaster @Inject()(config: Configuration
       carList = carList.filter(_.itemTypeId == FILTER1)
     }
 
-    Ok(views.html.site.carMaster(FILTER1,carList))
+    Ok(views.html.site.itemCarMaster(FILTER1,carList))
   }
 
   /** 初期表示 */
@@ -65,7 +65,7 @@ class CarMaster @Inject()(config: Configuration
       System.out.println("placeId:" + placeId)
       // dbデータ取得
       val carList = carDAO.selectCarMasterInfo(placeId)
-      Ok(views.html.site.carMaster(FILTER1,carList))
+      Ok(views.html.site.itemCarMaster(FILTER1,carList))
     } else {
       Redirect(CMS_NOT_LOGGED_RETURN_PATH).flashing(ERROR_MSG_KEY -> Messages("error.cmsLogged.invalid"))
     }

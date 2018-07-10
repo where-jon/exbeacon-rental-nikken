@@ -72,13 +72,13 @@
                             </thead>
                             <tbody>
                             @carList.zipWithIndex.map { case(car, i) =>
-                                <tr class="rowColor rowHover" data-carId="@car.carId" id="@car.carId">
+                                <tr class="rowColor rowHover" data-carId="@car.itemCarId" id="@car.itemCarId">
                                     <td class="itemTd text-center carId">@(i+1)</td>
                                     <td class="itemTd text-center carNo">@car.itemTypeId</td>
-                                    <td class="itemTd text-center carNo">@car.carNo</td>
-                                    <td class="itemTd text-center carName">@car.carName</td>
-                                    <td class="itemTd text-center carBtxId">@car.carBtxId</td>
-                                    <td class="itemTd text-center carKeyBtxId">@car.carKeyBtxId</td>
+                                    <td class="itemTd text-center carNo">@car.itemCarNo</td>
+                                    <td class="itemTd text-center carName">@car.itemCarName</td>
+                                    <td class="itemTd text-center carBtxId">@car.itemCarBtxId</td>
+                                    <td class="itemTd text-center carKeyBtxId">@car.itemCarKeyBtxId</td>
                                 </tr>
                             }
                             </tbody>
@@ -91,7 +91,7 @@
     </div>
 </div>
 
-<script type="text/javascript" src="@routes.MyAssets.js("site/carMaster.js")"></script>
+<script type="text/javascript" src="@routes.MyAssets.js("site/itemCarMaster.js")"></script>
 <script></script>
 
 </body>
