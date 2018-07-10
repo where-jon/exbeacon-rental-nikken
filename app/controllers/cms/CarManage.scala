@@ -36,7 +36,7 @@ case class CarDeleteForm(
 class CarManage @Inject()(config: Configuration
                           , val silhouette: Silhouette[MyEnv]
                           , val messagesApi: MessagesApi
-                          , carDAO: models.carDAO
+                          , carDAO: models.itemCarDAO
                           , btxDAO: models.btxDAO
                                ) extends BaseController with I18nSupport {
 
@@ -115,7 +115,7 @@ class CarManage @Inject()(config: Configuration
         // 更新の場合 --------------------------
         // 作業車番号重複チェック
         var carList = carDAO.selectCarInfo(super.getCurrentPlaceId, f.inputCarNo)
-        carList = carList.filter(_.carId != f.inputCarId.toInt).filter(_.carNo == f.inputCarNo)
+        carList = carList.filter(_.itemCarId != f.inputCarId.toInt).filter(_.itemCarNo == f.inputCarNo)
         if(carList.length > 0){
           errMsg :+= Messages("error.cms.CarManage.update.inputCarNo.duplicate", f.inputCarNo)
         }
@@ -123,13 +123,13 @@ class CarManage @Inject()(config: Configuration
         // 変更前タグ情報
         val preCarInfo = carDAO.selectCarInfo(super.getCurrentPlaceId, "", Option(f.inputCarId.toInt)).last
 
-        if(f.inputCarKeyBtxId.toInt == preCarInfo.carBtxId && f.inputCarBtxId.toInt == preCarInfo.carKeyBtxId) {
+        if(f.inputCarKeyBtxId.toInt == preCarInfo.itemCarBtxId && f.inputCarBtxId.toInt == preCarInfo.itemCarKeyBtxId) {
           // 入力を逆転している場合は何もしない
         } else {
           // タグチェック
           val checkList = Seq[(Int,Int)](
-            (preCarInfo.carBtxId, f.inputCarBtxId.toInt)
-            , (preCarInfo.carKeyBtxId, f.inputCarKeyBtxId.toInt)
+            (preCarInfo.itemCarBtxId, f.inputCarBtxId.toInt)
+            , (preCarInfo.itemCarKeyBtxId, f.inputCarKeyBtxId.toInt)
           )
           checkList.zipWithIndex.foreach { case (btxId, i) =>
             if (btxId._1 == btxId._2) {
@@ -140,13 +140,13 @@ class CarManage @Inject()(config: Configuration
               if (!btxList.isEmpty) {
                   // 登録が重複する場合
                 if (i == 0) {
-                  if (f.inputCarBtxId.toInt == preCarInfo.carKeyBtxId) {
+                  if (f.inputCarBtxId.toInt == preCarInfo.itemCarKeyBtxId) {
                       // 作業車Txに変更前の鍵Txを登録する、且つ鍵Txが変更されている場合は何もしない
                   } else {
                     errMsg :+= Messages("error.cms.CarManage.update.inputCarBtxId.duplicate", btxId._2)
                   }
                 } else {
-                  if (f.inputCarKeyBtxId.toInt == preCarInfo.carBtxId) {
+                  if (f.inputCarKeyBtxId.toInt == preCarInfo.itemCarBtxId) {
                       // 鍵Txに変更前の作業車Txを登録する場合は何もしない
                   } else {
                     errMsg :+= Messages("error.cms.CarManage.update.inputCarKeyBtxId.duplicate", btxId._2)
@@ -170,8 +170,8 @@ class CarManage @Inject()(config: Configuration
             , f.inputCarBtxId.toInt
             , f.inputCarKeyBtxId.toInt
             , super.getCurrentPlaceId
-            , preCarInfo.carBtxId
-            , preCarInfo.carKeyBtxId
+            , preCarInfo.itemCarBtxId
+            , preCarInfo.itemCarKeyBtxId
           )
 
           Redirect(routes.CarManage.index)
@@ -210,8 +210,8 @@ class CarManage @Inject()(config: Configuration
       if (carList.length > 0) {
         // タグ情報収集
         carList.map { car =>
-          txTagList :+= car.carBtxId
-          txTagList :+= car.carKeyBtxId
+          txTagList :+= car.itemCarBtxId
+          txTagList :+= car.itemCarKeyBtxId
         }
 
         // 削除

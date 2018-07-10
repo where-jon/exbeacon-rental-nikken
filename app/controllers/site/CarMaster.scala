@@ -23,7 +23,7 @@ import utils.silhouette.MyEnv
 class CarMaster @Inject()(config: Configuration
                           , val silhouette: Silhouette[MyEnv]
                           , val messagesApi: MessagesApi
-                          , carDAO: models.carDAO
+                          , carDAO: models.itemCarDAO
                           , btxDAO: models.btxDAO
                          ) extends BaseController with I18nSupport {
 

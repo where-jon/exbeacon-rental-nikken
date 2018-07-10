@@ -7,23 +7,14 @@ import anorm.{~, _}
 import play.api.Logger
 import play.api.db._
 
-
-case class Car(
-  carId: Int,
-  carNo: String,
-  carName: String,
-  carBtxId: Int,
-  carKeyBtxId: Int,
-  placeId: Int
-)
-
 case class ItemCar(
-  carId: Int,
+  itemCarId: Int,
   itemTypeId: Int,
-  carNo: String,
-  carName: String,
-  carBtxId: Int,
-  carKeyBtxId: Int,
+  note: String,
+  itemCarNo: String,
+  itemCarName: String,
+  itemCarBtxId: Int,
+  itemCarKeyBtxId: Int,
   placeId: Int
 )
 
@@ -33,44 +24,33 @@ case class ItemCarData(
 )
 
 @javax.inject.Singleton
-class carDAO @Inject() (dbapi: DBApi) {
+class itemCarDAO @Inject()(dbapi: DBApi) {
 
   private val db = dbapi.database("default")
 
   val simple = {
     get[Int]("item_car_id") ~
-      get[String]("item_car_no") ~
-      get[String]("item_car_name") ~
-      get[Int]("item_car_btx_id") ~
-      get[Int]("item_car_key_btx_id") ~
-      get[Int]("place_id") map {
-      case item_car_id ~ item_car_no ~ item_car_name ~ item_car_btx_id ~ item_car_key_btx_id ~ place_id  =>
-        Car(item_car_id, item_car_no, item_car_name, item_car_btx_id, item_car_key_btx_id, place_id)
-    }
-  }
-
-  val simple2 = {
-    get[Int]("item_car_id") ~
       get[Int]("item_type_id") ~
+      get[String]("note") ~
       get[String]("item_car_no") ~
       get[String]("item_car_name") ~
       get[Int]("item_car_btx_id") ~
       get[Int]("item_car_key_btx_id") ~
       get[Int]("place_id") map {
-      case item_car_id ~ item_type_id ~ item_car_no ~ item_car_name ~ item_car_btx_id ~ item_car_key_btx_id ~ place_id  =>
-        ItemCar(item_car_id, item_type_id,item_car_no, item_car_name, item_car_btx_id, item_car_key_btx_id, place_id)
+      case item_car_id ~ item_type_id ~ note ~ item_car_no ~ item_car_name ~ item_car_btx_id ~ item_car_key_btx_id ~ place_id  =>
+        ItemCar(item_car_id, item_type_id, note, item_car_no, item_car_name, item_car_btx_id, item_car_key_btx_id, place_id)
     }
   }
 
   def selectCarMasterInfo(placeId: Int): Seq[ItemCar] = {
     db.withConnection { implicit connection =>
       val sql = SQL("""
-		          select item_car_id, item_type_id,item_car_no,item_car_name,item_car_btx_id,item_car_key_btx_id,place_id
+		          select item_car_id, item_type_id,note,item_car_no,item_car_name,item_car_btx_id,item_car_key_btx_id,place_id
 		          from item_car_master where place_id = {placeId} order by item_car_id ;
 		          """).on(
         "placeId" -> placeId
       )
-      sql.as(simple2.*)
+      sql.as(simple.*)
     }
   }
 
@@ -78,13 +58,15 @@ class carDAO @Inject() (dbapi: DBApi) {
     * 作業車情報の取得
     * @return
     */
-  def selectCarInfo(placeId: Int, carNo: String = "", carId: Option[Int] = None): Seq[Car] = {
+  def selectCarInfo(placeId: Int, carNo: String = "", carId: Option[Int] = None): Seq[ItemCar] = {
 
     db.withConnection { implicit connection =>
       val selectPh =
         """
           select
                 c.item_car_id
+              , c.item_type_id
+              , c.note
               , c.item_car_no
               , c.item_car_name
               , c.item_car_btx_id
