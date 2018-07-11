@@ -51,7 +51,7 @@ class ItemCarMaster @Inject()(config: Configuration
     if (FILTER1 != 0) {
       carList = carList.filter(_.itemTypeId == FILTER1)
     }
-    val itemTypeList = itemTypeDAO.selectAll();
+    val itemTypeList = itemTypeDAO.selectItemCarInfo(placeId);
     Ok(views.html.site.itemCarMaster(FILTER1, carList,itemTypeList))
   }
 
@@ -65,7 +65,7 @@ class ItemCarMaster @Inject()(config: Configuration
       val placeId = super.getCurrentPlaceId
       // dbデータ取得
       val carList = carDAO.selectCarMasterInfo(placeId)
-      val itemTypeList = itemTypeDAO.selectAll();
+      val itemTypeList = itemTypeDAO.selectItemCarInfo(placeId);
       //System.out.println("itemTypeList:" + itemTypeList)
       Ok(views.html.site.itemCarMaster(FILTER1, carList,itemTypeList))
     } else {

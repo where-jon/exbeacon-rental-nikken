@@ -44,9 +44,25 @@ class itemCarDAO @Inject()(dbapi: DBApi) {
 
   def selectCarMasterInfo(placeId: Int): Seq[ItemCar] = {
     db.withConnection { implicit connection =>
-      val sql = SQL("""
-		          select item_car_id, item_type_id,note,item_car_no,item_car_name,item_car_btx_id,item_car_key_btx_id,place_id
-		          from item_car_master where place_id = {placeId} order by item_car_id ;
+      val sql = SQL(
+        """
+            select
+                 c.item_car_id
+               , c.item_type_id
+               , i.item_type_name
+               , c.note
+               , c.item_car_no
+               , c.item_car_name
+               , c.item_car_btx_id
+               , c.item_car_key_btx_id
+               , c.place_id
+           from
+             item_type i
+             inner join item_car_master c
+               on i.item_type_id = c.item_type_id
+               and i.active_flg = true
+               and c.active_flg = true
+		           where c.place_id = {placeId} order by item_car_id ;
 		          """).on(
         "placeId" -> placeId
       )
