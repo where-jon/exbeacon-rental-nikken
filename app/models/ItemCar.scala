@@ -1,5 +1,6 @@
 package models
 
+import java.sql.Date
 import javax.inject.Inject
 
 import anorm.SqlParser._
@@ -16,6 +17,25 @@ case class ItemCar(
   itemCarBtxId: Int,
   itemCarKeyBtxId: Int,
   placeId: Int
+)
+
+case class CarViewer(
+  item_car_id: Int,
+  item_car_btx_id: Int,
+  item_car_key_btx_id: Int,
+  item_type_id: Int,
+  item_type_name:String,
+  note:String,
+  item_car_no: String,
+  item_car_name:String,
+  place_id: Int,
+  reserve_start_date:String,
+  company_id: Int,
+  company_name: String,
+  work_type_id: Int,
+  work_type_name: String,
+  floor_name: String,
+  reserve_id: Int
 )
 
 /*作業車・立馬一覧用formクラス*/
@@ -227,6 +247,84 @@ class itemCarDAO @Inject()(dbapi: DBApi) {
       connection.commit()
 
       Logger.debug(s"""作業車情報を更新、ID：" + ${carId.toString}""")
+    }
+  }
+
+
+  val carMasterViewer = {
+    get[Int]("item_car_id") ~
+      get[Int]("item_car_btx_id") ~
+      get[Int]("item_car_key_btx_id") ~
+      get[Int]("item_type_id") ~
+      get[String]("item_type_name") ~
+      get[String]("note") ~
+      get[String]("item_car_no") ~
+      get[String]("item_car_name") ~
+      get[Int]("place_id") ~
+      get[String]("reserve_start_date") ~
+      get[Int]("company_id") ~
+      get[String]("company_name") ~
+      get[Int]("work_type_id") ~
+      get[String]("work_type_name") ~
+      get[String]("floor_name") ~
+      get[Int]("reserve_id")map {
+      case item_car_id ~ item_car_btx_id ~ item_car_key_btx_id ~ item_type_id ~ item_type_name ~
+        note ~ item_car_no ~item_car_name ~place_id ~reserve_start_date ~company_id ~company_name ~work_type_id ~
+        work_type_name ~floor_name ~ reserve_id  =>
+        CarViewer(item_car_id, item_car_btx_id, item_car_key_btx_id, item_type_id, item_type_name,
+          note, item_car_no, item_car_name, place_id, reserve_start_date, company_id,company_name,work_type_id,
+          work_type_name,floor_name,reserve_id)
+    }
+  }
+
+
+  def selectCarMasterViewer(placeId: Int): Seq[CarViewer] = {
+    db.withConnection { implicit connection =>
+      val sql = SQL(
+        """
+            select
+                c.item_car_id
+               ,c.item_car_btx_id
+               , c.item_car_key_btx_id
+               , c.item_type_id
+               , i.item_type_name
+               , c.note
+               , c.item_car_no
+               , c.item_car_name
+               , c.item_car_btx_id
+               , c.place_id
+               ,coalesce(to_char(r.reserve_start_date, 'YYYY-MM-DD'), 'date') as reserve_start_date
+               ,coalesce(r.company_id, -1) as company_id
+               ,coalesce(co.company_name, '無') as company_name
+               ,coalesce(work.work_type_id, -1) as work_type_id
+               ,coalesce(work.work_type_name, '無') as work_type_name
+               ,coalesce(floor.floor_name, '無') as floor_name
+               ,coalesce(r.reserve_id, -1) as reserve_id
+           from
+             		item_car_master as c
+             		LEFT JOIN reserve_table_new as r on c.item_car_id = r.item_id
+                  and to_char(r.reserve_start_date, 'YYYY-MM-DD') = to_char(current_timestamp, 'YYYY-MM-DD')
+             		and r.active_flg = true
+             		and r.place_id = {placeId}
+						left JOIN item_type as i on i.item_type_id = c.item_type_id
+	             		and i.active_flg = true
+	             		and i.place_id = {placeId}
+		             		left JOIN company_master as co on co.company_id = r.company_id
+		             		and co.active_flg = true
+		             		and co.place_id = {placeId}
+			             		left JOIN work_type as work on work.work_type_id = r.work_type_id
+			             		and work.active_flg = true
+			             		and work.place_id = {placeId}
+			             			left JOIN floor_master as floor on floor.floor_id = r.floor_id
+				             		and floor.active_flg = true
+				             		and floor.place_id = {placeId}
+           where c.place_id = {placeId}
+           order by item_car_id ;
+
+		          """).on(
+        "placeId" -> placeId
+      )
+      sql.as(carMasterViewer.*)
     }
   }
 

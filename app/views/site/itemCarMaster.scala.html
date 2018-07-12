@@ -1,4 +1,4 @@
-@(ITEM_TYPE_FILTER: Int, carList: Seq[ItemCar], itemTypeList: Seq[ItemType],workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: RequestHeader, flash: Flash)
+@(ITEM_TYPE_FILTER: Int, carList: Seq[CarViewer], itemTypeList: Seq[ItemType],workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: RequestHeader, flash: Flash)
 
 @import controllers.routes
 @import helper._
@@ -63,27 +63,33 @@
                     <div class="table-responsive-body">
                         <table class="table table-bordered table-condensed itemTable">
                             <thead>
+                            <!--<tr>-->
+                                <!--<th colspan="5" class="tableTitleTh">@Messages("lang.site.carManage.car.list.header.title")</th>-->
+                            <!--</tr>-->
                             <tr>
-                                <th colspan="5" class="tableTitleTh">@Messages("lang.site.carManage.car.list.header.title")</th>
-                            </tr>
-                            <tr>
-                                <th class="tableTh carNoTh">id</th>
-                                <th class="tableTh carNoTh">itemType</th>
-                                <th class="tableTh carNoTh">@Messages("lang.cms.carManage.car.list.header.number")</th>
-                                <th class="tableTh carNameTh">@Messages("lang.cms.carManage.car.list.header.name")</th>
-                                <th class="tableTh carTxNoTh">@Messages("lang.cms.carManage.car.list.header.carNumber")</th>
-                                <th class="tableTh keyTxNoTh">@Messages("lang.cms.carManage.car.list.header.keyNumber")</th>
+                                <th class="tableTh ">フロア</th>
+                                <th class="tableTh ">現在位置</th>
+                                <th class="tableTh ">Tag ID</th>
+                                <th class="tableTh ">種別</th>
+                                <th class="tableTh ">名称</th>
+                                <th class="tableTh ">業者</th>
+                                <th class="tableTh ">予約フロア</th>
+                                <th class="tableTh ">期間</th>
+                                <th class="tableTh ">予約ID</th>
                             </tr>
                             </thead>
                             <tbody>
                             @carList.zipWithIndex.map { case(car, i) =>
-                                <tr class="rowColor rowHover" data-carId="@car.itemCarId" id="@car.itemCarId">
-                                    <td class="itemTd text-center carId">@(i+1)</td>
-                                    <td class="itemTd text-center carNo">@car.itemTypeId</td>
-                                    <td class="itemTd text-center carNo">@car.itemCarNo</td>
-                                    <td class="itemTd text-center carName">@car.itemCarName</td>
-                                    <td class="itemTd text-center carBtxId">@car.itemCarBtxId</td>
-                                    <td class="itemTd text-center carKeyBtxId">@car.itemCarKeyBtxId</td>
+                                <tr class="rowColor rowHover" data-carId="@car.item_car_id" id="@car.item_car_id">
+                                    <td class="itemTd text-center ">apiフロア</td>
+                                    <td class="itemTd text-center ">api位置</td>
+                                    <td class="itemTd text-center ">@car.item_car_btx_id</td>
+                                    <td class="itemTd text-center ">@car.item_type_name</td>
+                                    <td class="itemTd text-center ">@car.item_car_name</td>
+                                    <td class="itemTd text-center ">@car.company_name</td>
+                                    <td class="itemTd text-center ">@car.floor_name</td>
+                                    <td class="itemTd text-center ">@car.work_type_name</td>
+                                    <td class="itemTd text-center ">@car.reserve_id</td>
                                 </tr>
                             }
                             </tbody>
