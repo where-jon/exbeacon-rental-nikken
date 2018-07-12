@@ -1,4 +1,4 @@
-@(filter1: Int, carList: Seq[ItemCar], itemTypeList: Seq[ItemType])(implicit user: User, messages: Messages, request: RequestHeader, flash: Flash)
+@(ITEM_TYPE_FILTER: Int, carList: Seq[ItemCar], itemTypeList: Seq[ItemType],workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: RequestHeader, flash: Flash)
 
 @import controllers.routes
 @import helper._
@@ -31,20 +31,27 @@
                 <div class="row tableRow" style="margin-top: 10px;">
                     <div class="text-right col-xs-4 col-sm-4 col-md-4" style="padding:0;">
                         種別 :
-                        <select id="filter1" class="">
+                        <select id="ITEM_TYPE_FILTER" class="">
                             <!--仮設材種別テーブルから検索フィルタを設置-->
                             <option value="0"></option>
                             @itemTypeList.zipWithIndex.map { case(itemType, i) =>
                                 <option value="@itemType.item_type_id">@itemType.item_type_name</option>
                             }
                         </select>
-                        <input class="hidden form-control input-sm" type="text" id="itemTypeId" name="itemTypeId" value="@filter1">
+                        <input class="hidden form-control input-sm" type="text" id="itemTypeId" name="itemTypeId" value="@ITEM_TYPE_FILTER">
                     </div>
                     <div class="text-center col-xs-4 col-sm-4 col-md-4" style="padding:0;">
                         test2
                     </div>
                     <div class="text-left col-xs-4 col-sm-4 col-md-4" style="padding:0;">
-                        test3
+                        期間 :
+                        <select id="filter4" class="">
+                            <!--期間Enumから検索フィルタを設置-->
+                            <option value="0"></option>
+                            @workTypeMap.map{case (key, value) =>
+                            <option value="@(key+1)">@value</option>
+                            }
+                        </select>
                     </div>
                 </div>
                 @CSRF.formField

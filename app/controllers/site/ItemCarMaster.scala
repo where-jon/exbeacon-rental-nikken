@@ -4,7 +4,7 @@ import javax.inject.{Inject, Singleton}
 
 import com.mohiva.play.silhouette.api.Silhouette
 import controllers.BaseController
-import models.ItemCarData
+import models.{ItemCarData, WorkTypeEnum}
 import play.api._
 import play.api.data.Form
 import play.api.data.Forms._
@@ -28,7 +28,11 @@ class ItemCarMaster @Inject()(config: Configuration
                               , itemTypeDAO: models.ItemTypeDAO
                              ) extends BaseController with I18nSupport {
 
-  var FILTER1 = 0
+  var ITEM_TYPE_FILTER = 0
+  var WORK_TYPE_FILTER = 0
+  var COMPANY_ID_FILTER = 0
+
+  val WORK_TYPE = WorkTypeEnum().map;
 
   val carForm = Form(mapping(
     "itemTypeId" -> number
@@ -36,7 +40,9 @@ class ItemCarMaster @Inject()(config: Configuration
 
   /** 　初期化 */
   def init() {
-    FILTER1 = 0
+    ITEM_TYPE_FILTER = 0
+    COMPANY_ID_FILTER = 0
+    WORK_TYPE_FILTER = 0
   }
 
   /** 　検索ロジック */
@@ -44,15 +50,15 @@ class ItemCarMaster @Inject()(config: Configuration
     System.out.println("start search:")
     // 部署情報
     var carFormData = carForm.bindFromRequest.get
-    FILTER1 = carFormData.itemTypeId
+    ITEM_TYPE_FILTER = carFormData.itemTypeId
     //var carList: Seq[Car] = null
     val placeId = super.getCurrentPlaceId
     var carList = carDAO.selectCarMasterInfo(placeId)
-    if (FILTER1 != 0) {
-      carList = carList.filter(_.itemTypeId == FILTER1)
+    if (ITEM_TYPE_FILTER != 0) {
+      carList = carList.filter(_.itemTypeId == ITEM_TYPE_FILTER)
     }
     val itemTypeList = itemTypeDAO.selectItemCarInfo(placeId);
-    Ok(views.html.site.itemCarMaster(FILTER1, carList,itemTypeList))
+    Ok(views.html.site.itemCarMaster(ITEM_TYPE_FILTER, carList,itemTypeList,WORK_TYPE))
   }
 
   /** 初期表示 */
@@ -66,8 +72,9 @@ class ItemCarMaster @Inject()(config: Configuration
       // dbデータ取得
       val carList = carDAO.selectCarMasterInfo(placeId)
       val itemTypeList = itemTypeDAO.selectItemCarInfo(placeId);
+
       //System.out.println("itemTypeList:" + itemTypeList)
-      Ok(views.html.site.itemCarMaster(FILTER1, carList,itemTypeList))
+      Ok(views.html.site.itemCarMaster(ITEM_TYPE_FILTER, carList,itemTypeList,WORK_TYPE))
     } else {
       Redirect(CMS_NOT_LOGGED_RETURN_PATH).flashing(ERROR_MSG_KEY -> Messages("error.cmsLogged.invalid"))
     }

@@ -6,7 +6,16 @@ import anorm.SqlParser._
 import anorm._
 import play.api.db._
 
+/*作業期間種別*/
+case class WorkTypeEnum(
+  map: Map[Int,String] =
+  Map[Int,String](
+    0 -> "午前",
+    1 -> "午後",
+    2 -> "終日")
+)
 
+/*仮設材種別*/
 case class ItemType(
   item_type_id: Int,
   item_type_name: String,

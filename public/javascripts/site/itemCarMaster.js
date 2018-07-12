@@ -83,7 +83,7 @@ function doSubmit(formId, action){
 function getFilterCheck(){
     var inputItemType = document.getElementById("itemTypeId")
     if(inputItemType!=-1){
-         $('#filter1').val(inputItemType.value)
+         $('#ITEM_TYPE_FILTER').val(inputItemType.value)
     }
 }
 
@@ -91,8 +91,8 @@ $(function(){
     // filter値確認
     getFilterCheck();
 
-    $('#filter1').change(function() {
-        var result = $('#filter1 option:selected').val();
+    $('#ITEM_TYPE_FILTER').change(function() {
+        var result = $('#ITEM_TYPE_FILTER option:selected').val();
         var inputItemType = document.getElementById("itemTypeId")
         inputItemType.value = result
         var formElement = $("#viewForm")
