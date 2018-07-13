@@ -29,6 +29,11 @@ case class FloorSummery(
   cntReserve: String
 )
 
+case class Floor(
+  floor_Id: Int,
+  floor_name: String
+)
+
 case class FloorInfo(
   floorId: Int,
   floorName: String,
@@ -40,6 +45,34 @@ case class FloorInfo(
 class floorDAO @Inject() (dbapi: DBApi) {
 
   private val db = dbapi.database("default")
+
+  /**
+    * フロア情報だけ取得
+    * @return
+    */
+  def selectFloor(placeId: Int): Seq[Floor] = {
+
+    val simple = {
+      get[Int]("floor_id") ~
+        get[String]("floor_name")map {
+        case floor_id ~ floor_name  =>
+          Floor(floor_id, floor_name)
+      }
+    }
+
+    db.withConnection { implicit connection =>
+      val sql = SQL("""
+              select floor_id ,floor_name
+              from floor_master
+              where place_id = {placeId}
+              and active_flg = true
+              order by floor_id;
+              """).on(
+        "placeId" -> placeId
+      )
+      sql.as(simple.*)
+    }
+  }
 
   /**
     * フロア情報の取得

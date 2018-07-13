@@ -1,4 +1,13 @@
-@(ITEM_TYPE_FILTER: Int, carList: Seq[CarViewer], itemTypeList: Seq[ItemType],workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: RequestHeader, flash: Flash)
+@(ITEM_TYPE_FILTER: Int,
+COMPANY_NAME_FILTER:Int,
+FLOOR_NAME_FILTER:Int,
+WORK_TYPE_FILTER:Int,
+carList: Seq[CarViewer],
+itemTypeList: Seq[ItemType],
+companyNameList :Seq[Company],
+floorNameList :Seq[Floor],
+workTypeList :Seq[WorkType],
+workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: RequestHeader, flash: Flash)
 
 @import controllers.routes
 @import helper._
@@ -29,9 +38,22 @@
             <!-- ボタン-->
             <form id="viewForm" method="post" action="">
                 <div class="row tableRow" style="margin-top: 10px;">
-                    <div class="text-right col-xs-4 col-sm-4 col-md-4" style="padding:0;">
+                    <div class="text-center col-xs-2 col-sm-2 col-md-2" style="padding:0;">
+                        フロア :
+                        <select id="FLOOR_NAME_FILTER" style="width: 100px;">
+                            <!--仮設材種別テーブルから検索フィルタを設置-->
+                            <option value="0"></option>
+                            @floorNameList.zipWithIndex.map { case(floor, i) =>
+                            <option value="@floor.floor_name">@floor.floor_name</option>
+                            }
+                        </select>
+                        <input class="hidden form-control input-sm" type="text" id="floorName" name="floorName" value="@FLOOR_NAME_FILTER">
+                    </div>
+
+
+                    <div class="text-center col-xs-2 col-sm-2 col-md-2" style="padding:0;">
                         種別 :
-                        <select id="ITEM_TYPE_FILTER" class="">
+                        <select id="ITEM_TYPE_FILTER" style="width: 100px;">
                             <!--仮設材種別テーブルから検索フィルタを設置-->
                             <option value="0"></option>
                             @itemTypeList.zipWithIndex.map { case(itemType, i) =>
@@ -40,18 +62,35 @@
                         </select>
                         <input class="hidden form-control input-sm" type="text" id="itemTypeId" name="itemTypeId" value="@ITEM_TYPE_FILTER">
                     </div>
-                    <div class="text-center col-xs-4 col-sm-4 col-md-4" style="padding:0;">
-                        test2
-                    </div>
-                    <div class="text-left col-xs-4 col-sm-4 col-md-4" style="padding:0;">
-                        期間 :
-                        <select id="filter4" class="">
-                            <!--期間Enumから検索フィルタを設置-->
+                    <div class="text-center col-xs-2 col-sm-2 col-md-2" style="padding:0;">
+                        業者 :
+                        <select id="COMPANY_NAME_FILTER" style="width: 100px;">
+                            <!--業者マスターから検索フィルタを設置-->
                             <option value="0"></option>
-                            @workTypeMap.map{case (key, value) =>
-                            <option value="@(key+1)">@value</option>
+                            @companyNameList.zipWithIndex.map { case(company, i) =>
+                            <option value="@company.companyName">@company.companyName</option>
                             }
                         </select>
+                        <input class="hidden form-control input-sm" type="text" id="companyName" name="companyName" value="@COMPANY_NAME_FILTER">
+                    </div>
+                    <div class="text-center col-xs-2 col-sm-2 col-md-2" style="padding:0;">
+                        期間 :
+                        <select id="WORK_TYPE_FILTER" style="width: 100px;">
+                            <!--期間Enumから検索フィルタを設置-->
+                            <!--<option value="0"></option>-->
+                            <!--@workTypeMap.map{case (key, value) =>-->
+                            <!--<option value="@(key+1)">@value</option>-->
+                            <!--}-->
+                            <option value="0"></option>
+                            @workTypeList.zipWithIndex.map { case(workType, i) =>
+                            <option value="@workType.work_type_name">@workType.work_type_name</option>
+                            }
+                        </select>
+                        <input class="hidden form-control input-sm" type="text" id="workTypeName" name="workTypeName" value="@WORK_TYPE_FILTER">
+                    </div>
+                    <!--表示ボタン-->
+                    <div class="text-center btn btn__view--frame">
+                        表示
                     </div>
                 </div>
                 @CSRF.formField
@@ -63,11 +102,11 @@
                     <div class="table-responsive-body">
                         <table class="table table-bordered table-condensed itemTable">
                             <thead>
-                            <!--<tr>-->
-                                <!--<th colspan="5" class="tableTitleTh">@Messages("lang.site.carManage.car.list.header.title")</th>-->
-                            <!--</tr>-->
                             <tr>
-                                <th class="tableTh ">フロア</th>
+                                <th colspan="9" class="tableTitleTh">@Messages("lang.site.carManage.car.list.header.title")</th>
+                            </tr>
+                            <tr>
+                                <th class="tableTh ">apiフロア</th>
                                 <th class="tableTh ">現在位置</th>
                                 <th class="tableTh ">Tag ID</th>
                                 <th class="tableTh ">種別</th>
@@ -81,7 +120,7 @@
                             <tbody>
                             @carList.zipWithIndex.map { case(car, i) =>
                                 <tr class="rowColor rowHover" data-carId="@car.item_car_id" id="@car.item_car_id">
-                                    <td class="itemTd text-center ">apiフロア</td>
+                                    <td class="itemTd text-center ">3F</td>
                                     <td class="itemTd text-center ">api位置</td>
                                     <td class="itemTd text-center ">@car.item_car_btx_id</td>
                                     <td class="itemTd text-center ">@car.item_type_name</td>
