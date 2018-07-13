@@ -25,7 +25,7 @@ class CarSummery @Inject()(config: Configuration
                            , carSummeryDAO: models.carSummeryDAO
                            , floorDAO: models.floorDAO
                            , placeDAO: models.placeDAO
-                           , carDAO: models.carDAO
+                           , carDAO: models.itemCarDAO
                            , companyDAO: models.companyDAO
                            , btxLastPositionDAO: models.btxLastPositionDAO
                                ) extends BaseController with I18nSupport {
@@ -88,18 +88,18 @@ class CarSummery @Inject()(config: Configuration
         var companyIdStr = ""
         var isWorking = false
 
-        val car = carList.filter(_.carBtxId == apiData.btx_id)
+        val car = carList.filter(_.itemCarBtxId == apiData.btx_id)
         if(car.nonEmpty){
           // ID, 作業車番号 --
-          carIdStr = car.last.carId.toString//
-          carNoStr = car.last.carNo//
+          carIdStr = car.last.itemCarId.toString//
+          carNoStr = car.last.itemCarNo//
           // フロア --
           val floor = utils.BtxUtil.getNearestFloor(floorInfoList, apiData)
           if(floor.nonEmpty){
             floorIdStr = floor.last.floorId.toString//
           }else{
             // 履歴DBから取得
-            val hist = btxLastPositionDAO.find(placeId, Seq[Int](car.last.carBtxId))
+            val hist = btxLastPositionDAO.find(placeId, Seq[Int](car.last.itemCarBtxId))
             if(hist.nonEmpty){
               floorIdStr = hist.last.floorId.toString
             }else{
@@ -108,7 +108,7 @@ class CarSummery @Inject()(config: Configuration
             }
           }
           // 業者 --
-          val restReserveInfo = reserveInfo.filter(_.carId == car.last.carId)
+          val restReserveInfo = reserveInfo.filter(_.carId == car.last.itemCarId)
           if(restReserveInfo.nonEmpty){
             // 予約あり
             companyIdStr = restReserveInfo(0).companyId.toString//
@@ -116,7 +116,7 @@ class CarSummery @Inject()(config: Configuration
             // 前日予約無
           }
           // 稼働・非稼働 --
-          val keyBtx = list.filter(_.btx_id == car.last.carKeyBtxId)
+          val keyBtx = list.filter(_.btx_id == car.last.itemCarKeyBtxId)
           if(keyBtx.nonEmpty){
             if(keyBtx.last.device_id != 0){
               //val floor = floorInfoList.filter(_.exbDeviceIdList contains keyBtx.last.device_id.toString)
@@ -156,7 +156,7 @@ class CarSummery @Inject()(config: Configuration
             }
           }else{
             // 登録してる鍵TXがAPIにない
-            Logger.debug(s"""登録してる鍵TXがAPIにない。TX番号：${car.last.carKeyBtxId}""")
+            Logger.debug(s"""登録してる鍵TXがAPIにない。TX番号：${car.last.itemCarKeyBtxId}""")
             isWorking = false
           }
 

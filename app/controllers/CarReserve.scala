@@ -42,7 +42,7 @@ class CarReserve @Inject()(config: Configuration
                            , reserveDAO: models.reserveDAO
                            , floorDAO: models.floorDAO
                            , placeDAO: models.placeDAO
-                           , carDAO: models.carDAO
+                           , carDAO: models.itemCarDAO
                            , companyDAO: models.companyDAO
                            , btxLastPositionDAO: models.btxLastPositionDAO
                                ) extends BaseController with I18nSupport {
@@ -104,18 +104,18 @@ class CarReserve @Inject()(config: Configuration
         //var reserveIdStr: String = ""
         //var dataBefore: String = ""
 
-        val car = carList.filter(_.carBtxId == apiData.btx_id)
+        val car = carList.filter(_.itemCarBtxId == apiData.btx_id)
         if(car.nonEmpty){
           // ID, 作業車番号 --
-          carIdStr = car.last.carId.toString
-          carNo = car.last.carNo
+          carIdStr = car.last.itemCarId.toString
+          carNo = car.last.itemCarNo
           // フロア --
           val floor = utils.BtxUtil.getNearestFloor(floorInfoList, apiData)
           if(floor.nonEmpty){
             floorIdStr = floor.last.floorId.toString//
           }else{
             // 履歴DBから取得
-            val hist = btxLastPositionDAO.find(placeId, Seq[Int](car.last.carBtxId))
+            val hist = btxLastPositionDAO.find(placeId, Seq[Int](car.last.itemCarBtxId))
             if(hist.nonEmpty){
               floorIdStr = hist.last.floorId.toString()
             }else{
@@ -124,7 +124,7 @@ class CarReserve @Inject()(config: Configuration
             }
           }
           // 業者 --
-          val beforeReserve = beforeReserveList.filter(_.carId == car.last.carId)
+          val beforeReserve = beforeReserveList.filter(_.carId == car.last.itemCarId)
           if(beforeReserve.nonEmpty){
             // 予約あり
             companyIdStr = beforeReserve(0).companyId.toString()
@@ -232,7 +232,7 @@ class CarReserve @Inject()(config: Configuration
                                                             , Seq[Int](f.inputFloorId.toInt)
                                                             , f.reserveDate
                                                             , Seq[Int](f.inputCompanyId.toInt)
-                                                            , Seq[Int](carList.last.carId)
+                                                            , Seq[Int](carList.last.itemCarId)
                                                           )
         if(duplicateReserveList.isEmpty == false){
           errMsg :+=  Messages("error.CarReserve.registerModal.inputCarNo.duplicate")
@@ -245,7 +245,7 @@ class CarReserve @Inject()(config: Configuration
           .flashing(ERROR_MSG_KEY -> errMsg.mkString(HTML_BR))
       }else{
         // DB登録実行
-        reserveDAO.insert(carList.last.carId, f.inputFloorId.toInt, f.inputCompanyId.toInt, f.reserveDate)
+        reserveDAO.insert(carList.last.itemCarId, f.inputFloorId.toInt, f.inputCompanyId.toInt, f.reserveDate)
         // 成功で遷移
         Redirect(s"""${routes.CarReserve.index().path}?${RESERVE_DATE_PARAM_KEY}=${f.reserveDate}""")
           .flashing(SUCCESS_MSG_KEY -> Messages("success.CarReserve.registerModal"))

@@ -15,7 +15,7 @@ import utils.silhouette.MyEnv
 class WorkPlace @Inject()(config: Configuration
                           , val silhouette: Silhouette[MyEnv]
                           , val messagesApi: MessagesApi
-                          , carDAO: models.carDAO
+                          , carDAO: models.itemCarDAO
                           , ws: WSClient
                           , btxDAO: models.btxDAO
                           , mapViewerDAO: models.MapViewerDAO
