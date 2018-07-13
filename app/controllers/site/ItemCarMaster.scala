@@ -32,9 +32,9 @@ class ItemCarMaster @Inject()(config: Configuration
                              ) extends BaseController with I18nSupport {
 
   var ITEM_TYPE_FILTER = 0;
-  var COMPANY_NAME_FILTER = 0;
-  var FLOOR_NAME_FILTER = 0;
-  var WORK_TYPE_FILTER = 0;
+  var COMPANY_NAME_FILTER = "";
+  var FLOOR_NAME_FILTER = "";
+  var WORK_TYPE_FILTER = "";
 
   var itemTypeList :Seq[ItemType] = null; // 仮設材種別
   var companyNameList :Seq[Company] = null; // 業者
@@ -44,15 +44,20 @@ class ItemCarMaster @Inject()(config: Configuration
   /*enum形*/
   val WORK_TYPE = WorkTypeEnum().map;
 
+  /*転送form*/
   val carForm = Form(mapping(
-    "itemTypeId" -> number
+    "itemTypeId" -> number,
+    "companyName" -> text,
+    "floorName" -> text,
+    "workTypeName" -> text
   )(ItemCarData.apply)(ItemCarData.unapply))
 
   /** 　初期化 */
   def init() {
     ITEM_TYPE_FILTER = 0
-    COMPANY_NAME_FILTER = 0
-    WORK_TYPE_FILTER = 0
+    COMPANY_NAME_FILTER = ""
+    WORK_TYPE_FILTER = ""
+    FLOOR_NAME_FILTER = ""
   }
 
   /** 　検索側データ取得 */
@@ -75,13 +80,26 @@ class ItemCarMaster @Inject()(config: Configuration
     getSearchData(placeId)
 
     // 部署情報
-    var carFormData = carForm.bindFromRequest.get
+    val carFormData = carForm.bindFromRequest.get
     ITEM_TYPE_FILTER = carFormData.itemTypeId
+    COMPANY_NAME_FILTER = carFormData.companyName
+    WORK_TYPE_FILTER = carFormData.workTypeName
+    FLOOR_NAME_FILTER = carFormData.floorName
 
     var carList = carDAO.selectCarMasterViewer(placeId)
     if (ITEM_TYPE_FILTER != 0) {
       carList = carList.filter(_.item_type_id == ITEM_TYPE_FILTER)
     }
+    if (FLOOR_NAME_FILTER != "") {
+      carList = carList.filter(_.floor_name == FLOOR_NAME_FILTER)
+    }
+    if (COMPANY_NAME_FILTER != "") {
+      carList = carList.filter(_.company_name == COMPANY_NAME_FILTER)
+    }
+    if (WORK_TYPE_FILTER != "") {
+      carList = carList.filter(_.work_type_name == WORK_TYPE_FILTER)
+    }
+
     Ok(views.html.site.itemCarMaster(ITEM_TYPE_FILTER,COMPANY_NAME_FILTER,FLOOR_NAME_FILTER,WORK_TYPE_FILTER
       ,carList,itemTypeList,companyNameList,floorNameList,workTypeList,WORK_TYPE))
   }

@@ -1,7 +1,7 @@
 @(ITEM_TYPE_FILTER: Int,
-COMPANY_NAME_FILTER:Int,
-FLOOR_NAME_FILTER:Int,
-WORK_TYPE_FILTER:Int,
+COMPANY_NAME_FILTER:String,
+FLOOR_NAME_FILTER:String,
+WORK_TYPE_FILTER:String,
 carList: Seq[CarViewer],
 itemTypeList: Seq[ItemType],
 companyNameList :Seq[Company],
@@ -42,12 +42,12 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
                         フロア :
                         <select id="FLOOR_NAME_FILTER" style="width: 100px;">
                             <!--仮設材種別テーブルから検索フィルタを設置-->
-                            <option value="0"></option>
+                            <option value=""></option>
                             @floorNameList.zipWithIndex.map { case(floor, i) =>
                             <option value="@floor.floor_name">@floor.floor_name</option>
                             }
                         </select>
-                        <input class="hidden form-control input-sm" type="text" id="floorName" name="floorName" value="@FLOOR_NAME_FILTER">
+                        <input class=" form-control input-sm" type="text" id="floorName" name="floorName" value="@FLOOR_NAME_FILTER">
                     </div>
 
 
@@ -60,18 +60,18 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
                                 <option value="@itemType.item_type_id">@itemType.item_type_name</option>
                             }
                         </select>
-                        <input class="hidden form-control input-sm" type="text" id="itemTypeId" name="itemTypeId" value="@ITEM_TYPE_FILTER">
+                        <input class=" form-control input-sm" type="text" id="itemTypeId" name="itemTypeId" value="@ITEM_TYPE_FILTER">
                     </div>
                     <div class="text-center col-xs-2 col-sm-2 col-md-2" style="padding:0;">
                         業者 :
                         <select id="COMPANY_NAME_FILTER" style="width: 100px;">
                             <!--業者マスターから検索フィルタを設置-->
-                            <option value="0"></option>
+                            <option value=""></option>
                             @companyNameList.zipWithIndex.map { case(company, i) =>
                             <option value="@company.companyName">@company.companyName</option>
                             }
                         </select>
-                        <input class="hidden form-control input-sm" type="text" id="companyName" name="companyName" value="@COMPANY_NAME_FILTER">
+                        <input class=" form-control input-sm" type="text" id="companyName" name="companyName" value="@COMPANY_NAME_FILTER">
                     </div>
                     <div class="text-center col-xs-2 col-sm-2 col-md-2" style="padding:0;">
                         期間 :
@@ -81,12 +81,12 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
                             <!--@workTypeMap.map{case (key, value) =>-->
                             <!--<option value="@(key+1)">@value</option>-->
                             <!--}-->
-                            <option value="0"></option>
+                            <option value=""></option>
                             @workTypeList.zipWithIndex.map { case(workType, i) =>
                             <option value="@workType.work_type_name">@workType.work_type_name</option>
                             }
                         </select>
-                        <input class="hidden form-control input-sm" type="text" id="workTypeName" name="workTypeName" value="@WORK_TYPE_FILTER">
+                        <input class=" form-control input-sm" type="text" id="workTypeName" name="workTypeName" value="@WORK_TYPE_FILTER">
                     </div>
                     <!--表示ボタン-->
                     <div class="text-center btn btn__view--frame">

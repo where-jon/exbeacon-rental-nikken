@@ -1,6 +1,5 @@
 package models
 
-import java.sql.Date
 import javax.inject.Inject
 
 import anorm.SqlParser._
@@ -40,7 +39,10 @@ case class CarViewer(
 
 /*作業車・立馬一覧用formクラス*/
 case class ItemCarData(
-  itemTypeId: Int
+  itemTypeId: Int,
+  companyName: String,
+  floorName: String,
+  workTypeName: String
 )
 
 @javax.inject.Singleton
