@@ -293,7 +293,6 @@ class itemCarDAO @Inject()(dbapi: DBApi) {
                , c.note
                , c.item_car_no
                , c.item_car_name
-               , c.item_car_btx_id
                , c.place_id
                ,coalesce(to_char(r.reserve_start_date, 'YYYY-MM-DD'), 'date') as reserve_start_date
                ,coalesce(r.company_id, -1) as company_id
