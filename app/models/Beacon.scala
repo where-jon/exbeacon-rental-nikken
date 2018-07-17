@@ -13,11 +13,11 @@ import play.api.libs.functional.syntax._
   * @param timestamp   当日最後に検出した時刻
   */
 case class nearestBeaconPosition(
-                                  device_id: Int,
-                                  pos_id: Int,
-                                  rssi: Double,
-                                  timestamp: Long
-                                )
+    device_id: Int,
+    pos_id: Int,
+    rssi: Double,
+    timestamp: Long
+)
 
 object nearestBeaconPosition {
   implicit val jsonReads: Reads[nearestBeaconPosition] = (
@@ -47,15 +47,15 @@ object nearestBeaconPosition {
   * @param updatetime    当日最後に検出した時刻
   */
 case class beaconPosition(
-                           btx_id: Int,
-                           device_id: Int,
-                           btx_type: Int,
-                           pos_id: Int,
-                           phase: Int,
-                           power_level: Int,
-                           nearest: Seq[nearestBeaconPosition],
-                           updatetime: String
-                         ) {
+  btx_id: Int,
+  device_id: Int,
+  btx_type: Int,
+  pos_id: Int,
+  phase: Int,
+  power_level: Int,
+  nearest: Seq[nearestBeaconPosition],
+  updatetime: String
+) {
   def copy(
             btx_id: Int = this.btx_id,
             device_id: Int = this.device_id,
@@ -87,6 +87,7 @@ object beaconPosition {
   implicit def jsonWrites = Json.writes[beaconPosition]
 }
 
+
 /**
   * 測位APIの結果をフロントエンド側に返却するためのデータモデル
   *
@@ -97,55 +98,55 @@ object beaconPosition {
   * @param updatetime    当日最後に検出した時刻
   */
 case class beaconPositionData(
-                               cur_exb_name: String,
-                               cur_pos_name: String,
-                               btx_id: Int,
-                               pos_id: Int,
-                               phase: Int,
-                               power_level: Int,
-                               updatetime: String,
-                               item_car_id: Int,
-                               item_car_btx_id: Int,
-                               item_car_key_btx_id: Int,
-                               item_type_id: Int,
-                               item_type_name:String,
-                               note:String,
-                               item_car_no: String,
-                               item_car_name:String,
-                               place_id: Int,
-                               reserve_start_date:String,
-                               company_id: Int,
-                               company_name: String,
-                               work_type_id: Int,
-                               work_type_name: String,
-                               reserve_id: Int
+  cur_exb_name: String,
+  cur_pos_name: String,
+  btx_id: Int,
+  pos_id: Int,
+  phase: Int,
+  power_level: Int,
+  updatetime: String,
+  item_car_id: Int,
+  item_car_btx_id: Int,
+  item_car_key_btx_id: Int,
+  item_type_id: Int,
+  item_type_name:String,
+  reserve_floor_name:String,
+  item_car_no: String,
+  item_car_name:String,
+  place_id: Int,
+  reserve_start_date:String,
+  company_id: Int,
+  company_name: String,
+  work_type_id: Int,
+  work_type_name: String,
+  reserve_id: Int
 
-                             )
+ )
 
 object beaconPositionData {
   implicit val jsonReads: Reads[beaconPositionData] = (
     ((JsPath \ "cur_exb_name").read[String] | Reads.pure(""))~
-      ((JsPath \ "cur_pos_name ").read[String] | Reads.pure(""))~
-      (JsPath \ "btx_id").read[Int] ~
-      (JsPath \ "pos_id").read[Int] ~
-      ((JsPath \ "phase").read[Int] | Reads.pure(0)) ~
-      (JsPath \ "power_level").read[Int] ~
-      ((JsPath \ "updatetime").read[String] | Reads.pure(""))~
-      (JsPath \ "item_car_id").read[Int] ~
-      (JsPath \ "item_car_btx_id").read[Int] ~
-      (JsPath \ "item_car_key_btx_id").read[Int]~
-      (JsPath \ "item_type_id").read[Int] ~
-      ((JsPath \ "item_type_name").read[String] | Reads.pure("")) ~
-      ((JsPath \ "note").read[String] | Reads.pure("")) ~
-      ((JsPath \ "item_car_no").read[String] | Reads.pure("")) ~
-      ((JsPath \ "item_car_name").read[String] | Reads.pure("")) ~
-      ((JsPath \ "place_id").read[Int])~
-      ((JsPath \ "reserve_start_date").read[String] | Reads.pure("")) ~
-      (JsPath \ "company_id").read[Int] ~
-      ((JsPath \ "company_name").read[String] | Reads.pure(""))~
-      (JsPath \ "work_type_id").read[Int] ~
-      ((JsPath \ "work_type_name").read[String] | Reads.pure(""))~
-      (JsPath \ "reserve_id").read[Int]
+    ((JsPath \ "cur_pos_name ").read[String] | Reads.pure(""))~
+    (JsPath \ "btx_id").read[Int] ~
+    (JsPath \ "pos_id").read[Int] ~
+    ((JsPath \ "phase").read[Int] | Reads.pure(0)) ~
+    (JsPath \ "power_level").read[Int] ~
+    ((JsPath \ "updatetime").read[String] | Reads.pure(""))~
+    (JsPath \ "item_car_id").read[Int] ~
+    (JsPath \ "item_car_btx_id").read[Int] ~
+    (JsPath \ "item_car_key_btx_id").read[Int]~
+    (JsPath \ "item_type_id").read[Int] ~
+    ((JsPath \ "item_type_name").read[String] | Reads.pure("")) ~
+    ((JsPath \ "reserve_floor_name").read[String] | Reads.pure("")) ~
+    ((JsPath \ "item_car_no").read[String] | Reads.pure("")) ~
+    ((JsPath \ "item_car_name").read[String] | Reads.pure("")) ~
+    ((JsPath \ "place_id").read[Int])~
+    ((JsPath \ "reserve_start_date").read[String] | Reads.pure("")) ~
+    (JsPath \ "company_id").read[Int] ~
+    ((JsPath \ "company_name").read[String] | Reads.pure(""))~
+    (JsPath \ "work_type_id").read[Int] ~
+    ((JsPath \ "work_type_name").read[String] | Reads.pure(""))~
+    (JsPath \ "reserve_id").read[Int]
     )(beaconPositionData.apply _)
   implicit def jsonWrites = Json.writes[beaconPositionData]
 }
