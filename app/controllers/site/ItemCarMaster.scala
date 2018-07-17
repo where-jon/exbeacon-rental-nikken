@@ -4,7 +4,8 @@ import javax.inject.{Inject, Singleton}
 
 import com.mohiva.play.silhouette.api.Silhouette
 import controllers.BaseController
-import models.{Floor,Company, ItemCarData, ItemType, WorkType,WorkTypeEnum}
+import controllers.BeaconService
+import models._
 import play.api._
 import play.api.data.Form
 import play.api.data.Forms._
@@ -25,6 +26,7 @@ class ItemCarMaster @Inject()(config: Configuration
                               , val messagesApi: MessagesApi
                               , carDAO: models.itemCarDAO
                               , companyDAO: models.companyDAO
+                              , beaconService: BeaconService
                               , floorDAO: models.floorDAO
                               , btxDAO: models.btxDAO
                               , itemTypeDAO: models.ItemTypeDAO
@@ -86,22 +88,23 @@ class ItemCarMaster @Inject()(config: Configuration
     WORK_TYPE_FILTER = carFormData.workTypeName
     FLOOR_NAME_FILTER = carFormData.floorName
 
-    var carList = carDAO.selectCarMasterViewer(placeId)
+    var carListApi = beaconService.getBeaconPosition(true,placeId)
+
     if (ITEM_TYPE_FILTER != 0) {
-      carList = carList.filter(_.item_type_id == ITEM_TYPE_FILTER)
+      carListApi = carListApi.filter(_.item_type_id == ITEM_TYPE_FILTER)
     }
     if (FLOOR_NAME_FILTER != "") {
-      carList = carList.filter(_.floor_name == FLOOR_NAME_FILTER)
+      carListApi = carListApi.filter(_.cur_pos_name == FLOOR_NAME_FILTER)
     }
     if (COMPANY_NAME_FILTER != "") {
-      carList = carList.filter(_.company_name == COMPANY_NAME_FILTER)
+      carListApi = carListApi.filter(_.company_name == COMPANY_NAME_FILTER)
     }
     if (WORK_TYPE_FILTER != "") {
-      carList = carList.filter(_.work_type_name == WORK_TYPE_FILTER)
+      carListApi = carListApi.filter(_.work_type_name == WORK_TYPE_FILTER)
     }
 
     Ok(views.html.site.itemCarMaster(ITEM_TYPE_FILTER,COMPANY_NAME_FILTER,FLOOR_NAME_FILTER,WORK_TYPE_FILTER
-      ,carList,itemTypeList,companyNameList,floorNameList,workTypeList,WORK_TYPE))
+      ,carListApi,itemTypeList,companyNameList,floorNameList,workTypeList,WORK_TYPE))
   }
 
   /** 初期表示 */
@@ -114,11 +117,11 @@ class ItemCarMaster @Inject()(config: Configuration
       getSearchData(placeId)
 
       // dbデータ取得
-      val carList = carDAO.selectCarMasterViewer(placeId)
+      val carListApi = beaconService.getBeaconPosition(true,placeId)
 
-      System.out.println("floorNameList:" + floorNameList)
+      System.out.println("carListApi:" + carListApi.length)
       Ok(views.html.site.itemCarMaster(ITEM_TYPE_FILTER, COMPANY_NAME_FILTER,FLOOR_NAME_FILTER,WORK_TYPE_FILTER
-        ,carList,itemTypeList,companyNameList,floorNameList,workTypeList,WORK_TYPE))
+        ,carListApi,itemTypeList,companyNameList,floorNameList,workTypeList,WORK_TYPE))
     } else {
       Redirect(CMS_NOT_LOGGED_RETURN_PATH).flashing(ERROR_MSG_KEY -> Messages("error.cmsLogged.invalid"))
     }

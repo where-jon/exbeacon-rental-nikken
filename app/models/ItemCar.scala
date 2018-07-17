@@ -33,7 +33,7 @@ case class CarViewer(
   company_name: String,
   work_type_id: Int,
   work_type_name: String,
-  floor_name: String,
+  reserve_floor_name: String,
   reserve_id: Int
 )
 
@@ -268,14 +268,14 @@ class itemCarDAO @Inject()(dbapi: DBApi) {
       get[String]("company_name") ~
       get[Int]("work_type_id") ~
       get[String]("work_type_name") ~
-      get[String]("floor_name") ~
+      get[String]("reserve_floor_name") ~
       get[Int]("reserve_id")map {
       case item_car_id ~ item_car_btx_id ~ item_car_key_btx_id ~ item_type_id ~ item_type_name ~
         note ~ item_car_no ~item_car_name ~place_id ~reserve_start_date ~company_id ~company_name ~work_type_id ~
-        work_type_name ~floor_name ~ reserve_id  =>
+        work_type_name ~reserve_floor_name ~ reserve_id  =>
         CarViewer(item_car_id, item_car_btx_id, item_car_key_btx_id, item_type_id, item_type_name,
           note, item_car_no, item_car_name, place_id, reserve_start_date, company_id,company_name,work_type_id,
-          work_type_name,floor_name,reserve_id)
+          work_type_name,reserve_floor_name,reserve_id)
     }
   }
 
@@ -299,7 +299,7 @@ class itemCarDAO @Inject()(dbapi: DBApi) {
                ,coalesce(co.company_name, '無') as company_name
                ,coalesce(work.work_type_id, -1) as work_type_id
                ,coalesce(work.work_type_name, '無') as work_type_name
-               ,coalesce(floor.floor_name, '無') as floor_name
+               ,coalesce(floor.floor_name, '無') as reserve_floor_name
                ,coalesce(r.reserve_id, -1) as reserve_id
            from
              		item_car_master as c
