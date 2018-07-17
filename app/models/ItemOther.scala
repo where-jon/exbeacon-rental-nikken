@@ -35,10 +35,6 @@ case class OtherViewer(
   reserve_id: Int
 )
 
-case class OtherViewer2(
-  item_other_id: Int
-)
-
 /*作業車・立馬一覧用formクラス*/
 case class ItemOtherData(
   itemTypeId: Int,
@@ -251,7 +247,7 @@ class itemOtherDAO @Inject()(dbapi: DBApi) {
   }
 
 
-  val carMasterViewer = {
+  val otherMasterViewer = {
     get[Int]("item_other_id") ~
       get[Int]("item_other_btx_id") ~
       get[Int]("item_type_id") ~
@@ -276,30 +272,53 @@ class itemOtherDAO @Inject()(dbapi: DBApi) {
     }
   }
 
-  val carMasterViewer2 = {
 
-    get[Int]("item_other_id") map {
-      case item_other_id  =>
-        OtherViewer2(item_other_id)
-    }
-  }
-
-
-  def selectOtherMasterViewer(placeId: Int): Seq[OtherViewer2] = {
+  def selectOtherMasterViewer(placeId: Int): Seq[OtherViewer] = {
     db.withConnection { implicit connection =>
       val sql = SQL(
         """
             select
-                c.item_other_id
-           from
-             		item_other_master as c
-           where c.place_id = {placeId}
-           order by item_other_id ;
+                  c.item_other_id
+                , c.item_other_btx_id
+                , c.item_type_id
+                , i.item_type_name
+                , c.note
+                , c.item_other_no
+                , c.item_other_name
+                , c.place_id
+                ,coalesce(to_char(r.reserve_start_date, 'YYYY-MM-DD'), 'date') as reserve_start_date
+                ,coalesce(r.company_id, -1) as company_id
+                ,coalesce(co.company_name, '無') as company_name
+                ,coalesce(work.work_type_id, -1) as work_type_id
+                ,coalesce(work.work_type_name, '無') as work_type_name
+                ,coalesce(floor.floor_name, '無') as floor_name
+                ,coalesce(r.reserve_id, -1) as reserve_id
+            from
+              		item_other_master as c
+              		LEFT JOIN reserve_table_new as r on c.item_other_id = r.item_id
+                   and (to_char(r.reserve_start_date, 'YYYY-MM-DD') = to_char(current_timestamp, 'YYYY-MM-DD')
+                        or to_char(r.reserve_end_date, 'YYYY-MM-DD') = to_char(current_timestamp, 'YYYY-MM-DD'))
+              		and r.active_flg = true
+              		and r.place_id= {placeId}
+ 						left JOIN item_type as i on i.item_type_id = c.item_type_id
+ 	             		and i.active_flg = true
+ 	             		and i.place_id= {placeId}
+ 		             		left JOIN company_master as co on co.company_id = r.company_id
+ 		             		and co.active_flg = true
+ 		             		and co.place_id= {placeId}
+ 			             		left JOIN work_type as work on work.work_type_id = r.work_type_id
+ 			             		and work.active_flg = true
+ 			             		and work.place_id= {placeId}
+ 			             			left JOIN floor_master as floor on floor.floor_id = r.floor_id
+ 				             		and floor.active_flg = true
+ 				             		and floor.place_id= {placeId}
+            where c.place_id= {placeId}
+            order by item_other_id ;
 
 		          """).on(
         "placeId" -> placeId
       )
-      sql.as(carMasterViewer2.*)
+      sql.as(otherMasterViewer.*)
     }
   }
 

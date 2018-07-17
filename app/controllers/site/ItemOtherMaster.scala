@@ -63,7 +63,7 @@ class ItemOtherMaster @Inject()(config: Configuration
   /** 　検索側データ取得 */
   def getSearchData(_placeId:Integer): Unit = {
     /*仮設材種別取得*/
-    itemTypeList = itemTypeDAO.selectItemCarInfo(_placeId);
+    itemTypeList = itemTypeDAO.selectItemOtherInfo(_placeId);
     /*業者取得*/
     companyNameList = companyDAO.selectCompany(_placeId);
     /*フロア取得*/
@@ -86,22 +86,22 @@ class ItemOtherMaster @Inject()(config: Configuration
     WORK_TYPE_FILTER = carFormData.workTypeName
     FLOOR_NAME_FILTER = carFormData.floorName
 
-    var carList = otherDAO.selectOtherMasterViewer(placeId)
-//    if (ITEM_TYPE_FILTER != 0) {
-//      carList = carList.filter(_.item_type_id == ITEM_TYPE_FILTER)
-//    }
-//    if (FLOOR_NAME_FILTER != "") {
-//      carList = carList.filter(_.floor_name == FLOOR_NAME_FILTER)
-//    }
-//    if (COMPANY_NAME_FILTER != "") {
-//      carList = carList.filter(_.company_name == COMPANY_NAME_FILTER)
-//    }
-//    if (WORK_TYPE_FILTER != "") {
-//      carList = carList.filter(_.work_type_name == WORK_TYPE_FILTER)
-//    }
+    var otherList = otherDAO.selectOtherMasterViewer(placeId)
+    if (ITEM_TYPE_FILTER != 0) {
+      otherList = otherList.filter(_.item_type_id == ITEM_TYPE_FILTER)
+    }
+    if (FLOOR_NAME_FILTER != "") {
+      otherList = otherList.filter(_.floor_name == FLOOR_NAME_FILTER)
+    }
+    if (COMPANY_NAME_FILTER != "") {
+      otherList = otherList.filter(_.company_name == COMPANY_NAME_FILTER)
+    }
+    if (WORK_TYPE_FILTER != "") {
+      otherList = otherList.filter(_.work_type_name == WORK_TYPE_FILTER)
+    }
 
     Ok(views.html.site.itemOtherMaster(ITEM_TYPE_FILTER,COMPANY_NAME_FILTER,FLOOR_NAME_FILTER,WORK_TYPE_FILTER
-      ,carList,itemTypeList,companyNameList,floorNameList,workTypeList,WORK_TYPE))
+      ,otherList,itemTypeList,companyNameList,floorNameList,workTypeList,WORK_TYPE))
   }
 
   /** 初期表示 */
@@ -114,11 +114,11 @@ class ItemOtherMaster @Inject()(config: Configuration
       getSearchData(placeId)
 
       // dbデータ取得
-      val carList = otherDAO.selectOtherMasterViewer(placeId)
+      val otherList = otherDAO.selectOtherMasterViewer(placeId)
 
       System.out.println("floorNameList:" + floorNameList)
       Ok(views.html.site.itemOtherMaster(ITEM_TYPE_FILTER, COMPANY_NAME_FILTER,FLOOR_NAME_FILTER,WORK_TYPE_FILTER
-        ,carList,itemTypeList,companyNameList,floorNameList,workTypeList,WORK_TYPE))
+        ,otherList,itemTypeList,companyNameList,floorNameList,workTypeList,WORK_TYPE))
     } else {
       Redirect(CMS_NOT_LOGGED_RETURN_PATH).flashing(ERROR_MSG_KEY -> Messages("error.cmsLogged.invalid"))
     }

@@ -2,7 +2,7 @@
 COMPANY_NAME_FILTER:String,
 FLOOR_NAME_FILTER:String,
 WORK_TYPE_FILTER:String,
-carList: Seq[OtherViewer2],
+otherList: Seq[OtherViewer],
 itemTypeList: Seq[ItemType],
 companyNameList :Seq[Company],
 floorNameList :Seq[Floor],
@@ -118,8 +118,17 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
                             </tr>
                             </thead>
                             <tbody>
-                            @carList.zipWithIndex.map { case(car, i) =>
-                                <tr class="rowColor rowHover" data-carId="@car.item_other_id" id="@car.item_other_id">
+                            @otherList.zipWithIndex.map { case(other, i) =>
+                                <tr class="rowColor rowHover" data-otherId="@other.item_other_id" id="@other.item_other_id">
+                                    <td class="itemTd text-center ">apiフロア</td>
+                                    <td class="itemTd text-center ">api位置</td>
+                                    <td class="itemTd text-center ">@other.item_other_btx_id</td>
+                                    <td class="itemTd text-center ">@other.item_type_name</td>
+                                    <td class="itemTd text-center ">@other.item_other_name</td>
+                                    <td class="itemTd text-center ">@other.company_name</td>
+                                    <td class="itemTd text-center ">@other.floor_name</td>
+                                    <td class="itemTd text-center ">@other.work_type_name</td>
+                                    <td class="itemTd text-center ">@other.reserve_id</td>
                                 </tr>
                             }
                             </tbody>
