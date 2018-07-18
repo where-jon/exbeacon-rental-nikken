@@ -5,10 +5,15 @@
 <head>
     <link rel="stylesheet" href="@routes.MyAssets.css("sidebar/sidebar.css")"/>
     <link rel="stylesheet" href="@routes.MyAssets.css("sidebar/drawer.css")"/>
+    <link rel="stylesheet" href="@routes.MyAssets.css("datepicker/bootstrap-datetimepicker.css")"/>
     <link rel="stylesheet" media="screen" href="@routes.MyAssets.lib("fontawesome/css/font-awesome.min.css")">
     <script type="text/javascript" src="@routes.MyAssets.js("sidebar/iscroll.min.js")"></script>
     <script type="text/javascript" src="@routes.MyAssets.js("sidebar/drawer.min.js")"></script>
     <script type="text/javascript" src="@routes.MyAssets.js("sidebar/drawer-setting.js")"></script>
+
+    <script type="text/javascript" src="@routes.MyAssets.js("datepicker/moment.min.js")"></script>
+    <script type="text/javascript" src="@routes.MyAssets.js("datepicker/moment-with-locales.js")"></script>
+    <script type="text/javascript" src="@routes.MyAssets.js("datepicker/bootstrap-datetimepicker.js")"></script>
 
     <!--共通-->
     <link rel="stylesheet" href="@routes.MyAssets.css("common/main.css")"/>
@@ -16,7 +21,6 @@
     <script type="text/javascript" src="@routes.MyAssets.js("common/g.postion.js")"></script>
     <script type="text/javascript" src="@routes.MyAssets.js("common/string-ja.js")"></script>
     <script type="text/javascript" src="@routes.MyAssets.js("common/bootbox.min.js")"></script>
-
 
     <script></script>
 </head>
@@ -35,7 +39,7 @@
                 <ul class="menu-items" style="display: block;">
                     <li><a href="/site/workPlace"><i class="fa fa-circle-o"></i>&nbsp;現場状況</a></li>
                     <li><a href="/site/itemCarMaster"><i class="fa fa-circle-o"></i>&nbsp;@Messages("lang.site.carMaster.page.title")</a></li>
-                    <li ><a href="/carReserve"><i class="fa fa-circle-o"></i>&nbsp;作業車・立馬予約</a></li>
+                    <li ><a href="/site/itemCarReserve"><i class="fa fa-circle-o"></i>&nbsp;作業車・立馬予約</a></li>
                     <li style = "text-decoration:line-through;" ><a href="/"><i class="fa fa-circle-o"></i>&nbsp;作業車・立馬予約取消</a></li>
                     <li><a href="/site/itemOtherMaster"><i class="fa fa-circle-o"></i>&nbsp;@Messages("lang.site.itemOtherMaster.page.title")</a></li>
                     <li style = "text-decoration:line-through;" ><a href="/"><i class="fa fa-circle-o"></i>&nbsp;その他仮設材予約</a></li>
@@ -88,6 +92,7 @@
                 <a class="menu-title"><i class="fa fa-key"></i>&nbsp;&nbsp;exb管理(既存)<span class="open-state"><i class="open-state fa fa-angle-left" style="margin-left:10px;"></i></span></a>
                 <ul class="menu-items">
                     <li><a href="/cms/txTagManage"><i class="fa fa-circle-o"></i>&nbsp;EXBeacon一覧</a></li>
+                    <li ><a href="/carReserve"><i class="fa fa-circle-o"></i>&nbsp;作業車・立馬予約</a></li>
                 </ul>
             </li>
 
