@@ -15,6 +15,13 @@ case class Exb(
 
 )
 
+case class ExbApi(
+  exb_id: Int,
+  exb_device_name: String,
+  floor_id: Int,
+  cur_floor_name: String
+)
+
 case class ExbTotal(
   exb_id: Int,
   exb_device_id: String,
@@ -74,6 +81,42 @@ class ExbDAO @Inject() (dbapi: DBApi) {
           ExbTotal(exb_id, exb_device_id, exb_name, exb_pos_name, viewer_visible, viewer_pos_type, viewer_pos_count, viewer_pos_x, viewer_pos_y, viewer_pos_margin, viewer_pos_floor, viewer_pos_size)
       }
   }
+
+  // Parser
+  val simpleApi = {
+    get[Int]("exb_id") ~
+      get[String]("exb_device_name") ~
+      get[Int]("floor_id") ~
+      get[String]("cur_floor_name") map {
+      case exb_id ~ exb_device_name ~ floor_id ~ cur_floor_name =>
+        ExbApi(exb_id, exb_device_name, floor_id, cur_floor_name)
+    }
+  }
+  def selectExbApiInfo(placeId: Int, exbId: Int): Seq[ExbApi] = {
+    db.withConnection { implicit connection =>
+      val sql = SQL(
+        """
+        select
+           e.exb_id
+          , e.exb_device_name
+          , floor.floor_id
+          , floor.floor_name as cur_floor_name
+        from
+          exb_master e
+          left join floor_master floor
+          on e.floor_id = floor.floor_id
+          and floor.active_flg = true
+          where e.place_id = {placeId} and
+          e.exb_id = {exbId}
+          order by exb_id;
+		          """).on(
+        "placeId" -> placeId,
+         "exbId" -> exbId
+      )
+      sql.as(simpleApi.*)
+    }
+  }
+
 
   def selectAll(): Seq[Exb] = {
     db.withConnection { implicit connection =>

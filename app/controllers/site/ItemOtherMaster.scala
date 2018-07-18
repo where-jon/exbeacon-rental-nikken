@@ -3,8 +3,7 @@ package controllers.site
 import javax.inject.{Inject, Singleton}
 
 import com.mohiva.play.silhouette.api.Silhouette
-import controllers.BaseController
-import controllers.BeaconService
+import controllers.{BaseController, BeaconService}
 import models._
 import play.api._
 import play.api.data.Form
@@ -14,23 +13,23 @@ import utils.silhouette.MyEnv
 
 
 /**
-  * 作業車・立馬一覧クラス
+  * その他仮設材一覧クラス
   *
   *
   */
 
 
 @Singleton
-class ItemCarMaster @Inject()(config: Configuration
-                              , val silhouette: Silhouette[MyEnv]
-                              , val messagesApi: MessagesApi
-                              , carDAO: models.itemCarDAO
-                              , companyDAO: models.companyDAO
-                              , beaconService: BeaconService
-                              , floorDAO: models.floorDAO
-                              , btxDAO: models.btxDAO
-                              , itemTypeDAO: models.ItemTypeDAO
-                              , workTypeDAO: models.WorkTypeDAO
+class ItemOtherMaster @Inject()(config: Configuration
+                                , val silhouette: Silhouette[MyEnv]
+                                , val messagesApi: MessagesApi
+                                , otherDAO: models.itemOtherDAO
+                                , companyDAO: models.companyDAO
+                                , beaconService: BeaconService
+                                , floorDAO: models.floorDAO
+                                , btxDAO: models.btxDAO
+                                , itemTypeDAO: models.ItemTypeDAO
+                                , workTypeDAO: models.WorkTypeDAO
                              ) extends BaseController with I18nSupport {
 
   var ITEM_TYPE_FILTER = 0;
@@ -65,7 +64,7 @@ class ItemCarMaster @Inject()(config: Configuration
   /** 　検索側データ取得 */
   def getSearchData(_placeId:Integer): Unit = {
     /*仮設材種別取得*/
-    itemTypeList = itemTypeDAO.selectItemCarInfo(_placeId);
+    itemTypeList = itemTypeDAO.selectItemOtherInfo(_placeId);
     /*業者取得*/
     companyNameList = companyDAO.selectCompany(_placeId);
     /*フロア取得*/
@@ -88,23 +87,22 @@ class ItemCarMaster @Inject()(config: Configuration
     WORK_TYPE_FILTER = carFormData.workTypeName
     FLOOR_NAME_FILTER = carFormData.floorName
 
-    var carListApi = beaconService.getItemCarBeaconPosition(true,placeId)
-
+    var otherListApi = beaconService.getItemOtherBeaconPosition(true,placeId)
     if (ITEM_TYPE_FILTER != 0) {
-      carListApi = carListApi.filter(_.item_type_id == ITEM_TYPE_FILTER)
+      otherListApi = otherListApi.filter(_.item_type_id == ITEM_TYPE_FILTER)
     }
     if (FLOOR_NAME_FILTER != "") {
-      carListApi = carListApi.filter(_.cur_pos_name == FLOOR_NAME_FILTER)
+      otherListApi = otherListApi.filter(_.cur_pos_name== FLOOR_NAME_FILTER)
     }
     if (COMPANY_NAME_FILTER != "") {
-      carListApi = carListApi.filter(_.company_name == COMPANY_NAME_FILTER)
+      otherListApi = otherListApi.filter(_.company_name == COMPANY_NAME_FILTER)
     }
     if (WORK_TYPE_FILTER != "") {
-      carListApi = carListApi.filter(_.work_type_name == WORK_TYPE_FILTER)
+      otherListApi = otherListApi.filter(_.work_type_name == WORK_TYPE_FILTER)
     }
 
-    Ok(views.html.site.itemCarMaster(ITEM_TYPE_FILTER,COMPANY_NAME_FILTER,FLOOR_NAME_FILTER,WORK_TYPE_FILTER
-      ,carListApi,itemTypeList,companyNameList,floorNameList,workTypeList,WORK_TYPE))
+    Ok(views.html.site.itemOtherMaster(ITEM_TYPE_FILTER,COMPANY_NAME_FILTER,FLOOR_NAME_FILTER,WORK_TYPE_FILTER
+      ,otherListApi,itemTypeList,companyNameList,floorNameList,workTypeList,WORK_TYPE))
   }
 
   /** 初期表示 */
@@ -117,11 +115,11 @@ class ItemCarMaster @Inject()(config: Configuration
       getSearchData(placeId)
 
       // dbデータ取得
-      val carListApi = beaconService.getItemCarBeaconPosition(true,placeId)
+      val otherListApi = beaconService.getItemOtherBeaconPosition(true,placeId)
 
-      System.out.println("carListApi:" + carListApi.length)
-      Ok(views.html.site.itemCarMaster(ITEM_TYPE_FILTER, COMPANY_NAME_FILTER,FLOOR_NAME_FILTER,WORK_TYPE_FILTER
-        ,carListApi,itemTypeList,companyNameList,floorNameList,workTypeList,WORK_TYPE))
+      System.out.println("floorNameList:" + floorNameList)
+      Ok(views.html.site.itemOtherMaster(ITEM_TYPE_FILTER, COMPANY_NAME_FILTER,FLOOR_NAME_FILTER,WORK_TYPE_FILTER
+        ,otherListApi,itemTypeList,companyNameList,floorNameList,workTypeList,WORK_TYPE))
     } else {
       Redirect(CMS_NOT_LOGGED_RETURN_PATH).flashing(ERROR_MSG_KEY -> Messages("error.cmsLogged.invalid"))
     }

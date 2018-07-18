@@ -2,7 +2,7 @@
 COMPANY_NAME_FILTER:String,
 FLOOR_NAME_FILTER:String,
 WORK_TYPE_FILTER:String,
-carList: Seq[itemCarBeaconPositionData],
+otherList: Seq[itemOtherBeaconPositionData],
 itemTypeList: Seq[ItemType],
 companyNameList :Seq[Company],
 floorNameList :Seq[Floor],
@@ -32,7 +32,7 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
             @views.html.templates.msgDiv()
             <!-- 画面題字 -->
             <div class="form-group" style="font-weight:bold;font-size:19px;margin:15px 0px;">
-                @Messages("lang.site.carMaster.page.title")
+                @Messages("lang.site.itemOtherMaster.page.title")
             </div>
 
             <!-- ボタン-->
@@ -103,7 +103,7 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
                         <table class="table table-bordered table-condensed itemTable">
                             <thead>
                             <tr>
-                                <th colspan="9" class="tableTitleTh">@Messages("lang.site.carManage.car.list.header.title")</th>
+                                <th colspan="9" class="tableTitleTh">@Messages("lang.site.itemOtherMaster.page.title")</th>
                             </tr>
                             <tr>
                                 <th class="tableTh ">現在フロア</th>
@@ -118,17 +118,17 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
                             </tr>
                             </thead>
                             <tbody>
-                            @carList.zipWithIndex.map { case(car, i) =>
-                                <tr class="rowColor rowHover" data-carId="@car.item_car_id" id="@car.item_car_id">
-                                    <td class="itemTd text-center ">@car.cur_pos_name</td>
-                                    <td class="itemTd text-center ">@car.cur_exb_name</td>
-                                    <td class="itemTd text-center ">@car.item_car_btx_id</td>
-                                    <td class="itemTd text-center ">@car.item_type_name</td>
-                                    <td class="itemTd text-center ">@car.item_car_name</td>
-                                    <td class="itemTd text-center ">@car.company_name</td>
-                                    <td class="itemTd text-center ">@car.reserve_floor_name</td>
-                                    <td class="itemTd text-center ">@car.work_type_name</td>
-                                    <td class="itemTd text-center ">@car.reserve_id</td>
+                            @otherList.zipWithIndex.map { case(other, i) =>
+                                <tr class="rowColor rowHover" data-otherId="@other.item_other_id" id="@other.item_other_id">
+                                    <td class="itemTd text-center ">@other.cur_pos_name</td>
+                                    <td class="itemTd text-center ">@other.cur_exb_name</td>
+                                    <td class="itemTd text-center ">@other.item_other_btx_id</td>
+                                    <td class="itemTd text-center ">@other.item_type_name</td>
+                                    <td class="itemTd text-center ">@other.item_other_name</td>
+                                    <td class="itemTd text-center ">@other.company_name</td>
+                                    <td class="itemTd text-center ">@other.reserve_floor_name</td>
+                                    <td class="itemTd text-center ">@other.work_type_name</td>
+                                    <td class="itemTd text-center ">@other.reserve_id</td>
                                 </tr>
                             }
                             </tbody>
@@ -141,7 +141,7 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
     </div>
 </div>
 
-<script type="text/javascript" src="@routes.MyAssets.js("site/itemCarMaster.js")"></script>
+<script type="text/javascript" src="@routes.MyAssets.js("site/itemOtherMaster.js")"></script>
 <script></script>
 
 </body>

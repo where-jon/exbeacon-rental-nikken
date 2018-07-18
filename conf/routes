@@ -45,6 +45,11 @@ GET    /site/workPlace                 controllers.site.WorkPlace.index
 GET    /site/itemCarMaster                 controllers.site.ItemCarMaster.index
 POST   /site/itemCarMaster                 controllers.site.ItemCarMaster.search
 
+
+# その他仮設材一覧
+GET    /site/itemOtherMaster                 controllers.site.ItemOtherMaster.index
+POST   /site/itemOtherMaster                 controllers.site.ItemOtherMaster.search
+
 # マップマネージャー
 GET    /manage/mapManager              controllers.manage.MapManager.index
 POST   /manage/uploadMap               controllers.manage.MapManager.uploadMap
