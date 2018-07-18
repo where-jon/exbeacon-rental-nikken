@@ -97,7 +97,7 @@ class BeaconService @Inject() (config: Configuration,
           v.reserve_id
         )
       } else {
-        itemCarBeaconPositionData("現在フロア","現在位置",-1, -1, -1, 0, "nodate",
+        itemCarBeaconPositionData("検知フロア無","検知EXB無",-1, -1, -1, 0, "nodate",
           v.item_car_id,
           v.item_car_btx_id,
           v.item_car_key_btx_id,

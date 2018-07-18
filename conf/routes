@@ -49,6 +49,7 @@ POST   /site/itemCarMaster                 controllers.site.ItemCarMaster.search
 # 作業車・立馬予約
 GET    /site/itemCarReserve                 controllers.site.ItemCarReserve.index
 POST   /site/itemCarReserve                 controllers.site.ItemCarReserve.search
+POST   /site/itemCarReserveUpdate           controllers.site.ItemCarReserve.update
 
 
 # その他仮設材一覧

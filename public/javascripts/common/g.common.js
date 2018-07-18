@@ -176,8 +176,7 @@ var gDatePicker = {
     dateChangeEvent : function(pickerElement) {
          $(pickerElement).on('dp.change', function(e){
             var date = pickerElement.value;
-            var floorId = $('#section-category').val();
-             gDatePicker.onChageClick = true;
+            gDatePicker.dayDateTimeSetting();
         });
 
     },
@@ -202,10 +201,10 @@ var gDatePicker = {
 
     htmlDayClickEvent : function(vFunctionName) {
         $(document.getElementsByTagName("html")).click(function() {
-            if(gDatePicker.onChageClick){
-                gDatePicker.dayDateTimeSetting();
-                gDatePicker.onChageClick = false;
-            }
+            //if(gDatePicker.onChageClick){
+            console.log("htmlDayClickEvent")
+                //gDatePicker.onChageClick = false;
+            //}
         });
     },
 

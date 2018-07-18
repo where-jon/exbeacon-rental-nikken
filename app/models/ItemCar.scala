@@ -352,11 +352,11 @@ class itemCarDAO @Inject()(dbapi: DBApi) {
                , c.item_car_no
                , c.item_car_name
                , c.place_id
-               ,coalesce(to_char(r.reserve_start_date, 'YYYY-MM-DD'), 'date') as reserve_start_date
+               ,coalesce(to_char(r.reserve_start_date, 'YYYY-MM-DD'), '未予約') as reserve_start_date
                ,coalesce(r.company_id, -1) as company_id
                ,coalesce(co.company_name, '無') as company_name
                ,coalesce(work.work_type_id, -1) as work_type_id
-               ,coalesce(work.work_type_name, '無') as work_type_name
+               ,coalesce(work.work_type_name, '未予約') as work_type_name
                ,coalesce(floor.floor_name, '無') as reserve_floor_name
                ,coalesce(r.reserve_id, -1) as reserve_id
            from
@@ -377,6 +377,7 @@ class itemCarDAO @Inject()(dbapi: DBApi) {
 				             		and floor.active_flg = true
 				             		and floor.place_id = {placeId}
                where c.place_id = {placeId}
+               and c.active_flg = true
                and coalesce(r.reserve_id, -1) = -1
                order by item_car_id ;
 
@@ -393,8 +394,6 @@ class itemCarDAO @Inject()(dbapi: DBApi) {
     db.withConnection { implicit connection =>
       val sql = SQL(
         """
-
-
             select
                 c.item_car_id
                ,c.item_car_btx_id
@@ -405,11 +404,11 @@ class itemCarDAO @Inject()(dbapi: DBApi) {
                , c.item_car_no
                , c.item_car_name
                , c.place_id
-               ,coalesce(to_char(r.reserve_start_date, 'YYYY-MM-DD'), 'date') as reserve_start_date
+               ,coalesce(to_char(r.reserve_start_date, 'YYYY-MM-DD'), '未予約') as reserve_start_date
                ,coalesce(r.company_id, -1) as company_id
                ,coalesce(co.company_name, '無') as company_name
                ,coalesce(work.work_type_id, -1) as work_type_id
-               ,coalesce(work.work_type_name, '無') as work_type_name
+               ,coalesce(work.work_type_name, '未予約') as work_type_name
                ,coalesce(floor.floor_name, '無') as reserve_floor_name
                ,coalesce(r.reserve_id, -1) as reserve_id
            from
@@ -431,6 +430,7 @@ class itemCarDAO @Inject()(dbapi: DBApi) {
 				             		and floor.place_id = {placeId}
 
                 where c.place_id = {placeId}
+                and c.active_flg = true
                 and (to_char(r.reserve_start_date, 'YYYY-MM-DD') != {RESERVE_DATE}
                 or coalesce(r.reserve_id, -1) = -1)
                 order by item_car_id ;

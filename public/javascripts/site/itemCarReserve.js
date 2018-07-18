@@ -32,7 +32,7 @@ function bindMouseAndTouch(){
 // テーブルの固定
 function fixTable(){
     // テーブルの固定
-    var h = $(window).height()*0.8;
+    var h = $(window).height()*0.65;
     // テーブルの調整
     var ua = navigator.userAgent;
     if (ua.indexOf('iPad') > 0 || ua.indexOf('Android') > 0 || ua.indexOf('iPhone') > 0 || ua.indexOf('iPod') > 0){
@@ -103,6 +103,19 @@ function getFilterCheck(){
          $('#RESERVE_DATE').val(inputDate.value)
     }
 }
+
+function dbExecuteBtn(routeUrl){
+    var formElement = $("#viewForm")
+    formElement[0].action = routeUrl
+    //formElement[0].action = "../site/itemCarReserveUpdate"
+    // 送信ボタン生成
+    var vButton = document.createElement("button");
+    vButton.id = "dbExecuteBtn"
+    vButton.className = "btn hidden";
+    formElement[0].appendChild(vButton);
+
+    $("#dbExecuteBtn").trigger( "click" );
+}
 // 表示ボタンをクリックする時に発生するイベント
 function viewBtnEvent(){
 
@@ -110,8 +123,15 @@ function viewBtnEvent(){
      gDatePicker.dayClickEvent();
      gDatePicker.htmlDayClickEvent();
     // DatePickerの設定 end-----------------------------------------
+    var updateBtnElement = document.getElementById("updateBtn")
+    updateBtnElement.addEventListener('click', function(event) {
 
-    var viewBtnElement = document.getElementsByClassName("btn__view--frame")[0];
+
+      dbExecuteBtn("../site/itemCarReserveUpdate")
+
+    });
+
+    var viewBtnElement = document.getElementById("viewBtn")
     viewBtnElement.addEventListener('click', function(event) {
         // itemTypeId結果をfromへ設定
         var itemTypeFilterResult = $('#ITEM_TYPE_FILTER option:selected').val();
@@ -127,15 +147,8 @@ function viewBtnEvent(){
         var inputDate = document.getElementById("inputDate")
         inputDate.value = gDatePicker.startSqlTime
 
-        var formElement = $("#viewForm")
-        formElement[0].action = "../site/itemCarReserve"
-        // 送信ボタン生成
-        var vButton = document.createElement("button");
-        vButton.id = "dbExecuteBtn"
-        vButton.className = "btn hidden";
-        formElement[0].appendChild(vButton);
 
-        $("#dbExecuteBtn").trigger( "click" );
+        dbExecuteBtn("../site/itemCarReserve")
     });
 
 }

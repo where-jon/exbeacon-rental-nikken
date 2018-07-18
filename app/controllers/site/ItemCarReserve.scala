@@ -64,8 +64,19 @@ class ItemCarReserve @Inject()(config: Configuration
     itemTypeList = itemTypeDAO.selectItemCarInfo(_placeId);
     /*作業期間種別取得*/
     workTypeList = workTypeDAO.selectWorkInfo(_placeId);
+
+    /*業者取得*/
+    companyNameList = companyDAO.selectCompany(_placeId);
+    /*フロア取得*/
+    floorNameList = floorDAO.selectFloor(_placeId);
   }
 
+  /** 　予約ロジック */
+  def update = SecuredAction { implicit request =>
+
+    Redirect(routes.ItemCarReserve.index)
+      .flashing(SUCCESS_MSG_KEY -> Messages("success.site.carReserve.update"))
+  }
   /** 　検索ロジック */
   def search = SecuredAction { implicit request =>
     System.out.println("start search:")
