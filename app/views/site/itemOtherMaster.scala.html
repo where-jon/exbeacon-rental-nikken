@@ -2,7 +2,7 @@
 COMPANY_NAME_FILTER:String,
 FLOOR_NAME_FILTER:String,
 WORK_TYPE_FILTER:String,
-otherList: Seq[OtherViewer],
+otherList: Seq[itemOtherBeaconPositionData],
 itemTypeList: Seq[ItemType],
 companyNameList :Seq[Company],
 floorNameList :Seq[Floor],
@@ -39,7 +39,7 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
             <form id="viewForm" method="post" action="">
                 <div class="row tableRow" style="margin-top: 10px;">
                     <div class="text-center col-xs-2 col-sm-2 col-md-2" style="padding:0;">
-                        フロア :
+                        現在フロア :
                         <select id="FLOOR_NAME_FILTER" style="width: 100px;">
                             <!--仮設材種別テーブルから検索フィルタを設置-->
                             <option value=""></option>
@@ -106,7 +106,7 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
                                 <th colspan="9" class="tableTitleTh">@Messages("lang.site.itemOtherMaster.page.title")</th>
                             </tr>
                             <tr>
-                                <th class="tableTh ">apiフロア</th>
+                                <th class="tableTh ">現在フロア</th>
                                 <th class="tableTh ">現在位置</th>
                                 <th class="tableTh ">Tag ID</th>
                                 <th class="tableTh ">種別</th>
@@ -120,13 +120,13 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
                             <tbody>
                             @otherList.zipWithIndex.map { case(other, i) =>
                                 <tr class="rowColor rowHover" data-otherId="@other.item_other_id" id="@other.item_other_id">
-                                    <td class="itemTd text-center ">apiフロア</td>
-                                    <td class="itemTd text-center ">api位置</td>
+                                    <td class="itemTd text-center ">@other.cur_pos_name</td>
+                                    <td class="itemTd text-center ">@other.cur_exb_name</td>
                                     <td class="itemTd text-center ">@other.item_other_btx_id</td>
                                     <td class="itemTd text-center ">@other.item_type_name</td>
                                     <td class="itemTd text-center ">@other.item_other_name</td>
                                     <td class="itemTd text-center ">@other.company_name</td>
-                                    <td class="itemTd text-center ">@other.floor_name</td>
+                                    <td class="itemTd text-center ">@other.reserve_floor_name</td>
                                     <td class="itemTd text-center ">@other.work_type_name</td>
                                     <td class="itemTd text-center ">@other.reserve_id</td>
                                 </tr>

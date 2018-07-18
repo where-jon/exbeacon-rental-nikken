@@ -88,7 +88,7 @@ class ItemCarMaster @Inject()(config: Configuration
     WORK_TYPE_FILTER = carFormData.workTypeName
     FLOOR_NAME_FILTER = carFormData.floorName
 
-    var carListApi = beaconService.getBeaconPosition(true,placeId)
+    var carListApi = beaconService.getItemCarBeaconPosition(true,placeId)
 
     if (ITEM_TYPE_FILTER != 0) {
       carListApi = carListApi.filter(_.item_type_id == ITEM_TYPE_FILTER)
@@ -117,7 +117,7 @@ class ItemCarMaster @Inject()(config: Configuration
       getSearchData(placeId)
 
       // dbデータ取得
-      val carListApi = beaconService.getBeaconPosition(true,placeId)
+      val carListApi = beaconService.getItemCarBeaconPosition(true,placeId)
 
       System.out.println("carListApi:" + carListApi.length)
       Ok(views.html.site.itemCarMaster(ITEM_TYPE_FILTER, COMPANY_NAME_FILTER,FLOOR_NAME_FILTER,WORK_TYPE_FILTER

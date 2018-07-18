@@ -31,7 +31,7 @@ case class OtherViewer(
   company_name: String,
   work_type_id: Int,
   work_type_name: String,
-  floor_name: String,
+  reserve_floor_name: String,
   reserve_id: Int
 )
 
@@ -261,14 +261,14 @@ class itemOtherDAO @Inject()(dbapi: DBApi) {
       get[String]("company_name") ~
       get[Int]("work_type_id") ~
       get[String]("work_type_name") ~
-      get[String]("floor_name") ~
+      get[String]("reserve_floor_name") ~
       get[Int]("reserve_id")map {
       case item_other_id ~ item_other_btx_id ~  item_type_id ~ item_type_name ~
         note ~ item_other_no ~item_other_name ~place_id ~reserve_start_date ~company_id ~company_name ~work_type_id ~
-        work_type_name ~floor_name ~ reserve_id  =>
+        work_type_name ~reserve_floor_name ~ reserve_id  =>
         OtherViewer(item_other_id, item_other_btx_id, item_type_id, item_type_name,
           note, item_other_no, item_other_name, place_id, reserve_start_date, company_id,company_name,work_type_id,
-          work_type_name,floor_name,reserve_id)
+          work_type_name,reserve_floor_name,reserve_id)
     }
   }
 
@@ -291,13 +291,13 @@ class itemOtherDAO @Inject()(dbapi: DBApi) {
                 ,coalesce(co.company_name, '無') as company_name
                 ,coalesce(work.work_type_id, -1) as work_type_id
                 ,coalesce(work.work_type_name, '無') as work_type_name
-                ,coalesce(floor.floor_name, '無') as floor_name
+                ,coalesce(floor.floor_name, '無') as reserve_floor_name
                 ,coalesce(r.reserve_id, -1) as reserve_id
             from
               		item_other_master as c
               		LEFT JOIN reserve_table_new as r on c.item_other_id = r.item_id
-                   and (to_char(r.reserve_start_date, 'YYYY-MM-DD') = to_char(current_timestamp, 'YYYY-MM-DD')
-                        or to_char(r.reserve_end_date, 'YYYY-MM-DD') = to_char(current_timestamp, 'YYYY-MM-DD'))
+                   and (to_char(r.reserve_start_date, 'YYYY-MM-DD') <= to_char(current_timestamp, 'YYYY-MM-DD')
+                   and to_char(r.reserve_end_date, 'YYYY-MM-DD') >= to_char(current_timestamp, 'YYYY-MM-DD'))
               		and r.active_flg = true
               		and r.place_id= {placeId}
  						left JOIN item_type as i on i.item_type_id = c.item_type_id
