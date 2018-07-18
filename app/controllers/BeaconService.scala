@@ -22,14 +22,19 @@ class BeaconService @Inject() (config: Configuration,
                                , @Named("SaveBtxDataActor") excIfActor: ActorRef
                                ,exbDao:models.ExbDAO
                                ,otherDAO: models.itemOtherDAO
+                               ,placeDAO: models.placeDAO
                               ) extends Controller {
   private[this] implicit val timeout = Timeout(300, TimeUnit.SECONDS)
+  var POS_API_URL =""
+  var GATEWAY_API_URL =""
+  var TELEMETRY_API_URL =""
 
-
-//  def getBeaconPositionViewList(placeId:Int) = Action {
-//    val bpList = getBeaconPosition(true,placeId)
-//    Ok(Json.toJson(bpList))
-//  }
+  def getCloudUrl(placeId:Int): Unit = {
+    var vPlaceDao = placeDAO.selectPlaceList(Seq[Int](placeId)).last
+    POS_API_URL = vPlaceDao.btxApiUrl
+    GATEWAY_API_URL = vPlaceDao.gatewayTelemetryUrl
+    TELEMETRY_API_URL = vPlaceDao.exbTelemetryUrl
+  }
 
   /**
     * ビーコン位置取得
@@ -43,11 +48,11 @@ class BeaconService @Inject() (config: Configuration,
     */
   def getItemCarBeaconPosition(blankInclude: Boolean = false, placeId:Int): Seq[itemCarBeaconPositionData] = {
     val dbDatas = carDAO.selectCarMasterViewer(placeId)
+    this.getCloudUrl(placeId)
     //val f = excIfActor ? GetBtxPosition
    // val posList = Await.result(f, timeout.duration).asInstanceOf[List[beaconPosition]]
 
-    val url = config.getString("exbeacon.excloudUrl").get
-    val posList = Await.result(ws.url(url).get().map { response =>
+    val posList = Await.result(ws.url(POS_API_URL).get().map { response =>
       Json.parse(response.body).asOpt[List[beaconPosition]].getOrElse(Nil)
     }, Duration.Inf)
 
@@ -127,11 +132,11 @@ class BeaconService @Inject() (config: Configuration,
     */
   def getItemOtherBeaconPosition(blankInclude: Boolean = false, placeId:Int): Seq[itemOtherBeaconPositionData] = {
     val dbDatas = otherDAO.selectOtherMasterViewer(placeId)
+    this.getCloudUrl(placeId)
     //val f = excIfActor ? GetBtxPosition
     // val posList = Await.result(f, timeout.duration).asInstanceOf[List[beaconPosition]]
 
-    val url = config.getString("exbeacon.excloudUrl").get
-    val posList = Await.result(ws.url(url).get().map { response =>
+    val posList = Await.result(ws.url(POS_API_URL).get().map { response =>
       Json.parse(response.body).asOpt[List[beaconPosition]].getOrElse(Nil)
     }, Duration.Inf)
 
