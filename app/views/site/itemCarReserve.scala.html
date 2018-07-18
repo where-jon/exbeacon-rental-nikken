@@ -1,5 +1,6 @@
 @(ITEM_TYPE_FILTER: Int,
 WORK_TYPE_FILTER:String,
+RESERVE_DATE:String,
 carList: Seq[itemCarBeaconPositionData],
 itemTypeList: Seq[ItemType],
 companyNameList :Seq[Company],
@@ -44,8 +45,9 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
                                 <span class="input-group-addon">
                                     <span class="glyphicon glyphicon-calendar"></span>
                                 </span>
-                                <input type='text' class="form-control inputClass" id="inputDate" name="from"
+                                <input type='text' class="form-control inputClass" id="inputDate" name="inputDate" value="@RESERVE_DATE"
                                     style="width: 100px;"/>
+
                             </div>
 
                     </div>
@@ -60,7 +62,7 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
                                 <option value="@itemType.item_type_id">@itemType.item_type_name</option>
                             }
                         </select>
-                        <input class=" form-control input-sm" type="text" id="itemTypeId" name="itemTypeId" value="@ITEM_TYPE_FILTER">
+                        <input class="hidden form-control input-sm" type="text" id="itemTypeId" name="itemTypeId" value="@ITEM_TYPE_FILTER">
                     </div>
                     <div class="text-center col-xs-3 col-sm-3 col-md-3" style="padding:0;">
                         期間 :
@@ -75,7 +77,7 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
                             <option value="@workType.work_type_name">@workType.work_type_name</option>
                             }
                         </select>
-                        <input class=" form-control input-sm" type="text" id="workTypeName" name="workTypeName" value="@WORK_TYPE_FILTER">
+                        <input class="hidden form-control input-sm" type="text" id="workTypeName" name="workTypeName" value="@WORK_TYPE_FILTER">
                     </div>
                     <!--表示ボタン-->
                     <div class="text-center btn btn__view--frame">

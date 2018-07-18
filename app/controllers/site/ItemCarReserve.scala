@@ -33,8 +33,8 @@ class ItemCarReserve @Inject()(config: Configuration
                              ) extends BaseController with I18nSupport {
 
   var ITEM_TYPE_FILTER = 0;
-  var FLOOR_NAME_FILTER = "";
   var WORK_TYPE_FILTER = "";
+  var RESERVE_DATE = "";
 
   var itemTypeList :Seq[ItemType] = null; // 仮設材種別
   var companyNameList :Seq[Company] = null; // 業者
@@ -47,25 +47,21 @@ class ItemCarReserve @Inject()(config: Configuration
   /*転送form*/
   val carForm = Form(mapping(
     "itemTypeId" -> number,
-    "companyName" -> text,
-    "floorName" -> text,
-    "workTypeName" -> text
-  )(ItemCarData.apply)(ItemCarData.unapply))
+    "workTypeName" -> text,
+    "inputDate" -> text
+  )(ItemCarReserveData.apply)(ItemCarReserveData.unapply))
 
   /** 　初期化 */
   def init() {
     ITEM_TYPE_FILTER = 0
     WORK_TYPE_FILTER = ""
+    RESERVE_DATE = ""
   }
 
   /** 　検索側データ取得 */
   def getSearchData(_placeId:Integer): Unit = {
     /*仮設材種別取得*/
     itemTypeList = itemTypeDAO.selectItemCarInfo(_placeId);
-    /*業者取得*/
-    companyNameList = companyDAO.selectCompany(_placeId);
-    /*フロア取得*/
-    floorNameList = floorDAO.selectFloor(_placeId);
     /*作業期間種別取得*/
     workTypeList = workTypeDAO.selectWorkInfo(_placeId);
   }
@@ -81,9 +77,16 @@ class ItemCarReserve @Inject()(config: Configuration
     val carFormData = carForm.bindFromRequest.get
     ITEM_TYPE_FILTER = carFormData.itemTypeId
     WORK_TYPE_FILTER = carFormData.workTypeName
+    RESERVE_DATE = carFormData.inputDate
+
+    var dbDatas : Seq[CarViewer] = null;
 
     // dbデータ取得
-    val dbDatas = carDAO.selectCarMasterViewer(placeId)
+    if(RESERVE_DATE!=""){
+      dbDatas = carDAO.selectCarMasterSearch(placeId, RESERVE_DATE)
+    }else{
+      dbDatas = carDAO.selectCarMasterReserve(placeId)
+    }
     var carListApi = beaconService.getItemCarBeaconPosition(dbDatas,true,placeId)
 
     if (ITEM_TYPE_FILTER != 0) {
@@ -93,7 +96,7 @@ class ItemCarReserve @Inject()(config: Configuration
       carListApi = carListApi.filter(_.work_type_name == WORK_TYPE_FILTER)
     }
 
-    Ok(views.html.site.itemCarReserve(ITEM_TYPE_FILTER,WORK_TYPE_FILTER
+    Ok(views.html.site.itemCarReserve(ITEM_TYPE_FILTER,WORK_TYPE_FILTER,RESERVE_DATE
       ,carListApi,itemTypeList,companyNameList,floorNameList,workTypeList,WORK_TYPE))
   }
 
@@ -107,14 +110,14 @@ class ItemCarReserve @Inject()(config: Configuration
       getSearchData(placeId)
 
       // dbデータ取得
-      val dbDatas = carDAO.selectCarMasterViewer(placeId)
+      val dbDatas = carDAO.selectCarMasterReserve(placeId)
       var carListApi = beaconService.getItemCarBeaconPosition(dbDatas,true,placeId)
 
       // 全体から空いてるものだけ表示する。
-      carListApi = carListApi.filter(_.reserve_id == -1)
+      //carListApi = carListApi.filter(_.reserve_id == -1)
 
       System.out.println("carListApi:" + carListApi.length)
-      Ok(views.html.site.itemCarReserve(ITEM_TYPE_FILTER,WORK_TYPE_FILTER
+      Ok(views.html.site.itemCarReserve(ITEM_TYPE_FILTER,WORK_TYPE_FILTER,RESERVE_DATE
         ,carListApi,itemTypeList,companyNameList,floorNameList,workTypeList,WORK_TYPE))
     } else {
       Redirect(CMS_NOT_LOGGED_RETURN_PATH).flashing(ERROR_MSG_KEY -> Messages("error.cmsLogged.invalid"))

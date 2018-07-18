@@ -85,17 +85,22 @@ function getFilterCheck(){
     if(inputItemType!=null){
          $('#ITEM_TYPE_FILTER').val(inputItemType.value)
     }
-    var inputCompanyName = document.getElementById("companyName")
-    if(inputCompanyName!=null){
-         $('#COMPANY_NAME_FILTER').val(inputCompanyName.value)
-    }
-    var inputFloorName = document.getElementById("floorName")
-    if(inputFloorName!=null){
-         $('#FLOOR_NAME_FILTER').val(inputFloorName.value)
-    }
+//    var inputCompanyName = document.getElementById("companyName")
+//    if(inputCompanyName!=null){
+//         $('#COMPANY_NAME_FILTER').val(inputCompanyName.value)
+//    }
+//    var inputFloorName = document.getElementById("floorName")
+//    if(inputFloorName!=null){
+//         $('#FLOOR_NAME_FILTER').val(inputFloorName.value)
+//    }
     var inputWorkTypeName = document.getElementById("workTypeName")
     if(inputWorkTypeName!=null){
          $('#WORK_TYPE_FILTER').val(inputWorkTypeName.value)
+    }
+
+    var inputDate = document.getElementById("inputDate")
+    if(inputDate!=null){
+         $('#RESERVE_DATE').val(inputDate.value)
     }
 }
 // 表示ボタンをクリックする時に発生するイベント
@@ -118,8 +123,12 @@ function viewBtnEvent(){
         var inputWorkTypeName = document.getElementById("workTypeName")
         inputWorkTypeName.value = workTypeNameFilterResult
 
+        // inputDate結果をfromへ設定
+        var inputDate = document.getElementById("inputDate")
+        inputDate.value = gDatePicker.startSqlTime
+
         var formElement = $("#viewForm")
-        formElement[0].action = "../site/itemCarMaster"
+        formElement[0].action = "../site/itemCarReserve"
         // 送信ボタン生成
         var vButton = document.createElement("button");
         vButton.id = "dbExecuteBtn"
