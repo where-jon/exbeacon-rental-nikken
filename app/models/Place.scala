@@ -38,6 +38,8 @@ case class Place(
   status: Int,
   statusName: String = "",
   btxApiUrl: String = "",
+  exbTelemetryUrl: String = "",
+  gatewayTelemetryUrl: String = "",
   cmsPassword: String = ""
 )
 
@@ -57,10 +59,13 @@ class placeDAO @Inject() (dbapi: DBApi) {
         get[String]("place_name") ~
         get[Int]("floor_count") ~
         get[Int]("status") ~
-        get[String]("btx_api_url") map {
-        case place_id ~ place_name ~ floor_count ~ status ~ btx_api_url =>
+        get[String]("btx_api_url")~
+        get[String]("exb_telemetry_url")~
+        get[String]("gateway_telemetry_url")map {
+        case place_id ~ place_name ~ floor_count ~ status
+          ~ btx_api_url ~ exb_telemetry_url ~ gateway_telemetry_url =>
           val statusName = PlaceEnum().map(status)
-          Place(place_id, place_name, floor_count, status, statusName, btx_api_url)
+          Place(place_id, place_name, floor_count, status, statusName, btx_api_url,exb_telemetry_url,gateway_telemetry_url)
       }
     }
     db.withConnection { implicit connection =>
@@ -73,6 +78,8 @@ class placeDAO @Inject() (dbapi: DBApi) {
             , count(f.floor_id) as floor_count
             , pm.status
             , pm.btx_api_url
+            , pm.exb_telemetry_url
+            , pm.gateway_telemetry_url
             , pm.cms_password
           from
             place_master pm

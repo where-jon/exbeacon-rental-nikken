@@ -381,6 +381,9 @@ lang.number = 番号
 lang.deviceName = 端末名
 lang.siteName = 設置場所名
 
-# SITE文字列（作業車管理）
+# 仮設材管理文字列（作業車・立馬）
 lang.site.carMaster.page.title=作業車・立馬一覧
 lang.site.carManage.car.list.header.title=作業車・立馬一覧
+
+# 仮設材管理文字列（その他仮設材）
+lang.site.itemOtherMaster.page.title=その他仮設材一覧
