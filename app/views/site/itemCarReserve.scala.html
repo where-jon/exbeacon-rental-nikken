@@ -1,0 +1,139 @@
+@(ITEM_TYPE_FILTER: Int,
+WORK_TYPE_FILTER:String,
+carList: Seq[itemCarBeaconPositionData],
+itemTypeList: Seq[ItemType],
+companyNameList :Seq[Company],
+floorNameList :Seq[Floor],
+workTypeList :Seq[WorkType],
+workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: RequestHeader, flash: Flash)
+
+@import controllers.routes
+@import helper._
+
+<!doctype html>
+<html lang="ja">
+<head>
+    @templates.htmlHead(title = Messages("lang.cms.carManage.title"))
+    <link rel="stylesheet" href="@routes.MyAssets.css("cms/carManage.css")"/>
+    <script type="text/javascript" src="@routes.MyAssets.lib("jquery.tablefix_1.0.1.js")"></script>
+    <script></script>
+</head>
+<body>
+<!-- content -->
+<div class="container">
+    <!-- ナビバー  -->
+    @views.html.templates.navBar()
+    <div class="row" style="margin-top: 40px;">
+        <!-- メイン -->
+        <div class="col-lg-12 mainSpace">
+            <!-- メッセージ -->
+            @views.html.templates.msgDiv()
+            <!-- 画面題字 -->
+            <div class="form-group" style="font-weight:bold;font-size:19px;margin:15px 0px;">
+                @Messages("lang.site.carReserve.page.title")
+            </div>
+
+            <!-- ボタン-->
+            <form id="viewForm" method="post" action="">
+                <div class="row tableRow" style="margin-top: 10px;">
+
+                    <div class="text-center col-xs-3 col-sm-3 col-md-3" style="display: -webkit-box;">
+                        予約希望日：
+                            <div class='input-group date' id='datetimepicker'
+                                    style="margin-top: -5px;">
+                                <span class="input-group-addon">
+                                    <span class="glyphicon glyphicon-calendar"></span>
+                                </span>
+                                <input type='text' class="form-control inputClass" id="inputDate" name="from"
+                                    style="width: 100px;"/>
+                            </div>
+
+                    </div>
+
+
+                    <div class="text-center col-xs-3 col-sm-3 col-md-3" style="padding:0;">
+                        種別 :
+                        <select id="ITEM_TYPE_FILTER" style="width: 100px;">
+                            <!--仮設材種別テーブルから検索フィルタを設置-->
+                            <option value="0"></option>
+                            @itemTypeList.zipWithIndex.map { case(itemType, i) =>
+                                <option value="@itemType.item_type_id">@itemType.item_type_name</option>
+                            }
+                        </select>
+                        <input class=" form-control input-sm" type="text" id="itemTypeId" name="itemTypeId" value="@ITEM_TYPE_FILTER">
+                    </div>
+                    <div class="text-center col-xs-3 col-sm-3 col-md-3" style="padding:0;">
+                        期間 :
+                        <select id="WORK_TYPE_FILTER" style="width: 100px;">
+                            <!--期間Enumから検索フィルタを設置-->
+                            <!--<option value="0"></option>-->
+                            <!--@workTypeMap.map{case (key, value) =>-->
+                            <!--<option value="@(key+1)">@value</option>-->
+                            <!--}-->
+                            <option value=""></option>
+                            @workTypeList.zipWithIndex.map { case(workType, i) =>
+                            <option value="@workType.work_type_name">@workType.work_type_name</option>
+                            }
+                        </select>
+                        <input class=" form-control input-sm" type="text" id="workTypeName" name="workTypeName" value="@WORK_TYPE_FILTER">
+                    </div>
+                    <!--表示ボタン-->
+                    <div class="text-center btn btn__view--frame">
+                        空き情報確認
+                    </div>
+                </div>
+                @CSRF.formField
+            </form>
+
+            <!-- テーブルのROW -->
+            <div class="row tableRow">
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="padding:0;">
+                    <div class="table-responsive-body">
+                        <table class="table table-bordered table-condensed itemTable">
+                            <thead>
+                            <tr>
+                                <th colspan="9" class="tableTitleTh">@Messages("lang.site.carReserve.page.title")</th>
+                            </tr>
+                            <tr>
+                                <th class="tableTh ">現在フロア</th>
+                                <th class="tableTh ">現在位置</th>
+                                <th class="tableTh ">Tag ID</th>
+                                <th class="tableTh ">種別</th>
+                                <th class="tableTh ">名称</th>
+                                <th class="tableTh ">業者</th>
+                                <th class="tableTh ">予約フロア</th>
+                                <th class="tableTh ">期間</th>
+                                <th class="tableTh ">予約ID</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            @carList.zipWithIndex.map { case(car, i) =>
+                                <tr class="rowColor rowHover" data-carId="@car.item_car_id" id="@car.item_car_id">
+                                    <td class="itemTd text-center ">@car.cur_pos_name</td>
+                                    <td class="itemTd text-center ">@car.cur_exb_name</td>
+                                    <td class="itemTd text-center ">@car.item_car_btx_id</td>
+                                    <td class="itemTd text-center ">@car.item_type_name</td>
+                                    <td class="itemTd text-center ">@car.item_car_name</td>
+                                    <td class="itemTd text-center ">@car.company_name</td>
+                                    <td class="itemTd text-center ">@car.reserve_floor_name</td>
+                                    <td class="itemTd text-center ">@car.work_type_name</td>
+                                    <td class="itemTd text-center ">@car.reserve_id</td>
+                                </tr>
+                            }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript" src="@routes.MyAssets.js("site/itemCarReserve.js")"></script>
+<script></script>
+
+</body>
+</html>
+
+
