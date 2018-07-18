@@ -139,6 +139,104 @@ var gResize = {
          }
        },
 }
+
+var gDatePicker = {
+    onChageClick : false,
+    startDate : null,
+    startTimeEpoch : null,
+    startSqlTime : null,
+    endDate : null,
+    endSqlTime : null,
+    endTimeEpoch : null,
+    dayClickEvent : function() {
+        var selectPinElement = [].slice.call(document.querySelectorAll(".inputClass"));
+        selectPinElement.forEach(function(pin, pos) {
+            $(pin).datetimepicker({
+                 format : 'YYYY/MM/DD',
+                 sideBySide: true,
+                 locale: 'ja',
+             });
+            gDatePicker.dateChangeEvent(pin)
+            gDatePicker.dayDateTimeSetting();
+        });
+    },
+
+    clickEvent : function() {
+        var selectPinElement = [].slice.call(document.querySelectorAll(".inputClass"));
+        selectPinElement.forEach(function(pin, pos) {
+            $(pin).datetimepicker({
+                 format : 'YYYY/MM/DD HH:mm',
+                 sideBySide: true,
+                 locale: 'ja',
+             });
+            gDatePicker.dateChangeEvent(pin)
+            gDatePicker.dateTimeSetting();
+        });
+    },
+    dateChangeEvent : function(pickerElement) {
+         $(pickerElement).on('dp.change', function(e){
+            var date = pickerElement.value;
+            var floorId = $('#section-category').val();
+             gDatePicker.onChageClick = true;
+        });
+
+    },
+    dateTimeSetting : function() {
+        gDatePicker.startDate = document.getElementById("inputDate").value
+        gDatePicker.endDate = document.getElementById("inputDate2").value
+        var startDate = Date.parse(gDatePicker.startDate);
+        gDatePicker.startTimeEpoch = startDate/1000;
+        gDatePicker.startSqlTime = gDatePicker.startDate.replace('/', '-').replace('/', '-')
+
+        var endDate = Date.parse(gDatePicker.endDate);
+        gDatePicker.endTimeEpoch = endDate/1000;
+        gDatePicker.endSqlTime = gDatePicker.endDate.replace('/', '-').replace('/', '-')
+    },
+
+    dayDateTimeSetting : function() {
+        gDatePicker.startDate = document.getElementById("inputDate").value
+        var startDate = Date.parse(gDatePicker.startDate);
+        gDatePicker.startTimeEpoch = startDate/1000;
+        gDatePicker.startSqlTime = gDatePicker.startDate.replace('/', '-').replace('/', '-')
+    },
+
+    htmlDayClickEvent : function(vFunctionName) {
+        $(document.getElementsByTagName("html")).click(function() {
+            if(gDatePicker.onChageClick){
+                gDatePicker.dayDateTimeSetting();
+                gDatePicker.onChageClick = false;
+            }
+        });
+    },
+
+    htmlClickEvent : function(vFunctionName) {
+        $(document.getElementsByTagName("html")).click(function() {
+            if(gDatePicker.onChageClick){
+                gDatePicker.dateTimeSetting();
+                 if (gDatePicker.endTimeEpoch < gDatePicker.startTimeEpoch){
+                     alert('スタート期間再確認');
+                 }else{
+                    if(vFunctionName!=null){
+                        vFunctionName();
+                    }else{
+                        //console.log("define!! searchMoveData function")
+                    }
+                 }
+                gDatePicker.onChageClick = false;
+            }
+
+        });
+    },
+
+    clickEventOnlyDate : function(pickerElement) {
+            $(pickerElement).datetimepicker({
+                 format : 'YYYY/MM/DD',
+                 sideBySide: false,
+                 locale: 'ja',
+             });
+    },
+}
+
 var gDefaultColor = {
 	getColor : function() {
 		return [ 
