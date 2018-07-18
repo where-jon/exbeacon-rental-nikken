@@ -279,7 +279,7 @@ class itemCarDAO @Inject()(dbapi: DBApi) {
     }
   }
 
-
+  /*作業車・立馬一覧用 sql文 20180718*/
   def selectCarMasterViewer(placeId: Int): Seq[CarViewer] = {
     db.withConnection { implicit connection =>
       val sql = SQL(

@@ -87,7 +87,9 @@ class ItemOtherMaster @Inject()(config: Configuration
     WORK_TYPE_FILTER = carFormData.workTypeName
     FLOOR_NAME_FILTER = carFormData.floorName
 
-    var otherListApi = beaconService.getItemOtherBeaconPosition(true,placeId)
+    // dbデータ取得
+    val dbDatas = otherDAO.selectOtherMasterViewer(placeId)
+    var otherListApi = beaconService.getItemOtherBeaconPosition(dbDatas,true,placeId)
     if (ITEM_TYPE_FILTER != 0) {
       otherListApi = otherListApi.filter(_.item_type_id == ITEM_TYPE_FILTER)
     }
@@ -115,7 +117,8 @@ class ItemOtherMaster @Inject()(config: Configuration
       getSearchData(placeId)
 
       // dbデータ取得
-      val otherListApi = beaconService.getItemOtherBeaconPosition(true,placeId)
+      val dbDatas = otherDAO.selectOtherMasterViewer(placeId)
+      val otherListApi = beaconService.getItemOtherBeaconPosition(dbDatas,true,placeId)
 
       System.out.println("floorNameList:" + floorNameList)
       Ok(views.html.site.itemOtherMaster(ITEM_TYPE_FILTER, COMPANY_NAME_FILTER,FLOOR_NAME_FILTER,WORK_TYPE_FILTER

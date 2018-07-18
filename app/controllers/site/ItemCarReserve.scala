@@ -82,7 +82,9 @@ class ItemCarReserve @Inject()(config: Configuration
     ITEM_TYPE_FILTER = carFormData.itemTypeId
     WORK_TYPE_FILTER = carFormData.workTypeName
 
-    var carListApi = beaconService.getItemCarBeaconPosition(true,placeId)
+    // dbデータ取得
+    val dbDatas = carDAO.selectCarMasterViewer(placeId)
+    var carListApi = beaconService.getItemCarBeaconPosition(dbDatas,true,placeId)
 
     if (ITEM_TYPE_FILTER != 0) {
       carListApi = carListApi.filter(_.item_type_id == ITEM_TYPE_FILTER)
@@ -105,7 +107,8 @@ class ItemCarReserve @Inject()(config: Configuration
       getSearchData(placeId)
 
       // dbデータ取得
-      var carListApi = beaconService.getItemCarBeaconPosition(true,placeId)
+      val dbDatas = carDAO.selectCarMasterViewer(placeId)
+      var carListApi = beaconService.getItemCarBeaconPosition(dbDatas,true,placeId)
 
       // 全体から空いてるものだけ表示する。
       carListApi = carListApi.filter(_.reserve_id == -1)

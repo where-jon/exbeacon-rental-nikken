@@ -272,7 +272,7 @@ class itemOtherDAO @Inject()(dbapi: DBApi) {
     }
   }
 
-
+  /*その他仮設材一覧用 sql文 20180718*/
   def selectOtherMasterViewer(placeId: Int): Seq[OtherViewer] = {
     db.withConnection { implicit connection =>
       val sql = SQL(
