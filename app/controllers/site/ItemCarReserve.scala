@@ -32,9 +32,15 @@ class ItemCarReserve @Inject()(config: Configuration
                                , workTypeDAO: models.WorkTypeDAO
                              ) extends BaseController with I18nSupport {
 
+   /*検索用*/
   var ITEM_TYPE_FILTER = 0;
-  var WORK_TYPE_FILTER = "";
   var RESERVE_DATE = "";
+  var WORK_TYPE_FILTER = "";
+
+  /*登録用*/
+  var COMPANY_NAME_FILTER = "";
+  var FLOOR_NAME_FILTER = "";
+
 
   var itemTypeList :Seq[ItemType] = null; // 仮設材種別
   var companyNameList :Seq[Company] = null; // 業者
@@ -74,7 +80,7 @@ class ItemCarReserve @Inject()(config: Configuration
   /** 　予約ロジック */
   def update = SecuredAction { implicit request =>
 
-    Redirect(routes.ItemCarReserve.index)
+    Redirect(routes.ItemCarReserve.index())
       .flashing(SUCCESS_MSG_KEY -> Messages("success.site.carReserve.update"))
   }
   /** 　検索ロジック */
@@ -91,10 +97,10 @@ class ItemCarReserve @Inject()(config: Configuration
     RESERVE_DATE = carFormData.inputDate
 
     var dbDatas : Seq[CarViewer] = null;
-
+    //var stam = carDAO.selectReserve2(1,ITEM_TYPE_FILTER,WORK_TYPE_FILTER,RESERVE_DATE)
     // dbデータ取得
     if(RESERVE_DATE!=""){
-      dbDatas = carDAO.selectCarMasterSearch(placeId, RESERVE_DATE)
+      dbDatas = carDAO.selectCarMasterSearch(placeId,ITEM_TYPE_FILTER,WORK_TYPE_FILTER,RESERVE_DATE)
     }else{
       dbDatas = carDAO.selectCarMasterReserve(placeId)
     }
@@ -102,9 +108,6 @@ class ItemCarReserve @Inject()(config: Configuration
 
     if (ITEM_TYPE_FILTER != 0) {
       carListApi = carListApi.filter(_.item_type_id == ITEM_TYPE_FILTER)
-    }
-    if (WORK_TYPE_FILTER != "") {
-      carListApi = carListApi.filter(_.work_type_name == WORK_TYPE_FILTER)
     }
 
     Ok(views.html.site.itemCarReserve(ITEM_TYPE_FILTER,WORK_TYPE_FILTER,RESERVE_DATE
