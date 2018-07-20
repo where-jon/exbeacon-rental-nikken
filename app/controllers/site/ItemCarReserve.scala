@@ -61,32 +61,23 @@ class ItemCarReserve @Inject()(config: Configuration
   /*enum形*/
   val WORK_TYPE = WorkTypeEnum().map;
 
-
-
-  /*作業車・立馬予約用formクラス*/
-  case class ItemCarReserveData(
-     itemTypeId: Int,
-     workTypeName: String,
-     inputDate: String,
-     companyName: String,
-     floorName: String,
-
-     itemId: List[Int],
-     checkVal: List[Int]
-
-   )
-
-
   /*転送form*/
   val itemCarForm = Form(mapping(
-    "itemTypeId" -> number,
-    "workTypeName" -> text,
-    "inputDate" -> text,
-    "companyName" -> text,
-    "floorName" -> text,
-    "itemId" -> list(number),
-    "checkVal" -> list(number)
+    "itemTypeId" -> number.verifying("仮設材未設定", { itemTypeId => itemTypeId != null }),
+    "workTypeName" -> text.verifying("作業期間未設定", { workTypeName => !workTypeName.isEmpty() }),
+    "inputDate" -> text.verifying("予約日未設定", { inputDate => !inputDate.isEmpty() }),
+    "companyName" -> text.verifying("予約会社未設定", { companyName => !companyName.isEmpty() }),
+    "floorName" -> text.verifying("予約フロア未設定", { floorName => !floorName.isEmpty() }),
+    "itemId" -> list(number.verifying("仮設材IDが異常", { itemId => itemId != null })),
+    "checkVal" -> list(number.verifying("選択", { itemId => itemId != null }))
   )(ItemCarReserveData.apply)(ItemCarReserveData.unapply))
+
+
+    val itemCarSearchForm = Form(mapping(
+    "itemTypeId" ->number,
+    "workTypeName" -> text,
+    "inputDate" -> text
+  )(ItemCarSearchData.apply)(ItemCarSearchData.unapply))
 
   /** 　初期化 */
   def init() {
@@ -124,34 +115,40 @@ class ItemCarReserve @Inject()(config: Configuration
     getSearchData(placeId)
     val dbDatas = carDAO.selectCarMasterReserve(placeId)
     var carListApi = beaconService.getItemCarBeaconPosition(dbDatas,true,placeId)
-    val carFormData = itemCarForm.bindFromRequest.get
+    //val carFormData = itemCarForm.bindFromRequest.get
     itemCarForm.bindFromRequest.fold(
-      formWithErrors => BadRequest(views.html.site.itemCarReserve(ITEM_TYPE_FILTER,WORK_TYPE_FILTER,RESERVE_DATE
-        ,carListApi,itemTypeList,companyNameList,floorNameList,workTypeList,WORK_TYPE)),
+      formWithErrors =>
+      Redirect(routes.ItemCarReserve.index())
+          .flashing(ERROR_MSG_KEY -> Messages(formWithErrors.errors.map(_.message +"<br>").mkString("\n"))),
+
       ItemCarReserveData => {
-        val itemCarData = itemCarForm.bindFromRequest.get
-        var setData = List[ReserveItem]()
+        if(ItemCarReserveData.checkVal.zipWithIndex.length > 0){
+            var setData = List[ReserveItem]()
 
-        var vCompanyId = companyNameList.filter(_.companyName == carFormData.companyName).last.companyId
-        var vFloorId = floorNameList.filter(_.floor_name == carFormData.floorName).last.floor_Id
-        var vWorkTypeId = workTypeList.filter(_.work_type_name == carFormData.workTypeName).last.work_type_id
-        var vItemTypeId = itemCarData.itemTypeId
-        var vReserveDate = itemCarData.inputDate
+            var vCompanyId = companyNameList.filter(_.companyName == ItemCarReserveData.companyName).last.companyId
+            var vFloorId = floorNameList.filter(_.floor_name == ItemCarReserveData.floorName).last.floor_Id
+            var vWorkTypeId = workTypeList.filter(_.work_type_name == ItemCarReserveData.workTypeName).last.work_type_id
+            var vItemTypeId = ItemCarReserveData.itemTypeId
+            var vReserveDate = ItemCarReserveData.inputDate
 
-        itemCarData.itemId.zipWithIndex.map { case (itemId, i) =>
-          itemCarData.checkVal.zipWithIndex.map { case (check, j) =>
-            if(i == check){
-              setData = setData :+ ReserveItem(vItemTypeId,itemId,vFloorId,placeId,vCompanyId,vReserveDate,vReserveDate,true,vWorkTypeId)
+          ItemCarReserveData.itemId.zipWithIndex.map { case (itemId, i) =>
+            ItemCarReserveData.checkVal.zipWithIndex.map { case (check, j) =>
+                if(i == check){
+                  setData = setData :+ ReserveItem(vItemTypeId,itemId,vFloorId,placeId,vCompanyId,vReserveDate,vReserveDate,true,vWorkTypeId)
+                }
+              }
             }
-          }
-        }
-        val result = carDAO.reserveItemCar(setData)
-        if (result == "success") {
+            val result = carDAO.reserveItemCar(setData)
+            if (result == "success") {
+              Redirect(routes.ItemCarReserve.index())
+                .flashing(SUCCESS_MSG_KEY -> Messages("success.site.carReserve.update"))
+            }else {
+              Redirect(routes.ItemCarReserve.index())
+                .flashing(ERROR_MSG_KEY -> Messages("error.site.carReserve.update"))
+            }
+        }else{
           Redirect(routes.ItemCarReserve.index())
-            .flashing(SUCCESS_MSG_KEY -> Messages("success.site.carReserve.update"))
-        }else {
-          Redirect(routes.ItemCarReserve.index())
-            .flashing(ERROR_MSG_KEY -> Messages("error.site.carReserve.update"))
+            .flashing(ERROR_MSG_KEY -> Messages("予約対象未選択"))
         }
       }
     )
@@ -165,13 +162,12 @@ class ItemCarReserve @Inject()(config: Configuration
     getSearchData(placeId)
 
     // 部署情報
-    val carFormData = itemCarForm.bindFromRequest.get
-    ITEM_TYPE_FILTER = carFormData.itemTypeId
-    WORK_TYPE_FILTER = carFormData.workTypeName
-    RESERVE_DATE = carFormData.inputDate
+    val carFormSearchData = itemCarSearchForm.bindFromRequest.get
+    ITEM_TYPE_FILTER = carFormSearchData.itemTypeId
+    WORK_TYPE_FILTER = carFormSearchData.workTypeName
+    RESERVE_DATE = carFormSearchData.inputDate
 
     var dbDatas : Seq[CarViewer] = null;
-    //var stam = carDAO.selectReserve2(1,ITEM_TYPE_FILTER,WORK_TYPE_FILTER,RESERVE_DATE)
     // dbデータ取得
     if(RESERVE_DATE!=""){
       dbDatas = carDAO.selectCarMasterSearch(placeId,ITEM_TYPE_FILTER,WORK_TYPE_FILTER,RESERVE_DATE)

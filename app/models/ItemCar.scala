@@ -9,6 +9,25 @@ import controllers.site.ReserveItem
 import play.api.Logger
 import play.api.db._
 
+/*作業車・立馬予約用formクラス*/
+case class ItemCarReserveData(
+  itemTypeId: Int,
+  workTypeName: String,
+  inputDate: String,
+  companyName: String,
+  floorName: String,
+  itemId: List[Int],
+  checkVal: List[Int]
+
+)
+
+/*作業車・立馬予約検索用formクラス*/
+case class ItemCarSearchData(
+   itemTypeId: Int,
+   workTypeName: String,
+   inputDate: String
+ )
+
 case class ItemCar(
   itemCarId: Int,
   itemTypeId: Int,

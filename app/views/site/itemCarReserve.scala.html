@@ -1,4 +1,5 @@
-@(ITEM_TYPE_FILTER: Int,
+@(
+ITEM_TYPE_FILTER: Int,
 WORK_TYPE_FILTER:String,
 RESERVE_DATE:String,
 carList: Seq[itemCarBeaconPositionData],
@@ -7,7 +8,7 @@ companyNameList :Seq[Company],
 floorNameList :Seq[Floor],
 workTypeList :Seq[WorkType],
 workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: RequestHeader, flash: Flash)
-
+@import b3.vertical.fieldConstructor
 @import controllers.routes
 @import helper._
 
@@ -27,10 +28,11 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
     <div class="row" style="margin-top: 40px;">
         <!-- メイン -->
         <div class="col-lg-12 mainSpace">
-            <!-- メッセージ -->
-            @views.html.templates.msgDiv()
             <!-- 画面題字 -->
             <div class="form-group" style="font-weight:bold;font-size:19px;margin:15px 0px;">
+                <!-- メッセージ -->
+                @views.html.templates.msgDiv()
+                <!--タイトル-->
                 @Messages("lang.site.carReserve.page.title")
             </div>
 
@@ -62,7 +64,7 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
                                 <option value="@itemType.item_type_id">@itemType.item_type_name</option>
                             }
                         </select>
-                        <input class=" form-control input-sm" type="text" id="itemTypeId" name="itemTypeId" value="@ITEM_TYPE_FILTER">
+                        <input class="hidden form-control input-sm" type="text" id="itemTypeId" name="itemTypeId" value="@ITEM_TYPE_FILTER">
                     </div>
 
                     <div class="text-center col-xs-3 col-sm-3 col-md-3" style="padding:0;">
@@ -73,7 +75,7 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
                             <option value="@workType.work_type_name">@workType.work_type_name</option>
                             }
                         </select>
-                        <input class="form-control input-sm" type="text" id="workTypeName" name="workTypeName" value="@WORK_TYPE_FILTER">
+                        <input class="hidden form-control input-sm" type="text" id="workTypeName" name="workTypeName" value="@WORK_TYPE_FILTER">
                     </div>
                     <!--表示ボタン-->
                     <div id = "viewBtn" class="text-center btn btn__view--frame">
@@ -88,7 +90,7 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
                         <table class="table table-bordered table-condensed itemTable">
                             <thead>
                             <tr>
-                                <th colspan="9" class="tableTitleTh">@Messages("lang.site.carReserve.page.title")</th>
+                                <th colspan="10" class="tableTitleTh">@Messages("lang.site.carReserve.page.title")</th>
                             </tr>
                             <tr>
                                 <th class="tableTh ">選択</th>
@@ -98,8 +100,6 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
                                 <th class="tableTh ">Tag ID</th>
                                 <th class="tableTh ">種別</th>
                                 <th class="tableTh ">名称</th>
-                                <!--<th class="tableTh ">業者</th>-->
-                                <!--<th class="tableTh ">予約フロア</th>-->
                                 <th class="tableTh ">予約日</th>
                                 <th class="tableTh ">予約期間</th>
                                 <th class="tableTh ">予約ID</th>
@@ -122,9 +122,9 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
                                         }
                                     }
                                     <td class="itemTd text-center ">@car.cur_pos_name</td>
-                                    <td class="itemTd text-center ">@car.cur_exb_name</td>
+                                    <td class="itemTd text-center modalSelect">@car.cur_exb_name</td>
                                     <td class="itemTd text-center ">@car.item_car_id
-                                        <input class=" form-control input-sm" type="text" id="itemId-@i" name="itemId[@i]" value="@car.item_car_id">
+                                        <input class="hidden  form-control input-sm" type="text" id="itemId-@i" name="itemId[@i]" value="@car.item_car_id">
                                     </td>
                                     <td class="itemTd text-center ">@car.item_car_btx_id</td>
                                     <td class="itemTd text-center ">@car.item_type_id</td>
@@ -152,7 +152,7 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
                         <option value="@company.companyName">@company.companyName</option>
                         }
                     </select>
-                    <input class=" form-control input-sm" type="text" id="companyName" name="companyName" value="">
+                    <input class="hidden  form-control input-sm" type="text" id="companyName" name="companyName" value="">
                 </div>
 
                 <div class="text-center col-xs-3 col-sm-3 col-md-3">
@@ -164,18 +164,68 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
                         <option value="@floor.floor_name">@floor.floor_name</option>
                         }
                     </select>
-                    <input class=" form-control input-sm" type="text" id="floorName" name="floorName" value="">
+                    <input class="hidden  form-control input-sm" type="text" id="floorName" name="floorName" value="">
 
                 </div>
 
                 <!--表示ボタン-->
                 <div id ="reserveBtn" class="text-center btn btn__view--frame">
-                    予約
+                    予約へ
                 </div>
             </div>
 
             @CSRF.formField
         </form>
+            <!-- モーダル画面 -->
+            <div class="modal" id="inputModal" tabindex="-1" role="dialog" aria-labelledby="InputModalLabel" aria-hidden="true" data-show="true" data-keyboard="false" data-backdrop="static">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                            @CSRF.formField
+                            <input type="hidden" name="inputPlaceId" value="">
+                            <input type="hidden" id="inputItemKindId" name="inputItemKindId">
+                            <input type="hidden" id="actualItemInfoStr" name="actualItemInfoStr">
+                            <div class="modal-header" style="">@Messages("lang.site.carReserve.page.title")</div>
+                            <div class="modal-body">
+                                <div class="form-group" style="margin-bottom: 5px;">
+                                    <label class="text-right  control-label col-xs-6">予約希望日</label>
+                                    <label id="mReserveDate" class="modalClass control-label">未設定</label>
+                                </div>
+                                <div class="form-group" style="margin-bottom: 5px;">
+                                    <label class="text-right control-label col-xs-6">種別</label>
+                                    <label id="mItemTypeName" class="modalClass control-label">未設定</label>
+                                </div>
+                                <div class="form-group" style="margin-bottom: 5px;">
+                                    <label class="text-right control-label col-xs-6">期間</label>
+                                    <label id="mWorkTypeName" class="modalClass control-label">未設定</label>
+                                </div>
+
+                                <div class="form-group" style="margin-bottom: 5px;">
+                                    <label class="text-right control-label col-xs-6">業者</label>
+                                    <label id="mCompanyName" class="modalClass control-label">未設定</label>
+                                </div>
+
+                                <div class="form-group" style="margin-bottom: 5px;">
+                                    <label class="text-right control-label col-xs-6">予約フロア</label>
+                                    <label id="mReserveFloorName" class="modalClass control-label">未設定</label>
+                                </div>
+
+                                <!--<div class="form-group" style="margin-bottom: 5px;">-->
+                                    <!--<label class="text-right control-label col-xs-6">選択</label>-->
+                                    <!--<label id="mArSelectId" class="modalClass control-label">未設定</label>-->
+                                <!--</div>-->
+                            </div>
+                            <div class="modal-footer">
+                                <div class="col-xs-6 text-center">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">@Messages("cancel")</button>
+                                </div>
+                                <div class="col-xs-6 text-center">
+                                    <button id="itemRegisterFooter"  type="" class="text-center btn btn-primary">予約</button>
+                                </div>
+                            </div>
+                    </div>
+                </div>
+            </div>
+
 
         </div>
     </div>
