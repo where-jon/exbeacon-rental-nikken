@@ -42,12 +42,13 @@ class BeaconService @Inject() (config: Configuration,
     * EXCloudIfActorにて非同期で取得しているビーコン位置情報を取得する
     * その際、item_car_masterテーブルと結合してitemCarBeaconPositionDataのリストとして返却する
     *
+    * @param dbDatas  予約テーブルまで含めた作業車・立馬情報
     * @param blankInclude  ブランクレコード（名前=param01が空）を含めるかどうか
     * @param placeId  接続現場情報
     * @return  List[itemCarBeaconPositionData]
     */
-  def getItemCarBeaconPosition(blankInclude: Boolean = false, placeId:Int): Seq[itemCarBeaconPositionData] = {
-    val dbDatas = carDAO.selectCarMasterViewer(placeId)
+  def getItemCarBeaconPosition(dbDatas:Seq[CarViewer], blankInclude: Boolean = false, placeId:Int): Seq[itemCarBeaconPositionData] = {
+
     this.getCloudUrl(placeId)
     //val f = excIfActor ? GetBtxPosition
    // val posList = Await.result(f, timeout.duration).asInstanceOf[List[beaconPosition]]
@@ -96,7 +97,7 @@ class BeaconService @Inject() (config: Configuration,
           v.reserve_id
         )
       } else {
-        itemCarBeaconPositionData("現在フロア","現在位置",-1, -1, -1, 0, "nodate",
+        itemCarBeaconPositionData("検知フロア無","検知EXB無",-1, -1, -1, 0, "nodate",
           v.item_car_id,
           v.item_car_btx_id,
           v.item_car_key_btx_id,
@@ -126,12 +127,13 @@ class BeaconService @Inject() (config: Configuration,
     * EXCloudIfActorにて非同期で取得しているビーコン位置情報を取得する
     * その際、item_other_masterテーブルと結合してitemOtherBeaconPositionDataのリストとして返却する
     *
+    * @param dbDatas  予約テーブルまで含めたその他仮設材情報
     * @param blankInclude  ブランクレコード（名前=param01が空）を含めるかどうか
     * @param placeId  接続現場情報
     * @return  List[itemOtherBeaconPositionData]
     */
-  def getItemOtherBeaconPosition(blankInclude: Boolean = false, placeId:Int): Seq[itemOtherBeaconPositionData] = {
-    val dbDatas = otherDAO.selectOtherMasterViewer(placeId)
+  def getItemOtherBeaconPosition(dbDatas:Seq[OtherViewer], blankInclude: Boolean = false, placeId:Int): Seq[itemOtherBeaconPositionData] = {
+
     this.getCloudUrl(placeId)
     //val f = excIfActor ? GetBtxPosition
     // val posList = Await.result(f, timeout.duration).asInstanceOf[List[beaconPosition]]

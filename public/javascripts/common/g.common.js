@@ -139,6 +139,168 @@ var gResize = {
          }
        },
 }
+
+
+/*画面初期表示関連*/
+var gInitView = {
+    fixTable : function() {
+        // テーブルの固定
+        var h = $(window).height()*0.65;
+        // テーブルの調整
+        var ua = navigator.userAgent;
+        if (ua.indexOf('iPad') > 0 || ua.indexOf('Android') > 0 || ua.indexOf('iPhone') > 0 || ua.indexOf('iPod') > 0){
+            // タッチデバイス
+            if ($('.mainSpace').height() > h) {
+                var w = $('.mainSpace').width()*0.99;
+                $('.itemTable').tablefix({width:w, height: h, fixRows: 2});
+            } else {
+                var w = $('.mainSpace').width();
+                $('.itemTable').tablefix({width:w, fixRows: 2});
+            }
+        }else{
+            // PCブラウザ
+            var w = $('.mainSpace').width();
+            $('.itemTable').tablefix({height: h, fixRows: 2});
+            $('.rowTableDiv').width(w);
+        }
+        $('.bodyTableDiv').find('.itemTable').css('margin-bottom','0');
+        $('.colTableDiv').css("width","");
+
+    },
+
+    bindMouseAndTouch : function() {
+        var ua = navigator.userAgent;
+        if (ua.indexOf('iPad') > 0 || ua.indexOf('Android') > 0 || ua.indexOf('iPhone') > 0 || ua.indexOf('iPod') > 0){
+            // タッチデバイスの場合
+            $(".rowHover").bind({
+                'touchstart': function(e) {
+                    if(e.originalEvent.touches.length > 1){
+                    }else if(e.originalEvent.touches.length == 1){
+                        $(".modalSelect").removeClass('modalSelect');
+                        $(this).addClass('modalSelect');
+                    }
+                },
+            });
+        }else{
+            // PCブラウザの場合
+            $(".rowHover").bind({
+                'mouseover': function(e) {
+                    $(this).addClass('rowHoverColor');
+                },
+                'mouseout': function(e) {
+                    $(this).removeClass('rowHoverColor');
+                },
+                'click': function(e) {
+                    $(".modalSelect").removeClass('modalSelect');
+                    $(this).addClass('modalSelect');
+                },
+            });
+        }
+
+    },
+
+    removeTable : function() {
+        var clonedTable = $('.bodyTableDiv').find('table').clone();
+        $(clonedTable).attr('style', '');
+        $('.baseDiv').remove();
+        $('.table-responsive-body').append(clonedTable.prop("outerHTML"));
+    }
+}
+var gDatePicker = {
+    onChageClick : false,
+    startDate : null,
+    startTimeEpoch : null,
+    startSqlTime : null,
+    endDate : null,
+    endSqlTime : null,
+    endTimeEpoch : null,
+    dayClickEvent : function() {
+        var selectPinElement = [].slice.call(document.querySelectorAll(".inputClass"));
+        selectPinElement.forEach(function(pin, pos) {
+            $(pin).datetimepicker({
+                 format : 'YYYY/MM/DD',
+                 locale: 'ja',
+             });
+            gDatePicker.dateChangeEvent(pin)
+            gDatePicker.dayDateTimeSetting();
+        });
+    },
+
+    clickEvent : function() {
+        var selectPinElement = [].slice.call(document.querySelectorAll(".inputClass"));
+        selectPinElement.forEach(function(pin, pos) {
+            $(pin).datetimepicker({
+                 format : 'YYYY/MM/DD HH:mm',
+                 sideBySide: true,
+                 locale: 'ja',
+             });
+            gDatePicker.dateChangeEvent(pin)
+            gDatePicker.dateTimeSetting();
+        });
+    },
+    dateChangeEvent : function(pickerElement) {
+         $(pickerElement).on('dp.change', function(e){
+            var date = pickerElement.value;
+            gDatePicker.dayDateTimeSetting();
+        });
+
+    },
+    dateTimeSetting : function() {
+        gDatePicker.startDate = document.getElementById("inputDate").value
+        gDatePicker.endDate = document.getElementById("inputDate2").value
+        var startDate = Date.parse(gDatePicker.startDate);
+        gDatePicker.startTimeEpoch = startDate/1000;
+        gDatePicker.startSqlTime = gDatePicker.startDate.replace('/', '-').replace('/', '-')
+
+        var endDate = Date.parse(gDatePicker.endDate);
+        gDatePicker.endTimeEpoch = endDate/1000;
+        gDatePicker.endSqlTime = gDatePicker.endDate.replace('/', '-').replace('/', '-')
+    },
+
+    dayDateTimeSetting : function() {
+        gDatePicker.startDate = document.getElementById("inputDate").value
+        var startDate = Date.parse(gDatePicker.startDate);
+        gDatePicker.startTimeEpoch = startDate/1000;
+        gDatePicker.startSqlTime = gDatePicker.startDate.replace('/', '-').replace('/', '-')
+    },
+
+    htmlDayClickEvent : function(vFunctionName) {
+        $(document.getElementsByTagName("html")).click(function() {
+            //if(gDatePicker.onChageClick){
+            console.log("htmlDayClickEvent")
+                //gDatePicker.onChageClick = false;
+            //}
+        });
+    },
+
+    htmlClickEvent : function(vFunctionName) {
+        $(document.getElementsByTagName("html")).click(function() {
+            if(gDatePicker.onChageClick){
+                gDatePicker.dateTimeSetting();
+                 if (gDatePicker.endTimeEpoch < gDatePicker.startTimeEpoch){
+                     alert('スタート期間再確認');
+                 }else{
+                    if(vFunctionName!=null){
+                        vFunctionName();
+                    }else{
+                        //console.log("define!! searchMoveData function")
+                    }
+                 }
+                gDatePicker.onChageClick = false;
+            }
+
+        });
+    },
+
+    clickEventOnlyDate : function(pickerElement) {
+            $(pickerElement).datetimepicker({
+                 format : 'YYYY/MM/DD',
+                 sideBySide: false,
+                 locale: 'ja',
+             });
+    },
+}
+
 var gDefaultColor = {
 	getColor : function() {
 		return [ 

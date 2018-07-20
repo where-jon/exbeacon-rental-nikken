@@ -41,9 +41,15 @@ POST    /cms/floorManage/floorDelete    controllers.cms.FloorManage.floorDelete
 
 # 現場状況
 GET    /site/workPlace                 controllers.site.WorkPlace.index
+
 # 作業車・立馬一覧
 GET    /site/itemCarMaster                 controllers.site.ItemCarMaster.index
 POST   /site/itemCarMaster                 controllers.site.ItemCarMaster.search
+
+# 作業車・立馬予約
+GET    /site/itemCarReserve                 controllers.site.ItemCarReserve.index
+POST   /site/itemCarReserve                 controllers.site.ItemCarReserve.search
+POST   /site/itemCarReserve/reserve         controllers.site.ItemCarReserve.reserve
 
 
 # その他仮設材一覧
