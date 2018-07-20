@@ -1,3 +1,5 @@
+var arCheckBoxIndex = []
+
 // マウス・タッチの動作のバインド
 function bindMouseAndTouch(){
     var ua = navigator.userAgent;
@@ -117,17 +119,49 @@ function dbExecuteBtn(routeUrl){
     $("#dbExecuteBtn").trigger( "click" );
 }
 // 表示ボタンをクリックする時に発生するイベント
-function viewBtnEvent(){
+function btnEvent(){
 
-    // DatePickerの設定 start-----------------------------------------
+    // DatePickerの設定 start---------------------------------------
      gDatePicker.dayClickEvent();
      gDatePicker.htmlDayClickEvent();
     // DatePickerの設定 end-----------------------------------------
-    var updateBtnElement = document.getElementById("updateBtn")
-    updateBtnElement.addEventListener('click', function(event) {
 
 
-      dbExecuteBtn("../site/itemCarReserveUpdate")
+    //　予約ボタン
+    var reserveBtnElement = document.getElementById("reserveBtn")
+    reserveBtnElement.addEventListener('click', function(event) {
+
+        // itemTypeId結果をfromへ設定
+        var itemTypeFilterResult = $('#ITEM_TYPE_FILTER option:selected').val();
+        var inputItemType = document.getElementById("itemTypeId")
+        inputItemType.value = itemTypeFilterResult
+
+        // companyName結果をfromへ設定
+        var companyNameFilterResult = $('#COMPANY_NAME_FILTER option:selected').val();
+        var inputCompanyName = document.getElementById("companyName")
+        inputCompanyName.value = companyNameFilterResult
+
+        // floorName結果をfromへ設定
+        var floorNameFilterResult = $('#FLOOR_NAME_FILTER option:selected').val();
+        var inputFloorName = document.getElementById("floorName")
+        inputFloorName.value = floorNameFilterResult
+
+        // work_type_name結果をfromへ設定
+        var workTypeNameFilterResult = $('#WORK_TYPE_FILTER option:selected').val();
+        var inputWorkTypeName = document.getElementById("workTypeName")
+        inputWorkTypeName.value = workTypeNameFilterResult
+
+        // inputDate結果をfromへ設定
+        var inputDate = document.getElementById("inputDate")
+        inputDate.value = gDatePicker.startSqlTime
+        dbExecuteBtn("../site/itemCarReserve")
+
+
+        $("input[name=current_proudct]:checked").each(function() {
+          arCheckBoxIndex.push(this.value)
+        });
+
+        dbExecuteBtn("../site/itemCarReserve/reserve")
 
     });
 
@@ -146,34 +180,23 @@ function viewBtnEvent(){
         // inputDate結果をfromへ設定
         var inputDate = document.getElementById("inputDate")
         inputDate.value = gDatePicker.startSqlTime
-
-
         dbExecuteBtn("../site/itemCarReserve")
     });
 
 }
+
 $(function(){
     // filter値確認
     getFilterCheck();
     // 表示ボタンをクリック
-    viewBtnEvent();
+    btnEvent();
 
+
+    removeTable();
     // テーブルを固定
     fixTable();
+
     // マウス操作とタップ操作をバインド
     bindMouseAndTouch();
 
-    // リサイズ対応
-    var timer = false;
-    $(window).resize(function() {
-        if (timer !== false) {
-            clearTimeout(timer);
-        }
-        timer = setTimeout(function() {
-            // 処理の再実行
-            removeTable();
-            fixTable();
-            bindMouseAndTouch();
-        }, 200);
-    });
 });

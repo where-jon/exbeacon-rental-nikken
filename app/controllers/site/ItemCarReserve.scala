@@ -18,6 +18,18 @@ import utils.silhouette.MyEnv
   *
   */
 
+/*作業車・立馬予約用クラス*/
+case class ReserveItem(
+  item_type_id :Int,
+  item_id :Int,
+  floor_id :Int,
+  place_id :Int,
+  company_id :Int,
+  reserve_start_date:String,
+  reserve_end_date:String,
+  active_flg:Boolean,
+  work_type_id :Int
+)
 
 @Singleton
 class ItemCarReserve @Inject()(config: Configuration
@@ -41,7 +53,6 @@ class ItemCarReserve @Inject()(config: Configuration
   var COMPANY_NAME_FILTER = "";
   var FLOOR_NAME_FILTER = "";
 
-
   var itemTypeList :Seq[ItemType] = null; // 仮設材種別
   var companyNameList :Seq[Company] = null; // 業者
   var floorNameList :Seq[Floor] = null; // フロア
@@ -50,11 +61,31 @@ class ItemCarReserve @Inject()(config: Configuration
   /*enum形*/
   val WORK_TYPE = WorkTypeEnum().map;
 
+
+
+  /*作業車・立馬予約用formクラス*/
+  case class ItemCarReserveData(
+     itemTypeId: Int,
+     workTypeName: String,
+     inputDate: String,
+     companyName: String,
+     floorName: String,
+
+     itemId: List[Int],
+     checkVal: List[Int]
+
+   )
+
+
   /*転送form*/
-  val carForm = Form(mapping(
+  val itemCarForm = Form(mapping(
     "itemTypeId" -> number,
     "workTypeName" -> text,
-    "inputDate" -> text
+    "inputDate" -> text,
+    "companyName" -> text,
+    "floorName" -> text,
+    "itemId" -> list(number),
+    "checkVal" -> list(number)
   )(ItemCarReserveData.apply)(ItemCarReserveData.unapply))
 
   /** 　初期化 */
@@ -62,6 +93,9 @@ class ItemCarReserve @Inject()(config: Configuration
     ITEM_TYPE_FILTER = 0
     WORK_TYPE_FILTER = ""
     RESERVE_DATE = ""
+
+    COMPANY_NAME_FILTER = ""
+    FLOOR_NAME_FILTER = ""
   }
 
   /** 　検索側データ取得 */
@@ -76,12 +110,52 @@ class ItemCarReserve @Inject()(config: Configuration
     /*フロア取得*/
     floorNameList = floorDAO.selectFloor(_placeId);
   }
+  /** 　検索側データ取得 */
+  def setReserveData(_placeId:Integer): Unit = {
+
+  }
+
 
   /** 　予約ロジック */
-  def update = SecuredAction { implicit request =>
+  def reserve = SecuredAction { implicit request =>
+    System.out.println("---reserve:----" )
+    // dbデータ取得
+    val placeId = super.getCurrentPlaceId
+    getSearchData(placeId)
+    val dbDatas = carDAO.selectCarMasterReserve(placeId)
+    var carListApi = beaconService.getItemCarBeaconPosition(dbDatas,true,placeId)
+    val carFormData = itemCarForm.bindFromRequest.get
+    itemCarForm.bindFromRequest.fold(
+      formWithErrors => BadRequest(views.html.site.itemCarReserve(ITEM_TYPE_FILTER,WORK_TYPE_FILTER,RESERVE_DATE
+        ,carListApi,itemTypeList,companyNameList,floorNameList,workTypeList,WORK_TYPE)),
+      ItemCarReserveData => {
+        val itemCarData = itemCarForm.bindFromRequest.get
+        var setData = List[ReserveItem]()
 
-    Redirect(routes.ItemCarReserve.index())
-      .flashing(SUCCESS_MSG_KEY -> Messages("success.site.carReserve.update"))
+        var vCompanyId = companyNameList.filter(_.companyName == carFormData.companyName).last.companyId
+        var vFloorId = floorNameList.filter(_.floor_name == carFormData.floorName).last.floor_Id
+        var vWorkTypeId = workTypeList.filter(_.work_type_name == carFormData.workTypeName).last.work_type_id
+        var vItemTypeId = itemCarData.itemTypeId
+        var vReserveDate = itemCarData.inputDate
+
+        itemCarData.itemId.zipWithIndex.map { case (itemId, i) =>
+          itemCarData.checkVal.zipWithIndex.map { case (check, j) =>
+            if(i == check){
+              setData = setData :+ ReserveItem(vItemTypeId,itemId,vFloorId,placeId,vCompanyId,vReserveDate,vReserveDate,true,vWorkTypeId)
+            }
+          }
+        }
+        val result = carDAO.reserveItemCar(setData)
+        if (result == "success") {
+          Redirect(routes.ItemCarReserve.index())
+            .flashing(SUCCESS_MSG_KEY -> Messages("success.site.carReserve.update"))
+        }else {
+          Redirect(routes.ItemCarReserve.index())
+            .flashing(ERROR_MSG_KEY -> Messages("error.site.carReserve.update"))
+        }
+      }
+    )
+
   }
   /** 　検索ロジック */
   def search = SecuredAction { implicit request =>
@@ -91,7 +165,7 @@ class ItemCarReserve @Inject()(config: Configuration
     getSearchData(placeId)
 
     // 部署情報
-    val carFormData = carForm.bindFromRequest.get
+    val carFormData = itemCarForm.bindFromRequest.get
     ITEM_TYPE_FILTER = carFormData.itemTypeId
     WORK_TYPE_FILTER = carFormData.workTypeName
     RESERVE_DATE = carFormData.inputDate

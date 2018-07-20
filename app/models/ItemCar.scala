@@ -1,9 +1,11 @@
 package models
 
+import java.sql.SQLException
 import javax.inject.Inject
 
 import anorm.SqlParser._
 import anorm.{~, _}
+import controllers.site.ReserveItem
 import play.api.Logger
 import play.api.db._
 
@@ -43,13 +45,6 @@ case class ItemCarData(
   companyName: String,
   floorName: String,
   workTypeName: String
-)
-
-/*作業車・立馬予約用formクラス*/
-case class ItemCarReserveData(
-  itemTypeId: Int,
-  workTypeName: String,
-  inputDate: String
 )
 
 @javax.inject.Singleton
@@ -435,10 +430,12 @@ class itemCarDAO @Inject()(dbapi: DBApi) {
       var wherePh = ""
       wherePh += s""" and c.place_id = ${placeId} """
 
-      if(workTypeName != "終日" && workTypeName != ""){
-        wherePh += s""" and not (r.reserve_start_date != to_date('${reserveDate}', 'YYYY-MM-DD') and work.work_type_name = '${workTypeName}' ) """
-      }else{
+      if(workTypeName == "終日" || workTypeName == ""){
         wherePh += s""" and r.reserve_start_date != to_date('${reserveDate}', 'YYYY-MM-DD') """
+      }else{
+        wherePh +=
+          s"""  and r.reserve_start_date = to_date('${reserveDate}', 'YYYY-MM-DD') and not work.work_type_name = '${workTypeName}' and not work.work_type_name = '終日'
+                         or r.reserve_start_date != to_date('${reserveDate}', 'YYYY-MM-DD') and not work.work_type_name = '${workTypeName}' and not work.work_type_name = '終日' """
       }
       wherePh += s""" or coalesce(r.reserve_id, -1) = -1 and c.active_flg = true and c.place_id = ${placeId} """
 
@@ -452,6 +449,50 @@ class itemCarDAO @Inject()(dbapi: DBApi) {
     }
   }
 
+
+  def reserveItemCar(reserveItemCar: List[ReserveItem]): String = {
+    var vCheck = false;
+    var vResult = "exception"
+    db.withTransaction { implicit connection =>
+      //reserveItemCar(1).itemTypeId
+      val statement = connection.createStatement()
+      var num = 0
+      var vEndPoint = reserveItemCar.length - 1;
+      for (num <- 0 to vEndPoint) {
+        val sql = SQL("""
+
+            insert into reserve_table_new
+            (item_type_id, item_id, floor_id, place_id,company_id,reserve_start_date,reserve_end_date,active_flg,updatetime,work_type_id) values(
+            {item_type_id}, {item_id}, {floor_id},{place_id},{company_id},to_date({reserve_end_date}, 'YYYY-MM-DD'),to_date({reserve_end_date}, 'YYYY-MM-DD'),true,now(),{work_type_id})
+
+              """).on(
+          'item_type_id -> reserveItemCar(num).item_type_id,
+          'item_id -> reserveItemCar(num).item_id,
+          'floor_id ->reserveItemCar(num).floor_id,
+          'place_id ->reserveItemCar(num).place_id,
+          'company_id ->reserveItemCar(num).company_id,
+          'reserve_start_date->reserveItemCar(num).reserve_start_date,
+          'reserve_end_date->reserveItemCar(num).reserve_end_date,
+          'active_flg->reserveItemCar(num).active_flg,
+          'work_type_id->reserveItemCar(num).work_type_id
+        )
+        try {
+          val result = sql.executeUpdate()
+          vResult = "success"
+        } catch {
+          case e: SQLException => {
+            println("Database error " + e)
+            if (!vCheck) {
+              vCheck = true;
+              vResult = e + ""
+            }
+          }
+        }
+      }
+
+    }
+    vResult
+  }
 
 
 }
