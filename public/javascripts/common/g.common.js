@@ -140,6 +140,72 @@ var gResize = {
        },
 }
 
+
+/*画面初期表示関連*/
+var gInitView = {
+    fixTable : function() {
+        // テーブルの固定
+        var h = $(window).height()*0.65;
+        // テーブルの調整
+        var ua = navigator.userAgent;
+        if (ua.indexOf('iPad') > 0 || ua.indexOf('Android') > 0 || ua.indexOf('iPhone') > 0 || ua.indexOf('iPod') > 0){
+            // タッチデバイス
+            if ($('.mainSpace').height() > h) {
+                var w = $('.mainSpace').width()*0.99;
+                $('.itemTable').tablefix({width:w, height: h, fixRows: 2});
+            } else {
+                var w = $('.mainSpace').width();
+                $('.itemTable').tablefix({width:w, fixRows: 2});
+            }
+        }else{
+            // PCブラウザ
+            var w = $('.mainSpace').width();
+            $('.itemTable').tablefix({height: h, fixRows: 2});
+            $('.rowTableDiv').width(w);
+        }
+        $('.bodyTableDiv').find('.itemTable').css('margin-bottom','0');
+        $('.colTableDiv').css("width","");
+
+    },
+
+    bindMouseAndTouch : function() {
+        var ua = navigator.userAgent;
+        if (ua.indexOf('iPad') > 0 || ua.indexOf('Android') > 0 || ua.indexOf('iPhone') > 0 || ua.indexOf('iPod') > 0){
+            // タッチデバイスの場合
+            $(".rowHover").bind({
+                'touchstart': function(e) {
+                    if(e.originalEvent.touches.length > 1){
+                    }else if(e.originalEvent.touches.length == 1){
+                        $(".modalSelect").removeClass('modalSelect');
+                        $(this).addClass('modalSelect');
+                    }
+                },
+            });
+        }else{
+            // PCブラウザの場合
+            $(".rowHover").bind({
+                'mouseover': function(e) {
+                    $(this).addClass('rowHoverColor');
+                },
+                'mouseout': function(e) {
+                    $(this).removeClass('rowHoverColor');
+                },
+                'click': function(e) {
+                    $(".modalSelect").removeClass('modalSelect');
+                    $(this).addClass('modalSelect');
+                },
+            });
+        }
+
+    },
+
+    removeTable : function() {
+        var clonedTable = $('.bodyTableDiv').find('table').clone();
+        $(clonedTable).attr('style', '');
+        $('.baseDiv').remove();
+        $('.table-responsive-body').append(clonedTable.prop("outerHTML"));
+    }
+}
 var gDatePicker = {
     onChageClick : false,
     startDate : null,
@@ -153,7 +219,6 @@ var gDatePicker = {
         selectPinElement.forEach(function(pin, pos) {
             $(pin).datetimepicker({
                  format : 'YYYY/MM/DD',
-                 sideBySide: true,
                  locale: 'ja',
              });
             gDatePicker.dateChangeEvent(pin)
