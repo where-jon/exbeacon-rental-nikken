@@ -226,6 +226,18 @@ var gDatePicker = {
         });
     },
 
+    dayClickEvent2 : function() {
+            var selectPinElement = [].slice.call(document.querySelectorAll(".inputClass"));
+            selectPinElement.forEach(function(pin, pos) {
+                $(pin).datetimepicker({
+                     format : 'YYYY/MM/DD',
+                     locale: 'ja',
+                 });
+                gDatePicker.dateChangeEvent2(pin)
+                gDatePicker.dayDateTimeSetting2();
+            });
+        },
+
     clickEvent : function() {
         var selectPinElement = [].slice.call(document.querySelectorAll(".inputClass"));
         selectPinElement.forEach(function(pin, pos) {
@@ -243,9 +255,15 @@ var gDatePicker = {
             var date = pickerElement.value;
             gDatePicker.dayDateTimeSetting();
         });
-
     },
-    dateTimeSetting : function() {
+    dateChangeEvent2 : function(pickerElement) {
+             $(pickerElement).on('dp.change', function(e){
+                var date = pickerElement.value;
+                gDatePicker.onChageClick = true;
+                gDatePicker.dayDateTimeSetting2();
+            });
+        },
+    dayDateTimeSetting2 : function() {
         gDatePicker.startDate = document.getElementById("inputDate").value
         gDatePicker.endDate = document.getElementById("inputDate2").value
         var startDate = Date.parse(gDatePicker.startDate);
@@ -276,7 +294,7 @@ var gDatePicker = {
     htmlClickEvent : function(vFunctionName) {
         $(document.getElementsByTagName("html")).click(function() {
             if(gDatePicker.onChageClick){
-                gDatePicker.dateTimeSetting();
+                gDatePicker.dayDateTimeSetting2();
                  if (gDatePicker.endTimeEpoch < gDatePicker.startTimeEpoch){
                      alert('スタート期間再確認');
                  }else{

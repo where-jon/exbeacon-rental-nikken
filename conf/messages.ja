@@ -385,9 +385,13 @@ lang.siteName = 設置場所名
 lang.site.carMaster.page.title=作業車・立馬一覧
 lang.site.carReserve.page.title=作業車・立馬予約
 lang.site.carCancel.page.title=作業車・立馬取消
+
+lang.site.otherReserve.page.title=その他仮設材予約
+lang.site.otherCancel.page.title=その他仮設材取消
+
 success.site.carReserve.update=作業車・立馬予約を完了しました。
 success.site.carCancel.remove=作業車・立馬取消を完了しました。
 error.site.carReserve.update=errorが発生しました。
 
 # 仮設材管理文字列（その他仮設材）
-lang.site.itemOtherMaster.page.title=その他仮設材一覧
+lang.site.otherMaster.page.title=その他仮設材一覧
