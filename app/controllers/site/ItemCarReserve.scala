@@ -54,6 +54,7 @@ class ItemCarReserve @Inject()(config: Configuration
   var FLOOR_NAME_FILTER = "";
 
   var itemTypeList :Seq[ItemType] = null; // 仮設材種別
+  var itemIdList :Seq[Int] = null; // 仮設材種別id
   var companyNameList :Seq[Company] = null; // 業者
   var floorNameList :Seq[Floor] = null; // フロア
   var workTypeList :Seq[WorkType] = null; // 作業期間種別
@@ -93,6 +94,8 @@ class ItemCarReserve @Inject()(config: Configuration
   def getSearchData(_placeId:Integer): Unit = {
     /*仮設材種別取得*/
     itemTypeList = itemTypeDAO.selectItemCarInfo(_placeId);
+    /*仮設材種別id取得*/
+    itemIdList = itemTypeList.map{item => item.item_type_id}
     /*作業期間種別取得*/
     workTypeList = workTypeDAO.selectWorkInfo(_placeId);
 
@@ -113,7 +116,7 @@ class ItemCarReserve @Inject()(config: Configuration
     // dbデータ取得
     val placeId = super.getCurrentPlaceId
     getSearchData(placeId)
-    val dbDatas = carDAO.selectCarMasterReserve(placeId)
+    val dbDatas = carDAO.selectCarMasterReserve(placeId,itemIdList)
     var carListApi = beaconService.getItemCarBeaconPosition(dbDatas,true,placeId)
     //val carFormData = itemCarForm.bindFromRequest.get
     itemCarForm.bindFromRequest.fold(
@@ -170,9 +173,9 @@ class ItemCarReserve @Inject()(config: Configuration
     var dbDatas : Seq[CarViewer] = null;
     // dbデータ取得
     if(RESERVE_DATE!=""){
-      dbDatas = carDAO.selectCarMasterSearch(placeId,ITEM_TYPE_FILTER,WORK_TYPE_FILTER,RESERVE_DATE)
+      dbDatas = carDAO.selectCarMasterSearch(placeId,ITEM_TYPE_FILTER,WORK_TYPE_FILTER,RESERVE_DATE,itemIdList)
     }else{
-      dbDatas = carDAO.selectCarMasterReserve(placeId)
+      dbDatas = carDAO.selectCarMasterReserve(placeId,itemIdList)
     }
     var carListApi = beaconService.getItemCarBeaconPosition(dbDatas,true,placeId)
 
@@ -194,7 +197,7 @@ class ItemCarReserve @Inject()(config: Configuration
       getSearchData(placeId)
 
       // dbデータ取得
-      val dbDatas = carDAO.selectCarMasterReserve(placeId)
+      val dbDatas = carDAO.selectCarMasterReserve(placeId,itemIdList)
       var carListApi = beaconService.getItemCarBeaconPosition(dbDatas,true,placeId)
 
       // 全体から空いてるものだけ表示する。
