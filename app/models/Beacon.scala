@@ -178,6 +178,7 @@ case class itemOtherBeaconPositionData(
   item_other_name:String,
   place_id: Int,
   reserve_start_date:String,
+  reserve_end_date:String,
   company_id: Int,
   company_name: String,
   work_type_id: Int,
@@ -204,6 +205,7 @@ object itemOtherBeaconPositionData {
       ((JsPath \ "item_other_name").read[String] | Reads.pure("")) ~
       ((JsPath \ "place_id").read[Int])~
       ((JsPath \ "reserve_start_date").read[String] | Reads.pure("")) ~
+      ((JsPath \ "reserve_end_date").read[String] | Reads.pure("")) ~
       (JsPath \ "company_id").read[Int] ~
       ((JsPath \ "company_name").read[String] | Reads.pure(""))~
       (JsPath \ "work_type_id").read[Int] ~
