@@ -204,9 +204,14 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
                             <div class="modal-header" style="">@Messages("lang.site.otherReserve.page.title")</div>
                             <div class="modal-body">
                                 <div class="form-group" style="margin-bottom: 5px;">
-                                    <label class="text-right  control-label col-xs-6">予約希望日</label>
-                                    <label id="mReserveDate" class="modalClass control-label">未設定</label>
+                                    <label class="text-right  control-label col-xs-6">予約希望最初日</label>
+                                    <label id="mReserveStartDate" class="modalClass control-label">未設定</label>
                                 </div>
+                                <div class="form-group" style="margin-bottom: 5px;">
+                                    <label class="text-right  control-label col-xs-6">予約希望最終日</label>
+                                    <label id="mReserveEndDate" class="modalClass control-label">未設定</label>
+                                </div>
+
                                 <div class="form-group" style="margin-bottom: 5px;">
                                     <label class="text-right control-label col-xs-6">種別</label>
                                     <label id="mItemTypeName" class="modalClass control-label">未設定</label>
@@ -219,7 +224,6 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
                                 <div class="form-group" style="margin-bottom: 5px;">
                                     <label class="text-right control-label col-xs-6">業者</label>
                                     <label id="mCompanyName" class="modalClass control-label">未設定</label>
-                                </div>
 
                                 <div class="form-group" style="margin-bottom: 5px;">
                                     <label class="text-right control-label col-xs-6">予約フロア</label>

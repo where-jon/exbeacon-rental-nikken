@@ -1,14 +1,29 @@
 package models
 
+import java.sql.SQLException
 import javax.inject.Inject
 
 import anorm.SqlParser._
 import anorm.{~, _}
+import controllers.site.ReserveItem
 import play.api.Logger
 import play.api.db._
 
 
-/*その他仮設材予約検索用formクラス*/
+/*その他仮設材予約用formクラス*/
+case class ItemOtherReserveData(
+  itemTypeId: Int,
+  workTypeName: String,
+  inputStartDate: String,
+  inputEndDate: String,
+  companyName: String,
+  floorName: String,
+  itemId: List[Int],
+  checkVal: List[Int]
+
+)
+
+/*その他仮設材検索用formクラス*/
 case class ItemOtherSearchData(
   itemTypeId: Int,
   workTypeName: String,
@@ -449,6 +464,50 @@ class itemOtherDAO @Inject()(dbapi: DBApi) {
         """
       SQL(selectPh + wherePh + orderPh).as(otherMasterViewer.*)
     }
+  }
+
+  def reserveItemOther(reserveItemOtherCar: List[ReserveItem]): String = {
+    //var vCheck = false;
+    var vResult = "exception"
+    db.withTransaction { implicit connection =>
+      //reserveItemCar(1).itemTypeId
+      val statement = connection.createStatement()
+      var num = 0
+      var vEndPoint = reserveItemOtherCar.length - 1;
+      for (num <- 0 to vEndPoint) {
+        val sql = SQL("""
+
+            insert into reserve_table_new
+            (item_type_id, item_id, floor_id, place_id,company_id,reserve_start_date,reserve_end_date,active_flg,updatetime,work_type_id) values(
+            {item_type_id}, {item_id}, {floor_id},{place_id},{company_id},to_date({reserve_start_date}, 'YYYY-MM-DD'),to_date({reserve_end_date}, 'YYYY-MM-DD'),true,now(),{work_type_id})
+
+              """).on(
+          'item_type_id -> reserveItemOtherCar(num).item_type_id,
+          'item_id -> reserveItemOtherCar(num).item_id,
+          'floor_id ->reserveItemOtherCar(num).floor_id,
+          'place_id ->reserveItemOtherCar(num).place_id,
+          'company_id ->reserveItemOtherCar(num).company_id,
+          'reserve_start_date->reserveItemOtherCar(num).reserve_start_date,
+          'reserve_end_date->reserveItemOtherCar(num).reserve_end_date,
+          'active_flg->reserveItemOtherCar(num).active_flg,
+          'work_type_id->reserveItemOtherCar(num).work_type_id
+        )
+        try {
+          val result = sql.executeUpdate()
+          vResult = "success"
+        } catch {
+          case e: SQLException => {
+            println("Database error " + e)
+            //if (!vCheck) {
+              //vCheck = true;
+              vResult = e + ""
+            //}
+          }
+        }
+      }
+
+    }
+    vResult
   }
 
 }

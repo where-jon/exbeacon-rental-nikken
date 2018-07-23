@@ -114,22 +114,16 @@ function btnEvent(){
         }
 
         // inputDate結果をfromへ設定
-        var mReserveDate = document.getElementById("mReserveDate")
+        var mReserveStartDate = document.getElementById("mReserveStartDate")
         var inputDate = document.getElementById("inputDate")
         if(inputDate.value != ""){
-            mReserveDate.textContent = gDatePicker.startSqlTime
+            mReserveStartDate.textContent = gDatePicker.startSqlTime
         }
-
-
-        // 選択
-//        var mArSelectId = document.getElementById("mArSelectId")
-//        mArSelectId.textContent = "";
-//        $("input[name=current_proudct]:checked").each(function() {
-//          arCheckBoxIndex.push(this.value)
-//          mArSelectId.textContent += this.value
-//        });
-
-
+        var mReserveEndDate = document.getElementById("mReserveEndDate")
+        var inputDate2 = document.getElementById("inputDate2")
+        if(inputDate2.value != ""){
+            mReserveEndDate.textContent = gDatePicker.endSqlTime
+        }
     });
 
     var viewBtnElement = document.getElementById("viewBtn")

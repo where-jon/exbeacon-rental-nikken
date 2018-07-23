@@ -296,7 +296,8 @@ var gDatePicker = {
             if(gDatePicker.onChageClick){
                 gDatePicker.dayDateTimeSetting2();
                  if (gDatePicker.endTimeEpoch < gDatePicker.startTimeEpoch){
-                     alert('スタート期間再確認');
+                     //alert('スタート期間再確認');
+                     //gModal.alert(gTitle.updateException,gMessage.replaceMessage("スタート期間再確認","「追加行」"))
                  }else{
                     if(vFunctionName!=null){
                         vFunctionName();
