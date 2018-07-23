@@ -301,11 +301,11 @@ class itemCarDAO @Inject()(dbapi: DBApi) {
   }
 
   /*作業車・立馬一覧用 sql文 20180718*/
-  def selectCarMasterViewer(placeId: Int): Seq[CarViewer] = {
+  def selectCarMasterViewer(placeId: Int,itemIdList:Seq[Int]): Seq[CarViewer] = {
     db.withConnection { implicit connection =>
-      val sql = SQL(
+      val selectPh =
         """
-            select
+          select
                 c.item_car_id
                ,c.item_car_btx_id
                , c.item_car_key_btx_id
@@ -325,76 +325,69 @@ class itemCarDAO @Inject()(dbapi: DBApi) {
            from
              		item_car_master as c
              		LEFT JOIN reserve_table_new as r on c.item_car_id = r.item_id
-                  and to_char(r.reserve_start_date, 'YYYY-MM-DD') = to_char(current_timestamp, 'YYYY-MM-DD')
+                and r.item_type_id in ( """ + {itemIdList.mkString(",")} +""" )
+                and to_char(r.reserve_start_date, 'YYYY-MM-DD') = to_char(current_timestamp, 'YYYY-MM-DD')
              		and r.active_flg = true
-             		and r.place_id = {placeId}
 						left JOIN item_type as i on i.item_type_id = c.item_type_id
 	             		and i.active_flg = true
-	             		and i.place_id = {placeId}
 		             		left JOIN company_master as co on co.company_id = r.company_id
 		             		and co.active_flg = true
-		             		and co.place_id = {placeId}
 			             		left JOIN work_type as work on work.work_type_id = r.work_type_id
 			             		and work.active_flg = true
-			             		and work.place_id = {placeId}
 			             			left JOIN floor_master as floor on floor.floor_id = r.floor_id
 				             		and floor.active_flg = true
-				             		and floor.place_id = {placeId}
-           where c.place_id = {placeId}
+           where c.place_id = """  + {placeId} + """
            and c.active_flg = true
-           order by item_car_id ;
+           order by item_car_btx_id ;
 
-		          """).on(
-        "placeId" -> placeId
-      )
-      sql.as(carMasterViewer.*)
+        """
+      SQL(selectPh).as(carMasterViewer.*)
     }
   }
 
 
   /*作業車・立馬登録初期空き情報用 sql文 20180718*/
-  def selectCarMasterReserve(placeId : Int): Seq[CarViewer] = {
+  def selectCarMasterReserve(placeId : Int,itemIdList:Seq[Int]): Seq[CarViewer] = {
     db.withConnection { implicit connection =>
-      val sql = SQL(
+      val selectPh =
         """
-            select
-                c.item_car_id
-               ,c.item_car_btx_id
-               , c.item_car_key_btx_id
-               , c.item_type_id
-               , i.item_type_name
-               , c.note
-               , c.item_car_no
-               , c.item_car_name
-               , c.place_id
-               ,coalesce(to_char(r.reserve_start_date, 'YYYY-MM-DD'), '未予約') as reserve_start_date
-               ,coalesce(r.company_id, -1) as company_id
-               ,coalesce(co.company_name, '無') as company_name
-               ,coalesce(work.work_type_id, -1) as work_type_id
-               ,coalesce(work.work_type_name, '未予約') as work_type_name
-               ,coalesce(floor.floor_name, '無') as reserve_floor_name
-               ,coalesce(r.reserve_id, -1) as reserve_id
-           from
-             		item_car_master as c
-             		LEFT JOIN reserve_table_new as r on c.item_car_id = r.item_id
-             		and r.active_flg = true
-						left JOIN item_type as i on i.item_type_id = c.item_type_id
-	             		and i.active_flg = true
-		             		left JOIN company_master as co on co.company_id = r.company_id
-		             		and co.active_flg = true
-			             		left JOIN work_type as work on work.work_type_id = r.work_type_id
-			             		and work.active_flg = true
-			             			left JOIN floor_master as floor on floor.floor_id = r.floor_id
-				             		and floor.active_flg = true
-               where c.place_id = {placeId}
-               and c.active_flg = true
-               and coalesce(r.reserve_id, -1) = -1
-               order by item_car_id ;
+          select
+                 c.item_car_id
+                ,c.item_car_btx_id
+                , c.item_car_key_btx_id
+                , c.item_type_id
+                , i.item_type_name
+                , c.note
+                , c.item_car_no
+                , c.item_car_name
+                , c.place_id
+                ,coalesce(to_char(r.reserve_start_date, 'YYYY-MM-DD'), '未予約') as reserve_start_date
+                ,coalesce(r.company_id, -1) as company_id
+                ,coalesce(co.company_name, '無') as company_name
+                ,coalesce(work.work_type_id, -1) as work_type_id
+                ,coalesce(work.work_type_name, '未予約') as work_type_name
+                ,coalesce(floor.floor_name, '無') as reserve_floor_name
+                ,coalesce(r.reserve_id, -1) as reserve_id
+          from
+            item_car_master as c
+              		LEFT JOIN reserve_table_new as r on c.item_car_id = r.item_id
+              		and r.item_type_id in ( """ + {itemIdList.mkString(",")} +""" )
+              		and r.active_flg = true
+ 						left JOIN item_type as i on i.item_type_id = c.item_type_id
+ 	             		and i.active_flg = true
+ 		             		left JOIN company_master as co on co.company_id = r.company_id
+ 		             		and co.active_flg = true
+ 			             		left JOIN work_type as work on work.work_type_id = r.work_type_id
+ 			             		and work.active_flg = true
+ 			             			left JOIN floor_master as floor on floor.floor_id = r.floor_id
+ 				             		and floor.active_flg = true
+                where c.place_id = """  + {placeId} + """
+                and c.active_flg = true
+                and coalesce(r.reserve_id, -1) = -1
+                order by item_car_btx_id ;
 
-		          """).on(
-        "placeId" -> placeId
-      )
-      sql.as(carMasterViewer.*)
+        """
+      SQL(selectPh).as(carMasterViewer.*)
     }
   }
 
@@ -403,7 +396,8 @@ class itemCarDAO @Inject()(dbapi: DBApi) {
                       placeId: Int,
                       itemTypeId: Int,
                       workTypeName: String,
-                      reserveDate: String
+                      reserveDate: String,
+                      itemIdList:Seq[Int]
                    ): Seq[CarViewer] = {
 
     db.withConnection { implicit connection =>
@@ -429,10 +423,9 @@ class itemCarDAO @Inject()(dbapi: DBApi) {
           from
             item_car_master as c
              		LEFT JOIN reserve_table_new as r on c.item_car_id = r.item_id
+                and r.item_type_id in ( """ + {itemIdList.mkString(",")} +""" )
              		and r.active_flg = true
-        """ +
-        """
-            and r.place_id = """  + {placeId} + """
+                and r.place_id = """  + {placeId} + """
                 left JOIN item_type as i on i.item_type_id = c.item_type_id
                 and i.active_flg = true
                   left JOIN company_master as co on co.company_id = r.company_id
@@ -462,7 +455,7 @@ class itemCarDAO @Inject()(dbapi: DBApi) {
       val orderPh =
         """
           order by
-            c.item_car_id
+            c.item_car_btx_id
         """
       SQL(selectPh + wherePh + orderPh).as(carMasterViewer.*)
     }
