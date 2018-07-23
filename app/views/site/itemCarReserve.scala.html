@@ -123,7 +123,7 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
                                     }
                                     <td class="itemTd text-center ">@car.cur_pos_name</td>
                                     <td class="itemTd text-center modalSelect">@car.cur_exb_name</td>
-                                    <td class="itemTd text-center ">@car.item_car_id
+                                    <td class="hidden itemTd text-center ">@car.item_car_id
                                         <input class="hidden  form-control input-sm" type="text" id="itemId-@i" name="itemId[@i]" value="@car.item_car_id">
                                     </td>
                                     <td class="itemTd text-center ">@car.item_car_btx_id</td>

@@ -64,12 +64,12 @@ class ItemCarReserve @Inject()(config: Configuration
 
   /*転送form*/
   val itemCarForm = Form(mapping(
-    "itemTypeId" -> number.verifying("仮設材未設定", { itemTypeId => itemTypeId != null }),
-    "workTypeName" -> text.verifying("作業期間未設定", { workTypeName => !workTypeName.isEmpty() }),
-    "inputDate" -> text.verifying("予約日未設定", { inputDate => !inputDate.isEmpty() }),
-    "companyName" -> text.verifying("予約会社未設定", { companyName => !companyName.isEmpty() }),
-    "floorName" -> text.verifying("予約フロア未設定", { floorName => !floorName.isEmpty() }),
-    "itemId" -> list(number.verifying("仮設材IDが異常", { itemId => itemId != null })),
+    "itemTypeId" -> number.verifying("仮設材種別 未設定", { itemTypeId => itemTypeId != 0 }),
+    "workTypeName" -> text.verifying("作業期間 未設定", { workTypeName => !workTypeName.isEmpty() }),
+    "inputDate" -> text.verifying("予約日 未設定", { inputDate => !inputDate.isEmpty() }),
+    "companyName" -> text.verifying("予約会社 未設定", { companyName => !companyName.isEmpty() }),
+    "floorName" -> text.verifying("予約フロア 未設定", { floorName => !floorName.isEmpty() }),
+    "itemId" -> list(number.verifying("仮設材ID 異常", { itemId => itemId != null })),
     "checkVal" -> list(number.verifying("選択", { itemId => itemId != null }))
   )(ItemCarReserveData.apply)(ItemCarReserveData.unapply))
 
@@ -104,21 +104,12 @@ class ItemCarReserve @Inject()(config: Configuration
     /*フロア取得*/
     floorNameList = floorDAO.selectFloor(_placeId);
   }
-  /** 　検索側データ取得 */
-  def setReserveData(_placeId:Integer): Unit = {
-
-  }
-
 
   /** 　予約ロジック */
   def reserve = SecuredAction { implicit request =>
-    System.out.println("---reserve:----" )
     // dbデータ取得
     val placeId = super.getCurrentPlaceId
     getSearchData(placeId)
-    val dbDatas = carDAO.selectCarMasterReserve(placeId,itemIdList)
-    var carListApi = beaconService.getItemCarBeaconPosition(dbDatas,true,placeId)
-    //val carFormData = itemCarForm.bindFromRequest.get
     itemCarForm.bindFromRequest.fold(
       formWithErrors =>
       Redirect(routes.ItemCarReserve.index())
@@ -127,7 +118,6 @@ class ItemCarReserve @Inject()(config: Configuration
       ItemCarReserveData => {
         if(ItemCarReserveData.checkVal.zipWithIndex.length > 0){
             var setData = List[ReserveItem]()
-
             var vCompanyId = companyNameList.filter(_.companyName == ItemCarReserveData.companyName).last.companyId
             var vFloorId = floorNameList.filter(_.floor_name == ItemCarReserveData.floorName).last.floor_Id
             var vWorkTypeId = workTypeList.filter(_.work_type_name == ItemCarReserveData.workTypeName).last.work_type_id
@@ -147,7 +137,7 @@ class ItemCarReserve @Inject()(config: Configuration
                 .flashing(SUCCESS_MSG_KEY -> Messages("success.site.carReserve.update"))
             }else {
               Redirect(routes.ItemCarReserve.index())
-                .flashing(ERROR_MSG_KEY -> Messages("error.site.carReserve.update"))
+                .flashing(ERROR_MSG_KEY -> Messages("error.site.carReserve.update" +"<br>"+ result))
             }
         }else{
           Redirect(routes.ItemCarReserve.index())
