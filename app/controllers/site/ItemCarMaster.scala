@@ -39,6 +39,7 @@ class ItemCarMaster @Inject()(config: Configuration
   var WORK_TYPE_FILTER = "";
 
   var itemTypeList :Seq[ItemType] = null; // 仮設材種別
+  var itemIdList :Seq[Int] = null; // 仮設材種別id
   var companyNameList :Seq[Company] = null; // 業者
   var floorNameList :Seq[Floor] = null; // フロア
   var workTypeList :Seq[WorkType] = null; // 作業期間種別
@@ -66,6 +67,8 @@ class ItemCarMaster @Inject()(config: Configuration
   def getSearchData(_placeId:Integer): Unit = {
     /*仮設材種別取得*/
     itemTypeList = itemTypeDAO.selectItemCarInfo(_placeId);
+    /*仮設材種別id取得*/
+    itemIdList = itemTypeList.map{item => item.item_type_id}
     /*業者取得*/
     companyNameList = companyDAO.selectCompany(_placeId);
     /*フロア取得*/
@@ -88,7 +91,7 @@ class ItemCarMaster @Inject()(config: Configuration
     WORK_TYPE_FILTER = carFormData.workTypeName
     FLOOR_NAME_FILTER = carFormData.floorName
     // dbデータ取得
-    val dbDatas = carDAO.selectCarMasterViewer(placeId)
+    val dbDatas = carDAO.selectCarMasterViewer(placeId,itemIdList)
     var carListApi = beaconService.getItemCarBeaconPosition(dbDatas,true,placeId)
 
     if (ITEM_TYPE_FILTER != 0) {
@@ -118,7 +121,7 @@ class ItemCarMaster @Inject()(config: Configuration
       getSearchData(placeId)
 
       // dbデータ取得
-      val dbDatas = carDAO.selectCarMasterViewer(placeId)
+      val dbDatas = carDAO.selectCarMasterViewer(placeId,itemIdList)
       val carListApi = beaconService.getItemCarBeaconPosition(dbDatas,true,placeId)
 
       System.out.println("carListApi:" + carListApi.length)
