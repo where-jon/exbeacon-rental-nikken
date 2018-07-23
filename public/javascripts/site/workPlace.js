@@ -1,4 +1,4 @@
-
+var TotalBeaconsData = [];
 var curPos = 0;
 var bCheckUpdate = false;
 
@@ -7,9 +7,27 @@ $( window ).resize(function() {
 });
 
 
+var clonePosNew = function(pos_id) {
+    var result;
+    gBeaconPosition.getPosition().forEach(function(p) {
+        if (p.id == -1 || p.id == pos_id) {
+            result = {
+                posId : p.id,
+                floor : p.floor,
+                margin : p.margin,
+                viewType : p.viewType,
+                visible : p.visible,
+                y : p.y,
+                x : p.x
+            };
+        }
+    });
+    return result;
+}
+
 $(function () {
 
-    console.log("workSite.js")
+    console.log("workPlace.js")
     // 初期表示
     var beaconMapFrame = document.getElementById("beaconMap-1");
     beaconMapFrame.classList.remove("hidden");
@@ -32,5 +50,26 @@ $(function () {
     }
 
     gResize.mapCenterMove();
+
+
+    var addr = "../site/workPlace/getData"
+    $.ajax({
+        cache:false,
+        type : "GET",
+        url : addr,
+        success : function(d) {
+            //d.length = 15;
+            TotalBeaconsData = d.map(function(beaconPosition) {
+                 //alert(beaconPosition.pos_id);
+                return {
+                    id : beaconPosition.btx_id,
+                    //pos : clonePosNew(beaconPosition.pos_id)
+                };
+            });
+        },
+        error : function(e) {
+            console.dir(e);
+        }
+    });
 
 });
