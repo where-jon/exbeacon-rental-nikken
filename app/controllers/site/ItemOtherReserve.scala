@@ -44,6 +44,7 @@ class ItemOtherReserve @Inject()(config: Configuration
   var FLOOR_NAME_FILTER = "";
 
   var itemTypeList :Seq[ItemType] = null; // 仮設材種別
+  var itemIdList :Seq[Int] = null; // 仮設材種別id
   var companyNameList :Seq[Company] = null; // 業者
   var floorNameList :Seq[Floor] = null; // フロア
   var workTypeList :Seq[WorkType] = null; // 作業期間種別
@@ -66,8 +67,9 @@ class ItemOtherReserve @Inject()(config: Configuration
     val itemOtherSearchForm = Form(mapping(
     "itemTypeId" ->number,
     "workTypeName" -> text,
-    "inputDate" -> text
-  )(ItemCarSearchData.apply)(ItemCarSearchData.unapply))
+    "inputStartDate" -> text,
+    "inputEndDate" -> text
+  )(ItemOtherSearchData.apply)(ItemOtherSearchData.unapply))
 
   /** 　初期化 */
   def init() {
@@ -84,6 +86,8 @@ class ItemOtherReserve @Inject()(config: Configuration
   def getSearchData(_placeId:Integer): Unit = {
     /*仮設材種別取得*/
     itemTypeList = itemTypeDAO.selectItemOtherInfo(_placeId);
+    /*仮設材種別id取得*/
+    itemIdList = itemTypeList.map{item => item.item_type_id}
     /*作業期間種別取得*/
     workTypeList = workTypeDAO.selectWorkInfo(_placeId);
 
@@ -99,7 +103,7 @@ class ItemOtherReserve @Inject()(config: Configuration
     // dbデータ取得
     val placeId = super.getCurrentPlaceId
     getSearchData(placeId)
-    val dbDatas = otherDAO.selectOtherMasterReserve(placeId)
+    val dbDatas = otherDAO.selectOtherMasterReserve(placeId,itemIdList)
     var carListApi = beaconService.getItemOtherBeaconPosition(dbDatas,true,placeId)
     //val carFormData = itemOtherForm.bindFromRequest.get
     itemOtherForm.bindFromRequest.fold(
@@ -141,34 +145,36 @@ class ItemOtherReserve @Inject()(config: Configuration
 
   }
   /** 　検索ロジック */
-//  def search = SecuredAction { implicit request =>
-//    System.out.println("start search:")
-//    val placeId = super.getCurrentPlaceId
-//    //検索側データ取得
-//    getSearchData(placeId)
-//
-//    // 部署情報
-//    val carFormSearchData = itemOtherSearchForm.bindFromRequest.get
-//    ITEM_TYPE_FILTER = carFormSearchData.itemTypeId
-//    WORK_TYPE_FILTER = carFormSearchData.workTypeName
-//    RESERVE_START_DATE = carFormSearchData.inputDate
-//
-//    var dbDatas : Seq[CarViewer] = null;
-//    // dbデータ取得
-//    if(RESERVE_START_DATE!=""){
-//      dbDatas = carDAO.selectCarMasterSearch(placeId,ITEM_TYPE_FILTER,WORK_TYPE_FILTER,RESERVE_START_DATE)
-//    }else{
-//      dbDatas = otherDAO.selectOtherMasterReserve(placeId)
-//    }
-//    var carListApi = beaconService.getItemCarBeaconPosition(dbDatas,true,placeId)
-//
-//    if (ITEM_TYPE_FILTER != 0) {
-//      carListApi = carListApi.filter(_.item_type_id == ITEM_TYPE_FILTER)
-//    }
-//
-//    Ok(views.html.site.itemOtherReserve(ITEM_TYPE_FILTER,WORK_TYPE_FILTER,RESERVE_START_DATE,RESERVE_END_DATE
-//      ,carListApi,itemTypeList,companyNameList,floorNameList,workTypeList,WORK_TYPE))
-//  }
+  def search = SecuredAction { implicit request =>
+    System.out.println("start search:")
+    val placeId = super.getCurrentPlaceId
+    //検索側データ取得
+    getSearchData(placeId)
+
+    // 部署情報
+    val otherFormSearchData = itemOtherSearchForm.bindFromRequest.get
+    ITEM_TYPE_FILTER = otherFormSearchData.itemTypeId
+    WORK_TYPE_FILTER = otherFormSearchData.workTypeName
+    RESERVE_START_DATE = otherFormSearchData.inputStartDate
+    RESERVE_END_DATE = otherFormSearchData.inputEndDate
+
+    var dbDatas : Seq[OtherViewer] = null;
+    // dbデータ取得
+    if(RESERVE_START_DATE!="" || RESERVE_END_DATE!=""){
+      dbDatas = otherDAO.selectOtherMasterSearch(placeId,ITEM_TYPE_FILTER,WORK_TYPE_FILTER,
+        RESERVE_START_DATE,RESERVE_END_DATE,itemIdList)
+    }else{
+      dbDatas = otherDAO.selectOtherMasterReserve(placeId,itemIdList)
+    }
+    var otherListApi = beaconService.getItemOtherBeaconPosition(dbDatas,true,placeId)
+
+    if (ITEM_TYPE_FILTER != 0) {
+      otherListApi = otherListApi.filter(_.item_type_id == ITEM_TYPE_FILTER)
+    }
+
+    Ok(views.html.site.itemOtherReserve(ITEM_TYPE_FILTER,WORK_TYPE_FILTER,RESERVE_START_DATE,RESERVE_END_DATE
+      ,otherListApi,itemTypeList,companyNameList,floorNameList,workTypeList,WORK_TYPE))
+  }
 
   /** 初期表示 */
   def index = SecuredAction { implicit request =>
@@ -180,7 +186,7 @@ class ItemOtherReserve @Inject()(config: Configuration
       getSearchData(placeId)
 
       // dbデータ取得
-      val dbDatas = otherDAO.selectOtherMasterReserve(placeId)
+      val dbDatas = otherDAO.selectOtherMasterReserve(placeId,itemIdList)
       var otherListApi = beaconService.getItemOtherBeaconPosition(dbDatas,true,placeId)
 
       // 全体から空いてるものだけ表示する。

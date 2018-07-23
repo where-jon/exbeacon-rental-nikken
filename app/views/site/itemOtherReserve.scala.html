@@ -49,7 +49,7 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
                                 <span class="input-group-addon">
                                     <span class="glyphicon glyphicon-calendar"></span>
                                 </span>
-                                <input type='text' class="form-control inputClass" id="inputDate" name="inputDate" value="@RESERVE_START_DATE"
+                                <input type='text' class="form-control inputClass" id="inputDate" name="inputStartDate" value="@RESERVE_START_DATE"
                                     style="width: 100px;"/>
 
                             </div>
@@ -63,7 +63,7 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
                                 <span class="input-group-addon">
                                     <span class="glyphicon glyphicon-calendar"></span>
                                 </span>
-                            <input type='text' class="form-control inputClass" id="inputDate2" name="inputDate" value="@RESERVE_END_DATE"
+                            <input type='text' class="form-control inputClass" id="inputDate2" name="inputEndDate" value="@RESERVE_END_DATE"
                                    style="width: 100px;"/>
 
                         </div>
@@ -105,7 +105,7 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
                         <table class="table table-bordered table-condensed itemTable">
                             <thead>
                             <tr>
-                                <th colspan="10" class="tableTitleTh">@Messages("lang.site.otherReserve.page.title")</th>
+                                <th colspan="11" class="tableTitleTh">@Messages("lang.site.otherReserve.page.title")</th>
                             </tr>
                             <tr>
                                 <th class="tableTh ">選択</th>
@@ -115,7 +115,8 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
                                 <th class="tableTh ">Tag ID</th>
                                 <th class="tableTh ">種別</th>
                                 <th class="tableTh ">名称</th>
-                                <th class="tableTh ">予約日</th>
+                                <th class="tableTh ">予約最初日</th>
+                                <th class="tableTh ">予約最終日</th>
                                 <th class="tableTh ">予約期間</th>
                                 <th class="tableTh ">予約ID</th>
                             </tr>
@@ -145,6 +146,7 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
                                     <td class="itemTd text-center ">@other.item_type_name</td>
                                     <td class="itemTd text-center ">@other.item_other_name</td>
                                     <td class="itemTd text-center ">@other.reserve_start_date</td>
+                                    <td class="itemTd text-center ">@other.reserve_end_date</td>
                                     <td class="itemTd text-center ">@other.work_type_name</td>
                                     <td class="itemTd text-center ">@other.reserve_id</td>
                                 </tr>

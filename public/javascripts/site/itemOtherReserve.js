@@ -14,14 +14,18 @@ function getFilterCheck(){
 
     var inputDate = document.getElementById("inputDate")
     if(inputDate!=null){
-         $('#RESERVE_DATE').val(inputDate.value)
+         $('#RESERVE_START_DATE').val(inputDate.value)
+    }
+
+    var inputDate2 = document.getElementById("inputDate2")
+    if(inputDate2!=null){
+         $('#RESERVE_END_DATE').val(inputDate2.value)
     }
 }
 
 function dbExecuteManager(routeUrl){
     var formElement = $("#viewForm")
     formElement[0].action = routeUrl
-    //formElement[0].action = "../site/itemCarReserveUpdate"
     // 送信ボタン生成
     var vButton = document.createElement("button");
     vButton.id = "dbExecuteBtn"
@@ -68,8 +72,10 @@ function btnEvent(){
             // inputDate結果をfromへ設定
             var inputDate = document.getElementById("inputDate")
             inputDate.value = gDatePicker.startSqlTime
+            var inputDate2 = document.getElementById("inputDate2")
+            inputDate2.value = gDatePicker.endSqlTime
 
-            dbExecuteManager("../site/itemCarReserve/reserve")
+            dbExecuteManager("../site/itemOtherReserve/reserve")
         }
     });
 
@@ -140,8 +146,10 @@ function btnEvent(){
 
         // inputDate結果をfromへ設定
         var inputDate = document.getElementById("inputDate")
+        var inputDate2 = document.getElementById("inputDate2")
         inputDate.value = gDatePicker.startSqlTime
-        dbExecuteManager("../site/itemCarReserve")
+        inputDate2.value = gDatePicker.endSqlTime
+        dbExecuteManager("../site/itemOtherReserve")
     });
 
 }

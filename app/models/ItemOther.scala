@@ -7,6 +7,15 @@ import anorm.{~, _}
 import play.api.Logger
 import play.api.db._
 
+
+/*その他仮設材予約検索用formクラス*/
+case class ItemOtherSearchData(
+  itemTypeId: Int,
+  workTypeName: String,
+  inputStartDate: String,
+  inputEndDate: String
+)
+
 case class ItemOther(
   itemOtherId: Int,
   itemTypeId: Int,
@@ -27,6 +36,7 @@ case class OtherViewer(
   item_other_name:String,
   place_id: Int,
   reserve_start_date:String,
+  reserve_end_date:String,
   company_id: Int,
   company_name: String,
   work_type_id: Int,
@@ -257,6 +267,7 @@ class itemOtherDAO @Inject()(dbapi: DBApi) {
       get[String]("item_other_name") ~
       get[Int]("place_id") ~
       get[String]("reserve_start_date") ~
+      get[String]("reserve_end_date") ~
       get[Int]("company_id") ~
       get[String]("company_name") ~
       get[Int]("work_type_id") ~
@@ -264,73 +275,22 @@ class itemOtherDAO @Inject()(dbapi: DBApi) {
       get[String]("reserve_floor_name") ~
       get[Int]("reserve_id")map {
       case item_other_id ~ item_other_btx_id ~  item_type_id ~ item_type_name ~
-        note ~ item_other_no ~item_other_name ~place_id ~reserve_start_date ~company_id ~company_name ~work_type_id ~
+        note ~ item_other_no ~item_other_name ~place_id ~reserve_start_date ~ reserve_end_date~ company_id ~company_name ~work_type_id ~
         work_type_name ~reserve_floor_name ~ reserve_id  =>
         OtherViewer(item_other_id, item_other_btx_id, item_type_id, item_type_name,
-          note, item_other_no, item_other_name, place_id, reserve_start_date, company_id,company_name,work_type_id,
+          note, item_other_no, item_other_name, place_id, reserve_start_date, reserve_end_date, company_id,company_name,work_type_id,
           work_type_name,reserve_floor_name,reserve_id)
     }
   }
 
   /*その他仮設材一覧用 sql文 20180718*/
-  def selectOtherMasterViewer(placeId: Int): Seq[OtherViewer] = {
+  def selectOtherMasterViewer(placeId: Int,itemIdList:Seq[Int]): Seq[OtherViewer] = {
     db.withConnection { implicit connection =>
-      val sql = SQL(
+      val selectPh =
         """
-            select
-                  c.item_other_id
-                , c.item_other_btx_id
-                , c.item_type_id
-                , i.item_type_name
-                , c.note
-                , c.item_other_no
-                , c.item_other_name
-                , c.place_id
-                ,coalesce(to_char(r.reserve_start_date, 'YYYY-MM-DD'), 'date') as reserve_start_date
-                ,coalesce(r.company_id, -1) as company_id
-                ,coalesce(co.company_name, '無') as company_name
-                ,coalesce(work.work_type_id, -1) as work_type_id
-                ,coalesce(work.work_type_name, '無') as work_type_name
-                ,coalesce(floor.floor_name, '無') as reserve_floor_name
-                ,coalesce(r.reserve_id, -1) as reserve_id
-            from
-              		item_other_master as c
-              		LEFT JOIN reserve_table_new as r on c.item_other_id = r.item_id
-                   and (to_char(r.reserve_start_date, 'YYYY-MM-DD') <= to_char(current_timestamp, 'YYYY-MM-DD')
-                   and to_char(r.reserve_end_date, 'YYYY-MM-DD') >= to_char(current_timestamp, 'YYYY-MM-DD'))
-              		and r.active_flg = true
-              		and r.place_id= {placeId}
- 						left JOIN item_type as i on i.item_type_id = c.item_type_id
- 	             		and i.active_flg = true
- 	             		and i.place_id= {placeId}
- 		             		left JOIN company_master as co on co.company_id = r.company_id
- 		             		and co.active_flg = true
- 		             		and co.place_id= {placeId}
- 			             		left JOIN work_type as work on work.work_type_id = r.work_type_id
- 			             		and work.active_flg = true
- 			             		and work.place_id= {placeId}
- 			             			left JOIN floor_master as floor on floor.floor_id = r.floor_id
- 				             		and floor.active_flg = true
- 				             		and floor.place_id= {placeId}
-            where c.place_id= {placeId}
-            order by item_other_id ;
-
-		          """).on(
-        "placeId" -> placeId
-      )
-      sql.as(otherMasterViewer.*)
-    }
-  }
-
-
-  /*その他仮設材登録初期空き情報用 sql文 20180723*/
-  def selectOtherMasterReserve(placeId : Int): Seq[OtherViewer] = {
-    db.withConnection { implicit connection =>
-      val sql = SQL(
-        """
-            select
-                c.item_other_id
-               ,c.item_other_btx_id
+          select
+                 c.item_other_id
+               , c.item_other_btx_id
                , c.item_type_id
                , i.item_type_name
                , c.note
@@ -338,15 +298,19 @@ class itemOtherDAO @Inject()(dbapi: DBApi) {
                , c.item_other_name
                , c.place_id
                ,coalesce(to_char(r.reserve_start_date, 'YYYY-MM-DD'), '未予約') as reserve_start_date
+               ,coalesce(to_char(r.reserve_end_date, 'YYYY-MM-DD'), '未予約') as reserve_end_date
                ,coalesce(r.company_id, -1) as company_id
                ,coalesce(co.company_name, '無') as company_name
                ,coalesce(work.work_type_id, -1) as work_type_id
-               ,coalesce(work.work_type_name, '未予約') as work_type_name
+               ,coalesce(work.work_type_name, '無') as work_type_name
                ,coalesce(floor.floor_name, '無') as reserve_floor_name
                ,coalesce(r.reserve_id, -1) as reserve_id
            from
              		item_other_master as c
              		LEFT JOIN reserve_table_new as r on c.item_other_id = r.item_id
+                  and r.item_type_id in ( """ + {itemIdList.mkString(",")} +""" )
+                  and (to_char(r.reserve_start_date, 'YYYY-MM-DD') <= to_char(current_timestamp, 'YYYY-MM-DD')
+                  and to_char(r.reserve_end_date, 'YYYY-MM-DD') >= to_char(current_timestamp, 'YYYY-MM-DD'))
              		and r.active_flg = true
 						left JOIN item_type as i on i.item_type_id = c.item_type_id
 	             		and i.active_flg = true
@@ -356,15 +320,134 @@ class itemOtherDAO @Inject()(dbapi: DBApi) {
 			             		and work.active_flg = true
 			             			left JOIN floor_master as floor on floor.floor_id = r.floor_id
 				             		and floor.active_flg = true
-               where c.place_id = {placeId}
-               and c.active_flg = true
-               and coalesce(r.reserve_id, -1) = -1
-               order by item_other_id ;
+           where c.place_id= """  + {placeId} + """
+           order by item_other_btx_id ;
 
-		          """).on(
-        "placeId" -> placeId
-      )
-      sql.as(otherMasterViewer.*)
+        """
+      SQL(selectPh).as(otherMasterViewer.*)
+
+    }
+  }
+
+
+  /*その他仮設材登録初期空き情報用 sql文 20180723*/
+  def selectOtherMasterReserve(placeId : Int,itemIdList:Seq[Int]): Seq[OtherViewer] = {
+    db.withConnection { implicit connection =>
+      val selectPh =
+        """
+          select
+               c.item_other_id
+              ,c.item_other_btx_id
+              , c.item_type_id
+              , i.item_type_name
+              , c.note
+              , c.item_other_no
+              , c.item_other_name
+              , c.place_id
+              ,coalesce(to_char(r.reserve_start_date, 'YYYY-MM-DD'), '未予約') as reserve_start_date
+              ,coalesce(to_char(r.reserve_end_date, 'YYYY-MM-DD'), '未予約') as reserve_end_date
+              ,coalesce(r.company_id, -1) as company_id
+              ,coalesce(co.company_name, '無') as company_name
+              ,coalesce(work.work_type_id, -1) as work_type_id
+              ,coalesce(work.work_type_name, '未予約') as work_type_name
+              ,coalesce(floor.floor_name, '無') as reserve_floor_name
+              ,coalesce(r.reserve_id, -1) as reserve_id
+           from
+             		item_other_master as c
+            		LEFT JOIN reserve_table_new as r on c.item_other_id = r.item_id
+               and r.item_type_id in ( """ + {itemIdList.mkString(",")} +""" )
+            	 and r.active_flg = true
+					left JOIN item_type as i on i.item_type_id = c.item_type_id
+             		and i.active_flg = true
+	             		left JOIN company_master as co on co.company_id = r.company_id
+	             		and co.active_flg = true
+		             		left JOIN work_type as work on work.work_type_id = r.work_type_id
+		             		and work.active_flg = true
+		             			left JOIN floor_master as floor on floor.floor_id = r.floor_id
+			             		and floor.active_flg = true
+              where c.place_id = """  + {placeId} + """
+              and c.active_flg = true
+              and coalesce(r.reserve_id, -1) = -1
+              order by item_other_btx_id ;
+
+        """
+      SQL(selectPh).as(otherMasterViewer.*)
+    }
+  }
+
+
+  /*その他仮設材予約空き情報検索用 sql文 20180723*/
+  def selectOtherMasterSearch(
+                      placeId: Int,
+                      itemTypeId: Int,
+                      workTypeName: String,
+                      reserveStartDate: String,
+                      reserveEndDate: String,
+                      itemIdList:Seq[Int]
+                   ): Seq[OtherViewer] = {
+
+    db.withConnection { implicit connection =>
+      val selectPh =
+        """
+          select
+               c.item_other_id
+               ,c.item_other_btx_id
+               , c.item_type_id
+               , i.item_type_name
+               , c.note
+               , c.item_other_no
+               , c.item_other_name
+               , c.place_id
+              ,coalesce(to_char(r.reserve_start_date, 'YYYY-MM-DD'), '未予約') as reserve_start_date
+              ,coalesce(to_char(r.reserve_end_date, 'YYYY-MM-DD'), '未予約') as reserve_end_date
+               ,coalesce(r.company_id, -1) as company_id
+               ,coalesce(co.company_name, '無') as company_name
+               ,coalesce(work.work_type_id, -1) as work_type_id
+               ,coalesce(work.work_type_name, '未予約') as work_type_name
+               ,coalesce(floor.floor_name, '無') as reserve_floor_name
+               ,coalesce(r.reserve_id, -1) as reserve_id
+          from
+            item_other_master as c
+             		LEFT JOIN reserve_table_new as r on c.item_other_id = r.item_id
+                and r.item_type_id in ( """ + {itemIdList.mkString(",")} +""" )
+             		and r.active_flg = true
+                and r.place_id = """ + {placeId} +"""
+                left JOIN item_type as i on i.item_type_id = c.item_type_id
+                and i.active_flg = true
+                  left JOIN company_master as co on co.company_id = r.company_id
+                  and co.active_flg = true
+                    left JOIN work_type as work on work.work_type_id = r.work_type_id
+                    and work.active_flg = true
+                      left JOIN floor_master as floor on floor.floor_id = r.floor_id
+                      and floor.active_flg = true
+          where
+            c.active_flg = true
+
+        """
+      // 追加検索条件
+      var wherePh = ""
+      wherePh += s""" and c.place_id = ${placeId} """
+      //and r.reserve_start_date != to_date('${reserveStartDate}', 'YYYY-MM-DD')
+      if(workTypeName == "終日" || workTypeName == ""){
+        wherePh +=
+          s""" and not (r.reserve_start_date <= to_date('${reserveStartDate}', 'YYYY-MM-DD') and r.reserve_start_date >= to_date('${reserveStartDate}', 'YYYY-MM-DD')
+             or r.reserve_start_date <= to_date('${reserveEndDate}', 'YYYY-MM-DD') and r.reserve_start_date >= to_date('${reserveEndDate}', 'YYYY-MM-DD'))
+           """
+      }else{
+        wherePh +=
+          s"""  and r.reserve_start_date <= to_date('${reserveStartDate}', 'YYYY-MM-DD') and r.reserve_end_date >= to_date('${reserveEndDate}', 'YYYY-MM-DD') and not work.work_type_name = '${workTypeName}' and not work.work_type_name = '終日'
+                or not (r.reserve_start_date <= to_date('${reserveStartDate}', 'YYYY-MM-DD') and r.reserve_end_date >= to_date('${reserveEndDate}', 'YYYY-MM-DD')) and not work.work_type_name = '${workTypeName}' and not work.work_type_name = '終日'
+          """
+      }
+      wherePh += s""" or coalesce(r.reserve_id, -1) = -1 and c.active_flg = true and c.place_id = ${placeId} """
+
+      // 表示順を設定
+      val orderPh =
+        """
+          order by
+            c.item_other_id
+        """
+      SQL(selectPh + wherePh + orderPh).as(otherMasterViewer.*)
     }
   }
 

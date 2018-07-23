@@ -38,6 +38,7 @@ class ItemOtherMaster @Inject()(config: Configuration
   var WORK_TYPE_FILTER = "";
 
   var itemTypeList :Seq[ItemType] = null; // 仮設材種別
+  var itemIdList :Seq[Int] = null; // 仮設材種別id
   var companyNameList :Seq[Company] = null; // 業者
   var floorNameList :Seq[Floor] = null; // フロア
   var workTypeList :Seq[WorkType] = null; // 作業期間種別
@@ -65,6 +66,8 @@ class ItemOtherMaster @Inject()(config: Configuration
   def getSearchData(_placeId:Integer): Unit = {
     /*仮設材種別取得*/
     itemTypeList = itemTypeDAO.selectItemOtherInfo(_placeId);
+    /*仮設材種別id取得*/
+    itemIdList = itemTypeList.map{item => item.item_type_id}
     /*業者取得*/
     companyNameList = companyDAO.selectCompany(_placeId);
     /*フロア取得*/
@@ -88,7 +91,7 @@ class ItemOtherMaster @Inject()(config: Configuration
     FLOOR_NAME_FILTER = carFormData.floorName
 
     // dbデータ取得
-    val dbDatas = otherDAO.selectOtherMasterViewer(placeId)
+    val dbDatas = otherDAO.selectOtherMasterViewer(placeId,itemIdList)
     var otherListApi = beaconService.getItemOtherBeaconPosition(dbDatas,true,placeId)
     if (ITEM_TYPE_FILTER != 0) {
       otherListApi = otherListApi.filter(_.item_type_id == ITEM_TYPE_FILTER)
@@ -117,7 +120,7 @@ class ItemOtherMaster @Inject()(config: Configuration
       getSearchData(placeId)
 
       // dbデータ取得
-      val dbDatas = otherDAO.selectOtherMasterViewer(placeId)
+      val dbDatas = otherDAO.selectOtherMasterViewer(placeId,itemIdList)
       val otherListApi = beaconService.getItemOtherBeaconPosition(dbDatas,true,placeId)
 
       System.out.println("floorNameList:" + floorNameList)
