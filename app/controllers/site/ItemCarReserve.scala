@@ -64,13 +64,14 @@ class ItemCarReserve @Inject()(config: Configuration
 
   /*転送form*/
   val itemCarForm = Form(mapping(
-    "itemTypeId" -> number.verifying("仮設材種別 未設定", { itemTypeId => itemTypeId != 0 }),
+    "itemTypeId" -> number,
     "workTypeName" -> text.verifying("作業期間 未設定", { workTypeName => !workTypeName.isEmpty() }),
     "inputDate" -> text.verifying("予約日 未設定", { inputDate => !inputDate.isEmpty() }),
     "companyName" -> text.verifying("予約会社 未設定", { companyName => !companyName.isEmpty() }),
     "floorName" -> text.verifying("予約フロア 未設定", { floorName => !floorName.isEmpty() }),
     "itemId" -> list(number.verifying("仮設材ID 異常", { itemId => itemId != null })),
-    "checkVal" -> list(number.verifying("選択", { itemId => itemId != null }))
+    "itemTypeIdList" -> list(number.verifying("仮設材種別 異常", { itemTypeIdList => itemTypeIdList != null })),
+    "checkVal" -> list(number.verifying("選択", { checkVal => checkVal != null }))
   )(ItemCarReserveData.apply)(ItemCarReserveData.unapply))
 
 
@@ -121,12 +122,12 @@ class ItemCarReserve @Inject()(config: Configuration
             var vCompanyId = companyNameList.filter(_.companyName == ItemCarReserveData.companyName).last.companyId
             var vFloorId = floorNameList.filter(_.floor_name == ItemCarReserveData.floorName).last.floor_Id
             var vWorkTypeId = workTypeList.filter(_.work_type_name == ItemCarReserveData.workTypeName).last.work_type_id
-            var vItemTypeId = ItemCarReserveData.itemTypeId
             var vReserveDate = ItemCarReserveData.inputDate
 
           ItemCarReserveData.itemId.zipWithIndex.map { case (itemId, i) =>
             ItemCarReserveData.checkVal.zipWithIndex.map { case (check, j) =>
                 if(i == check){
+                  val vItemTypeId = ItemCarReserveData.itemTypeIdList(i)
                   setData = setData :+ ReserveItem(vItemTypeId,itemId,vFloorId,placeId,vCompanyId,vReserveDate,vReserveDate,true,vWorkTypeId)
                 }
               }
