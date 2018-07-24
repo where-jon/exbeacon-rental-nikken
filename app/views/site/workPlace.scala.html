@@ -1,4 +1,7 @@
-@(mapViewer: Seq[MapViewer])(implicit user: User, messages: Messages, request: RequestHeader, flash: Flash)
+@(
+mapViewer: Seq[MapViewer],
+exbViewer: Seq[ExbAll]
+)(implicit user: User, messages: Messages, request: RequestHeader, flash: Flash)
 
 @import controllers.routes
 @import helper._
@@ -7,6 +10,7 @@
 <html lang="ja">
 <head>
     @templates.htmlHead(title = Messages("lang.cms.carManage.title"))
+    <link rel="stylesheet" href="@routes.MyAssets.css("workplace/building-main.css")"/>
     <script type="text/javascript" src="@routes.MyAssets.js("site/workPlace.js")"></script>
     <script></script>
 </head>
@@ -16,7 +20,7 @@
 
     <div class="top-area">
         <div class="top__btn--area ">
-            <div id="top-title" class="top__btn--text">@Messages("lang.manage.mapManager")</div>
+            <div id="top-title" class="top__btn--text">@Messages("lang.site.workPlace.page.title")</div>
             <div class=" top__map__btn--area">
 
                 <select id="floor-category" class=" manager__data--floor">
@@ -25,6 +29,11 @@
                     }
                 </select>
             </div>
+            <!--<a id="btn-update" class="btn__update&#45;&#45;style">-->
+            <!--<span class="error__span&#45;&#45;frame" id = "errorSpan">-->
+                <!--<i id = "update-element" class="btn__icon&#45;&#45;style fa fa-refresh fa-3x"></i>-->
+            <!--</span>-->
+            <!--</a>-->
         </div>
     </div>
 
@@ -35,6 +44,7 @@
             @tags.alertFromRequestDbResult(request, "resultOK")
             @tags.alertFromRequestDbResult(request, "resultNG")
         </div>
+
         @mapViewer.zipWithIndex.map { case(map, i) =>
             <div id="beaconMap-@(i+1)" class = "hidden level level--@i layer-beacon" aria-label="Level @i">
                 <div class="wrapper__img--canvas" >
@@ -43,6 +53,48 @@
             </div>
         }
 
+    </div>
+
+
+    <div class = "hidden db__common--frame">
+        <table class="table" >
+            <thead>
+            <tr>
+                <th class="tableTh">id</th>
+                <th class="tableTh">flag</th>
+                <th class="tableTh">type</th>
+                <th class="tableTh">x</th>
+                <th class="tableTh">y</th>
+                <th class="tableTh">margin</th>
+                <th class="tableTh">id</th>
+                <th class="tableTh">count</th>
+                <th class="tableTh">floor</th>
+                <th class="tableTh">size</th>
+                <th class="tableTh">posName</th>
+                <th class="tableTh">id</th>
+                <th class="tableTh">devName</th>
+            </tr>
+            </thead>
+            <tbody>
+            @exbViewer.zipWithIndex.map { case(viewer, i) =>
+            <tr class = "exbViewer">
+                <td class="item" id="viewer_id-@i">@viewer.exb_id</td>
+                <td class="item" id="viewer_visible-@i">@viewer.exb_view_flag</td>
+                <td class="item" id="viewer_pos_type-@i">@viewer.view_type_name</td>
+                <td class="item" id="viewer_pos_x-@i">@viewer.exb_pos_x</td>
+                <td class="item" id="viewer_pos_y-@i">@viewer.exb_pos_y</td>
+                <td class="item" id="viewer_pos_margin-@i">@viewer.view_tx_margin</td>
+                <td class="item" id="viewer_pos_num-@i">@viewer.exb_id</td>
+                <td class="item" id="viewer_pos_count-@i">@viewer.view_tx_count</td>
+                <td class="item" id="viewer_pos_floor-@i">@viewer.floor_id</td>
+                <td class="item" id="viewer_pos_size-@i">@viewer.view_tx_size</td>
+                <td class="item" id="exb_pos_name-@i">@viewer.exb_pos_name</td>
+                <td class="item" id="exb_id-@i">@viewer.exb_id</td>
+                <td class="item" id="exb_name-@i">@viewer.exb_device_name</td>
+            </tr>
+            }
+            </tbody>
+        </table>
     </div>
 
 </body>

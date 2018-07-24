@@ -247,8 +247,8 @@ case class itemBeaconPositionData(
   item_no: String,
   item_name:String,
   place_id: Int,
-  reserve_start_date:String,
-  reserve_end_date: String,
+  item_type_icon_color:String,
+  item_type_text_color: String,
   company_name: String,
   work_type_name: String,
   reserve_floor_name: String,
@@ -272,8 +272,8 @@ object itemBeaconPositionData {
     ((JsPath \ "item_no").read[String] | Reads.pure("")) ~
     ((JsPath \ "item_name").read[String] | Reads.pure("")) ~
     ((JsPath \ "place_id").read[Int])~
-    ((JsPath \ "reserve_start_date").read[String] | Reads.pure("")) ~
-    ((JsPath \ "reserve_end_date").read[String] | Reads.pure("")) ~
+    ((JsPath \ "item_type_icon_color").read[String] | Reads.pure("")) ~
+    ((JsPath \ "item_type_text_color").read[String] | Reads.pure("")) ~
     ((JsPath \ "company_name").read[String] | Reads.pure(""))~
     ((JsPath \ "work_type_name").read[String] | Reads.pure(""))~
     ((JsPath \ "reserve_floor_name").read[String] | Reads.pure(""))~
@@ -289,6 +289,9 @@ case class BeaconViewer(
    item_key_btx: Int,
    item_type_id: Int,
    item_type_name:String,
+   item_type_icon_color:String,
+   item_type_text_color: String,
+   item_type_row_color:String,
    note:String,
    item_no: String,
    item_name:String,
@@ -314,6 +317,9 @@ class beaconDAO @Inject()(dbapi: DBApi) {
       get[Int]("item_key_btx") ~
       get[Int]("item_type_id") ~
       get[String]("item_type_name") ~
+      get[String]("item_type_icon_color") ~
+      get[String]("item_type_text_color") ~
+      get[String]("item_type_row_color") ~
       get[String]("note") ~
       get[String]("item_no") ~
       get[String]("item_name") ~
@@ -326,10 +332,10 @@ class beaconDAO @Inject()(dbapi: DBApi) {
       get[String]("work_type_name") ~
       get[String]("reserve_floor_name") ~
       get[Int]("reserve_id")map {
-      case item_id ~ item_btx_id ~ item_key_btx ~ item_type_id ~ item_type_name ~
+      case item_id ~ item_btx_id ~ item_key_btx ~ item_type_id ~ item_type_name ~item_type_icon_color ~item_type_text_color ~ item_type_row_color ~
         note ~ item_no ~item_name ~place_id ~reserve_start_date ~ reserve_end_date ~ company_id ~company_name ~work_type_id ~
         work_type_name ~reserve_floor_name ~ reserve_id  =>
-        BeaconViewer(item_id, item_btx_id, item_key_btx, item_type_id, item_type_name,
+        BeaconViewer(item_id, item_btx_id, item_key_btx, item_type_id, item_type_name,item_type_icon_color,item_type_text_color,item_type_row_color,
           note, item_no, item_name, place_id, reserve_start_date, reserve_end_date,company_id,company_name,work_type_id,
           work_type_name,reserve_floor_name,reserve_id)
     }
@@ -346,6 +352,9 @@ class beaconDAO @Inject()(dbapi: DBApi) {
                c.item_key_btx,
                c.item_type_id,
                i.item_type_name,
+               i.item_type_icon_color,
+               i.item_type_text_color,
+               i.item_type_row_color,
                c.note,
                c.item_no,
                c.item_name,

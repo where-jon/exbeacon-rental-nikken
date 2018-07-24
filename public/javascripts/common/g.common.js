@@ -45,7 +45,7 @@ var gResize = {
 
     },
     viewSizeCheck : function() {
-          var vCheckMapElement = document.getElementById("beaconMap-3")
+          var vCheckMapElement = document.getElementById("beaconMap-1")
           if(vCheckMapElement!=null){
             var vWidth = vCheckMapElement.clientWidth;
             var vHeight = vCheckMapElement.clientHeight;

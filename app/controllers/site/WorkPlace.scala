@@ -17,11 +17,10 @@ import utils.silhouette.MyEnv
 class WorkPlace @Inject()(config: Configuration
                           , val silhouette: Silhouette[MyEnv]
                           , val messagesApi: MessagesApi
-                          , carDAO: models.itemCarDAO
                           , beaconDAO: models.beaconDAO
                           , beaconService: BeaconService
                           , ws: WSClient
-                          , btxDAO: models.btxDAO
+                          , exbDAO: models.ExbDAO
                           , mapViewerDAO: models.MapViewerDAO
                          ) extends BaseController with I18nSupport {
 
@@ -43,7 +42,8 @@ class WorkPlace @Inject()(config: Configuration
 
     if (super.isCmsLogged) {
       val mapViewer = mapViewerDAO.selectAll()
-      Ok(views.html.site.workPlace(mapViewer))
+      val exbData = exbDAO.selectExbAll(placeId)
+      Ok(views.html.site.workPlace(mapViewer,exbData))
     } else {
       Redirect(CMS_NOT_LOGGED_RETURN_PATH).flashing(ERROR_MSG_KEY -> Messages("error.cmsLogged.invalid"))
     }
