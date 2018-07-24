@@ -51,13 +51,14 @@ class ItemCarCancel @Inject()(config: Configuration
 
   /*転送form*/
   val itemCarForm = Form(mapping(
-    "itemTypeId" -> number.verifying("仮設材未設定", { itemTypeId => itemTypeId != null }),
+    "itemTypeId" -> number,
     "workTypeName" -> text.verifying("作業期間未設定", { workTypeName => !workTypeName.isEmpty() }),
     "inputDate" -> text.verifying("予約日未設定", { inputDate => !inputDate.isEmpty() }),
     "companyName" -> text.verifying("予約会社未設定", { companyName => !companyName.isEmpty() }),
     "floorName" -> text.verifying("予約フロア未設定", { floorName => !floorName.isEmpty() }),
     "itemId" -> list(number.verifying("仮設材IDが異常", { itemId => itemId != null })),
-    "checkVal" -> list(number.verifying("選択", { itemId => itemId != null }))
+    "itemTypeIdList" -> list(number.verifying("仮設材種別 異常", { itemTypeIdList => itemTypeIdList != null })),
+    "checkVal" -> list(number.verifying("checkVal", { checkVal => checkVal != null }))
   )(ItemCarReserveData.apply)(ItemCarReserveData.unapply))
 
 
