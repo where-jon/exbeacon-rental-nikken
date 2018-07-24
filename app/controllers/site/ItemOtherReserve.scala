@@ -54,7 +54,7 @@ class ItemOtherReserve @Inject()(config: Configuration
 
   /*転送form*/
   val itemOtherForm = Form(mapping(
-    "itemTypeId" -> number.verifying("仮設材種別 未設定", { itemTypeId => itemTypeId != 0 }),
+    "itemTypeId" -> number,
     "workTypeName" -> text.verifying("作業期間 未設定", { workTypeName => !workTypeName.isEmpty() }),
     "inputStartDate" -> text.verifying("予約最初日 未設定", { inputStartDate => !inputStartDate.isEmpty() }),
     "inputEndDate" -> text.verifying("予約最終日 未設定", { inputEndDate => !inputEndDate.isEmpty() }),

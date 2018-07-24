@@ -113,6 +113,7 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
                                 <th class="tableTh ">現在位置</th>
                                 <th class="tableTh ">実ID</th>
                                 <th class="tableTh ">Tag ID</th>
+                                <th class="tableTh ">種別ID</th>
                                 <th class="tableTh ">種別</th>
                                 <th class="tableTh ">名称</th>
                                 <th class="tableTh ">予約最初日</th>
@@ -143,6 +144,9 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
                                         <input class="hidden  form-control input-sm" type="text" id="itemId-@i" name="itemId[@i]" value="@other.item_other_id">
                                     </td>
                                     <td class="itemTd text-center ">@other.item_other_btx_id</td>
+                                    <td class="itemTd text-center ">@other.item_type_id
+                                        <input class="hidden  form-control input-sm" type="text" id="itemTypeIdList-@i" name="itemTypeIdList[@i]" value="@other.item_type_id">
+                                    </td>
                                     <td class="itemTd text-center ">@other.item_type_name</td>
                                     <td class="itemTd text-center ">@other.item_other_name</td>
                                     <td class="itemTd text-center ">@other.reserve_start_date</td>
