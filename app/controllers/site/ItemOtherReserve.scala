@@ -61,7 +61,8 @@ class ItemOtherReserve @Inject()(config: Configuration
     "companyName" -> text.verifying("予約会社 未設定", { companyName => !companyName.isEmpty() }),
     "floorName" -> text.verifying("予約フロア 未設定", { floorName => !floorName.isEmpty() }),
     "itemId" -> list(number.verifying("仮設材ID 異常", { itemId => itemId != null })),
-    "checkVal" -> list(number.verifying("選択", { itemId => itemId != null }))
+    "itemTypeIdList" -> list(number.verifying("仮設材種別 異常", { itemTypeIdList => itemTypeIdList != null })),
+    "checkVal" -> list(number.verifying("選択", { checkVal => checkVal != null }))
   )(ItemOtherReserveData.apply)(ItemOtherReserveData.unapply))
 
 
@@ -119,13 +120,13 @@ class ItemOtherReserve @Inject()(config: Configuration
             var vCompanyId = companyNameList.filter(_.companyName == ItemOtherReserveData.companyName).last.companyId
             var vFloorId = floorNameList.filter(_.floor_name == ItemOtherReserveData.floorName).last.floor_Id
             var vWorkTypeId = workTypeList.filter(_.work_type_name == ItemOtherReserveData.workTypeName).last.work_type_id
-            var vItemTypeId = ItemOtherReserveData.itemTypeId
             var vReserveStartDate = ItemOtherReserveData.inputStartDate
             var vReserveEndDate = ItemOtherReserveData.inputEndDate
 
             ItemOtherReserveData.itemId.zipWithIndex.map { case (itemId, i) =>
               ItemOtherReserveData.checkVal.zipWithIndex.map { case (check, j) =>
                 if(i == check){
+                  val vItemTypeId = ItemOtherReserveData.itemTypeIdList(i)
                   setData = setData :+ ReserveItem(vItemTypeId,itemId,vFloorId,placeId,vCompanyId,vReserveStartDate,vReserveEndDate,true,vWorkTypeId)
                 }
               }
