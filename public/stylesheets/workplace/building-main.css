@@ -1267,6 +1267,19 @@ color:#a94442
     z-index: 1000;
 }
 
+.line__view--style{
+    opacity:0.6;
+    height: 25px;
+    width: 25px;
+    display: inline-block;
+    background:black;
+    cursor: pointer;
+    border-radius: 20px;
+}
+.line__view--text{
+    vertical-align: 7px;
+    font-weight: bold;
+}
 
 @media screen and (max-width: 65.625em), screen and (max-height: 40.625em) {
 	.main {

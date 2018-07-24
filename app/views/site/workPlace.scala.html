@@ -34,12 +34,26 @@ exbViewer: Seq[ExbAll]
                 <!--<i id = "update-element" class="btn__icon&#45;&#45;style fa fa-refresh fa-3x"></i>-->
             <!--</span>-->
             <!--</a>-->
+
         </div>
+
     </div>
 
     <br/>
     <br/>
     <div class="map__main--frame" id ="map__main--frame">
+        <div class="hidden " style="display: -webkit-box;">
+                    <span class = "line__view--text" style="vertical-align: 7px">凡例</span>
+                    <span class = "line__view--style" style="background:rgb(0,255,0)"></span>
+                    <span class = "line__view--text" style="vertical-align: 7px">aa</span>
+                    <span class = "line__view--style" style="background:rgb(0,255,0)"></span>
+                    <span class = "line__view--text" style="vertical-align: 7px">aa</span>
+                    <span class = "line__view--style" style="background:rgb(0,255,0)"></span>
+                    <span class = "line__view--text" style="vertical-align: 7px">aa</span>
+                    <span class = "line__view--style" style="background:rgb(0,255,0)"></span>
+                    <span class = "line__view--text" style="vertical-align: 7px">aa</span>
+        </div>
+
         <div class = "alert__result--frame">
             @tags.alertFromRequestDbResult(request, "resultOK")
             @tags.alertFromRequestDbResult(request, "resultNG")
