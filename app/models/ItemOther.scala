@@ -19,6 +19,7 @@ case class ItemOtherReserveData(
   companyName: String,
   floorName: String,
   itemId: List[Int],
+  itemTypeIdList: List[Int],
   checkVal: List[Int]
 
 )
