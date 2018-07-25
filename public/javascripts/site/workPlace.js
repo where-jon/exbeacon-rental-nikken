@@ -1,6 +1,7 @@
 var TotalBeaconsData = [];
 var VIEWTYPE = false;    // false(アイコンがスムーズに動くバージョン)
 var gMapPos = 1;
+var gInfoAllFrame = null;
 
 $( window ).resize(function() {
 	location.reload();
@@ -170,6 +171,13 @@ function setTagNamePosition(pinFrame ,vFloor, beaconData,infoTag) {
 function setFrame() {
     gAddPositionMargin(TotalBeaconsData);
 
+    var vClone = $('.infoAllFrame').clone()
+    gInfoAllFrame = vClone[0]
+    gInfoAllFrame.id = "cloneInfoAllFrame"
+    gInfoAllFrame.children[1].children[0].id ="cloneTbodyId"
+    var vMainFrame = document.getElementById("map__main--frame")
+    vMainFrame.appendChild(gInfoAllFrame)
+
     var wakauFrame;
     var wakauFrameCount = 0;
     TotalBeaconsData.forEach(function(beaconData, i) {
@@ -183,9 +191,6 @@ function setFrame() {
         workerBtn.push(pinFrame);
         pinFrame.style.background = beaconData.iconColor;
         pinFrame.style.color = beaconData.textColor;
-        //pinFrame = gBeaconPosition.setColorUi(pinFrame,"iconStyle",beaconData.depName)
-        //var gg = gBeaconPosition.getTextColor(beaconData.depName);
-        //pinFrame.style.color = "white";
         pinFrame.id = "user_id_" + beaconData.id;
 
         pinFrame.style.top = beaconData.pos.y + "px";
@@ -198,38 +203,9 @@ function setFrame() {
         //spanFrame.textContent = beaconData.id;
         spanFrame.textContent = beaconData.btxId;
 
-        if(beaconData.depName == "その他（物品）"||beaconData.depName == "企画総務部"){
-            // classie.add(spanFrame, 'user__tag--text--tri');
-            //spanFrame.style.color = "black";
-        }
-
-
         var infoTag = document.createElement('div');
         var contentTag = document.createElement('div');
         contentTag.className = "user__tag--content"
-
-         if(beaconData.totalCount >= VIEW_COUNT){
-            infoTag.className = "user__tag__all--info"
-            pinFrame.style.background = "black";
-            pinFrame.style.color = "white";
-            infoTag.style.background = "black";
-            infoTag.style.color = "white";
-        }else{
-             infoTag.className = "user__tag--info";
-             //infoTag = gBeaconPosition.setColorUi(infoTag,"iconStyle",beaconData.depName)
-             infoTag.style.background = beaconData.iconColor;
-             infoTag.style.color = beaconData.textColor;
-
-        }
-
-
-        infoTag.id = "infoTag-" + beaconData.id;
-        userTag.push(infoTag);
-
-        setTagNamePosition(pinFrame,vFloor,beaconData,infoTag);
-
-        var picTag = document.createElement('div');
-        picTag.className = "user__tag--pic"
 
 
         var picText1 = document.createElement('div');
@@ -249,18 +225,67 @@ function setFrame() {
         picText3.textContent =  "業者　"+beaconData.companyName;
 
 
-            // img 結合
-            // text結合
-        contentTag.appendChild(picText1);
-        contentTag.appendChild(picTextHuri);
-        contentTag.appendChild(picText2);
-        contentTag.appendChild(picText3);
+         if(beaconData.totalCount >= VIEW_COUNT){
+            infoTag.className = "user__tag__all--info"
+            pinFrame.style.background = "black";
+            pinFrame.style.color = "white";
+            infoTag.style.background = "black";
+            infoTag.style.color = "white";
+            infoTag.id = "infoTagAll-" + beaconData.id;
 
-        //infoTag.appendChild(picTag);
+            var vTbody = document.getElementById("cloneTbodyId")
+            var vTr = document.createElement('tr');
+            vTr.id = "trPosId-" + beaconData.posId
+            vTr.className = "trAll trPosId-" + beaconData.posId
+            vTr.style.background = beaconData.iconColor;
+            vTr.style.color = beaconData.textColor;
+            var vTd1 = document.createElement('td');
+            vTd1.className = "td--frame"
+            vTd1.textContent = beaconData.typeName
+            var vTd2 = document.createElement('td');
+            vTd2.className = "td--frame"
+            vTd2.textContent = beaconData.itemNo
+            var vTd3 = document.createElement('td');
+            vTd3.className = "td--frame"
+            vTd3.textContent = beaconData.companyName
+            var vTd4 = document.createElement('td');
+            vTd4.className = "td--frame"
+            vTd4.textContent = beaconData.posId
+
+            vTr.appendChild(vTd1);
+            vTr.appendChild(vTd2);
+            vTr.appendChild(vTd3);
+            //vTr.appendChild(vTd4);
+            vTbody.appendChild(vTr);
+        }else{
+             infoTag.id = "infoTag-" + beaconData.id;
+             infoTag.className = "user__tag--info";
+             //infoTag = gBeaconPosition.setColorUi(infoTag,"iconStyle",beaconData.depName)
+             infoTag.style.background = beaconData.iconColor;
+             infoTag.style.color = beaconData.textColor;
+
+              // text結合
+             contentTag.appendChild(picText1);
+             contentTag.appendChild(picTextHuri);
+             contentTag.appendChild(picText2);
+             contentTag.appendChild(picText3);
+
+        }
+
+
+        userTag.push(infoTag);
+
+        setTagNamePosition(pinFrame,vFloor,beaconData,infoTag);
+
+
         infoTag.appendChild(contentTag);
 
         pinFrame.style.visibility = "visible";
-        pinFrame.appendChild(infoTag);
+
+        //if(!beaconData.overCheck){
+            pinFrame.appendChild(infoTag);
+        //}
+
         pinFrame.appendChild(spanFrame);
 
 
@@ -330,6 +355,8 @@ function setFrame() {
 //        }
 
 
+
+
 }
 
 function personBtnEvent() {
@@ -350,21 +377,46 @@ function personBtnEvent() {
             });
         }
         vInfoTagElement = document.getElementById("infoTag-" +  TotalBeaconsData[pos].id);
+        vInfoAllTagElement = document.getElementById("infoTagAll-" +  TotalBeaconsData[pos].id);
+        var vInfoAllFrame = document.getElementById("cloneInfoAllFrame")
+        if(vInfoTagElement!=null){
+            if(vInfoTagElement.style.visibility == "visible"){
+                myNum = -1;
+                vInfoTagElement.style.visibility = "hidden";
 
-        if(vInfoTagElement.style.visibility == "visible"){
-            myNum = -1;
-            vInfoTagElement.style.visibility = "hidden";
-
-        }else{
-            vInfoTagElement.style.visibility = "visible";
-            classie.add(level, 'pin--active');
-            myNum = TotalBeaconsData[pos].id;
-            // 強調する。
-            if(TotalBeaconsData[pos].depName == "その他（物品）"){
-                // classie.add(level, 'pin--active--tri');
-                // classie.add(level.childNodes[1], 'user__tag--small--tri');
+            }else{
+                vInfoTagElement.style.visibility = "visible";
+                classie.add(level, 'pin--active');
+                myNum = TotalBeaconsData[pos].id;
+                // 強調する。
+                if(TotalBeaconsData[pos].depName == "その他（物品）"){
+                    // classie.add(level, 'pin--active--tri');
+                    // classie.add(level.childNodes[1], 'user__tag--small--tri');
+                }
             }
         }
+        if(vInfoAllTagElement!=null){
+            //alert("click pos ::"+ TotalBeaconsData[pos].id)
+            myNum = -1;
+            //classie.remove(document.getElementById("specialstam"),'levels--hidden')
+            //$('#inputModal').modal();
+
+            if(vInfoAllTagElement.style.visibility == "visible"){
+
+                myNum = -1;
+                vInfoAllTagElement.style.visibility = "hidden";
+                vInfoAllFrame.style.visibility = "hidden";
+
+            }else{
+                vInfoAllTagElement.style.visibility = "visible";
+                classie.remove(vInfoAllFrame, 'hidden');
+                vInfoAllFrame.style.visibility = "visible";
+                vInfoAllTagElement.appendChild(vInfoAllFrame)
+                classie.add(level, 'pin--active');
+                myNum = TotalBeaconsData[pos].id;
+            }
+        }
+
 
     cookies = "pos-num" + '=' + myNum;
     document.cookie = cookies;
@@ -397,13 +449,11 @@ function getJson() {
                         iconColor : beaconPosition.item_type_icon_color,
                         textColor : beaconPosition.item_type_text_color,
                         companyName : beaconPosition.company_name,
-
                         // new .End
-                        // test code .start
-                        //pos : clonePosNew(2),
-                        // pos : clonePosNew(beaconPosition.btx_id),
-                        // test code .end
+
+                        //pos : clonePosNew(5),
                         pos : clonePosNew(beaconPosition.pos_id),
+
                         finishPos:"無",
                         updateTime : beaconPosition.updatetime,
                         show:"hidden"
@@ -442,7 +492,7 @@ function getJson() {
                 setFrame();
                 // user iconクリックイベント
                 personBtnEvent();
-                ChangeCheck = true;
+                ChangeCheck = false;
                 // データを以前データとして管理
                 PreBeaconsData = TotalBeaconsData;
                 finishUpdate();
@@ -495,6 +545,25 @@ var startUpdate = function() {
         gInit.spinAnimationReDraw();
     }
     if (!updating) {
+
+        // ある時の削除
+        delElement = [].slice.call(document.querySelectorAll(".user__tag--name"))
+        for (var i = 0;i<delElement.length;++i){
+            if(delElement[i] != null){
+                $(delElement[i]).remove();
+            }else{
+            }
+        }
+        delTrElement = [].slice.call(document.querySelectorAll(".trAll"))
+        for (var i = 0;i<delTrElement.length;++i){
+            if(delTrElement[i] != null){
+                $(delTrElement[i]).remove();
+            }else{
+            }
+        }
+
+        gInfoAllFrame = null;
+
         updating = true;
         gInit.spinAnimationStart();
         getJson();
@@ -504,10 +573,6 @@ var finishUpdate = function() {
     gInit.spinAnimationEnd(updating);
     updating = false;
     workerBtnCheck = true;
-
-    // levels表示
-    //classie.remove(mallLevelsEl,'levels--hidden')
-
 
 }
 
@@ -565,6 +630,16 @@ $(function () {
         gMapFrame[i] = vMapLevel[i]
         gDrawer[i] =  new Drawer(gMapFrame[i].id)
     }
+
+    // test1分
+	var secUpdateUnit = 60000;
+
+
+	// 定期更新
+	setInterval(function() {
+		startUpdate();
+	}, secUpdateUnit);
+
     startUpdate();
 
 });
