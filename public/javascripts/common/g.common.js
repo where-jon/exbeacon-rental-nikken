@@ -32,7 +32,7 @@ var PIN_MARGIN_Y = 7;
 var MARGIN_BASE = 1;
 var BASE_ASPECT = 2;
 
-var VIEW_COUNT = 2
+var VIEW_COUNT = 3
 
 var gResizeCheck = false;
 var gResize = {
