@@ -1,0 +1,192 @@
+@(itemTypeList: Seq[ItemType], placeId: Int)(implicit user: User, messages: Messages, request: RequestHeader, flash: Flash)
+
+@import controllers.routes
+@import helper._
+
+<!doctype html>
+<html lang="ja">
+<head>
+    @templates.htmlHead(title = Messages("lang.cms.itemTypeManage.title"))
+    <link rel="stylesheet" href="@routes.MyAssets.css("cms/itemTypeManage.css")"/>
+    <link rel="stylesheet" media="screen" href="@routes.MyAssets.lib("tablesorter/css/theme.bootstrap.css")">
+    <link rel="stylesheet" type="text/css" href="./devkit/css/colorpicker.css"/>
+    <script type="text/javascript" src="@routes.MyAssets.lib("jquery.tablefix_1.0.1.js")"></script>
+    <script type="text/javascript" src="@routes.MyAssets.js("itemTypeManage.js")"></script>
+    <script type="text/javascript" src="./devkit/js/color/colorpicker.js"></script>
+    <script></script>
+</head>
+<body>
+<!-- content -->
+<div class="container">
+    <!-- ナビバー  -->
+    @views.html.templates.navBar()
+    <div class="row" style="margin-top: 40px;">
+        <!-- メイン -->
+        <div class="col-xs-9 col-sm-9 col-md-12 col-lg-12 mainSpace">
+            <!-- メッセージ -->
+            @views.html.templates.msgDiv()
+            <!-- 画面題字 -->
+            <div class="form-group" style="font-weight:bold;font-size:19px;margin:15px 0px;">
+                @Messages("lang.cms.itemTypeManage.page.title")
+            </div>
+            <!-- テーブルのROW -->
+            <div class="row tableRow">
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="padding:0;">
+                    <div class="table-responsive-body">
+                        <table class="table table-bordered table-condensed itemTable">
+                            <thead>
+                            <tr>
+                                <th colspan="5" class="tableTitleTh">@Messages("lang.cms.itemTypeManage.itemType.list.header.title")</th>
+                            </tr>
+                            <tr>
+                                <th class="tableTh itemTypeNoTh">@Messages("lang.cms.itemTypeManage.itemType.list.header.id")</th>
+                                <th class="tableTh itemTypeNameTh">@Messages("lang.cms.itemTypeManage.itemType.list.header.name")</th>
+                                <th class="tableTh itemTypeCategoryTh">@Messages("lang.cms.itemTypeManage.itemType.list.header.category")</th>
+                                <th class="tableTh itemTypeColorDisplayTh">@Messages("lang.cms.itemTypeManage.itemType.list.header.color.disp")</th>
+                                <th class="tableTh itemTypeColorSettingTh">@Messages("lang.cms.itemTypeManage.itemType.list.header.biko")</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            @for(itemType <- itemTypeList){
+                            <tr class="rowColor rowHover" id="@itemType.item_type_id">
+                                <td class="itemTd text-right itemTypeId">@itemType.item_type_id</td>
+                                <td class="itemTd text-left itemTypeName">@itemType.item_type_name</td>
+                                <td class="itemTd text-left itemTypeCategory">@itemType.item_type_category</td>
+                                <!-- 色表示 -->
+                                <td id ="previewBackgroundId" class="item preview_frame" style="background: @itemType.item_type_row_color;" >
+                                    <div id="previewColorId" class="preview_icon" style="background: @itemType.item_type_icon_color; color: @itemType.item_type_text_color;">@itemType.item_type_id</div>
+                                </td>
+                                <!-- 色設定
+                                <td class="itemTd text-left itemTypeColorSetting"> </td>
+                                 -->
+
+                                <!-- 仮設材種別アイコンカラー(RGB) -->
+                                <td class="hidden itemTypeIconColor">@itemType.item_type_icon_color</td>
+                                <!-- 仮設材種別文字カラー(RGB) -->
+                                <td class="hidden itemTypeTextColor">@itemType.item_type_text_color</td>
+                                <!-- 仮設材種別行カラー(RGB) -->
+                                <td class="hidden itemTypeRowColor">@itemType.item_type_row_color</td>
+                                <!-- 備考 -->
+                                <td class="itemTd text-left itemNote">@itemType.note</td>
+                            </tr>
+                            }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <!-- ボタン-->
+            <div class="row tableRow" style="margin-top: 10px;">
+                <div class="text-right col-xs-4 col-sm-4 col-md-4" style="padding:0;">
+                    <a href="javascript:showInputModal(false);" class="btn link">@Messages("lang.cms.itemTypeManage.itemType.button.editItem")</a>
+                </div>
+                <div class="text-center col-xs-4 col-sm-4 col-md-4" style="padding:0;">
+                    <a href="javascript:showInputModal(true);" class="btn link">@Messages("lang.cms.itemTypeManage.itemType.button.addItem")</a>
+                </div>
+                <div class="text-left col-xs-4 col-sm-4 col-md-4" style="padding:0;">
+                    <a href="javascript:showDeleteModal();" class="btn link">@Messages("lang.cms.itemTypeManage.itemType.button.deleteItem")</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="@routes.MyAssets.js("cms/itemTypeManage.js")"></script>
+    <script></script>
+
+<!-- 更新モーダル画面 -->
+<div class="modal" id="inputModal" tabindex="-1" role="dialog" aria-labelledby="inputModalLabel" aria-hidden="true" data-show="true" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="itemTypeForm" name="itemTypeForm" enctype="multipart/form-data" class="form-horizontal" method="post" action="@controllers.cms.routes.ItemTypeManage.update.path">
+                @CSRF.formField
+                <!-- 現場ID -->
+                <input type="hidden" name="inputPlaceId" value="@placeId">
+                <!-- 仮設材種別ID -->
+                <input type="hidden" id="inputItemTypeId" name="inputItemTypeId">
+
+                <div class="modal-header">@Messages("lang.cms.itemTypeManage.itemTypeUpdate.popup.title")</div>
+                <div class="modal-body">
+                    <!-- 仮設材種別名 -->
+                    <div class="form-group">
+                        <label class="control-label col-xs-4">@Messages("lang.cms.itemTypeManage.itemTypeUpdate.popup.itemName")</label>
+                        <div class="col-xs-3" style="padding-left: 0px;padding-right: 0px;">
+                            <input type="text" id="inputItemTypeName" name="inputItemTypeName" class="form-control" placeholder="@Messages("lang.cms.itemTypeManage.itemTypeUpdate.popup.itemName")">
+                        </div>
+                    </div>
+
+                    <!-- 仮設材カテゴリー名 -->
+                    <div class="form-group">
+                        <label class="control-label col-xs-4">@Messages("lang.cms.itemTypeManage.itemTypeUpdate.popup.category")</label>
+                        <div class="col-xs-5  col-sm-5 col-md-5" style="padding-left: 0px;padding-right: 0px;">
+                            <input type="text" id="inputItemTypeCategory" name="inputItemTypeCategory" class="form-control" placeholder="@Messages("lang.cms.itemTypeManage.itemTypeUpdate.popup.category")">
+                        </div>
+                    </div>
+                    <!-- 仮設材種別アイコンカラー(RGB) -->
+                    <div class="form-group">
+                        <label class="control-label col-xs-4">@Messages("lang.cms.itemTypeManage.itemTypeUpdate.popup.icon.color")</label>
+                        <div class="col-xs-3" style="padding-left: 0px;padding-right: 0px;">
+                            <input type="text" id="inputItemTypeIconColor" name="inputItemTypeIconColor" class="form-control" placeholder="rgb(255,255,255)">
+                        </div>
+                    </div>
+                    <!-- 仮設材種別文字カラー(RGB) -->
+                    <div class="form-group">
+                        <label class="control-label col-xs-4">@Messages("lang.cms.itemTypeManage.itemTypeUpdate.popup.font.color")</label>
+                        <div class="col-xs-3" style="padding-left: 0px;padding-right: 0px;">
+                            <input type="text" id="inputItemTypeTextColor" name="inputItemTypeTextColor" class="form-control" placeholder="rgb(255,255,255)">
+                        </div>
+                    </div>
+                    <!-- 仮設材種別行カラー(RGB) -->
+                    <div class="form-group">
+                        <label class="control-label col-xs-4">@Messages("lang.cms.itemTypeManage.itemTypeUpdate.popup.row.color")</label>
+                        <div class="col-xs-3" style="padding-left: 0px;padding-right: 0px;">
+                            <input type="text" id="inputItemTypeRowColor" name="inputItemTypeRowColor" class="form-control" placeholder="rgb(255,255,255)">
+                        </div>
+                    </div>
+                    <!-- 備考(DB項目) -->
+                    <div class="form-group">
+                        <label class="control-label col-xs-4">@Messages("lang.cms.itemTypeManage.itemTypeUpdate.popup.biko")</label>
+                        <div class="col-xs-5" style="padding-left: 0px;padding-right: 0px;">
+                            <input type="text" id="inputNote" name="inputNote" class="form-control" placeholder="@Messages("lang.cms.itemTypeManage.itemTypeUpdate.popup.biko")">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="col-xs-6 text-center">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">@Messages("cancel")</button>
+                    </div>
+                    <div class="col-xs-6 text-center">
+                        <button id="itemTypeUpdateFooter"  type="submit" class="text-center btn btn-primary hidden">@Messages("update")</button>
+                        <button id="itemTypeRegisterFooter"  type="submit" class="text-center btn btn-primary hidden">@Messages("registration")</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- 削除モーダル画面 -->
+<div class="modal" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true" data-show="true" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="deleteForm" name="deleteForm" enctype="multipart/form-data" class="form-horizontal" method="post" action="@controllers.cms.routes.ItemTypeManage.delete.path">
+                @CSRF.formField
+                <input type="hidden" id="deleteItemTypeId" name="deleteItemTypeId">
+                <div class="modal-header">@Messages("lang.cms.itemTypeManage.itemTypeDelete.popup.title")</div>
+                <div class="modal-body">
+                    <div class="text-center">
+                        @Html(Messages("lang.cms.itemTypeManage.itemTypeDelete.popup.message").replaceAll("(\r\n|\r|\n)","<br>"))
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="col-xs-6 text-center">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">@Messages("cancel")</button>
+                    </div>
+                    <div class="col-xs-6 text-center">
+                        <a href="javascript:deleteItemType();" class="text-center btn btn-danger">@Messages("delete")</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

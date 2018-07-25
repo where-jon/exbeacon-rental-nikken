@@ -71,6 +71,10 @@ POST    /cms/carManage/delete           controllers.cms.CarManage.delete
 GET     /cms/itemManage                 controllers.cms.ItemManage.index
 POST    /cms/itemManage/update          controllers.cms.ItemManage.update
 POST    /cms/itemManage/delete          controllers.cms.ItemManage.delete
+# 仮設材種別管理
+GET     /cms/itemTypeManage             controllers.cms.ItemTypeManage.index
+POST    /cms/itemTypeManage/update      controllers.cms.ItemTypeManage.update
+POST    /cms/itemTypeManage/delete      controllers.cms.ItemTypeManage.delete
 # 業者管理
 GET     /cms/companyManage              controllers.cms.CompanyManage.index
 POST    /cms/companyManage/update       controllers.cms.CompanyManage.update
