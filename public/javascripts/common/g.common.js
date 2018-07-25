@@ -32,6 +32,7 @@ var PIN_MARGIN_Y = 7;
 var MARGIN_BASE = 1;
 var BASE_ASPECT = 2;
 
+var VIEW_COUNT = 2
 
 var gResizeCheck = false;
 var gResize = {
@@ -92,10 +93,12 @@ var gResize = {
                 // 座標位置
                 var vXelement = document.getElementById("input_viewer_pos_x-" + gExbViewerData[i].id)
                 var vYelement = document.getElementById("input_viewer_pos_y-" + gExbViewerData[i].id)
-                var vXvalue = Number(vXelement.value);
-                var vYvalue = Number(vYelement.value);
-                vXelement.value = gResize.getMotoValueX(vWidth, vXvalue)
-                vYelement.value = gResize.getMotoValueY(vHeight, vYvalue)
+                if(vXelement!=null && vYelement!=null){
+                    var vXvalue = Number(vXelement.value);
+                    var vYvalue = Number(vYelement.value);
+                    vXelement.value = gResize.getMotoValueX(vWidth, vXvalue)
+                    vYelement.value = gResize.getMotoValueY(vHeight, vYvalue)
+                }
              }
           }
 

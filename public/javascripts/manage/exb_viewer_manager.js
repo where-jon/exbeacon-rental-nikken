@@ -7,7 +7,7 @@ var gMapPos = 1;
 var preClickPos = -1;
 
 var bCheckUpdate = false;
-
+var VIEW_COUNT = 1000
 
 var workerBtn;
 
