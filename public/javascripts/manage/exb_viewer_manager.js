@@ -3,11 +3,11 @@ var gPosX
 var gPosY
 var gClickPos = null;
 var gMovePos = -1;
-var gMapPos = 3;
+var gMapPos = 1;
 var preClickPos = -1;
 
 var bCheckUpdate = false;
-
+var VIEW_COUNT = 1000
 
 var workerBtn;
 

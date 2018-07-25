@@ -27,11 +27,18 @@ var gAddPositionMargin = function(beacons) {
 		var targets = beacons.filter(function(b) {
 		    if (b.pos.posId == pos.id && pos.id!= -1){
 		        b.pos.size = pos.size
-                b.pos.visible = pos.visible
 		    }
 			return (b.pos.posId == pos.id && b.posSittingType != -1);
 		});
-		if (targets.length > 1) {
+
+		targets.forEach(function(target) {
+            target.totalCount = targets.length
+            target.posId = target.pos.posId
+            if(targets.length >= VIEW_COUNT){
+                target.overCheck = true
+            }
+        });
+		if (targets.length > 1 && targets.length < VIEW_COUNT) {
 			var viewType = targets[0].pos.viewType;
 			if (viewType != null) {
 				// alert(viewType);
@@ -530,5 +537,6 @@ var gAddPositionMargin = function(beacons) {
 				}
 			}
 		}
+		index++;
 	});
 }

@@ -35,7 +35,6 @@ case class ExbTotal(
   viewer_pos_margin: Int,
   viewer_pos_floor: String,
   viewer_pos_size: Int
-
 )
 
 case class ExbData(
@@ -45,6 +44,25 @@ case class ExbData(
   exbName: List[String],
   exbPosName: List[String]
 
+)
+
+
+case class ExbAll(
+   exb_id: Int,
+   exb_device_id: Int,
+   exb_device_no: Int,
+   exb_device_name: String,
+   exb_pos_name: String,
+   exb_pos_x: String,
+   exb_pos_y: String,
+   exb_view_flag: Boolean,
+   view_type_id: Int,
+   view_type_name: String,
+   view_tx_size: Int,
+   view_tx_margin: Int,
+   view_tx_count: Int,
+   place_id: Int,
+   floor_id: Int
 )
 
 @javax.inject.Singleton
@@ -283,6 +301,63 @@ class ExbDAO @Inject() (dbapi: DBApi) {
       val sql = SQL("delete from exb_viewer;")
 
       sql.executeUpdate()
+    }
+  }
+
+
+
+  /*exbeacn情報を取得 Parser 20180724*/
+  val simpleExbAll = {
+    get[Int]("exb_id") ~
+      get[Int]("exb_device_id") ~
+      get[Int]("exb_device_no") ~
+      get[String]("exb_device_name") ~
+      get[String]("exb_pos_name") ~
+      get[String]("exb_pos_x") ~
+      get[String]("exb_pos_y") ~
+      get[Boolean]("exb_view_flag") ~
+      get[Int]("view_type_id") ~
+      get[String]("view_type_name") ~
+      get[Int]("view_tx_size") ~
+      get[Int]("view_tx_margin") ~
+      get[Int]("view_tx_count") ~
+      get[Int]("place_id") ~
+      get[Int]("floor_id") map {
+        case exb_id ~ exb_device_id ~ exb_device_no ~ exb_device_name ~ exb_pos_name ~ exb_pos_x ~ exb_pos_y ~ exb_view_flag ~ view_type_id ~ view_type_name~ view_tx_size ~ view_tx_margin ~ view_tx_count ~ place_id ~ floor_id =>
+          ExbAll(exb_id, exb_device_id, exb_device_no, exb_device_name, exb_pos_name,exb_pos_x, exb_pos_y, exb_view_flag, view_type_id, view_type_name, view_tx_size, view_tx_margin, view_tx_count, place_id,floor_id)
+      }
+  }
+
+  /*exbeacn情報を取得　20180724*/
+  def selectExbAll(placeId: Int): Seq[ExbAll] = {
+    db.withConnection { implicit connection =>
+      val sql = SQL("""
+        select
+          exb_id,
+          exb_device_id,
+          exb_device_no,
+          exb_device_name,
+          exb_pos_name,
+          exb_pos_x,
+          exb_pos_y,
+          exb_view_flag,
+          exb.view_type_id,
+          v.view_type_name,
+          view_tx_size,
+          view_tx_margin,
+          view_tx_count,
+          exb.place_id,
+          floor.display_order as floor_id
+        from exb_master as exb
+          left JOIN view_type as v on v.view_type_id = exb.view_type_id and v.active_flg = true
+          left JOIN floor_master as floor on floor.floor_id = exb.floor_id and floor.active_flg = true
+        where exb.place_id = {placeId}
+        order by exb_id;
+       """).on(
+      "placeId" -> placeId
+      )
+
+      sql.as(simpleExbAll.*)
     }
   }
 

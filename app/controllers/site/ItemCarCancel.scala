@@ -177,7 +177,6 @@ class ItemCarCancel @Inject()(config: Configuration
 
   /** 初期表示 */
   def index = SecuredAction { implicit request =>
-    if (super.isCmsLogged) {
       // 初期化
       init();
       val placeId = super.getCurrentPlaceId
@@ -194,9 +193,6 @@ class ItemCarCancel @Inject()(config: Configuration
       System.out.println("carListApi:" + carListApi.length)
       Ok(views.html.site.itemCarCancel(ITEM_TYPE_FILTER,WORK_TYPE_FILTER,RESERVE_DATE
         ,carListApi,itemTypeList,companyNameList,floorNameList,workTypeList,WORK_TYPE))
-    } else {
-      Redirect(CMS_NOT_LOGGED_RETURN_PATH).flashing(ERROR_MSG_KEY -> Messages("error.cmsLogged.invalid"))
-    }
   }
 
 }

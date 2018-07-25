@@ -1,4 +1,7 @@
-@(mapViewer: Seq[MapViewer])(implicit user: User, messages: Messages, request: RequestHeader, flash: Flash)
+@(
+mapViewer: Seq[MapViewer],
+exbViewer: Seq[ExbAll]
+)(implicit user: User, messages: Messages, request: RequestHeader, flash: Flash)
 
 @import controllers.routes
 @import helper._
@@ -7,6 +10,7 @@
 <html lang="ja">
 <head>
     @templates.htmlHead(title = Messages("lang.cms.carManage.title"))
+    <link rel="stylesheet" href="@routes.MyAssets.css("workplace/building-main.css")"/>
     <script type="text/javascript" src="@routes.MyAssets.js("site/workPlace.js")"></script>
     <script></script>
 </head>
@@ -16,25 +20,45 @@
 
     <div class="top-area">
         <div class="top__btn--area ">
-            <div id="top-title" class="top__btn--text">@Messages("lang.manage.mapManager")</div>
-            <div class=" top__map__btn--area">
+            <div id="top-title" class="top__btn--text">@Messages("lang.site.workPlace.page.title")</div>
+            <div class="" style="display: -webkit-box;margin-top: 70px;">
+                <span class = "line__view--text" style="vertical-align: 7px">&nbsp;凡例&nbsp;:&nbsp;</span>
+                <span class = "line__view--style" style="background:black"></span>
+                <span class = "line__view--text" style="vertical-align: 7px">@Messages("lang.site.workPlace.page.maxDevice")&nbsp</span>
+                <span class = "line__view--style" style="background:rgb(0, 102, 204)"></span>
+                <span class = "line__view--text" style="vertical-align: 7px">作業車&nbsp</span>
+                <span class = "line__view--style" style="background:rgb(192, 0, 0)"></span>
+                <span class = "line__view--text" style="vertical-align: 7px">台車&nbsp</span>
 
-                <select id="floor-category" class=" manager__data--floor">
+
+            </div>
+
+            <div class=" top__map__btn--area" style="right: 88px;">
+
+            <select id="floor-category" class=" manager__data--floor">
                     @mapViewer.zipWithIndex.map { case(map, i) =>
-                    <option value="@i" @{if(map.map_id == 3) "selected" else ""}>@map.map_position</option>
+                    <option value="@map.map_id" @{if(map.map_id == 1) "selected" else ""}>@map.map_position</option>
                     }
                 </select>
             </div>
+            <a id="btn-update" class="btn__update--style" style="margin-top: 5px;">
+            <span class="error__span--frame" id = "errorSpan">
+                <i id = "update-element" class="btn__icon--style fa fa-refresh fa-3x"></i>
+            </span>
+            </a>
+
         </div>
+
     </div>
 
-    <br/>
-    <br/>
-    <div class="map__main--frame" id ="map__main--frame">
+    <div class="manager__main--frame" id ="map__main--frame">
+
+
         <div class = "alert__result--frame">
             @tags.alertFromRequestDbResult(request, "resultOK")
             @tags.alertFromRequestDbResult(request, "resultNG")
         </div>
+
         @mapViewer.zipWithIndex.map { case(map, i) =>
             <div id="beaconMap-@(i+1)" class = "hidden level level--@i layer-beacon" aria-label="Level @i">
                 <div class="wrapper__img--canvas" >
@@ -42,7 +66,72 @@
                 </div>
             </div>
         }
+        <div class="infoAllFrame hidden" id="infoAllFrame" style="background: black; color: white; visibility: visible;">
+            <table width="97%" border="1" cellspacing="0" cellpadding="0">
+                <thead>
+                <tr>
+                    <td class = "td__title--frame">仮設材種別</td>
+                    <td class = "td__title--frame">仮設材名</td>
+                    <td class = "td__title--frame">業者</td>
+                    <td class = "hidden td__title--frame">posId</td>
+                </tr>
+                </thead>
+            </table>
+            <div class="" style="height: 230px;overflow-y: auto;">
+                <table id ="tableId" width="100%" border="1" cellspacing="0" cellpadding="0">
+                    <tbody id ="tbodyId">
+                    </tbody>
+                </table>
+            </div>
 
+        </div>
+
+        <div class = "hidden db__common--frame">
+            <table class="table" >
+                <thead>
+                <tr>
+                    <th class="tableTh">id</th>
+                    <th class="tableTh">flag</th>
+                    <th class="tableTh">type</th>
+                    <th class="tableTh">x</th>
+                    <th class="tableTh">y</th>
+                    <th class="tableTh">margin</th>
+                    <th class="tableTh">id</th>
+                    <th class="tableTh">count</th>
+                    <th class="tableTh">floor</th>
+                    <th class="tableTh">size</th>
+                    <th class="tableTh">posName</th>
+                    <th class="tableTh">id</th>
+                    <th class="tableTh">devName</th>
+                </tr>
+                </thead>
+                <tbody>
+                @exbViewer.zipWithIndex.map { case(viewer, i) =>
+                <tr class = "exbViewer">
+                    <td class="item" id="viewer_id-@i">@viewer.exb_id</td>
+                    <td class="item" id="viewer_visible-@i">@viewer.exb_view_flag</td>
+                    <td class="item" id="viewer_pos_type-@i">@viewer.view_type_name</td>
+                    <td class="item" id="viewer_pos_x-@i">@viewer.exb_pos_x
+                        <input class="form-control input-sm" type="text" id="input_viewer_pos_x-@viewer.exb_id" value="@viewer.exb_pos_x" name="viewerPosX[@i]">
+                    </td>
+                    <td class="item" id="viewer_pos_y-@i">@viewer.exb_pos_y
+                        <input class="form-control input-sm" type="text" id="input_viewer_pos_y-@viewer.exb_id" value="@viewer.exb_pos_y" name="viewerPosY[@i]">
+                    </td>
+                    <td class="item" id="viewer_pos_margin-@i">@viewer.view_tx_margin
+                        <input class="form-control input-sm" type="text" id="input_viewer_pos_margin-@viewer.exb_id" value="@viewer.view_tx_margin" name="viewerPosMargin[@i]">
+                    </td>
+                    <td class="item" id="viewer_pos_num-@i">@viewer.exb_id</td>
+                    <td class="item" id="viewer_pos_count-@i">@viewer.view_tx_count</td>
+                    <td class="item" id="viewer_pos_floor-@i">@viewer.floor_id</td>
+                    <td class="item" id="viewer_pos_size-@i">@viewer.view_tx_size</td>
+                    <td class="item" id="exb_pos_name-@i">@viewer.exb_pos_name</td>
+                    <td class="item" id="exb_id-@i">@viewer.exb_id</td>
+                    <td class="item" id="exb_name-@i">@viewer.exb_device_name</td>
+                </tr>
+                }
+                </tbody>
+            </table>
+        </div>
     </div>
 
 </body>

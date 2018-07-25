@@ -21,6 +21,7 @@
     <script type="text/javascript" src="@routes.MyAssets.js("common/g.postion.js")"></script>
     <script type="text/javascript" src="@routes.MyAssets.js("common/string-ja.js")"></script>
     <script type="text/javascript" src="@routes.MyAssets.js("common/bootbox.min.js")"></script>
+    <script type="text/javascript" src="@routes.MyAssets.js("common/classie.js")"></script>
 
     <script></script>
 </head>
@@ -37,7 +38,7 @@
             <li class="acc">
                 <a class="menu-title"><i class="fa fa-eye"></i>&nbsp;&nbsp;仮設材管理<span class="open-state"><i class="open-state fa fa-angle-down" style="margin-left:10px;"></i></span></a>
                 <ul class="menu-items" style="display: block;">
-                    <li><a href="/site/workPlace"><i class="fa fa-circle-o"></i>&nbsp;現場状況</a></li>
+                    <li><a href="/site/workPlace"><i class="fa fa-circle-o"></i>&nbsp;@Messages("lang.site.workPlace.page.title")</a></li>
                     <li><a href="/site/itemCarMaster"><i class="fa fa-circle-o"></i>&nbsp;@Messages("lang.site.carMaster.page.title")</a></li>
                     <li><a href="/site/itemCarReserve"><i class="fa fa-circle-o"></i>&nbsp;@Messages("lang.site.carReserve.page.title")</a></li>
                     <li><a href="/site/itemCarCancel"><i class="fa fa-circle-o"></i>&nbsp;@Messages("lang.site.carCancel.page.title")</a></li>
@@ -52,7 +53,7 @@
                 <a class="menu-title"><i class="fa fa-bar-chart"></i>&nbsp;&nbsp;分析
                     <span class="open-state"><i class="open-state fa fa-angle-left" style="margin-left:10px;"></i></span></a>
                 <ul class="menu-items">
-                    <li><a href="/"><i class="fa fa-circle-o"></i>&nbsp;作業車稼働状況</a></li>
+                    <li><a href="/analysis/MovementCar"><i class="fa fa-circle-o"></i>&nbsp;作業車稼働状況</a></li>
                     <li><a href="/"><i class="fa fa-circle-o"></i>&nbsp;EXB状態監視</a></li>
                     <li><a href="/"><i class="fa fa-circle-o"></i>&nbsp;GW状態監視</a></li>
                 </ul>

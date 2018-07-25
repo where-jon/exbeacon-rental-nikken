@@ -182,25 +182,21 @@ class ItemOtherReserve @Inject()(config: Configuration
 
   /** 初期表示 */
   def index = SecuredAction { implicit request =>
-    if (super.isCmsLogged) {
-      // 初期化
-      init();
-      val placeId = super.getCurrentPlaceId
-      //検索側データ取得
-      getSearchData(placeId)
+    // 初期化
+    init();
+    val placeId = super.getCurrentPlaceId
+    //検索側データ取得
+    getSearchData(placeId)
 
-      // dbデータ取得
-      val dbDatas = otherDAO.selectOtherMasterReserve(placeId,itemIdList)
-      var otherListApi = beaconService.getItemOtherBeaconPosition(dbDatas,true,placeId)
+    // dbデータ取得
+    val dbDatas = otherDAO.selectOtherMasterReserve(placeId,itemIdList)
+    var otherListApi = beaconService.getItemOtherBeaconPosition(dbDatas,true,placeId)
 
-      // 全体から空いてるものだけ表示する。
-      //otherListApi = otherListApi.filter(_.reserve_id == -1)
-      System.out.println("otherListApi:" + otherListApi.length)
-      Ok(views.html.site.itemOtherReserve(ITEM_TYPE_FILTER,WORK_TYPE_FILTER,RESERVE_START_DATE,RESERVE_END_DATE
-        ,otherListApi,itemTypeList,companyNameList,floorNameList,workTypeList,WORK_TYPE))
-    } else {
-      Redirect(CMS_NOT_LOGGED_RETURN_PATH).flashing(ERROR_MSG_KEY -> Messages("error.cmsLogged.invalid"))
-    }
+    // 全体から空いてるものだけ表示する。
+    //otherListApi = otherListApi.filter(_.reserve_id == -1)
+    System.out.println("otherListApi:" + otherListApi.length)
+    Ok(views.html.site.itemOtherReserve(ITEM_TYPE_FILTER,WORK_TYPE_FILTER,RESERVE_START_DATE,RESERVE_END_DATE
+      ,otherListApi,itemTypeList,companyNameList,floorNameList,workTypeList,WORK_TYPE))
+
   }
-
 }

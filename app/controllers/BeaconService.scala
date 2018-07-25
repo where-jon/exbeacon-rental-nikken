@@ -204,4 +204,88 @@ class BeaconService @Inject() (config: Configuration,
 
     bplist
   }
+
+
+  /**
+    * ビーコン位置取得
+    *
+    * EXCloudIfActorにて非同期で取得しているビーコン位置情報を取得する
+    * その際、item_other_masterテーブルと結合してitemOtherBeaconPositionDataのリストとして返却する
+    *
+    * @param dbDatas  予約テーブルまで含めたその他仮設材情報
+    * @param blankInclude  ブランクレコード（名前=param01が空）を含めるかどうか
+    * @param placeId  接続現場情報
+    * @return  List[itemOtherBeaconPositionData]
+    */
+  def getBeaconPosition(dbDatas:Seq[BeaconViewer], blankInclude: Boolean = false, placeId:Int): Seq[itemBeaconPositionData] = {
+
+    this.getCloudUrl(placeId)
+    //val f = excIfActor ? GetBtxPosition
+    // val posList = Await.result(f, timeout.duration).asInstanceOf[List[beaconPosition]]
+
+    val posList = Await.result(ws.url(POS_API_URL).get().map { response =>
+      Json.parse(response.body).asOpt[List[beaconPosition]].getOrElse(Nil)
+    }, Duration.Inf)
+
+    val bplist = dbDatas.map { v =>
+      val bpd = posList.find(_.btx_id == v.item_btx_id)
+      val floor = bpd.find(_.btx_id == bpd.get.pos_id)
+      //!bpd.get.btx_name.isEmpty
+      val blankTargetMode = if (blankInclude) true else true
+      if (bpd.isDefined && blankTargetMode) {
+        val exbDatas =exbDao.selectExbApiInfo(placeId,bpd.get.pos_id)
+        var vFloorName = "検知フロア無"
+        var vExbName = "検知EXB無"
+        var vTest = "検知EXB無"
+        exbDatas.map { index =>
+          vFloorName = index.cur_floor_name
+          vExbName = index.exb_device_name
+        }
+
+        itemBeaconPositionData(
+          vExbName,
+          vFloorName,
+          bpd.get.btx_id,
+          bpd.get.pos_id,
+          bpd.get.phase,
+          bpd.get.power_level,
+          bpd.get.updatetime,
+          v.item_id,
+          v.item_btx_id,
+          v.item_key_btx,
+          v.item_type_id,
+          v.item_type_name,
+          v.item_no,
+          v.item_name,
+          v.place_id,
+          v.item_type_icon_color,
+          v.item_type_text_color,
+          v.company_name,
+          v.work_type_name,
+          v.reserve_floor_name,
+          v.reserve_id
+        )
+      } else {
+        itemBeaconPositionData("現在フロア","現在位置",-1, -1, -1, 0, "nodate",
+          v.item_id,
+          v.item_btx_id,
+          v.item_key_btx,
+          v.item_type_id,
+          v.item_type_name,
+          v.item_no,
+          v.item_name,
+          v.place_id,
+          v.item_type_icon_color,
+          v.item_type_text_color,
+          v.company_name,
+          v.work_type_name,
+          v.reserve_floor_name,
+          v.reserve_id
+        )
+      }
+    }.sortBy(_.item_btx_id)
+
+    bplist
+  }
+
 }

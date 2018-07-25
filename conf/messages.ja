@@ -381,6 +381,15 @@ lang.number = 番号
 lang.deviceName = 端末名
 lang.siteName = 設置場所名
 
+
+# 現場状況文字列
+lang.site.workPlace.page.title=現場状況
+lang.site.workPlace.page.maxDevice=3個以上
+
+
+# 作業車動線（分析）
+lang.analysis.movementCar.page.title=作業車動線分析
+
 # 仮設材管理文字列（作業車・立馬）
 lang.site.carMaster.page.title=作業車・立馬一覧
 lang.site.carReserve.page.title=作業車・立馬予約
