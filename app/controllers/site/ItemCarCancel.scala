@@ -177,26 +177,21 @@ class ItemCarCancel @Inject()(config: Configuration
 
   /** 初期表示 */
   def index = SecuredAction { implicit request =>
-    if (super.isCmsLogged) {
-      // 初期化
-      init();
-      val placeId = super.getCurrentPlaceId
-      //検索側データ取得
-      getSearchData(placeId)
+    // 初期化
+    init();
+    val placeId = super.getCurrentPlaceId
+    //検索側データ取得
+    getSearchData(placeId)
 
-      // dbデータ取得
-      val dbDatas = carDAO.selectCarMasterReserve(placeId,itemIdList)
-      var carListApi = beaconService.getItemCarBeaconPosition(dbDatas,true,placeId)
+    // dbデータ取得
+    val dbDatas = carDAO.selectCarMasterReserve(placeId,itemIdList)
+    var carListApi = beaconService.getItemCarBeaconPosition(dbDatas,true,placeId)
 
-      // 全体から空いてるものだけ表示する。
-      //carListApi = carListApi.filter(_.reserve_id == -1)
+    // 全体から空いてるものだけ表示する。
+    //carListApi = carListApi.filter(_.reserve_id == -1)
 
-      System.out.println("carListApi:" + carListApi.length)
-      Ok(views.html.site.itemCarCancel(ITEM_TYPE_FILTER,WORK_TYPE_FILTER,RESERVE_DATE
-        ,carListApi,itemTypeList,companyNameList,floorNameList,workTypeList,WORK_TYPE))
-    } else {
-      Redirect(CMS_NOT_LOGGED_RETURN_PATH).flashing(ERROR_MSG_KEY -> Messages("error.cmsLogged.invalid"))
-    }
-  }
+    System.out.println("carListApi:" + carListApi.length)
+    Ok(views.html.site.itemCarCancel(ITEM_TYPE_FILTER,WORK_TYPE_FILTER,RESERVE_DATE
+      ,carListApi,itemTypeList,companyNameList,floorNameList,workTypeList,WORK_TYPE))
 
 }

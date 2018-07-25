@@ -39,14 +39,9 @@ class WorkPlace @Inject()(config: Configuration
   /** 初期表示 */
   def index = SecuredAction { implicit request =>
     val placeId = super.getCurrentPlaceId
-
-    if (super.isCmsLogged) {
-      val mapViewer = mapViewerDAO.selectAll()
-      val exbData = exbDAO.selectExbAll(placeId)
-      Ok(views.html.site.workPlace(mapViewer,exbData))
-    } else {
-      Redirect(CMS_NOT_LOGGED_RETURN_PATH).flashing(ERROR_MSG_KEY -> Messages("error.cmsLogged.invalid"))
-    }
+    val mapViewer = mapViewerDAO.selectAll()
+    val exbData = exbDAO.selectExbAll(placeId)
+    Ok(views.html.site.workPlace(mapViewer,exbData))
   }
 
 }

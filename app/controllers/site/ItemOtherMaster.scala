@@ -112,23 +112,20 @@ class ItemOtherMaster @Inject()(config: Configuration
 
   /** 初期表示 */
   def index = SecuredAction { implicit request =>
-    if (super.isCmsLogged) {
-      // 初期化
-      init();
-      val placeId = super.getCurrentPlaceId
-      //検索側データ取得
-      getSearchData(placeId)
+    // 初期化
+    init();
+    val placeId = super.getCurrentPlaceId
+    //検索側データ取得
+    getSearchData(placeId)
 
-      // dbデータ取得
-      val dbDatas = otherDAO.selectOtherMasterViewer(placeId,itemIdList)
-      val otherListApi = beaconService.getItemOtherBeaconPosition(dbDatas,true,placeId)
+    // dbデータ取得
+    val dbDatas = otherDAO.selectOtherMasterViewer(placeId,itemIdList)
+    val otherListApi = beaconService.getItemOtherBeaconPosition(dbDatas,true,placeId)
 
-      System.out.println("floorNameList:" + floorNameList)
-      Ok(views.html.site.itemOtherMaster(ITEM_TYPE_FILTER, COMPANY_NAME_FILTER,FLOOR_NAME_FILTER,WORK_TYPE_FILTER
-        ,otherListApi,itemTypeList,companyNameList,floorNameList,workTypeList,WORK_TYPE))
-    } else {
-      Redirect(CMS_NOT_LOGGED_RETURN_PATH).flashing(ERROR_MSG_KEY -> Messages("error.cmsLogged.invalid"))
-    }
+    System.out.println("floorNameList:" + floorNameList)
+    Ok(views.html.site.itemOtherMaster(ITEM_TYPE_FILTER, COMPANY_NAME_FILTER,FLOOR_NAME_FILTER,WORK_TYPE_FILTER
+      ,otherListApi,itemTypeList,companyNameList,floorNameList,workTypeList,WORK_TYPE))
+    Redirect(CMS_NOT_LOGGED_RETURN_PATH).flashing(ERROR_MSG_KEY -> Messages("error.cmsLogged.invalid"))
   }
 
 }
