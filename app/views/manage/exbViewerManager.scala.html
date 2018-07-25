@@ -26,7 +26,7 @@
 
 			<select id="floor-category" class=" manager__data--floor">
 				@mapViewer.zipWithIndex.map { case(map, i) =>
-					<option value="@map.map_id" @{if(map.map_id == 3) "selected" else ""}>@map.map_position</option>
+					<option value="@map.map_id" @{if(map.map_id == 1) "selected" else ""}>@map.map_position</option>
 				}
 			</select>
 		</div>
@@ -171,7 +171,7 @@
 	</div>
 	<div class="manager__main--frame" id ="map__main--frame">
 		@mapViewer.zipWithIndex.map { case(map, i) =>
-		<div id="beaconMap-@map.map_id" class = "hidden level level--@i layer-beacon" aria-label="Level @i">
+		<div id="beaconMap-@(i+1)" class = "hidden level level--@i layer-beacon" aria-label="Level @i">
 			<div class="wrapper__img--canvas" >
 				<img id ="imgFrame-@i" class="img__map__manager--style" src=@map.map_image />
 			</div>
