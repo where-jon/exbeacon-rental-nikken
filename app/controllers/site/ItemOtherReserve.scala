@@ -198,5 +198,5 @@ class ItemOtherReserve @Inject()(config: Configuration
     Ok(views.html.site.itemOtherReserve(ITEM_TYPE_FILTER,WORK_TYPE_FILTER,RESERVE_START_DATE,RESERVE_END_DATE
       ,otherListApi,itemTypeList,companyNameList,floorNameList,workTypeList,WORK_TYPE))
 
-
+  }
 }
