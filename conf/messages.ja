@@ -384,6 +384,7 @@ lang.siteName = 設置場所名
 
 # 現場状況文字列
 lang.site.workPlace.page.title=現場状況
+lang.site.workPlace.page.maxDevice=3個以上
 
 # 仮設材管理文字列（作業車・立馬）
 lang.site.carMaster.page.title=作業車・立馬一覧

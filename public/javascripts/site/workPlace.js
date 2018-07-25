@@ -210,20 +210,19 @@ function setFrame() {
 
         var picText1 = document.createElement('div');
         picText1.className = "user__tag--pic--text--1"
-        picText1.textContent = beaconData.typeName;
+        picText1.textContent = "仮設材種別："+beaconData.typeName;
 
         var picTextHuri = document.createElement('div');
         picTextHuri.className = "user__tag--pic--text--huri"
-        picTextHuri.textContent = beaconData.itemName ;
+        picTextHuri.textContent = "仮設材名称："+beaconData.itemName ;
 
         var picText2 = document.createElement('div');
         picText2.className = "user__tag--pic--text--2"
-        picText2.textContent = beaconData.itemNo;
+        picText2.textContent = "Tag番号："　+ beaconData.btxId;
 
         var picText3 = document.createElement('div');
         picText3.className = "user__tag--pic--text--3"
-        picText3.textContent =  "業者　"+beaconData.companyName;
-
+        picText3.textContent =  "予約業者："+beaconData.companyName;
 
          if(beaconData.totalCount >= VIEW_COUNT){
             infoTag.className = "user__tag__all--info"
@@ -271,24 +270,12 @@ function setFrame() {
              contentTag.appendChild(picText3);
 
         }
-
-
         userTag.push(infoTag);
-
         setTagNamePosition(pinFrame,vFloor,beaconData,infoTag);
-
-
         infoTag.appendChild(contentTag);
-
         pinFrame.style.visibility = "visible";
-
-        //if(!beaconData.overCheck){
-            pinFrame.appendChild(infoTag);
-        //}
-
+        pinFrame.appendChild(infoTag);
         pinFrame.appendChild(spanFrame);
-
-
 
         // floorによるpin結合
         gMapFrame[vMapIndex].appendChild(pinFrame);
@@ -310,9 +297,6 @@ function setFrame() {
                 // classie.add(pinFrame, 'pin--active--tri');
             }
             var infoTag = pinFrame.getElementsByClassName("user__tag--info");
-            // infoTag[0].removeClass = ("user__tag--info--hidden");
-            // beaconData.show = ""
-
             vInfoTagElement = document.getElementById("infoTag-" +  beaconData.id);
             if(vInfoTagElement.style.visibility == "visible"){
                 myNum = -1;
@@ -320,10 +304,6 @@ function setFrame() {
                 setActivePinColor("off",beaconData.depName);
                 classie.remove(preClickElement, 'pin--active');
 
-                // classie.remove(preClickElement.childNodes[1],
-                // 'user__tag--small--tri');
-
-                // TotalBeaconData[pos].show = "hidden"
             }else{
                 vInfoTagElement.style.visibility = "visible";
                 // TotalBeaconData[pos].show = "visible"
@@ -343,18 +323,6 @@ function setFrame() {
             }
         }
     });
-
-
-//        var kanriFrame = $('#kanri-category');
-//        if(kanriFrame!=null){
-//        // 管理者用selectbox value取得
-//        $('#kanri-category').change(function() {
-//            var result = $('#kanri-category option:selected').val();
-//                $(location).attr('href', result);
-//        });
-//        }
-
-
 
 
 }
@@ -396,6 +364,19 @@ function personBtnEvent() {
             }
         }
         if(vInfoAllTagElement!=null){
+            var vTrAllElement = [].slice.call(document.querySelectorAll(".trAll"))
+            for (var i = 0;i<vTrAllElement.length;++i){
+                if(vTrAllElement[i] != null){
+                    classie.add(vTrAllElement[i], 'hidden');
+                }
+            }
+            // 該当になるものだけ表示する
+            var vTrSelectAllElement = [].slice.call(document.querySelectorAll(".trPosId-"+TotalBeaconsData[pos].posId))
+            for (var i = 0;i<vTrSelectAllElement.length;++i){
+                if(vTrSelectAllElement[i] != null){
+                    classie.remove(vTrSelectAllElement[i], 'hidden');
+                }
+            }
             //alert("click pos ::"+ TotalBeaconsData[pos].id)
             myNum = -1;
             //classie.remove(document.getElementById("specialstam"),'levels--hidden')
@@ -591,6 +572,11 @@ $(function () {
     beaconMapFrame.classList.remove("hidden");
 
 
+    var updateBtn = [].slice.call(document.querySelectorAll(".btn__icon--style"))
+    updateBtn[0].addEventListener('click', function() {
+        startUpdate();
+    });
+
     var floorFrame = $('#floor-category');
      if(floorFrame!=null){
      // 管理者用selectbox value取得
@@ -631,8 +617,8 @@ $(function () {
         gDrawer[i] =  new Drawer(gMapFrame[i].id)
     }
 
-    // test1分
-	var secUpdateUnit = 60000;
+    // test10分
+	var secUpdateUnit = 600000;
 
 
 	// 定期更新
