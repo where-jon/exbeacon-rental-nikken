@@ -8,7 +8,7 @@ import models._
 import play.api._
 import play.api.data.Form
 import play.api.data.Forms._
-import play.api.i18n.{I18nSupport, Messages, MessagesApi}
+import play.api.i18n.{I18nSupport, MessagesApi}
 import utils.silhouette.MyEnv
 
 
@@ -30,7 +30,7 @@ class ItemOtherMaster @Inject()(config: Configuration
                                 , btxDAO: models.btxDAO
                                 , itemTypeDAO: models.ItemTypeDAO
                                 , workTypeDAO: models.WorkTypeDAO
-                             ) extends BaseController with I18nSupport {
+                               ) extends BaseController with I18nSupport {
 
   var ITEM_TYPE_FILTER = 0;
   var COMPANY_NAME_FILTER = "";
@@ -122,10 +122,9 @@ class ItemOtherMaster @Inject()(config: Configuration
     val dbDatas = otherDAO.selectOtherMasterViewer(placeId,itemIdList)
     val otherListApi = beaconService.getItemOtherBeaconPosition(dbDatas,true,placeId)
 
-    System.out.println("floorNameList:" + floorNameList)
-    Ok(views.html.site.itemOtherMaster(ITEM_TYPE_FILTER, COMPANY_NAME_FILTER,FLOOR_NAME_FILTER,WORK_TYPE_FILTER
-      ,otherListApi,itemTypeList,companyNameList,floorNameList,workTypeList,WORK_TYPE))
-    Redirect(CMS_NOT_LOGGED_RETURN_PATH).flashing(ERROR_MSG_KEY -> Messages("error.cmsLogged.invalid"))
+      System.out.println("floorNameList:" + floorNameList)
+      Ok(views.html.site.itemOtherMaster(ITEM_TYPE_FILTER, COMPANY_NAME_FILTER,FLOOR_NAME_FILTER,WORK_TYPE_FILTER
+        ,otherListApi,itemTypeList,companyNameList,floorNameList,workTypeList,WORK_TYPE))
   }
 
 }
