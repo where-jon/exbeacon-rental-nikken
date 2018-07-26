@@ -68,6 +68,9 @@ class ItemOtherMaster @Inject()(config: Configuration
     itemTypeList = itemTypeDAO.selectItemOtherInfo(_placeId);
     /*仮設材種別id取得*/
     itemIdList = itemTypeList.map{item => item.item_type_id}
+    if(itemIdList.isEmpty){
+      itemIdList = Seq(-1)
+    }
     /*業者取得*/
     companyNameList = companyDAO.selectCompany(_placeId);
     /*フロア取得*/

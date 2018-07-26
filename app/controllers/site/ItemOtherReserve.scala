@@ -90,6 +90,9 @@ class ItemOtherReserve @Inject()(config: Configuration
     itemTypeList = itemTypeDAO.selectItemOtherInfo(_placeId);
     /*仮設材種別id取得*/
     itemIdList = itemTypeList.map{item => item.item_type_id}
+    if(itemIdList.isEmpty){
+      itemIdList = Seq(-1)
+    }
     /*作業期間種別取得*/
     workTypeList = workTypeDAO.selectWorkInfo(_placeId);
 

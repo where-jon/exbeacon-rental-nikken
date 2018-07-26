@@ -52,12 +52,6 @@ GET    /site/itemCarReserve                 controllers.site.ItemCarReserve.inde
 POST   /site/itemCarReserve                 controllers.site.ItemCarReserve.search
 POST   /site/itemCarReserve/reserve         controllers.site.ItemCarReserve.reserve
 
-# その他仮設材予約
-GET    /site/itemOtherReserve                 controllers.site.ItemOtherReserve.index
-POST   /site/itemOtherReserve                 controllers.site.ItemOtherReserve.search
-POST   /site/itemOtherReserve/reserve         controllers.site.ItemOtherReserve.reserve
-
-
 # 作業車・立馬取消
 GET    /site/itemCarCancel                 controllers.site.ItemCarCancel.index
 
@@ -66,6 +60,10 @@ GET    /site/itemCarCancel                 controllers.site.ItemCarCancel.index
 GET    /site/itemOtherMaster                 controllers.site.ItemOtherMaster.index
 POST   /site/itemOtherMaster                 controllers.site.ItemOtherMaster.search
 
+# その他仮設材予約
+GET    /site/itemOtherReserve                 controllers.site.ItemOtherReserve.index
+POST   /site/itemOtherReserve                 controllers.site.ItemOtherReserve.search
+POST   /site/itemOtherReserve/reserve         controllers.site.ItemOtherReserve.reserve
 
 # 作業車移動状況分析
 GET    /analysis/MovementCar                 controllers.analysis.MovementCar.index

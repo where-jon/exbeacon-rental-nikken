@@ -38,11 +38,11 @@ class ItemCarMaster @Inject()(config: Configuration
   var FLOOR_NAME_FILTER = "";
   var WORK_TYPE_FILTER = "";
 
-  var itemTypeList :Seq[ItemType] = null; // 仮設材種別
-  var itemIdList :Seq[Int] = null; // 仮設材種別id
-  var companyNameList :Seq[Company] = null; // 業者
-  var floorNameList :Seq[Floor] = null; // フロア
-  var workTypeList :Seq[WorkType] = null; // 作業期間種別
+  var itemTypeList :Seq[ItemType] = Seq.empty; // 仮設材種別
+  var itemIdList :Seq[Int] = Seq.empty; // 仮設材種別id
+  var companyNameList :Seq[Company] = Seq.empty; // 業者
+  var floorNameList :Seq[Floor] = Seq.empty; // フロア
+  var workTypeList :Seq[WorkType] = Seq.empty; // 作業期間種別
 
   /*enum形*/
   val WORK_TYPE = WorkTypeEnum().map;
@@ -68,7 +68,10 @@ class ItemCarMaster @Inject()(config: Configuration
     /*仮設材種別取得*/
     itemTypeList = itemTypeDAO.selectItemCarInfo(_placeId);
     /*仮設材種別id取得*/
-    itemIdList = itemTypeList.map{item => item.item_type_id}
+    itemIdList = itemTypeList.map{ item => item.item_type_id}
+    if(itemIdList.isEmpty){
+      itemIdList = Seq(-1)
+    }
     /*業者取得*/
     companyNameList = companyDAO.selectCompany(_placeId);
     /*フロア取得*/
