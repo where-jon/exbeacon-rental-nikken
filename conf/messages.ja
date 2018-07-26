@@ -396,9 +396,10 @@ lang.OtherItem.itemTableTitle.value=利用状況
 
 
 # Manage
-lang.manage.mapManager = マップマネージャー
-lang.manage.exbManager = EXBマネージャー
-lang.manage.exbViewerManager = EXB座標マネージャー
+lang.manage.floorManager = フロア管理
+lang.manage.mapManager = フロアマップ登録
+lang.manage.exbManager = EXB管理
+lang.manage.exbViewerManager = EXB設置管理
 
 #dialog
 dialog.db.result  = 処理結果

@@ -59,7 +59,7 @@
 	<div class="manager__data--frame">
 
 		<form id="viewForm" method="post" action="">
-			<table class="table table-condensed table-bordered">
+			<table width="100%" border="1" cellspacing="0" cellpadding="0">
 				<thead class="scrollHead">
 				<tr>
 					<div class = "alert__result--frame">
@@ -69,98 +69,100 @@
 					<!--
                     <th class="table__flame--title viewer__id--frame" >Id</th>
                     -->
-					<th class="table__flame--title viewer__posNum--frame" >posNum</th>
-					<th class="table__flame--title viewer__visible--frame" >visible</th>
-					<th class="table__flame--title viewer__posFloor--frame">floor</th>
-					<th class="table__flame--title viewer__posType--frame" >posType</th>
-					<th class="table__flame--title viewer__posCount--frame" >posCnt</th>
-					<th class="table__flame--title viewer__posX--frame" >pos_x</th>
-					<th class="table__flame--title viewer__posY--frame">pos_y</th>
-					<th class="table__flame--title viewer__posSize--frame">size</th>
-					<th class="table__flame--title viewer__margin--frame">margin</th>
+					<th class="tableTh" style="width: 10%;text-align:  center;">exbId</th>
+					<th class="tableTh" style="width: 10%;text-align:  center;">表示</th>
+					<th class="tableTh" style="width: 10%;text-align:  center;">フロア</th>
+					<th class="tableTh" style="width: 10%;text-align:  center;">表示種別</th>
+					<th class="tableTh" style="width: 10%;text-align:  center;">表示数</th>
+					<th class="tableTh" style="width: 10%;text-align:  center;">X座標</th>
+					<th class="tableTh" style="width: 10%;text-align:  center;">Y座標</th>
+					<th class="tableTh" style="width: 10%;text-align:  center;">サイズ</th>
+					<th class="tableTh" style="width: 10%;text-align:  center;">幅間隔</th>
 
 				</tr>
 				</thead>
+			</table>
+			<table width="100%" border="1" cellspacing="0" cellpadding="0">
 
-				<tbody class="scrollBodyT" id = "tBody">
-				@exbViewer.zipWithIndex.map { case(viewer, i) =>
-				<tr class = "hidden pos-search" id = "viewer-list-@viewer.exb_id">
-					<td class="item viewer__posId--frame hidden">
-						<input class="hidden form-control input-sm" type="text" id="input_viewer_id-@viewer.exb_id" value="@viewer.exb_id" name="viewerId[@i]" >
-					</td>
-					<!-- viewer_pos_num  -->
-					<td class="item viewer__posNum--frame">
-						<input class="hidden form-control input-sm" type="text" id="input_viewer_pos_num-@viewer.exb_id" value="@viewer.exb_id" name="viewerPosNum[@i]" >
+					<tbody class="scrollBodyT" id = "tBody">
+					@exbViewer.zipWithIndex.map { case(viewer, i) =>
+					<tr class = "hidden pos-search" id = "viewer-list-@viewer.exb_id">
+						<td class="item viewer__posId--frame hidden">
+							<input class="hidden form-control input-sm" type="text" id="input_viewer_id-@viewer.exb_id" value="@viewer.exb_id" name="viewerId[@i]" >
+						</td>
+						<!-- viewer_pos_num  -->
+                        <td class="item viewer__posNum--frame" style="width: 10%;text-align:  center;">
+							<input class="hidden form-control input-sm" type="text" id="input_viewer_pos_num-@viewer.exb_id" value="@viewer.exb_id" name="viewerPosNum[@i]" >
 
-						<select id="input-num-category-@viewer.exb_id" class="exb__select--category inputNum">
-							@exbViewer.zipWithIndex.map { case(viewer2, j) =>
-							<option class ="" value="@viewer2.exb_id"  @{if(viewer2.exb_id == viewer.exb_id) "selected" else ""}>@viewer2.exb_id</option>
-							}
-						</select>
-					</td>
-
-
-					<!-- viewer_visible  -->
-					<td class="item viewer__visible--frame">
-						<input class="hidden form-control input-sm" type="text"　data-type = "visible-form" id="input_viewer_visible-@viewer.exb_id" value="@viewer.viewer_visible" name="viewerVisible[@i]">
-						<select id="input-visible-category-@i" class="exb__select--category inputVisible">
-							<option value="true" @{if(viewer.viewer_visible) "selected" else ""}>表示</option>
-							<option value="false"  @{if(!viewer.viewer_visible) "selected" else ""}>非表示</option>
-						</select>
-					</td>
-
-					<!-- viewer_pos_floor  -->
-					<td class="item viewer__posFloor--frame">
-						<input class="hidden form-control input-sm" type="text" data-type = "floor-form" id="input_viewer_pos_floor-@viewer.exb_id" value="@viewer.viewer_pos_floor" name="viewerPosFloor[@i]">
-						<select id="input-floor-category-@i" class="exb__select--category inputFloor">
-							@mapViewer.zipWithIndex.map { case(map, i) =>
-							<option value="@map.map_id"  @{if(map.map_id == viewer.viewer_pos_floor.toInt) "selected" else ""}>@map.map_position</option>
-							}
-						</select>
-					</td>
-
-					<!-- viewer_pos_type  -->
-					<td class="item viewer__posType--frame">
-						<input class="form-control input-sm hidden" type="text" data-type = "type-form" id="input_viewer_pos_type-@viewer.exb_id" value="@viewer.viewer_pos_type" name="viewerPosType[@i]">
-						<select id="input-view-category-@i" class="exb__select--category inputPosType">
-							@viewType.zipWithIndex.map { case(view, i) =>
-							<option value="@view.view_type_name"  @{if(view.view_type_name == viewer.viewer_pos_type) "selected" else ""}>@view.view_type_name</option>
-							}
-						</select>
-					</td>
-
-					<!-- viewer_pos_count  -->
-					<td class="item viewer__posCount--frame">
-						<input class="form-control input-sm" type="text" data-type = "count-form" id="input_viewer_pos_count-@viewer.exb_id" value="@viewer.viewer_pos_count" name="viewerPosCount[@i]">
-					</td>
-
-					<!-- viewer_pos_x  -->
-					<td class="item viewer__posX--frame">
-						<input class="form-control input-sm" type="text" id="input_viewer_pos_x-@viewer.exb_id" value="@viewer.viewer_pos_x" name="viewerPosX[@i]">
-					</td>
-
-					<!-- viewer_pos_y  -->
-					<td class="item viewer__posY--frame">
-						<input class="form-control input-sm" type="text" id="input_viewer_pos_y-@viewer.exb_id" value="@viewer.viewer_pos_y" name="viewerPosY[@i]">
-					</td>
+							<select id="input-num-category-@viewer.exb_id" class="exb__select--category inputNum">
+								@exbViewer.zipWithIndex.map { case(viewer2, j) =>
+								<option class ="" value="@viewer2.exb_id"  @{if(viewer2.exb_id == viewer.exb_id) "selected" else ""}>@viewer2.exb_id</option>
+								}
+							</select>
+						</td>
 
 
-					<!-- viewer_pos_size  -->
-					<td class="item viewer__posSize--frame">
-						<input class="form-control input-sm" type="text" id="input_viewer_pos_size-@viewer.exb_id" value="@viewer.viewer_pos_size" name="viewerPosSize[@i]">
-					</td>
+						<!-- viewer_visible  -->
+						<td class="item viewer__visible--frame" style="width: 10%;text-align:  center;">
+							<input class="hidden form-control input-sm" type="text"　data-type = "visible-form" id="input_viewer_visible-@viewer.exb_id" value="@viewer.viewer_visible" name="viewerVisible[@i]">
+							<select id="input-visible-category-@i" class="exb__select--category inputVisible">
+								<option value="true" @{if(viewer.viewer_visible) "selected" else ""}>表示</option>
+								<option value="false"  @{if(!viewer.viewer_visible) "selected" else ""}>非表示</option>
+							</select>
+						</td>
+
+						<!-- viewer_pos_floor  -->
+						<td class="item viewer__posFloor--frame" style="width: 10%;text-align:  center;">
+							<input class="hidden form-control input-sm" type="text" data-type = "floor-form" id="input_viewer_pos_floor-@viewer.exb_id" value="@viewer.viewer_pos_floor" name="viewerPosFloor[@i]">
+							<select id="input-floor-category-@i" class="exb__select--category inputFloor">
+								@mapViewer.zipWithIndex.map { case(map, i) =>
+								<option value="@map.map_id"  @{if(map.map_id == viewer.viewer_pos_floor.toInt) "selected" else ""}>@map.map_position</option>
+								}
+							</select>
+						</td>
+
+						<!-- viewer_pos_type  -->
+						<td class="item viewer__posType--frame" style="width: 10%;text-align:  center;">
+							<input class="form-control input-sm hidden" type="text" data-type = "type-form" id="input_viewer_pos_type-@viewer.exb_id" value="@viewer.viewer_pos_type" name="viewerPosType[@i]">
+							<select id="input-view-category-@i" class="exb__select--category inputPosType">
+								@viewType.zipWithIndex.map { case(view, i) =>
+								<option value="@view.view_type_name"  @{if(view.view_type_name == viewer.viewer_pos_type) "selected" else ""}>@view.view_type_name</option>
+								}
+							</select>
+						</td>
+
+						<!-- viewer_pos_count  -->
+						<td class="item viewer__posCount--frame" style="width: 10%;text-align:  center;">
+							<input class="form-control input-sm" type="text" data-type = "count-form" id="input_viewer_pos_count-@viewer.exb_id" value="@viewer.viewer_pos_count" name="viewerPosCount[@i]">
+						</td>
+
+						<!-- viewer_pos_x  -->
+						<td class="item viewer__posX--frame" style="width: 10%;text-align:  center;">
+							<input class="form-control input-sm" type="text" id="input_viewer_pos_x-@viewer.exb_id" value="@viewer.viewer_pos_x" name="viewerPosX[@i]">
+						</td>
+
+						<!-- viewer_pos_y  -->
+						<td class="item viewer__posY--frame" style="width: 10%;text-align:  center;">
+							<input class="form-control input-sm" type="text" id="input_viewer_pos_y-@viewer.exb_id" value="@viewer.viewer_pos_y" name="viewerPosY[@i]">
+						</td>
 
 
-					<!-- viewer_pos_margin  -->
-					<td class="item viewer__margin--frame">
-						<input class="form-control input-sm" type="text" id="input_viewer_pos_margin-@viewer.exb_id" value="@viewer.viewer_pos_margin" name="viewerPosMargin[@i]">
-					</td>
+						<!-- viewer_pos_size  -->
+						<td class="item viewer__posSize--frame" style="width: 10%;text-align:  center;">
+							<input class="form-control input-sm" type="text" id="input_viewer_pos_size-@viewer.exb_id" value="@viewer.viewer_pos_size" name="viewerPosSize[@i]">
+						</td>
 
 
-				</tr>
-				}
+						<!-- viewer_pos_margin  -->
+						<td class="item viewer__margin--frame" style="width: 10%;text-align:  center;">
+							<input class="form-control input-sm" type="text" id="input_viewer_pos_margin-@viewer.exb_id" value="@viewer.viewer_pos_margin" name="viewerPosMargin[@i]">
+						</td>
 
-				</tbody>
+
+					</tr>
+					}
+
+					</tbody>
 			</table>
 
 			@CSRF.formField
