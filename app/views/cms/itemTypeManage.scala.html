@@ -9,7 +9,7 @@
     @templates.htmlHead(title = Messages("lang.cms.itemTypeManage.title"))
     <link rel="stylesheet" href="@routes.MyAssets.css("cms/itemTypeManage.css")"/>
     <link rel="stylesheet" media="screen" href="@routes.MyAssets.lib("tablesorter/css/theme.bootstrap.css")">
-    <link rel="stylesheet" type="text/css" href="./devkit/css/colorpicker.css"/>
+    <link rel="stylesheet" href="@routes.MyAssets.css("color/colorpicker.css")"/>
     <script type="text/javascript" src="@routes.MyAssets.lib("jquery.tablefix_1.0.1.js")"></script>
     <script type="text/javascript" src="@routes.MyAssets.js("itemTypeManage.js")"></script>
     <script type="text/javascript" src="./devkit/js/color/colorpicker.js"></script>
@@ -20,7 +20,7 @@
 <div class="container">
     <!-- ナビバー  -->
     @views.html.templates.navBar()
-    <div class="row" style="margin-top: 40px;">
+    <div class="row" style="margin-top: 50px;">
         <!-- メイン -->
         <div class="col-xs-9 col-sm-9 col-md-12 col-lg-12 mainSpace">
             <!-- メッセージ -->
