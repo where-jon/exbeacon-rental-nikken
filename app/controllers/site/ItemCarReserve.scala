@@ -135,6 +135,8 @@ class ItemCarReserve @Inject()(config: Configuration
                 }
               }
             }
+          // 検索ロジック追加あるかどうかを判断する
+          //　isEmpty
             val result = carDAO.reserveItemCar(setData)
             if (result == "success") {
               Redirect(routes.ItemCarReserve.index())
@@ -167,7 +169,7 @@ class ItemCarReserve @Inject()(config: Configuration
     var dbDatas : Seq[CarViewer] = null;
     // dbデータ取得
     if(RESERVE_DATE!=""){
-      dbDatas = carDAO.selectCarMasterSearch(placeId,ITEM_TYPE_FILTER,WORK_TYPE_FILTER,RESERVE_DATE,itemIdList)
+      dbDatas = carDAO.selectCarMasterSearchBest(placeId,ITEM_TYPE_FILTER,WORK_TYPE_FILTER,RESERVE_DATE,itemIdList)
     }else{
       dbDatas = carDAO.selectCarMasterReserve(placeId,itemIdList)
     }
