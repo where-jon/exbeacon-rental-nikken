@@ -5,9 +5,28 @@ import javax.inject.Inject
 
 import anorm.SqlParser._
 import anorm.{~, _}
-import controllers.site.ReserveItem
+import controllers.site.{CancelItem, ReserveItem}
 import play.api.Logger
 import play.api.db._
+
+
+
+/*その他仮設材予約取消用formクラス*/
+case class ItemOtherCancelData(
+itemTypeIdList: List[Int],
+itemId: List[Int],
+checkVal: List[Int]
+)
+
+
+/*その他仮設材予約取消検索用formクラス*/
+case class ItemOtherCancelSearchData(
+  itemTypeId: Int,
+  workTypeName: String,
+  companyName: String,
+  inputStartDate: String,
+  inputEndDate: String
+)
 
 
 /*その他仮設材予約用formクラス*/
@@ -550,15 +569,12 @@ class itemOtherDAO @Inject()(dbapi: DBApi) {
     }
   }
 
-  def reserveItemOther(reserveItemOtherCar: List[ReserveItem]): String = {
+  def reserveItemOther(reserveItemOther: List[ReserveItem]): String = {
     //var vCheck = false;
     var vResult = "exception"
     db.withTransaction { implicit connection =>
       //reserveItemCar(1).itemTypeId
-      val statement = connection.createStatement()
-      var num = 0
-      var vEndPoint = reserveItemOtherCar.length - 1;
-      for (num <- 0 to vEndPoint) {
+      reserveItemOther.zipWithIndex.map { case (item, num) =>
         val sql = SQL("""
 
             insert into reserve_table_new
@@ -566,15 +582,15 @@ class itemOtherDAO @Inject()(dbapi: DBApi) {
             {item_type_id}, {item_id}, {floor_id},{place_id},{company_id},to_date({reserve_start_date}, 'YYYY-MM-DD'),to_date({reserve_end_date}, 'YYYY-MM-DD'),true,now(),{work_type_id})
 
               """).on(
-          'item_type_id -> reserveItemOtherCar(num).item_type_id,
-          'item_id -> reserveItemOtherCar(num).item_id,
-          'floor_id ->reserveItemOtherCar(num).floor_id,
-          'place_id ->reserveItemOtherCar(num).place_id,
-          'company_id ->reserveItemOtherCar(num).company_id,
-          'reserve_start_date->reserveItemOtherCar(num).reserve_start_date,
-          'reserve_end_date->reserveItemOtherCar(num).reserve_end_date,
-          'active_flg->reserveItemOtherCar(num).active_flg,
-          'work_type_id->reserveItemOtherCar(num).work_type_id
+          'item_type_id -> item.item_type_id,
+          'item_id -> item.item_id,
+          'floor_id ->item.floor_id,
+          'place_id ->item.place_id,
+          'company_id ->item.company_id,
+          'reserve_start_date->item.reserve_start_date,
+          'reserve_end_date->item.reserve_end_date,
+          'active_flg->item.active_flg,
+          'work_type_id->item.work_type_id
         )
         try {
           val result = sql.executeUpdate()
@@ -583,8 +599,8 @@ class itemOtherDAO @Inject()(dbapi: DBApi) {
           case e: SQLException => {
             println("Database error " + e)
             //if (!vCheck) {
-              //vCheck = true;
-              vResult = e + ""
+            //vCheck = true;
+            vResult = e + ""
             //}
           }
         }
@@ -592,6 +608,132 @@ class itemOtherDAO @Inject()(dbapi: DBApi) {
 
     }
     vResult
+  }
+
+
+  /*その他仮設材予約空き情報検索用 sql文 20180723*/
+  def selectOtherMasterCancelSearch(
+                               placeId: Int,
+                               itemIdList:Seq[Int],
+                               reserveStartDate: String,
+                               reserveEndDate: String
+                             ): Seq[OtherViewer] = {
+
+    db.withConnection { implicit connection =>
+      val selectPh =
+        """
+          select
+                 c.item_other_id
+                ,c.item_other_btx_id
+                , c.item_type_id
+                , i.item_type_name
+                , c.note
+                , c.item_other_no
+                , c.item_other_name
+                , c.place_id
+                ,coalesce(to_char(r.reserve_start_date, 'YYYY-MM-DD'), '未予約') as reserve_start_date
+                ,coalesce(to_char(r.reserve_end_date, 'YYYY-MM-DD'), '未予約') as reserve_end_date
+                ,coalesce(r.company_id, -1) as company_id
+                ,coalesce(co.company_name, '無') as company_name
+                ,coalesce(work.work_type_id, -1) as work_type_id
+                ,coalesce(work.work_type_name, '未予約') as work_type_name
+                ,coalesce(floor.floor_name, '無') as reserve_floor_name
+                ,coalesce(r.reserve_id, -1) as reserve_id
+          from
+            item_other_master as c
+              		LEFT JOIN reserve_table_new as r on c.item_other_id = r.item_id
+              		and r.item_type_id in ( """ + {itemIdList.mkString(",")} +""" )
+              		and r.active_flg = true
+ 						left JOIN item_type as i on i.item_type_id = c.item_type_id
+ 	             		and i.active_flg = true
+ 		             		left JOIN company_master as co on co.company_id = r.company_id
+ 		             		and co.active_flg = true
+ 			             		left JOIN work_type as work on work.work_type_id = r.work_type_id
+ 			             		and work.active_flg = true
+ 			             			left JOIN floor_master as floor on floor.floor_id = r.floor_id
+ 				             		and floor.active_flg = true
+                where c.place_id = """  + {placeId} + """
+                and c.active_flg = true
+                and coalesce(r.reserve_id, -1) != -1
+                and r.reserve_start_date  between to_date('"""  + {reserveStartDate} + """', 'YYYY-MM-DD') and  to_date('"""  + {reserveEndDate} + """', 'YYYY-MM-DD')
+                or r.reserve_end_date between to_date('"""  + {reserveStartDate} + """', 'YYYY-MM-DD') and  to_date('"""  + {reserveEndDate} + """', 'YYYY-MM-DD')
+                order by item_other_btx_id ;
+
+        """
+      SQL(selectPh).as(otherMasterViewer.*)
+    }
+  }
+
+
+  /*その他仮設材予約取消用 sql文 20180727*/
+  def cancelItemOther(cancelItem: List[CancelItem]): String = {
+    var vResult = "exception"
+    db.withTransaction { implicit connection =>
+      cancelItem.zipWithIndex.map { case (item, i) =>
+        val sql = SQL("""
+         delete from reserve_table_new where
+         item_id =  """ + {item.item_id} + """
+         and item_type_id = """ + {item.item_type_id} + """
+         and active_flg = """ + {item.active_flg} + """
+         and place_id = """ + {item.place_id} + """
+                                                """)
+
+        try {
+          val result = sql.executeUpdate()
+          vResult = "success"
+        } catch {
+          case e: SQLException => {
+            println("Database error " + e)
+            vResult = e + ""
+          }
+        }
+      }
+    }
+    vResult
+  }
+  /*その他仮設材予約取消情報用 sql文 20180726*/
+  def selectOtherMasterCancel(placeId : Int,itemIdList:Seq[Int]): Seq[OtherViewer] = {
+    db.withConnection { implicit connection =>
+      val selectPh =
+        """
+          select
+                 c.item_other_id
+                ,c.item_other_btx_id
+                , c.item_type_id
+                , i.item_type_name
+                , c.note
+                , c.item_other_no
+                , c.item_other_name
+                , c.place_id
+                ,coalesce(to_char(r.reserve_start_date, 'YYYY-MM-DD'), '未予約') as reserve_start_date
+                ,coalesce(to_char(r.reserve_end_date, 'YYYY-MM-DD'), '未予約') as reserve_end_date
+                ,coalesce(r.company_id, -1) as company_id
+                ,coalesce(co.company_name, '無') as company_name
+                ,coalesce(work.work_type_id, -1) as work_type_id
+                ,coalesce(work.work_type_name, '未予約') as work_type_name
+                ,coalesce(floor.floor_name, '無') as reserve_floor_name
+                ,coalesce(r.reserve_id, -1) as reserve_id
+          from
+            item_other_master as c
+              		LEFT JOIN reserve_table_new as r on c.item_other_id = r.item_id
+              		and r.item_type_id in ( """ + {itemIdList.mkString(",")} +""" )
+              		and r.active_flg = true
+ 						left JOIN item_type as i on i.item_type_id = c.item_type_id
+ 	             		and i.active_flg = true
+ 		             		left JOIN company_master as co on co.company_id = r.company_id
+ 		             		and co.active_flg = true
+ 			             		left JOIN work_type as work on work.work_type_id = r.work_type_id
+ 			             		and work.active_flg = true
+ 			             			left JOIN floor_master as floor on floor.floor_id = r.floor_id
+ 				             		and floor.active_flg = true
+                where c.place_id = """  + {placeId} + """
+                and c.active_flg = true
+                and coalesce(r.reserve_id, -1) != -1
+                order by item_other_btx_id ;
+
+        """
+      SQL(selectPh).as(otherMasterViewer.*)
+    }
   }
 
 }
