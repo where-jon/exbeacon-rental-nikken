@@ -124,7 +124,7 @@ class ItemCarCancel @Inject()(config: Configuration
                 }
               }
             }
-            val result = carDAO.calcelItemCar(setData)
+            val result = carDAO.cancelItemCar(setData)
             if (result == "success") {
               Redirect(routes.ItemCarCancel.index())
                 .flashing(SUCCESS_MSG_KEY -> Messages("success.site.carCancel.cancel"))

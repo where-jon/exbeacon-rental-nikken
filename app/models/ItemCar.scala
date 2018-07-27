@@ -597,7 +597,7 @@ class itemCarDAO @Inject()(dbapi: DBApi) {
   }
 
   /*作業車・立馬予約取消用 sql文 20180727*/
-  def calcelItemCar(cancelItem: List[CancelItem]): String = {
+  def cancelItemCar(cancelItem: List[CancelItem]): String = {
     var vResult = "exception"
     db.withTransaction { implicit connection =>
       cancelItem.zipWithIndex.map { case (item, i) =>
