@@ -1,5 +1,6 @@
 @(
 ITEM_TYPE_FILTER: Int,
+COMPANY_NAME_FILTER:String,
 WORK_TYPE_FILTER:String,
 RESERVE_DATE:String,
 carList: Seq[itemCarBeaconPositionData],
@@ -25,7 +26,7 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
 <div class="container">
     <!-- ナビバー  -->
     @views.html.templates.navBar()
-    <div class="row" style="margin-top: 40px;">
+    <div class="row" style="margin-top: 50px;">
         <!-- メイン -->
         <div class="col-lg-12 mainSpace">
             <!-- 画面題字 -->
@@ -41,7 +42,7 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
                 <!--header 検索部-->
                 <div class="row tableRow" style="margin-top: 10px;">
 
-                    <div class="text-center col-xs-3 col-sm-3 col-md-3" style="display: -webkit-box;">
+                    <div class="text-center col-xs-2 col-sm-2 col-md-2" style="display: -webkit-box;">
                         予約希望日：
                             <div class='input-group date' id='datetimepicker'
                                     style="margin-top: -5px;">
@@ -55,7 +56,7 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
 
                     </div>
 
-                    <div class="text-center col-xs-3 col-sm-3 col-md-3" style="padding:0;">
+                    <div class="text-center col-xs-2 col-sm-2 col-md-2" style="padding:0;">
                         種別 :
                         <select id="ITEM_TYPE_FILTER" style="width: 100px;">
                             <!--仮設材種別テーブルから検索フィルタを設置-->
@@ -67,7 +68,21 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
                         <input class="hidden form-control input-sm" type="text" id="itemTypeId" name="itemTypeId" value="@ITEM_TYPE_FILTER">
                     </div>
 
-                    <div class="text-center col-xs-3 col-sm-3 col-md-3" style="padding:0;">
+
+                    <div class="text-center col-xs-2 col-sm-2 col-md-2" style="padding:0;">
+                        業者 :
+                        <select id="COMPANY_NAME_FILTER" style="width: 100px;">
+                            <!--業者マスターから検索フィルタを設置-->
+                            <option value=""></option>
+                            @companyNameList.zipWithIndex.map { case(company, i) =>
+                            <option value="@company.companyName">@company.companyName</option>
+                            }
+                        </select>
+                        <input class="hidden form-control input-sm" type="text" id="companyName" name="companyName" value="@COMPANY_NAME_FILTER">
+                    </div>
+
+
+                    <div class="text-center col-xs-2 col-sm-2 col-md-2" style="padding:0;">
                         期間 :
                         <select id="WORK_TYPE_FILTER" style="width: 100px;">
                             <option value=""></option>
@@ -90,7 +105,7 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
                         <table class="table table-bordered table-condensed itemTable">
                             <thead>
                             <tr>
-                                <th colspan="11" class="tableTitleTh">@Messages("lang.site.carCancel.page.title")</th>
+                                <th colspan="12" class="tableTitleTh">@Messages("lang.site.carCancel.page.title")</th>
                             </tr>
                             <tr>
                                 <th class="tableTh ">選択</th>
@@ -98,6 +113,7 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
                                 <th class="tableTh ">現在位置</th>
                                 <th class="tableTh ">実ID</th>
                                 <th class="tableTh ">Tag ID</th>
+                                <th class="tableTh ">種別ID</th>
                                 <th class="tableTh ">種別</th>
                                 <th class="tableTh ">名称</th>
                                 <th class="tableTh ">予約業者</th>
@@ -115,10 +131,13 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
                                     <td class="itemTd text-center ">@car.cur_pos_name</td>
                                     <td class="itemTd text-center modalSelect">@car.cur_exb_name</td>
                                     <td class="itemTd text-center ">@car.item_car_id
-                                        <input class="hidden  form-control input-sm" type="text" id="itemId-@i" name="itemId[@i]" value="@car.item_car_id">
+                                        <input class="hidden form-control input-sm" type="text" id="itemId-@i" name="itemId[@i]" value="@car.item_car_id">
                                     </td>
                                     <td class="itemTd text-center ">@car.item_car_btx_id</td>
-                                    <td class="itemTd text-center ">@car.item_type_id</td>
+                                    <td class="itemTd text-center ">@car.item_type_id
+                                        <input class="hidden form-control input-sm" type="text" id="itemTypeIdList-@i" name="itemTypeIdList[@i]" value="@car.item_type_id">
+                                    </td>
+                                    <td class="itemTd text-center ">@car.item_type_name</td>
                                     <td class="itemTd text-center ">@car.item_car_name</td>
                                     <td class="itemTd text-center ">@car.company_name</td>
                                     <td class="itemTd text-center ">@car.reserve_start_date</td>
@@ -134,20 +153,7 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
 
             <!--footer 更新部-->
             <div class="row tableRow" style="margin-top: 30px;">
-
-                <div class="text-center col-xs-3 col-sm-3 col-md-3" style="padding:0;">
-                    業者 :
-                    <select id="COMPANY_NAME_FILTER" style="width: 100px;">
-                        <!--業者マスターから検索フィルタを設置-->
-                        <option value=""></option>
-                        @companyNameList.zipWithIndex.map { case(company, i) =>
-                        <option value="@company.companyName">@company.companyName</option>
-                        }
-                    </select>
-                    <input class="hidden  form-control input-sm" type="text" id="companyName" name="companyName" value="">
-                </div>
-
-                <div class="text-center col-xs-3 col-sm-3 col-md-3">
+                <div class="hidden text-center col-xs-3 col-sm-3 col-md-3">
                     予約フロア：
                     <select id="FLOOR_NAME_FILTER" style="width: 100px;">
                         <!--仮設材種別テーブルから検索フィルタを設置-->
@@ -196,22 +202,18 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
                                     <label id="mCompanyName" class="modalClass control-label">未設定</label>
                                 </div>
 
-                                <div class="form-group" style="margin-bottom: 5px;">
+                                <div class="hidden form-group" style="margin-bottom: 5px;">
                                     <label class="text-right control-label col-xs-6">予約フロア</label>
                                     <label id="mReserveFloorName" class="modalClass control-label">未設定</label>
                                 </div>
 
-                                <!--<div class="form-group" style="margin-bottom: 5px;">-->
-                                    <!--<label class="text-right control-label col-xs-6">選択</label>-->
-                                    <!--<label id="mArSelectId" class="modalClass control-label">未設定</label>-->
-                                <!--</div>-->
                             </div>
                             <div class="modal-footer">
                                 <div class="col-xs-6 text-center">
                                     <button type="button" class="btn btn-default" data-dismiss="modal">@Messages("cancel")</button>
                                 </div>
                                 <div class="col-xs-6 text-center">
-                                    <button id="itemRegisterFooter"  type="" class="text-center btn btn-primary">予約</button>
+                                    <button id="itemRegisterFooter"  type="" class="text-center btn btn-primary">@Messages("lang.site.carCancel.cancelBtn")</button>
                                 </div>
                             </div>
                     </div>
@@ -223,7 +225,7 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
     </div>
 </div>
 
-<script type="text/javascript" src="@routes.MyAssets.js("site/itemCarReserve.js")"></script>
+<script type="text/javascript" src="@routes.MyAssets.js("site/itemCarCancel.js")"></script>
 <script></script>
 
 </body>
