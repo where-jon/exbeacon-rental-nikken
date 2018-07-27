@@ -29,6 +29,7 @@ class ItemOtherReserve @Inject()(config: Configuration
                                , beaconService: BeaconService
                                , floorDAO: models.floorDAO
                                , btxDAO: models.btxDAO
+                               ,reserveMasterDAO: models.ReserveMasterDAO
                                , itemTypeDAO: models.ItemTypeDAO
                                , workTypeDAO: models.WorkTypeDAO
                              ) extends BaseController with I18nSupport {
@@ -125,22 +126,38 @@ class ItemOtherReserve @Inject()(config: Configuration
             var vWorkTypeId = workTypeList.filter(_.work_type_name == ItemOtherReserveData.workTypeName).last.work_type_id
             var vReserveStartDate = ItemOtherReserveData.inputStartDate
             var vReserveEndDate = ItemOtherReserveData.inputEndDate
-
+            var idListData = List[Int]()
+            var idTypeListData = List[Int]()
             ItemOtherReserveData.itemId.zipWithIndex.map { case (itemId, i) =>
               ItemOtherReserveData.checkVal.zipWithIndex.map { case (check, j) =>
                 if(i == check){
                   val vItemTypeId = ItemOtherReserveData.itemTypeIdList(i)
+                  idListData = idListData :+itemId
+                  idTypeListData = idTypeListData :+vItemTypeId
                   setData = setData :+ ReserveItem(vItemTypeId,itemId,vFloorId,placeId,vCompanyId,vReserveStartDate,vReserveEndDate,true,vWorkTypeId)
                 }
               }
             }
-            val result = otherDAO.reserveItemOther(setData)
-            if (result == "success") {
+            // 検索ロジック追加あるかどうかを判断する
+            var vAlerdyReserveData = reserveMasterDAO.selectOtherReserve(placeId,idListData,idTypeListData,vWorkTypeId,vReserveStartDate,vReserveEndDate)
+            System.out.println("vCount :" + vAlerdyReserveData)
+            if(vAlerdyReserveData.isEmpty) { // 予約されたものがない
+              val result = otherDAO.reserveItemOther(setData)
+              if (result == "success") {
+                Redirect(routes.ItemOtherReserve.index())
+                  .flashing(SUCCESS_MSG_KEY -> Messages("success.site.otherReserve.update"))
+              }else {
+                Redirect(routes.ItemOtherReserve.index())
+                  .flashing(ERROR_MSG_KEY -> Messages("error.site.otherReserve.update" ))
+              }
+            }else{ // 予約されたものがある
               Redirect(routes.ItemOtherReserve.index())
-                .flashing(SUCCESS_MSG_KEY -> Messages("success.site.otherReserve.update"))
-            }else {
-              Redirect(routes.ItemOtherReserve.index())
-                .flashing(ERROR_MSG_KEY -> Messages("error.site.otherReserve.update" + "<br>"+ result))
+                .flashing(ERROR_MSG_KEY -> Messages("その他仮設材予約に問題が発生しました。" + "<br>"
+                  + "「Id」" + vAlerdyReserveData.last.itemId
+                  + "「作業期間」" + ItemOtherReserveData.workTypeName
+                  + "「予約日」" + vAlerdyReserveData.last.reserveStartDate
+                  + " ~ " + vAlerdyReserveData.last.reserveEndDate
+                  + "すでに予約されてます"))
             }
           }else{
             Redirect(routes.ItemOtherReserve.index())
@@ -170,6 +187,14 @@ class ItemOtherReserve @Inject()(config: Configuration
     if(RESERVE_START_DATE!="" || RESERVE_END_DATE!=""){
       dbDatas = otherDAO.selectOtherMasterSearch(placeId,ITEM_TYPE_FILTER,WORK_TYPE_FILTER,
         RESERVE_START_DATE,RESERVE_END_DATE,itemIdList)
+      if( WORK_TYPE_FILTER != "終日" && WORK_TYPE_FILTER != ""){
+        val vWorkTypeCountData = reserveMasterDAO.getOtherMasterWorkTypeCount(placeId,RESERVE_START_DATE,RESERVE_END_DATE,itemIdList)
+        vWorkTypeCountData.map { v =>
+          if(v.item_count>1){
+            dbDatas = dbDatas.filter(_.item_other_id != v.item_id)
+          }
+        }
+      }
     }else{
       dbDatas = otherDAO.selectOtherMasterReserve(placeId,itemIdList)
     }

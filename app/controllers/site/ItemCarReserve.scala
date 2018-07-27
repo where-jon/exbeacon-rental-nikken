@@ -40,6 +40,7 @@ class ItemCarReserve @Inject()(config: Configuration
                                , beaconService: BeaconService
                                , floorDAO: models.floorDAO
                                , btxDAO: models.btxDAO
+                               , reserveMasterDAO: models.ReserveMasterDAO
                                , itemTypeDAO: models.ItemTypeDAO
                                , workTypeDAO: models.WorkTypeDAO
                              ) extends BaseController with I18nSupport {
@@ -121,30 +122,44 @@ class ItemCarReserve @Inject()(config: Configuration
 
       ItemCarReserveData => {
         if(ItemCarReserveData.checkVal.zipWithIndex.length > 0){
-            var setData = List[ReserveItem]()
-            var vCompanyId = companyNameList.filter(_.companyName == ItemCarReserveData.companyName).last.companyId
-            var vFloorId = floorNameList.filter(_.floor_name == ItemCarReserveData.floorName).last.floor_Id
-            var vWorkTypeId = workTypeList.filter(_.work_type_name == ItemCarReserveData.workTypeName).last.work_type_id
-            var vReserveDate = ItemCarReserveData.inputDate
-
+          var setData = List[ReserveItem]()
+          var vCompanyId = companyNameList.filter(_.companyName == ItemCarReserveData.companyName).last.companyId
+          var vFloorId = floorNameList.filter(_.floor_name == ItemCarReserveData.floorName).last.floor_Id
+          var vWorkTypeId = workTypeList.filter(_.work_type_name == ItemCarReserveData.workTypeName).last.work_type_id
+          var vReserveDate = ItemCarReserveData.inputDate
+          var idListData = List[Int]()
+          var idTypeListData = List[Int]()
           ItemCarReserveData.itemId.zipWithIndex.map { case (itemId, i) =>
             ItemCarReserveData.checkVal.zipWithIndex.map { case (check, j) =>
                 if(i == check){
                   val vItemTypeId = ItemCarReserveData.itemTypeIdList(i)
+                  idListData = idListData :+itemId
+                  idTypeListData = idTypeListData :+vItemTypeId
                   setData = setData :+ ReserveItem(vItemTypeId,itemId,vFloorId,placeId,vCompanyId,vReserveDate,vReserveDate,true,vWorkTypeId)
                 }
               }
             }
           // 検索ロジック追加あるかどうかを判断する
-          //　isEmpty
+          var vAlerdyReserveData = reserveMasterDAO.selectCarReserve(placeId,idListData,idTypeListData,vWorkTypeId,vReserveDate,vReserveDate)
+          System.out.println("vCount :" + vAlerdyReserveData)
+          if(vAlerdyReserveData.isEmpty){ // 予約されたものがない
             val result = carDAO.reserveItemCar(setData)
             if (result == "success") {
               Redirect(routes.ItemCarReserve.index())
                 .flashing(SUCCESS_MSG_KEY -> Messages("success.site.carReserve.update"))
             }else {
               Redirect(routes.ItemCarReserve.index())
-                .flashing(ERROR_MSG_KEY -> Messages("error.site.carReserve.update" +"<br>"+ result))
+                .flashing(ERROR_MSG_KEY -> Messages("error.site.carReserve.update"))
             }
+          }else { // 予約されたものがある
+            Redirect(routes.ItemCarReserve.index())
+              .flashing(ERROR_MSG_KEY -> Messages("作業車・立馬予約に問題が発生しました。" + "<br>"
+                + "「Id」" + vAlerdyReserveData.last.itemId
+                + "「作業期間」" + ItemCarReserveData.workTypeName
+                + "「予約日」" + vAlerdyReserveData.last.reserveStartDate
+                + "すでに予約されてます"))
+          }
+
         }else{
           Redirect(routes.ItemCarReserve.index())
             .flashing(ERROR_MSG_KEY -> Messages("予約対象未選択"))
@@ -169,7 +184,16 @@ class ItemCarReserve @Inject()(config: Configuration
     var dbDatas : Seq[CarViewer] = null;
     // dbデータ取得
     if(RESERVE_DATE!=""){
-      dbDatas = carDAO.selectCarMasterSearchBest(placeId,ITEM_TYPE_FILTER,WORK_TYPE_FILTER,RESERVE_DATE,itemIdList)
+      dbDatas = carDAO.selectCarMasterSearch(placeId,ITEM_TYPE_FILTER,WORK_TYPE_FILTER,RESERVE_DATE,itemIdList)
+      // 午前午後両方予約の場合
+      if( WORK_TYPE_FILTER != "終日" && WORK_TYPE_FILTER != ""){
+        val vWorkTypeCountData = reserveMasterDAO.getCarMasterWorkTypeCount(placeId,RESERVE_DATE,itemIdList)
+        vWorkTypeCountData.map { v =>
+          if(v.item_count>1){
+            dbDatas = dbDatas.filter(_.item_car_id != v.item_id)
+          }
+        }
+      }
     }else{
       dbDatas = carDAO.selectCarMasterReserve(placeId,itemIdList)
     }
@@ -178,6 +202,7 @@ class ItemCarReserve @Inject()(config: Configuration
     if (ITEM_TYPE_FILTER != 0) {
       carListApi = carListApi.filter(_.item_type_id == ITEM_TYPE_FILTER)
     }
+
 
     Ok(views.html.site.itemCarReserve(ITEM_TYPE_FILTER,WORK_TYPE_FILTER,RESERVE_DATE
       ,carListApi,itemTypeList,companyNameList,floorNameList,workTypeList,WORK_TYPE))

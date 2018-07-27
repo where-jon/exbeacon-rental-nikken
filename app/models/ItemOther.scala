@@ -393,14 +393,84 @@ class itemOtherDAO @Inject()(dbapi: DBApi) {
 
 
   /*その他仮設材予約空き情報検索用 sql文 20180723*/
+  def getOtherMasterSearch(
+                               placeId: Int,
+                               itemTypeId: Int,
+                               workTypeName: String,
+                               reserveStartDate: String,
+                               reserveEndDate: String,
+                               itemIdList:Seq[Int]
+                             ): Seq[OtherViewer] = {
+
+    db.withConnection { implicit connection =>
+      val selectPh =
+        """
+          select
+               c.item_other_id
+               ,c.item_other_btx_id
+               , c.item_type_id
+               , i.item_type_name
+               , c.note
+               , c.item_other_no
+               , c.item_other_name
+               , c.place_id
+              ,coalesce(to_char(r.reserve_start_date, 'YYYY-MM-DD'), '未予約') as reserve_start_date
+              ,coalesce(to_char(r.reserve_end_date, 'YYYY-MM-DD'), '未予約') as reserve_end_date
+               ,coalesce(r.company_id, -1) as company_id
+               ,coalesce(co.company_name, '無') as company_name
+               ,coalesce(work.work_type_id, -1) as work_type_id
+               ,coalesce(work.work_type_name, '未予約') as work_type_name
+               ,coalesce(floor.floor_name, '無') as reserve_floor_name
+               ,coalesce(r.reserve_id, -1) as reserve_id
+          from
+            item_other_master as c
+             		LEFT JOIN reserve_table_new as r on c.item_other_id = r.item_id
+                and r.item_type_id in ( """ + {itemIdList.mkString(",")} +""" )
+             		and r.active_flg = true
+                and r.place_id = """ + {placeId} +"""
+                left JOIN item_type as i on i.item_type_id = c.item_type_id
+                and i.active_flg = true
+                  left JOIN company_master as co on co.company_id = r.company_id
+                  and co.active_flg = true
+                    left JOIN work_type as work on work.work_type_id = r.work_type_id
+                    and work.active_flg = true
+                      left JOIN floor_master as floor on floor.floor_id = r.floor_id
+                      and floor.active_flg = true
+          where
+            c.active_flg = true
+
+        """
+      // 追加検索条件
+      var wherePh = ""
+      wherePh +=
+        s""" and c.place_id = ${placeId}
+           and not r.item_id in
+              (select r.item_id from reserve_table_new where work.work_type_name ='${workTypeName}')
+               and r.reserve_start_date <= to_date('${reserveStartDate}', 'YYYY-MM-DD') and r.reserve_start_date >= to_date('${reserveStartDate}', 'YYYY-MM-DD')
+               or r.reserve_start_date <= to_date('${reserveEndDate}', 'YYYY-MM-DD') and r.reserve_start_date >= to_date('${reserveEndDate}', 'YYYY-MM-DD')
+         """
+
+
+      // 表示順を設定
+      val orderPh =
+        """
+          order by
+            c.item_other_id
+        """
+      SQL(selectPh + wherePh + orderPh).as(otherMasterViewer.*)
+    }
+  }
+
+
+  /*その他仮設材予約空き情報検索用 sql文 20180723*/
   def selectOtherMasterSearch(
-                      placeId: Int,
-                      itemTypeId: Int,
-                      workTypeName: String,
-                      reserveStartDate: String,
-                      reserveEndDate: String,
-                      itemIdList:Seq[Int]
-                   ): Seq[OtherViewer] = {
+                               placeId: Int,
+                               itemTypeId: Int,
+                               workTypeName: String,
+                               reserveStartDate: String,
+                               reserveEndDate: String,
+                               itemIdList:Seq[Int]
+                             ): Seq[OtherViewer] = {
 
     db.withConnection { implicit connection =>
       val selectPh =
@@ -443,16 +513,29 @@ class itemOtherDAO @Inject()(dbapi: DBApi) {
       // 追加検索条件
       var wherePh = ""
       wherePh += s""" and c.place_id = ${placeId} """
+
+      var vCount = this.getOtherMasterSearch(placeId, itemTypeId, workTypeName, reserveStartDate,reserveEndDate, itemIdList).length
       //and r.reserve_start_date != to_date('${reserveStartDate}', 'YYYY-MM-DD')
-      if(workTypeName == "終日" || workTypeName == ""){
-        wherePh +=
-          s""" and not (r.reserve_start_date <= to_date('${reserveStartDate}', 'YYYY-MM-DD') and r.reserve_start_date >= to_date('${reserveStartDate}', 'YYYY-MM-DD')
-             or r.reserve_start_date <= to_date('${reserveEndDate}', 'YYYY-MM-DD') and r.reserve_start_date >= to_date('${reserveEndDate}', 'YYYY-MM-DD'))
-           """
+      if(workTypeName == "終日" || vCount == 0 ){
+        wherePh += s"""
+            and not r.item_id in
+            (select r.item_id from reserve_table_new where
+                      r.reserve_start_date  between to_date('${reserveStartDate}', 'YYYY-MM-DD') and  to_date('${reserveEndDate}', 'YYYY-MM-DD')
+                      or r.reserve_end_date between to_date('${reserveStartDate}', 'YYYY-MM-DD') and  to_date('${reserveEndDate}', 'YYYY-MM-DD'))
+            """
+      }else if (workTypeName == ""){
+        wherePh += s"""
+            and not r.item_id in
+            (select r.item_id from reserve_table_new where
+                      r.reserve_start_date  between to_date('${reserveStartDate}', 'YYYY-MM-DD') and  to_date('${reserveEndDate}', 'YYYY-MM-DD')
+                      or r.reserve_end_date between to_date('${reserveStartDate}', 'YYYY-MM-DD') and  to_date('${reserveEndDate}', 'YYYY-MM-DD'))
+            """
       }else{
-        wherePh +=
-          s"""  and r.reserve_start_date <= to_date('${reserveStartDate}', 'YYYY-MM-DD') and r.reserve_end_date >= to_date('${reserveEndDate}', 'YYYY-MM-DD') and not work.work_type_name = '${workTypeName}' and not work.work_type_name = '終日'
-                or not (r.reserve_start_date <= to_date('${reserveStartDate}', 'YYYY-MM-DD') and r.reserve_end_date >= to_date('${reserveEndDate}', 'YYYY-MM-DD')) and not work.work_type_name = '${workTypeName}' and not work.work_type_name = '終日'
+        wherePh += s"""
+             and not r.item_id in
+            (select r.item_id from reserve_table_new where work.work_type_name ='${workTypeName}')
+                and r.reserve_start_date  = to_date('${reserveStartDate}', 'YYYY-MM-DD')
+                and r.reserve_end_date = to_date('${reserveEndDate}', 'YYYY-MM-DD')
           """
       }
       wherePh += s""" or coalesce(r.reserve_id, -1) = -1 and c.active_flg = true and c.place_id = ${placeId} """
