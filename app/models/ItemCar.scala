@@ -5,7 +5,7 @@ import javax.inject.Inject
 
 import anorm.SqlParser._
 import anorm.{~, _}
-import controllers.site.ReserveItem
+import controllers.site.{CancelItem, ReserveItem}
 import play.api.Logger
 import play.api.db._
 
@@ -20,6 +20,22 @@ case class ItemCarReserveData(
   itemTypeIdList: List[Int],
   checkVal: List[Int]
 
+)
+
+/*作業車・立馬予約取消用formクラス*/
+case class ItemCarCancelData(
+  itemTypeIdList: List[Int],
+  itemId: List[Int],
+  checkVal: List[Int]
+)
+
+
+/*作業車・立馬予約取消検索用formクラス*/
+case class ItemCarCancelSearchData(
+  itemTypeId: Int,
+  workTypeName: String,
+  companyName: String,
+  inputDate: String
 )
 
 /*作業車・立馬予約検索用formクラス*/
@@ -547,10 +563,7 @@ class itemCarDAO @Inject()(dbapi: DBApi) {
     var vResult = "exception"
     db.withTransaction { implicit connection =>
       //reserveItemCar(1).itemTypeId
-      val statement = connection.createStatement()
-      var num = 0
-      var vEndPoint = reserveItemCar.length - 1;
-      for (num <- 0 to vEndPoint) {
+      reserveItemCar.zipWithIndex.map { case (item, num) =>
         val sql = SQL("""
 
             insert into reserve_table_new
@@ -558,15 +571,15 @@ class itemCarDAO @Inject()(dbapi: DBApi) {
             {item_type_id}, {item_id}, {floor_id},{place_id},{company_id},to_date({reserve_start_date}, 'YYYY-MM-DD'),to_date({reserve_end_date}, 'YYYY-MM-DD'),true,now(),{work_type_id})
 
               """).on(
-          'item_type_id -> reserveItemCar(num).item_type_id,
-          'item_id -> reserveItemCar(num).item_id,
-          'floor_id ->reserveItemCar(num).floor_id,
-          'place_id ->reserveItemCar(num).place_id,
-          'company_id ->reserveItemCar(num).company_id,
-          'reserve_start_date->reserveItemCar(num).reserve_start_date,
-          'reserve_end_date->reserveItemCar(num).reserve_end_date,
-          'active_flg->reserveItemCar(num).active_flg,
-          'work_type_id->reserveItemCar(num).work_type_id
+          'item_type_id -> item.item_type_id,
+          'item_id -> item.item_id,
+          'floor_id ->item.floor_id,
+          'place_id ->item.place_id,
+          'company_id ->item.company_id,
+          'reserve_start_date->item.reserve_start_date,
+          'reserve_end_date->item.reserve_end_date,
+          'active_flg->item.active_flg,
+          'work_type_id->item.work_type_id
         )
         try {
           val result = sql.executeUpdate()
@@ -583,8 +596,35 @@ class itemCarDAO @Inject()(dbapi: DBApi) {
     vResult
   }
 
+  /*作業車・立馬予約取消用 sql文 20180727*/
+  def calcelItemCar(cancelItem: List[CancelItem]): String = {
+    var vResult = "exception"
+    db.withTransaction { implicit connection =>
+      cancelItem.zipWithIndex.map { case (item, i) =>
+        val sql = SQL("""
+         delete from reserve_table_new where
+         item_id =  """ + {item.item_id} + """
+         and item_type_id = """ + {item.item_type_id} + """
+         and active_flg = """ + {item.active_flg} + """
+         and place_id = """ + {item.place_id} + """
+        """)
 
-  /*作業車・立馬取消予約情報用 sql文 20180726*/
+        try {
+          val result = sql.executeUpdate()
+          vResult = "success"
+        } catch {
+          case e: SQLException => {
+            println("Database error " + e)
+            vResult = e + ""
+          }
+        }
+      }
+    }
+    vResult
+  }
+
+
+  /*作業車・立馬予約取消情報用 sql文 20180726*/
   def selectCarMasterCancel(placeId : Int,itemIdList:Seq[Int]): Seq[CarViewer] = {
     db.withConnection { implicit connection =>
       val selectPh =
