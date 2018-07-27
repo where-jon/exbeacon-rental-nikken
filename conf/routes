@@ -54,6 +54,8 @@ POST   /site/itemCarReserve/reserve         controllers.site.ItemCarReserve.rese
 
 # 作業車・立馬取消
 GET    /site/itemCarCancel                 controllers.site.ItemCarCancel.index
+POST   /site/itemCarCancel                 controllers.site.ItemCarCancel.search
+POST   /site/itemCarCancel/cancel         controllers.site.ItemCarCancel.cancel
 
 
 # その他仮設材一覧

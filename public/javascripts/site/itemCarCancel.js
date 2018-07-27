@@ -16,12 +16,16 @@ function getFilterCheck(){
     if(inputDate!=null){
          $('#RESERVE_DATE').val(inputDate.value)
     }
+
+    var inputCompanyName = document.getElementById("companyName")
+    if(inputCompanyName!=null){
+         $('#COMPANY_NAME_FILTER').val(inputCompanyName.value)
+    }
 }
 
 function dbExecuteManager(routeUrl){
     var formElement = $("#viewForm")
     formElement[0].action = routeUrl
-    //formElement[0].action = "../site/itemCarReserveUpdate"
     // 送信ボタン生成
     var vButton = document.createElement("button");
     vButton.id = "dbExecuteBtn"
@@ -39,7 +43,7 @@ function btnEvent(){
     // DatePickerの設定 end-----------------------------------------
 
 
-    //　予約登録ボタン
+    //　予約取消ボタン
 　　var registerBtnElement = document.getElementById("itemRegisterFooter")
     registerBtnElement.addEventListener('click', function(event) {
         if(gReserveCheck){
@@ -69,11 +73,11 @@ function btnEvent(){
             var inputDate = document.getElementById("inputDate")
             inputDate.value = gDatePicker.startSqlTime
 
-            dbExecuteManager("../site/itemCarReserve/reserve")
+            dbExecuteManager("../site/itemCarCancel/cancel")
         }
     });
 
-    //　予約へボタン
+    //　取消へボタン
     var reserveBtnElement = document.getElementById("reserveBtn")
     reserveBtnElement.addEventListener('click', function(event) {
 
@@ -92,7 +96,6 @@ function btnEvent(){
         if(companyNameFilterResult != ""){
             mCompanyName.textContent = companyNameFilterResult
         }
-
 
         // floorName結果をfromへ設定
         var floorNameFilterResult = $('#FLOOR_NAME_FILTER option:selected').val();
@@ -115,15 +118,6 @@ function btnEvent(){
         }
 
 
-        // 選択
-//        var mArSelectId = document.getElementById("mArSelectId")
-//        mArSelectId.textContent = "";
-//        $("input[name=current_proudct]:checked").each(function() {
-//          arCheckBoxIndex.push(this.value)
-//          mArSelectId.textContent += this.value
-//        });
-
-
     });
 
     var viewBtnElement = document.getElementById("viewBtn")
@@ -138,15 +132,22 @@ function btnEvent(){
         var inputWorkTypeName = document.getElementById("workTypeName")
         inputWorkTypeName.value = workTypeNameFilterResult
 
+        // companyName結果をfromへ設定
+        var companyNameFilterResult = $('#COMPANY_NAME_FILTER option:selected').val();
+        var inputCompanyName = document.getElementById("companyName")
+        inputCompanyName.value = companyNameFilterResult
+
         // inputDate結果をfromへ設定
         var inputDate = document.getElementById("inputDate")
         inputDate.value = gDatePicker.startSqlTime
-        dbExecuteManager("../site/itemCarReserve")
+        dbExecuteManager("../site/itemCarCancel")
+
     });
 
 }
 
 $(function(){
+
     // filter値確認
     getFilterCheck();
     // 表示ボタンをクリック
