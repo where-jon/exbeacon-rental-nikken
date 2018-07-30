@@ -4,6 +4,7 @@ import javax.inject.{Inject, Singleton}
 
 import com.mohiva.play.silhouette.api.Silhouette
 import controllers.BaseController
+import controllers.site
 import models.PlaceEnum
 import play.api._
 import play.api.data.Form
@@ -43,15 +44,20 @@ class PlaceManage @Inject()(config: Configuration
 
   /** 初期表示 */
   def index = SecuredAction { implicit request =>
-    if(securedRequest2User.isSysMng){
-      Redirect(routes.PlaceManage.sortPlaceListWith(selectedSortType))
-    }else{
-      // シス管でなければ登録されている現場の管理画面へ遷移
-      if(super.isCmsLogged){
-        Redirect(routes.PlaceManage.detail)
+    val reqIdentity = request.identity
+    if(reqIdentity.level >= 4){
+      if(securedRequest2User.isSysMng){
+        Redirect(routes.PlaceManage.sortPlaceListWith(selectedSortType))
       }else{
-        Redirect(CMS_NOT_LOGGED_RETURN_PATH).flashing(ERROR_MSG_KEY -> Messages("error.cmsLogged.invalid"))
+        // シス管でなければ登録されている現場の管理画面へ遷移
+        if(super.isCmsLogged){
+          Redirect(routes.PlaceManage.detail)
+        }else{
+          Redirect(CMS_NOT_LOGGED_RETURN_PATH).flashing(ERROR_MSG_KEY -> Messages("error.cmsLogged.invalid"))
+        }
       }
+    }else {
+      Redirect(site.routes.WorkPlace.index)
     }
   }
 
