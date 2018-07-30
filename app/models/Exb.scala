@@ -351,10 +351,10 @@ class ExbDAO @Inject() (dbapi: DBApi) {
           view_tx_margin,
           view_tx_count,
           exb.place_id,
-          floor.display_order as floor_id
+          exb.floor_id
         from exb_master as exb
           left JOIN view_type as v on v.view_type_id = exb.view_type_id and v.active_flg = true
-          left JOIN floor_master as floor on floor.floor_id = exb.floor_id and floor.active_flg = true
+          left JOIN floor_master as floor on floor.floor_id = exb.floor_id
         where exb.place_id = {placeId}
         order by exb_id;
        """).on(
