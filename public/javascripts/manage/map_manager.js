@@ -1,12 +1,12 @@
 var bCheckUpdate = false;
-
+var gMapPos = 1;
 $( window ).resize(function() {
 	location.reload();
 });
 
 $(function () {
     // 初期表示
-    var beaconMapFrame = document.getElementById("beaconMap-1");
+    var beaconMapFrame = document.getElementById("beaconMap-" + gMapPos);
     beaconMapFrame.classList.remove("hidden");
 
     // 画面サイズチェック
@@ -29,7 +29,10 @@ $(function () {
         $('#floor-category').change(function() {
          viewHidden();
          var result = $('#floor-category option:selected').val();
-         vMapElement[result].classList.remove("hidden");
+         console.log("floor:" + result)
+         gMapPos = result;
+         //vMapElement[result].classList.remove("hidden");
+         document.getElementById("beaconMap-" + result).classList.remove("hidden");
         });
     }
 

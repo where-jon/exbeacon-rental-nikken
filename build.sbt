@@ -31,6 +31,7 @@ doc in Compile <<= target.map(_ / "none")
 
 libraryDependencies ++= Seq(
   jdbc,
+  //evolutions,
   "com.typesafe.play" %% "anorm" % "2.5.3",
   cache,
   ws,

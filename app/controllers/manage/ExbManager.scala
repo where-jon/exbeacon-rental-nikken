@@ -3,7 +3,7 @@ package controllers.manage
 import javax.inject.Inject
 
 import com.mohiva.play.silhouette.api.Silhouette
-import controllers.BaseController
+import controllers.{BaseController, site}
 import models.ExbData
 import play.api.Configuration
 import play.api.data.Form
@@ -13,7 +13,7 @@ import play.api.libs.ws.WSClient
 import utils.silhouette.MyEnv
 
 /**
-  * マップ登録クラス.
+  * EXB管理クラス.
   */
 class ExbManager @Inject()(config: Configuration
                            , val silhouette: Silhouette[MyEnv]
@@ -33,8 +33,9 @@ class ExbManager @Inject()(config: Configuration
 
   def deleteExb = SecuredAction { implicit request =>
 
-    // 部署情報
-    val exb = exbDAO.selectAll()
+    // exbMaster情報
+    val placeId = super.getCurrentPlaceId
+    val exb = exbDAO.selectExbAll(placeId)
 
     exbForm.bindFromRequest.fold(
       formWithErrors => BadRequest(views.html.manage.exbManager(formWithErrors, exb)),
@@ -55,10 +56,12 @@ class ExbManager @Inject()(config: Configuration
     )
   }
 
+  /*20180730 EXB管理アップデート関連処理はまだ未着手*/
   def updateExb = SecuredAction { implicit request =>
     System.out.println("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------start updateExb:");
-    // 部署情報
-    val exb = exbDAO.selectAll()
+    // exbMaster情報
+    val placeId = super.getCurrentPlaceId
+    val exb = exbDAO.selectExbAll(placeId)
     var exbData = exbForm.bindFromRequest.get;
     exbForm.bindFromRequest.fold(
       formWithErrors => BadRequest(views.html.manage.exbManager(formWithErrors, exb)),
@@ -78,11 +81,16 @@ class ExbManager @Inject()(config: Configuration
 
   /** 初期表示 */
   def index = SecuredAction { implicit request =>
-    if (super.isCmsLogged) {
-      val vExb = exbDAO.selectAll()
+    val reqIdentity = request.identity
+    if(reqIdentity.level >= 3){
+      // exbMaster情報
+      val placeId = super.getCurrentPlaceId
+      val vExb = exbDAO.selectExbAll(placeId)
+
+      //val vExb = exbDAO.selectAll()
       Ok(views.html.manage.exbManager(exbForm, vExb))
-    } else {
-      Redirect(CMS_NOT_LOGGED_RETURN_PATH).flashing(ERROR_MSG_KEY -> Messages("error.cmsLogged.invalid"))
+    }else{
+      Redirect(site.routes.WorkPlace.index)
     }
   }
 

@@ -1,12 +1,5 @@
 --
 --# --- !Ups
-INSERT INTO user_master (email, name, password, place_id, current_place_id) VALUES ('exb@where123.jp', 'exb', '$2a$10$3Gyu0kfE2oaTHfQfg6saZ.9A3eCGBF.6enfUtA7jRv0Y9Qd3prGnK', null, 1);
-INSERT INTO user_master (email, name, password, place_id, current_place_id) VALUES ('takasago@example.jp', 'takasago', '$2a$10$oTBngKMZ36yDidDupqb5G.aQQaviFKS/xdEWnJbbH5jjYarGE0aV6', null, 1);
-INSERT INTO user_master (email, name, password, place_id, current_place_id) VALUES ('tohoku@example.jp', 'tohoku', '$2a$10$zAqLi0NmVKs3Mhn1izD2EeJ3s2AEg888QvzJDu/AZUmjB119MSqhy', 1, 1);
---
-
- -- place_master
-INSERT INTO place_master (place_name) VALUES ('東北医科薬科大学病院');
 
 -- -- floor_master
 --INSERT INTO floor_master (floor_name, display_order, place_id) VALUES ('8F', 1, 1);

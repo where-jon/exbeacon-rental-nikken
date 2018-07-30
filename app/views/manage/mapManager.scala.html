@@ -1,4 +1,7 @@
-@(mapViewerForm: Form[MapViewerData],mapViewer: Seq[MapViewer])(implicit user: User, messages: Messages, request: RequestHeader, flash: Flash)
+@(
+mapViewerForm: Form[MapViewerData],
+mapViewer: Seq[FloorAll]
+)(implicit user: User, messages: Messages, request: RequestHeader, flash: Flash)
 
 @import controllers.routes
 @import helper._
@@ -27,7 +30,7 @@
 
                 <select id="floor-category" class=" manager__data--floor">
                     @mapViewer.zipWithIndex.map { case(map, i) =>
-                    <option value="@i" @{if(map.map_id == 3) "selected" else ""}>@map.map_position</option>
+                     <option value="@map.floor_id" @{if(map.floor_id == 1) "selected" else ""} >@map.floor_name</option>
                     }
                 </select>
             </div>
@@ -54,22 +57,16 @@
             @mapViewer.zipWithIndex.map { case(map, i) =>
             <tr class = "pos-search" id = "viewer-list-@i">
                 <td class="item viewer__posNum--frame ">
-                    <input class="form-control input-sm" type="text" id="input_map_id-@i" value="@map.map_id" name="map_id[@i]" >
+                    <input class="form-control input-sm" type="text" id="input_map_id-@i" value="@map.floor_id" name="map_id[@i]" >
                 </td>
                 <td class="item viewer__visible--frame ">
-                    <input class="form-control input-sm" type="text" id="input_map_width-@i" value="@map.map_width" name="map_width[@i]" >
+                    <input class="form-control input-sm" type="text" id="input_map_width-@i" value="@map.floor_map_width" name="map_width[@i]" >
                 </td>
                 <td class="item viewer__posFloor--frame ">
-                    <input class="form-control input-sm" type="text" id="input_map_height-@i" value="@map.map_height" name="map_height[@i]" >
+                    <input class="form-control input-sm" type="text" id="input_map_height-@i" value="@map.floor_map_height" name="map_height[@i]" >
                 </td>
                 <td id="mapImage-@i" class="item viewer__posType--frame ">
                     <!--<input class="form-control input-sm" type="file" id="input_map_image-@i" value="picture" accept="image/gif,image/jpeg,image/png" name="map_image[@i]" >-->
-                </td>
-                <td class="item viewer__posType--frame ">
-                    <input class="form-control input-sm" type="text" id="input_map_position-@i" value="@map.map_position" name="map_position[@i]" >
-                </td>
-                <td class="item viewer__posType--frame ">
-                    <input id="index_id" type="text" value=@i class ="hidden" name="index_id">
                 </td>
 
             </tr>
@@ -86,24 +83,21 @@
             @tags.alertFromRequestDbResult(request, "resultNG")
         </div>
         @mapViewer.zipWithIndex.map { case(map, i) =>
-        <div id="beaconMap-@(i+1)" class = "hidden level level--@i layer-beacon" aria-label="Level @i">
+        <div id="beaconMap-@map.floor_id" class = "hidden level level--@i layer-beacon" aria-label="Level @i">
 
             <form action="/manage/uploadMap" method="POST" enctype="multipart/form-data" class="img__area--frame">
                 <div class = "inputFrame map__input--frame">
                     <input id="inputNum-@i" class="map__image--input"   type="file" name="map_image[@i]" accept="image/gif,image/jpeg,image/png"  >
-                    <input id="map_id" class ="hidden"  type="text"  value=@map.map_id  name="map_id[@i]">
-                    <input id="input_map_width-@i" class="form-control input-sm hidden" type="text"  value="@map.map_width" name="map_width[@i]" >
-                    <input id="input_map_height-@i" class="form-control input-sm hidden" type="text"  value="@map.map_height" name="map_height[@i]" >
-                    <input id="input_map_position-@i" class="form-control input-sm hidden" type="text"  value="@map.map_position" name="map_position[@i]" >
+                    <input id="map_id" class ="hidden"  type="text"  value=@map.floor_id  name="map_id[@i]">
+                    <input id="input_map_width-@i" class="form-control input-sm hidden" type="text"  value="@map.floor_map_width" name="map_width[@i]" >
+                    <input id="input_map_height-@i" class="form-control input-sm hidden" type="text"  value="@map.floor_map_height" name="map_height[@i]" >
                     <input id="index_id" type="text" value=@i class ="hidden" name="index_id">
                     <input type="submit" value="送信">
                 </div>
                 @CSRF.formField
             </form>
-            <!--<canvas id="canvas"></canvas>-->
             <div class="wrapper__img--canvas" >
-                <!--<div id="heatmap--area"></div>-->
-                <img id ="imgFrame-@i" class="img__map__manager--style" src=@map.map_image />
+                <img id ="imgFrame-@i" class="img__map__manager--style" src=@map.floor_map_image />
             </div>
         </div>
         }

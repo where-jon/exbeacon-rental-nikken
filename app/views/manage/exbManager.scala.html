@@ -1,4 +1,7 @@
-@(exbForm: Form[ExbData],exbs: Seq[Exb])(implicit user: User, messages: Messages, request: RequestHeader, flash: Flash)
+@(
+exbForm: Form[ExbData],
+exbs: Seq[ExbAll]
+)(implicit user: User, messages: Messages, request: RequestHeader, flash: Flash)
 
 @import controllers.routes
 @import helper._
@@ -88,10 +91,10 @@
 
 					<!-- exb_name -->
 					<td class="item exb__name--frame">
-						<input class="form-control input-sm" type="text" id="exb-name-@i" value="@exb.exb_name">
+						<input class="form-control input-sm" type="text" id="exb-name-@i" value="@exb.exb_device_name">
 					</td>
 
-					<!-- 部署名 -->
+					<!-- 場所名 -->
 					<td class="item exb__pos--Name">
 						<input class="form-control input-sm" type="text" id="pos-name-@i" value="@exb.exb_pos_name">
 					</td>

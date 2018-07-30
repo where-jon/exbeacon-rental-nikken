@@ -3,7 +3,7 @@ package controllers.manage
 import javax.inject.Inject
 
 import com.mohiva.play.silhouette.api.Silhouette
-import controllers.BaseController
+import controllers.{BaseController, site}
 import models.MapViewerData
 import play.api.Configuration
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
@@ -16,17 +16,18 @@ import java.io.ByteArrayOutputStream
 import java.nio.file.Files
 import java.util.Base64
 import javax.imageio.ImageIO
+
 import play.api.libs.json.Json
 import java.awt.image.BufferedImage
 
 /**
-  * マップ登録クラス.
+  * フロアマップ登録クラス.
   */
 class MapManager @Inject()(config: Configuration
                            , val silhouette: Silhouette[MyEnv]
                            , val messagesApi: MessagesApi
                            , ws: WSClient
-                           , mapViewerDAO: models.MapViewerDAO
+                           , floorDAO: models.floorDAO
                           ) extends BaseController with I18nSupport {
 
   val IMAGE_WIDTH = config.getInt("web.btxmaster.mapWidth").get
@@ -69,7 +70,7 @@ class MapManager @Inject()(config: Configuration
       System.out.println("11width:" + org.getWidth);
       System.out.println("11height:" + org.getHeight);
 
-      if (1 == mapViewerDAO.updateMapData(mapId.get.toInt, b64img, org.getWidth, org.getHeight)) {
+      if (1 == floorDAO.updateFloorMap(mapId.get.toInt, b64img, org.getWidth, org.getHeight)) {
         Redirect("/manage/mapManager").flashing("resultOK" -> Messages("db.update.ok"))
       } else {
         Redirect("/manage/mapManager").flashing("resultNG" -> Messages("error"))
@@ -124,13 +125,13 @@ class MapManager @Inject()(config: Configuration
 
   /** 初期表示 */
   def index = SecuredAction { implicit request =>
-
-    if (super.isCmsLogged) {
-      // 選択された現場の現場ID
-      val mapViewer = mapViewerDAO.selectAll()
+    val reqIdentity = request.identity
+    if(reqIdentity.level >= 3) {
+      val placeId = super.getCurrentPlaceId
+      val mapViewer = floorDAO.selectFloorAll(placeId)
       Ok(views.html.manage.mapManager(mapViewerForm, mapViewer))
-    } else {
-      Redirect(CMS_NOT_LOGGED_RETURN_PATH).flashing(ERROR_MSG_KEY -> Messages("error.cmsLogged.invalid"))
+    }else{
+      Redirect(site.routes.WorkPlace.index)
     }
   }
 
