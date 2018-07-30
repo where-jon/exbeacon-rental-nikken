@@ -3,7 +3,7 @@ package controllers.manage
 import javax.inject.Inject
 
 import com.mohiva.play.silhouette.api.Silhouette
-import controllers.BaseController
+import controllers.{BaseController, site}
 import models.ExbMasterData
 import play.api.Configuration
 import play.api.data.Form
@@ -71,7 +71,8 @@ class ExbViewerManager @Inject()(config: Configuration
 
   /** 初期表示 */
   def index = SecuredAction { implicit request =>
-    if (super.isCmsLogged) {
+    val reqIdentity = request.identity
+    if(reqIdentity.level >= 3){
       // exbViewer情報
       val placeId = super.getCurrentPlaceId
       val exbViewer = exDAO.selectExbAll(placeId)
@@ -83,8 +84,8 @@ class ExbViewerManager @Inject()(config: Configuration
       val viewType = viewTypeDAO.selectAll()
 
       Ok(views.html.manage.exbViewerManager(exbViewerForm, exbViewer,mapViewer,viewType))
-    } else {
-      Redirect(CMS_NOT_LOGGED_RETURN_PATH).flashing(ERROR_MSG_KEY -> Messages("error.cmsLogged.invalid"))
+    }else{
+      Redirect(site.routes.WorkPlace.index)
     }
   }
 
