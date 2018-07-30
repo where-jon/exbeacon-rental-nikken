@@ -27,7 +27,7 @@
 
                 <select id="floor-category" class=" manager__data--floor">
                     @mapViewer.zipWithIndex.map { case(map, i) =>
-                    <option value="@i" @{if(map.map_id == 3) "selected" else ""}>@map.map_position</option>
+                    <option value="@map.map_id" @{if(map.map_id == 1) "selected" else ""}>@map.map_position</option>
                     }
                 </select>
             </div>
