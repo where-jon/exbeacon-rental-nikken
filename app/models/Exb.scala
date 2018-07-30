@@ -15,6 +15,19 @@ case class Exb(
 
 )
 
+case class ExbMasterData(
+  viewerId: List[Int],
+  viewerVisible: List[Boolean],
+  viewerPosType: List[Int],
+  viewerPosX: List[String],
+  viewerPosY: List[String],
+  viewerPosMargin: List[Int],
+  viewerPosCount: List[Int],
+  viewerPosFloor: List[Int],
+  viewerPosSize: List[Int],
+  viewerPosNum: List[Int]
+)
+
 case class ExbApi(
   exb_id: Int,
   exb_device_name: String,
@@ -135,42 +148,6 @@ class ExbDAO @Inject() (dbapi: DBApi) {
     }
   }
 
-
-  def selectAll(): Seq[Exb] = {
-    db.withConnection { implicit connection =>
-      val sql = SQL("""
-        select exb_id, exb_device_id, exb_name, exb_pos_name
-        from exb_viewer order by exb_id;
-        """)
-
-      sql.as(simple.*)
-    }
-  }
-
-  def selectTotal(): Seq[ExbTotal] = {
-    db.withConnection { implicit connection =>
-      val sql = SQL("""
-        select
-        exb_id,
-        exb_device_id,
-        exb_name,
-        exb_pos_name,
-        coalesce(viewer_visible, 'FALSE') as viewer_visible,
-        coalesce(viewer_pos_type, 'none') as viewer_pos_type,
-        coalesce(viewer_pos_count, 1) as viewer_pos_count,
-        coalesce(viewer_pos_x, '0') as viewer_pos_x,
-        coalesce(viewer_pos_y, '0') as viewer_pos_y,
-        coalesce(viewer_pos_margin, -1) as viewer_pos_margin,
-        coalesce(viewer_pos_floor, '3') as viewer_pos_floor,
-        coalesce(viewer_pos_size, '35') as viewer_pos_size
-
-        from exb_viewer order by exb_id;
-        """)
-
-      sql.as(simpleTotal.*)
-    }
-  }
-
   def deleteExb(exb: ExbData): String = {
     var vCheck = false;
     var vResult = "exception"
@@ -182,7 +159,7 @@ class ExbDAO @Inject() (dbapi: DBApi) {
       for (num <- 0 to vEndPoint) {
         var exb_id = exb.exbId(num);
         val sql = SQL("""
-              delete from exb_viewer
+              delete from exb_master
                   where exb_id = {exb_id};
               """).on(
           'exb_id -> exb_id
@@ -228,17 +205,17 @@ class ExbDAO @Inject() (dbapi: DBApi) {
         System.out.println("exb_pos_name" + exb_pos_name)
         //var vNum = num + 1;
         val sql = SQL("""
-              update exb_viewer
+              update exb_master
                   set exb_pos_name = {exb_pos_name},
                   	  exb_device_id = {exb_device_id},
         			  exb_id = {exb_edit_id},
                   	  exb_name = {exb_name} 
                   where exb_id = {exb_id};
                   
-               INSERT INTO exb_viewer (exb_id,exb_device_id,exb_name,exb_pos_name)
+               INSERT INTO exb_master (exb_id,exb_device_id,exb_name,exb_pos_name)
                select {exb_edit_id}, {exb_device_id}, {exb_name}, {exb_pos_name}
                
-               where not exists (select 1 from exb_viewer where exb_id = {exb_edit_id});
+               where not exists (select 1 from exb_master where exb_id = {exb_edit_id});
                
               """).on(
           'exb_id -> exb_id,
@@ -266,45 +243,6 @@ class ExbDAO @Inject() (dbapi: DBApi) {
     vResult
   }
 
-  // インポート用
-  def addRecordExbTotal(exb: ExbTotal): Int = {
-    db.withConnection { implicit conntcition =>
-      val sql = SQL("""
-        insert into exb_viewer (exb_id,exb_device_id,exb_name, exb_pos_name,
-          viewer_visible, viewer_pos_type, viewer_pos_count, viewer_pos_x, viewer_pos_y, viewer_pos_margin, viewer_pos_floor, viewer_pos_size
-        ) values (
-        {exb_id},{exb_device_id}, {exb_name}, {exb_pos_name}
-        , {viewer_visible}, {viewer_pos_type}, {viewer_pos_count}, {viewer_pos_x}, {viewer_pos_y}, {viewer_pos_margin}, {viewer_pos_floor}, {viewer_pos_size}
-        );
-        """).on(
-        'exb_id -> exb.exb_id,
-        'exb_device_id -> exb.exb_device_id,
-        'exb_name -> exb.exb_name,
-        'exb_pos_name -> exb.exb_pos_name,
-
-        'viewer_visible -> exb.viewer_visible,
-        'viewer_pos_type -> exb.viewer_pos_type,
-        'viewer_pos_count -> exb.viewer_pos_count,
-        'viewer_pos_x -> exb.viewer_pos_x,
-        'viewer_pos_y -> exb.viewer_pos_y,
-        'viewer_pos_margin -> exb.viewer_pos_margin,
-        'viewer_pos_floor -> exb.viewer_pos_floor,
-        'viewer_pos_size -> exb.viewer_pos_size
-
-      )
-      sql.executeUpdate()
-    }
-  }
-
-  def deleteAll(): Int = {
-    db.withConnection { implicit connection =>
-      val sql = SQL("delete from exb_viewer;")
-
-      sql.executeUpdate()
-    }
-  }
-
-
 
   /*exbeacn情報を取得 Parser 20180724*/
   val simpleExbAll = {
@@ -326,6 +264,72 @@ class ExbDAO @Inject() (dbapi: DBApi) {
         case exb_id ~ exb_device_id ~ exb_device_no ~ exb_device_name ~ exb_pos_name ~ exb_pos_x ~ exb_pos_y ~ exb_view_flag ~ view_type_id ~ view_type_name~ view_tx_size ~ view_tx_margin ~ view_tx_count ~ place_id ~ floor_id =>
           ExbAll(exb_id, exb_device_id, exb_device_no, exb_device_name, exb_pos_name,exb_pos_x, exb_pos_y, exb_view_flag, view_type_id, view_type_name, view_tx_size, view_tx_margin, view_tx_count, place_id,floor_id)
       }
+  }
+
+
+  def updateExbMaster(exbViewer: ExbMasterData): String = {
+    var vCheck = false;
+    var vResult = "exception"
+    db.withTransaction { implicit connection =>
+
+      val statement = connection.createStatement()
+      var num = 0
+      System.out.println("length" + exbViewer.viewerId.length)
+      var vEndPoint = exbViewer.viewerId.length - 1;
+
+      for (num <- 0 to vEndPoint) {
+        var viewer_id = exbViewer.viewerId(num);
+        var viewer_visible = exbViewer.viewerVisible(num);
+        var viewer_pos_type = exbViewer.viewerPosType(num);
+        var viewer_pos_x = exbViewer.viewerPosX(num);
+        var viewer_pos_y = exbViewer.viewerPosY(num);
+        var viewer_pos_margin = exbViewer.viewerPosMargin(num);
+        var viewer_pos_count = exbViewer.viewerPosCount(num);
+        var viewer_pos_floor = exbViewer.viewerPosFloor(num);
+        var viewer_pos_size = exbViewer.viewerPosSize(num);
+        var viewer_pos_num = exbViewer.viewerPosNum(num);
+
+        //var vNum = num + 1;
+        val sql = SQL("""
+              update exb_master
+                  set exb_view_flag = {viewer_visible},
+                  	  view_type_id = {viewer_pos_type},
+        			        exb_pos_x = {viewer_pos_x},
+                      exb_pos_y = {viewer_pos_y},
+                      view_tx_margin = {viewer_pos_margin},
+                      view_tx_count = {viewer_pos_count},
+                      floor_id = {viewer_pos_floor},
+                      view_tx_size = {viewer_pos_size}
+                  where exb_id = {viewer_id};
+
+              """).on(
+          'viewer_id -> viewer_id,
+          'viewer_visible -> viewer_visible,
+          'viewer_pos_type -> viewer_pos_type,
+          'viewer_pos_x -> viewer_pos_x,
+          'viewer_pos_y -> viewer_pos_y,
+          'viewer_pos_margin -> viewer_pos_margin,
+          'viewer_pos_count -> viewer_pos_count,
+          'viewer_pos_floor -> viewer_pos_floor,
+          'viewer_pos_size -> viewer_pos_size
+        )
+        try {
+          val result = sql.executeUpdate()
+          vResult = "success"
+        } catch {
+          case e: SQLException => {
+            println("Database error " + e)
+            if (!vCheck) {
+              vCheck = true;
+              vResult = e + ""
+            }
+            // breakPoint.break
+          }
+        }
+      }
+
+    }
+    vResult
   }
 
   /*exbeacn情報を取得　20180724*/
