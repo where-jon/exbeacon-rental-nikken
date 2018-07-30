@@ -21,7 +21,7 @@ class WorkPlace @Inject()(config: Configuration
                           , beaconService: BeaconService
                           , ws: WSClient
                           , exbDAO: models.ExbDAO
-                          , mapViewerDAO: models.MapViewerDAO
+                          , floorDAO: models.floorDAO
                          ) extends BaseController with I18nSupport {
 
   var beaconList :Seq[itemBeaconPositionData]= null;
@@ -39,7 +39,8 @@ class WorkPlace @Inject()(config: Configuration
   /** 初期表示 */
   def index = SecuredAction { implicit request =>
     val placeId = super.getCurrentPlaceId
-    val mapViewer = mapViewerDAO.selectAll()
+    // map情報
+    val mapViewer = floorDAO.selectFloorAll(placeId)
     val exbData = exbDAO.selectExbAll(placeId)
     Ok(views.html.site.workPlace(mapViewer,exbData))
   }

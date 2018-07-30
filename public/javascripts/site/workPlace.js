@@ -278,7 +278,10 @@ function setFrame() {
         pinFrame.appendChild(spanFrame);
 
         // floorによるpin結合
-        gMapFrame[vMapIndex].appendChild(pinFrame);
+        //gMapFrame[vMapIndex].appendChild(pinFrame);
+        var vMapElement = document.getElementById("beaconMap-" + beaconData.pos.floor);
+        if(vMapElement!=null)
+            vMapElement.appendChild(pinFrame);
 
         // 表示・非表示
         if(beaconData.pos.visible == "false"){
@@ -493,8 +496,14 @@ function getJson() {
                             } else{
                                 equalCheck = true;
                             }
-                            var vMapIndex = b.pos.floor - 1
-                            gDrawer[vMapIndex].drawBeacon(b,gDrawer[vMapIndex].map,equalCheck);
+
+                            for (var i = 0;i<gDrawer.length;++i){
+                                 var vMapIndex = b.pos.floor
+                                 if(gDrawer[i].map ==  document.getElementById("beaconMap-" + vMapIndex).id){
+                                    gDrawer[i].drawBeacon(b,gDrawer[i].map,equalCheck);
+                                 }
+                            }
+
                         }catch(exception){
                             //alert("b.pos.floor:" + b.pos.floor +"になってる")
                         }
