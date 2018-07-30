@@ -19,7 +19,7 @@ class Application @Inject() (  config: Configuration
 
   def index = SecuredAction { implicit request =>
     if(securedRequest2User.isSysMng == false){
-      Redirect(routes.CarSummery.index)
+      Redirect(site.routes.WorkPlace.index)
     }else{
       Redirect(cms.routes.PlaceManage.index)
     }
