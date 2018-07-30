@@ -58,7 +58,7 @@ class ReserveMasterDAO @Inject() (dbapi: DBApi) {
             , to_char(r.reserve_start_date, 'YYYYMMDD') as reserve_start_date
             , to_char(r.reserve_end_date, 'YYYYMMDD') as reserve_end_date
           from
-              reserve_table_new as r
+              reserve_table as r
           where
             r.active_flg = true
         """
@@ -125,7 +125,7 @@ class ReserveMasterDAO @Inject() (dbapi: DBApi) {
             , to_char(r.reserve_start_date, 'YYYYMMDD') as reserve_start_date
             , to_char(r.reserve_end_date, 'YYYYMMDD') as reserve_end_date
           from
-              reserve_table_new as r
+              reserve_table as r
           where
             r.active_flg = true
         """
@@ -180,7 +180,7 @@ class ReserveMasterDAO @Inject() (dbapi: DBApi) {
         """
 
     select count(item_id)as item_count, item_id
-    from reserve_table_new
+    from reserve_table
     where
     item_type_id in ( """ + {itemIdList.mkString(",")} +""" )
     and active_flg = true
@@ -216,7 +216,7 @@ class ReserveMasterDAO @Inject() (dbapi: DBApi) {
         """
 
   select count(item_id)as item_count, item_id
-    from reserve_table_new
+    from reserve_table
     where
     item_type_id in ( """ + {itemIdList.mkString(",")} +""" )
     and active_flg = true

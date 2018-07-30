@@ -342,7 +342,7 @@ class itemOtherDAO @Inject()(dbapi: DBApi) {
                ,coalesce(r.reserve_id, -1) as reserve_id
            from
              		item_other_master as c
-             		LEFT JOIN reserve_table_new as r on c.item_other_id = r.item_id
+             		LEFT JOIN reserve_table as r on c.item_other_id = r.item_id
                   and r.item_type_id in ( """ + {itemIdList.mkString(",")} +""" )
                   and (to_char(r.reserve_start_date, 'YYYY-MM-DD') <= to_char(current_timestamp, 'YYYY-MM-DD')
                   and to_char(r.reserve_end_date, 'YYYY-MM-DD') >= to_char(current_timestamp, 'YYYY-MM-DD'))
@@ -389,7 +389,7 @@ class itemOtherDAO @Inject()(dbapi: DBApi) {
               ,coalesce(r.reserve_id, -1) as reserve_id
            from
              		item_other_master as c
-            		LEFT JOIN reserve_table_new as r on c.item_other_id = r.item_id
+            		LEFT JOIN reserve_table as r on c.item_other_id = r.item_id
                and r.item_type_id in ( """ + {itemIdList.mkString(",")} +""" )
             	 and r.active_flg = true
 					left JOIN item_type as i on i.item_type_id = c.item_type_id
@@ -443,7 +443,7 @@ class itemOtherDAO @Inject()(dbapi: DBApi) {
                ,coalesce(r.reserve_id, -1) as reserve_id
           from
             item_other_master as c
-             		LEFT JOIN reserve_table_new as r on c.item_other_id = r.item_id
+             		LEFT JOIN reserve_table as r on c.item_other_id = r.item_id
                 and r.item_type_id in ( """ + {itemIdList.mkString(",")} +""" )
              		and r.active_flg = true
                 and r.place_id = """ + {placeId} +"""
@@ -464,7 +464,7 @@ class itemOtherDAO @Inject()(dbapi: DBApi) {
       wherePh +=
         s""" and c.place_id = ${placeId}
            and not r.item_id in
-              (select r.item_id from reserve_table_new where work.work_type_name ='${workTypeName}')
+              (select r.item_id from reserve_table where work.work_type_name ='${workTypeName}')
                and r.reserve_start_date <= to_date('${reserveStartDate}', 'YYYY-MM-DD') and r.reserve_start_date >= to_date('${reserveStartDate}', 'YYYY-MM-DD')
                or r.reserve_start_date <= to_date('${reserveEndDate}', 'YYYY-MM-DD') and r.reserve_start_date >= to_date('${reserveEndDate}', 'YYYY-MM-DD')
          """
@@ -513,7 +513,7 @@ class itemOtherDAO @Inject()(dbapi: DBApi) {
                ,coalesce(r.reserve_id, -1) as reserve_id
           from
             item_other_master as c
-             		LEFT JOIN reserve_table_new as r on c.item_other_id = r.item_id
+             		LEFT JOIN reserve_table as r on c.item_other_id = r.item_id
                 and r.item_type_id in ( """ + {itemIdList.mkString(",")} +""" )
              		and r.active_flg = true
                 and r.place_id = """ + {placeId} +"""
@@ -538,21 +538,21 @@ class itemOtherDAO @Inject()(dbapi: DBApi) {
       if(workTypeName == "終日" || vCount == 0 ){
         wherePh += s"""
             and not r.item_id in
-            (select r.item_id from reserve_table_new where
+            (select r.item_id from reserve_table where
                       r.reserve_start_date  between to_date('${reserveStartDate}', 'YYYY-MM-DD') and  to_date('${reserveEndDate}', 'YYYY-MM-DD')
                       or r.reserve_end_date between to_date('${reserveStartDate}', 'YYYY-MM-DD') and  to_date('${reserveEndDate}', 'YYYY-MM-DD'))
             """
       }else if (workTypeName == ""){
         wherePh += s"""
             and not r.item_id in
-            (select r.item_id from reserve_table_new where
+            (select r.item_id from reserve_table where
                       r.reserve_start_date  between to_date('${reserveStartDate}', 'YYYY-MM-DD') and  to_date('${reserveEndDate}', 'YYYY-MM-DD')
                       or r.reserve_end_date between to_date('${reserveStartDate}', 'YYYY-MM-DD') and  to_date('${reserveEndDate}', 'YYYY-MM-DD'))
             """
       }else{
         wherePh += s"""
              and not r.item_id in
-            (select r.item_id from reserve_table_new where work.work_type_name ='${workTypeName}')
+            (select r.item_id from reserve_table where work.work_type_name ='${workTypeName}')
                 and r.reserve_start_date  = to_date('${reserveStartDate}', 'YYYY-MM-DD')
                 and r.reserve_end_date = to_date('${reserveEndDate}', 'YYYY-MM-DD')
           """
@@ -577,7 +577,7 @@ class itemOtherDAO @Inject()(dbapi: DBApi) {
       reserveItemOther.zipWithIndex.map { case (item, num) =>
         val sql = SQL("""
 
-            insert into reserve_table_new
+            insert into reserve_table
             (item_type_id, item_id, floor_id, place_id,company_id,reserve_start_date,reserve_end_date,active_flg,updatetime,work_type_id) values(
             {item_type_id}, {item_id}, {floor_id},{place_id},{company_id},to_date({reserve_start_date}, 'YYYY-MM-DD'),to_date({reserve_end_date}, 'YYYY-MM-DD'),true,now(),{work_type_id})
 
@@ -641,7 +641,7 @@ class itemOtherDAO @Inject()(dbapi: DBApi) {
                 ,coalesce(r.reserve_id, -1) as reserve_id
           from
             item_other_master as c
-              		LEFT JOIN reserve_table_new as r on c.item_other_id = r.item_id
+              		LEFT JOIN reserve_table as r on c.item_other_id = r.item_id
               		and r.item_type_id in ( """ + {itemIdList.mkString(",")} +""" )
               		and r.active_flg = true
  						left JOIN item_type as i on i.item_type_id = c.item_type_id
@@ -671,7 +671,7 @@ class itemOtherDAO @Inject()(dbapi: DBApi) {
     db.withTransaction { implicit connection =>
       cancelItem.zipWithIndex.map { case (item, i) =>
         val sql = SQL("""
-         delete from reserve_table_new where
+         delete from reserve_table where
          item_id =  """ + {item.item_id} + """
          and item_type_id = """ + {item.item_type_id} + """
          and active_flg = """ + {item.active_flg} + """
@@ -715,7 +715,7 @@ class itemOtherDAO @Inject()(dbapi: DBApi) {
                 ,coalesce(r.reserve_id, -1) as reserve_id
           from
             item_other_master as c
-              		LEFT JOIN reserve_table_new as r on c.item_other_id = r.item_id
+              		LEFT JOIN reserve_table as r on c.item_other_id = r.item_id
               		and r.item_type_id in ( """ + {itemIdList.mkString(",")} +""" )
               		and r.active_flg = true
  						left JOIN item_type as i on i.item_type_id = c.item_type_id

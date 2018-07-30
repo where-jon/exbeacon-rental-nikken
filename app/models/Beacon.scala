@@ -391,7 +391,7 @@ class beaconDAO @Inject()(dbapi: DBApi) {
                   active_flg
                   FROM item_other_master as b
                   ) as c
-                left JOIN reserve_table_new as r on c.item_id = r.item_id and c.item_type_id = r.item_type_id
+                left JOIN reserve_table as r on c.item_id = r.item_id and c.item_type_id = r.item_type_id
                 and r.active_flg = true
                 left JOIN item_type as i on i.item_type_id = c.item_type_id
                 and i.active_flg = true
