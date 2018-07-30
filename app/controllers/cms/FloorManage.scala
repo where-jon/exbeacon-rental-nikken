@@ -4,6 +4,7 @@ import javax.inject.{Inject, Singleton}
 
 import com.mohiva.play.silhouette.api.Silhouette
 import controllers.BaseController
+import controllers.site
 import models.{CarReservePostJsonResponseObj, FloorSortPostJsonRequestObj, PlaceEnum}
 import play.api._
 import play.api.data.Form
@@ -38,8 +39,8 @@ class FloorManage @Inject()(config: Configuration
 
   /** 初期表示 */
   def index = SecuredAction { implicit request =>
-
-    if(super.isCmsLogged){
+    val reqIdentity = request.identity
+    if(reqIdentity.level >= 3){
       // 選択されている現場の現場ID
       val placeId = securedRequest2User.currentPlaceId.get
 
@@ -57,9 +58,10 @@ class FloorManage @Inject()(config: Configuration
         // 画面遷移
         Ok(views.html.cms.floorManage(placeList.last, floorInfoList, statusList))
       }
-    }else{
-      Redirect(CMS_NOT_LOGGED_RETURN_PATH).flashing(ERROR_MSG_KEY -> Messages("error.cmsLogged.invalid"))
+    }else {
+      Redirect(site.routes.WorkPlace.index)
     }
+
   }
 
   /** フロア更新 */
