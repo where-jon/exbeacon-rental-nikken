@@ -13,7 +13,7 @@ import play.api.libs.ws.WSClient
 import utils.silhouette.MyEnv
 
 /**
-  * マップ登録クラス.
+  * EXB設置管理クラス.
   */
 class ExbViewerManager @Inject()(config: Configuration
                                  , val silhouette: Silhouette[MyEnv]
