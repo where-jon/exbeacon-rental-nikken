@@ -19,10 +19,9 @@ class ExbViewerManager @Inject()(config: Configuration
                                  , val silhouette: Silhouette[MyEnv]
                                  , val messagesApi: MessagesApi
                                  , ws: WSClient
-                                 , exDAO: models.ExbDAO
+                                 , exbDAO: models.ExbDAO
                                  , mapViewerDAO: models.MapViewerDAO
                                  , viewTypeDAO: models.ViewTypeDAO
-                                 , exbDAO: models.ExbDAO
                           ) extends BaseController with I18nSupport {
 
   val exbViewerForm = Form(mapping(
@@ -43,7 +42,7 @@ class ExbViewerManager @Inject()(config: Configuration
     System.out.println("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------start viewManagerControllerUpdate:");
     // 部署情報
     val placeId = super.getCurrentPlaceId
-    val exbViewer = exDAO.selectExbAll(placeId)
+    val exbViewer = exbDAO.selectExbAll(placeId)
     var exbViewerData = exbViewerForm.bindFromRequest.get;
     // mapViewer情報
     val mapViewer = mapViewerDAO.selectAll()
@@ -57,7 +56,7 @@ class ExbViewerManager @Inject()(config: Configuration
         System.out.println("exbViewerData" + exbViewerData);
         //System.out.println("exbViewerData.viewerId(0)" + exbViewerData.viewerId(0));
 
-        val result = exDAO.updateExbMaster(new ExbMasterData(exbViewerData.viewerId, exbViewerData.viewerVisible, exbViewerData.viewerPosType, exbViewerData.viewerPosX, exbViewerData.viewerPosY, exbViewerData.viewerPosMargin, exbViewerData.viewerPosCount, exbViewerData.viewerPosFloor, exbViewerData.viewerPosSize, exbViewerData.viewerPosNum))
+        val result = exbDAO.updateExbMaster(new ExbMasterData(exbViewerData.viewerId, exbViewerData.viewerVisible, exbViewerData.viewerPosType, exbViewerData.viewerPosX, exbViewerData.viewerPosY, exbViewerData.viewerPosMargin, exbViewerData.viewerPosCount, exbViewerData.viewerPosFloor, exbViewerData.viewerPosSize, exbViewerData.viewerPosNum))
         System.out.println("exbViewerData.result////" + result);
         if (result == "success") {
           Redirect("/manage/exbViewerManager").flashing("resultOK" -> Messages("db.update.ok"))
@@ -73,9 +72,9 @@ class ExbViewerManager @Inject()(config: Configuration
   def index = SecuredAction { implicit request =>
     val reqIdentity = request.identity
     if(reqIdentity.level >= 3){
-      // exbViewer情報
+      // exbMaster情報
       val placeId = super.getCurrentPlaceId
-      val exbViewer = exDAO.selectExbAll(placeId)
+      val exbViewer = exbDAO.selectExbAll(placeId)
 
       // mapViewer情報
       val mapViewer = mapViewerDAO.selectAll()
