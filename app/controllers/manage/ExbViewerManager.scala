@@ -20,7 +20,7 @@ class ExbViewerManager @Inject()(config: Configuration
                                  , val messagesApi: MessagesApi
                                  , ws: WSClient
                                  , exbDAO: models.ExbDAO
-                                 , mapViewerDAO: models.MapViewerDAO
+                                 , floorDAO: models.floorDAO
                                  , viewTypeDAO: models.ViewTypeDAO
                           ) extends BaseController with I18nSupport {
 
@@ -45,7 +45,7 @@ class ExbViewerManager @Inject()(config: Configuration
     val exbViewer = exbDAO.selectExbAll(placeId)
     var exbViewerData = exbViewerForm.bindFromRequest.get;
     // mapViewer情報
-    val mapViewer = mapViewerDAO.selectAll()
+    val mapViewer = floorDAO.selectFloorAll(placeId)
     // viewType情報
     val viewType = viewTypeDAO.selectAll()
 
@@ -76,8 +76,8 @@ class ExbViewerManager @Inject()(config: Configuration
       val placeId = super.getCurrentPlaceId
       val exbViewer = exbDAO.selectExbAll(placeId)
 
-      // mapViewer情報
-      val mapViewer = mapViewerDAO.selectAll()
+      // map情報
+      val mapViewer = floorDAO.selectFloorAll(placeId)
 
       // viewType情報
       val viewType = viewTypeDAO.selectAll()
