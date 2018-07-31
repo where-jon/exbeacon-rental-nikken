@@ -1,9 +1,8 @@
 package controllers
 
 import java.util.concurrent.TimeUnit
-import javax.inject.{Inject, Named}
+import javax.inject.Inject
 
-import akka.actor.ActorRef
 import akka.util.Timeout
 import models._
 import play.api.Configuration
@@ -19,7 +18,6 @@ import scala.concurrent.duration.Duration
 class BeaconService @Inject() (config: Configuration,
                                ws: WSClient
                                , carDAO: models.itemCarDAO
-                               , @Named("SaveBtxDataActor") excIfActor: ActorRef
                                ,exbDao:models.ExbDAO
                                ,otherDAO: models.itemOtherDAO
                                ,placeDAO: models.placeDAO
@@ -97,7 +95,7 @@ class BeaconService @Inject() (config: Configuration,
           v.reserve_id
         )
       } else {
-        itemCarBeaconPositionData("検知フロア無","検知EXB無",-1, -1, -1, 0, "nodate",
+        itemCarBeaconPositionData("検知フロア無","検知EXB無",-1, -1, -1, 0, "no",
           v.item_car_id,
           v.item_car_btx_id,
           v.item_car_key_btx_id,
@@ -182,7 +180,7 @@ class BeaconService @Inject() (config: Configuration,
           v.reserve_id
         )
       } else {
-        itemOtherBeaconPositionData("現在フロア","現在位置",-1, -1, -1, 0, "nodate",
+        itemOtherBeaconPositionData("現在フロア","現在位置",-1, -1, -1, 0, "no",
           v.item_other_id,
           v.item_other_btx_id,
           v.item_type_id,
@@ -247,7 +245,6 @@ class BeaconService @Inject() (config: Configuration,
           vFloorName,
           bpd.get.btx_id,
           bpd.get.pos_id,
-          bpd.get.phase,
           bpd.get.power_level,
           bpd.get.updatetime,
           v.item_id,
@@ -263,10 +260,12 @@ class BeaconService @Inject() (config: Configuration,
           v.company_name,
           v.work_type_name,
           v.reserve_floor_name,
-          v.reserve_id
+          v.reserve_id,
+          v.reserve_start_date,
+          v.reserve_end_date
         )
       } else {
-        itemBeaconPositionData("現在フロア","現在位置",-1, -1, -1, 0, "nodate",
+        itemBeaconPositionData("現在フロア","現在位置",-1, -1, 0, "no",
           v.item_id,
           v.item_btx_id,
           v.item_key_btx,
@@ -280,7 +279,9 @@ class BeaconService @Inject() (config: Configuration,
           v.company_name,
           v.work_type_name,
           v.reserve_floor_name,
-          v.reserve_id
+          v.reserve_id,
+          v.reserve_start_date,
+          v.reserve_end_date
         )
       }
     }.sortBy(_.item_btx_id)

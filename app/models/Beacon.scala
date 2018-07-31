@@ -227,7 +227,6 @@ object itemOtherBeaconPositionData {
   *
   * @param btx_id        BeaconTXのID
   * @param pos_id        位置を表すID
-  * @param phase         電波強度算出時の検出タイミング
   * @param power_level   BeaconTXの電池残量
   * @param updatetime    当日最後に検出した時刻
   */
@@ -236,7 +235,6 @@ case class itemBeaconPositionData(
   cur_pos_name: String,
   btx_id: Int,
   pos_id: Int,
-  phase: Int,
   power_level: Int,
   updatetime: String,
   item_id: Int,
@@ -252,7 +250,9 @@ case class itemBeaconPositionData(
   company_name: String,
   work_type_name: String,
   reserve_floor_name: String,
-  reserve_id: Int
+  reserve_id: Int,
+  reserve_start_date:String,
+  reserve_end_date: String
 )
 
 object itemBeaconPositionData {
@@ -261,7 +261,6 @@ object itemBeaconPositionData {
     ((JsPath \ "cur_pos_name ").read[String] | Reads.pure(""))~
     (JsPath \ "btx_id").read[Int] ~
     (JsPath \ "pos_id").read[Int] ~
-    ((JsPath \ "phase").read[Int] | Reads.pure(0)) ~
     (JsPath \ "power_level").read[Int] ~
     ((JsPath \ "updatetime").read[String] | Reads.pure(""))~
     (JsPath \ "item_id").read[Int] ~
@@ -277,7 +276,9 @@ object itemBeaconPositionData {
     ((JsPath \ "company_name").read[String] | Reads.pure(""))~
     ((JsPath \ "work_type_name").read[String] | Reads.pure(""))~
     ((JsPath \ "reserve_floor_name").read[String] | Reads.pure(""))~
-    (JsPath \ "reserve_id").read[Int]
+    (JsPath \ "reserve_id").read[Int]~
+    ((JsPath \ "reserve_start_date").read[String] | Reads.pure(""))~
+    ((JsPath \ "reserve_end_date").read[String] | Reads.pure(""))
     )(itemBeaconPositionData.apply _)
   implicit def jsonWrites = Json.writes[itemBeaconPositionData]
 }
