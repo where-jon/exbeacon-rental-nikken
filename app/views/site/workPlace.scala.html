@@ -1,4 +1,5 @@
 @(
+itemTypeList: Seq[ItemType],
 mapViewer: Seq[FloorAll],
 exbViewer: Seq[ExbAll]
 )(implicit user: User, messages: Messages, request: RequestHeader, flash: Flash)
@@ -20,17 +21,17 @@ exbViewer: Seq[ExbAll]
 
     <div class="top-area">
         <div class="top__btn--area ">
-            <div id="top-title" class="top__btn--text">@Messages("lang.site.workPlace.page.title")</div>
-            <div class="" style="display: -webkit-box;margin-top: 70px;">
-                <span class = "line__view--text" style="vertical-align: 7px">&nbsp;凡例&nbsp;:&nbsp;</span>
+            <div id="top-title" class="top__btn--text">@Messages("lang.site.workPlace.page.title")
+                <div class="line__view--text" style="margin-top: 30px;font-size: 15px;margin-left: 18px;">&nbsp;凡例&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;</div>
+            </div>
+            <div class="col-xs-6 col-sm-9 col-md-10 col-lg-12" style="display: -webkit-box;margin-top: 70px;">
                 <span class = "line__view--style" style="background:black"></span>
                 <span class = "line__view--text" style="vertical-align: 7px">@Messages("lang.site.workPlace.page.maxDevice")&nbsp</span>
-                <span class = "line__view--style" style="background:rgb(0, 102, 204)"></span>
-                <span class = "line__view--text" style="vertical-align: 7px">作業車&nbsp</span>
-                <span class = "line__view--style" style="background:rgb(192, 0, 0)"></span>
-                <span class = "line__view--text" style="vertical-align: 7px">台車&nbsp</span>
-
-
+                <!--仮設材種別を表示-->
+                @itemTypeList.zipWithIndex.map{ case(itemType, i) =>
+                    <span class = "line__view--style" style="background:@itemType.item_type_icon_color"></span>
+                    <span class = "line__view--text" style="vertical-align: 7px">@itemType.item_type_name&nbsp</span>
+                }
             </div>
 
             <div class=" top__map__btn--area" style="right: 88px;">
