@@ -347,7 +347,7 @@ CREATE TABLE public.item_log (
 	finish_exb_name text NOT NULL,
 	finish_updatetime date NOT NULL,
 	company_id int4 NOT NULL,
-	company_name int4 NOT NULL,
+	company_name text NOT NULL,
 	place_id int4 NOT NULL,
 	updatetime timestamp NULL DEFAULT now(),
 	CONSTRAINT item_log_pkey PRIMARY KEY (item_log_id)
