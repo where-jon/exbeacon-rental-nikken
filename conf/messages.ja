@@ -215,6 +215,19 @@ lang.cms.placeManage.passwordUpdate.popup.title=管理パスワード変更
 lang.cms.placeManage.passwordUpdate.popup.password=パスワード
 lang.cms.placeManage.passwordUpdate.popup.reEnter=パスワード再入力
 
+# CMS文字列（テナント管理->パスワード変更）
+lang.auth.passwordchg.title=テナント管理
+lang.auth.passwordchg.page.title=パスワード変更
+lang.auth.passwordchg.dev.user=開発管理者
+lang.auth.passwordchg.dev.user_current_pass=現在パスワード
+lang.auth.passwordchg.dev.user_pass1=新規パスワード
+lang.auth.passwordchg.dev.user_pass2=パスワード確認
+lang.auth.passwordchg.sys.user=システム管理者
+lang.auth.passwordchg.sys.user_current_pass=現在パスワード
+lang.auth.passwordchg.sys.user_pass1=新規パスワード
+lang.auth.passwordchg.sys.user_pass2=パスワード確認
+lang.auth.passwordchg.separate=：
+
 # CMS文字列（フロア管理）
 lang.cms.floorManage.title=フロア管理画面
 lang.cms.floorManage.floor.list.header.title=フロア情報
