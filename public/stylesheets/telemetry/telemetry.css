@@ -135,3 +135,10 @@ th{
     background-color: rgb(217, 217, 217)!important;
 }
 
+.btn__update--style {
+    color: black;
+    right: 0;
+    position: absolute;
+    font-size: 15px;
+    margin-top: 5px;
+}
