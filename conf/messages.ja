@@ -427,7 +427,7 @@ lang.site.workPlace.page.maxDevice=3個以上
 lang.analysis.movementCar.page.title=作業車動線分析
 
 # GateWay
-lang.analysis.gateway.pageTitle=GW状態監視
+lang.analysis.gateway.page.title=GW状態監視
 
 # 仮設材管理文字列（作業車・立馬）
 lang.site.carMaster.page.title=作業車・立馬一覧
