@@ -25,7 +25,6 @@ $(function() {
                          $(item2).find('.deviceid').text(beacon.deviceid);
                          var vTime = new Date(beacon.updated).toLocaleString("ja");
                          $(item2).find('.updated').text(new Date(beacon.updated).toLocaleString("ja"));
-                         beacon.updated = 1532757193000
                          if (beacon.updated < (Date.now() - 60*60*24*1000)) {
                              // 24時間以上前
                         	 $(item2).addClass("txWarning");
@@ -65,7 +64,7 @@ $(function() {
             },
             error: function (e) {
                 console.dir(e);
-                //gInit.spinAnimationError();
+                gInit.spinAnimationError();
             }
         });
     }

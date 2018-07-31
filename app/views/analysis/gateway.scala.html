@@ -6,9 +6,8 @@
 <!doctype html>
 <html lang="ja">
 <head>
-    @templates.htmlHead(title = Messages("lang.analysis.gateway.pageTitle"))
+    @templates.htmlHead(title = Messages("lang.analysis.gateway.page.title"))
     <link rel="stylesheet" href="@routes.MyAssets.css("telemetry/telemetry.css")"/>
-    <!--<link rel="stylesheet" media="screen" href="@routes.MyAssets.lib("tablesorter/css/theme.bootstrap.css")">&ndash;&gt;-->
     <script type="text/javascript" src="@routes.MyAssets.js("analysis/gateway.js")"></script>
     <script></script>
 </head>
@@ -18,14 +17,14 @@
 <div class="container">
     <!-- ナビバー  -->
     @templates.navBar()
-    <div class="row" style="margin-top: 40px;">
+    <div class="row" style="margin-top: 50px;">
         <!-- メイン -->
         <div class="col-xs-9 col-sm-9 col-md-12 col-lg-12 mainSpace">
             <!-- メッセージ -->
             @views.html.templates.msgDiv()
             <!-- 画面題字 -->
             <div class="form-group" style="font-weight:bold;font-size:19px;margin:15px 0px;">
-                @Messages("lang.analysis.movementCar.page.title")
+                @Messages("lang.analysis.gateway.page.title")
             </div>
             <!-- テーブルのROW -->
             <div class="row tableRow">
