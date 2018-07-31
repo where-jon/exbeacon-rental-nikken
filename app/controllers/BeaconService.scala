@@ -288,4 +288,22 @@ class BeaconService @Inject() (config: Configuration,
     bplist
   }
 
+  /**
+    * GW状態取得
+    *
+    * EXCloudIfActorにて非同期で取得しているGW状態情報を取得する
+    *
+    * @param placeId  接続現場情報
+    * @return  List[gateWayState]
+    */
+  def getGateWayState(placeId:Int): Seq[gateWayState] = {
+
+    this.getCloudUrl(placeId)
+    val gatewayList = Await.result(ws.url(GATEWAY_API_URL).get().map { response =>
+      Json.parse(response.body).asOpt[List[gateWayState]].getOrElse(Nil)
+    }, Duration.Inf)
+
+    gatewayList
+  }
+
 }

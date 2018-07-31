@@ -306,6 +306,42 @@ case class BeaconViewer(
    reserve_id: Int
 )
 
+
+/**
+  * EXCloud測位APIから取得するデータモデル
+  *
+  * @param num          GwのID
+  * @param deviceid     位置を表すID
+  * @param updated      電波強度算出時の検出タイミング
+  * @param timestamp    当日最後に検出した時刻
+  */
+case class gateWayState(
+                         num: Int,
+                         deviceid: Int,
+                         updated: Long,
+                         timestamp: Long
+                       ) {
+  def copy(
+            num: Int = this.num,
+            deviceid: Int = this.deviceid,
+            updated: Long = this.updated,
+            timestamp: Long = this.timestamp
+          ): gateWayState = {
+    gateWayState(num, deviceid, updated, timestamp)
+  }
+}
+
+object gateWayState {
+  implicit val jsonReads: Reads[gateWayState] = (
+    (JsPath \ "num").read[Int] ~
+      (JsPath \ "deviceid").read[Int] ~
+      ((JsPath \ "updated").read[Long] | Reads.pure(0L)) ~
+      ((JsPath \ "timestamp").read[Long] | Reads.pure(0L))
+    )(gateWayState.apply _)
+
+  implicit def jsonWrites = Json.writes[gateWayState]
+}
+
 @javax.inject.Singleton
 class beaconDAO @Inject()(dbapi: DBApi) {
   private val db = dbapi.database("default")
