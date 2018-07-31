@@ -93,11 +93,7 @@ class TxTagManage @Inject()(config: Configuration
 
       resultList.sortBy(_.btxId)
 
-      if(super.isCmsLogged){
-        Ok(views.html.cms.txTagManage(resultList, placeId))
-      }else{
-        Redirect(CMS_NOT_LOGGED_RETURN_PATH).flashing(ERROR_MSG_KEY -> Messages("error.cmsLogged.invalid"))
-      }
+      Ok(views.html.cms.txTagManage(resultList, placeId))
     }
   }
 }

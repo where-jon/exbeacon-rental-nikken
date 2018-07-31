@@ -11,25 +11,18 @@ import play.api.data.Forms._
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import utils.silhouette.MyEnv
 
-/*作業車・立馬予約取消用クラス*/
-case class CancelItem(
- item_type_id :Int,
- item_id :Int,
- place_id :Int,
- active_flg:Boolean
-)
 
 /**
-  * 作業車・立馬取消画面
+  * その他仮設材予約取消画面
   *
   *
   */
 
 @Singleton
-class ItemCarCancel @Inject()(config: Configuration
+class ItemOtherCancel @Inject()(config: Configuration
                                , val silhouette: Silhouette[MyEnv]
                                , val messagesApi: MessagesApi
-                               , carDAO: models.itemCarDAO
+                                , otherDAO: models.itemOtherDAO
                                , companyDAO: models.companyDAO
                                , beaconService: BeaconService
                                , floorDAO: models.floorDAO
@@ -40,7 +33,8 @@ class ItemCarCancel @Inject()(config: Configuration
 
    /*検索用*/
   var ITEM_TYPE_FILTER = 0;
-  var RESERVE_DATE = "";
+  var RESERVE_START_DATE = "";
+  var RESERVE_END_DATE = "";
   var WORK_TYPE_FILTER = "";
 
   /*登録用*/
@@ -57,25 +51,26 @@ class ItemCarCancel @Inject()(config: Configuration
   val WORK_TYPE = WorkTypeEnum().map;
 
   /*転送form*/
-  val itemCarCancelForm = Form(mapping(
+  val itemOtherCancelForm = Form(mapping(
     "itemTypeIdList" -> list(number.verifying("仮設材TypeIDが異常", { itemTypeIdList => itemTypeIdList != null })),
     "itemId" -> list(number.verifying("仮設材IDが異常", { itemId => itemId != null })),
     "checkVal" -> list(number.verifying("checkVal", { checkVal => checkVal != null }))
-  )(ItemCarCancelData.apply)(ItemCarCancelData.unapply))
+  )(ItemOtherCancelData.apply)(ItemOtherCancelData.unapply))
 
 
-    val itemCarSearchForm = Form(mapping(
+    val itemOtherSearchForm = Form(mapping(
     "itemTypeId" ->number,
     "workTypeName" -> text,
      "companyName" -> text,
-    "inputDate" -> text
-  )(ItemCarCancelSearchData.apply)(ItemCarCancelSearchData.unapply))
+      "inputStartDate" -> text,
+      "inputEndDate" -> text
+  )(ItemOtherCancelSearchData.apply)(ItemOtherCancelSearchData.unapply))
 
   /** 　初期化 */
   def init() {
     ITEM_TYPE_FILTER = 0
     WORK_TYPE_FILTER = ""
-    RESERVE_DATE = ""
+    RESERVE_START_DATE = ""
 
     COMPANY_NAME_FILTER = ""
     FLOOR_NAME_FILTER = ""
@@ -84,7 +79,7 @@ class ItemCarCancel @Inject()(config: Configuration
   /** 　検索側データ取得 */
   def getSearchData(_placeId:Integer): Unit = {
     /*仮設材種別取得*/
-    itemTypeList = itemTypeDAO.selectItemCarInfo(_placeId);
+    itemTypeList = itemTypeDAO.selectItemOtherInfo(_placeId);
     /*仮設材種別id取得*/
     itemIdList = itemTypeList.map{item => item.item_type_id}
     if(itemIdList.isEmpty){
@@ -104,37 +99,36 @@ class ItemCarCancel @Inject()(config: Configuration
     // dbデータ取得
     val placeId = super.getCurrentPlaceId
     getSearchData(placeId)
-    val dbDatas = carDAO.selectCarMasterReserve(placeId,itemIdList)
-    var carListApi = beaconService.getItemCarBeaconPosition(dbDatas,true,placeId)
-    //val carFormData = itemCarForm.bindFromRequest.get
-    itemCarCancelForm.bindFromRequest.fold(
+    val dbDatas = otherDAO.selectOtherMasterReserve(placeId,itemIdList)
+    var otherListApi = beaconService.getItemOtherBeaconPosition(dbDatas,true,placeId)
+    itemOtherCancelForm.bindFromRequest.fold(
       formWithErrors =>
-      Redirect(routes.ItemCarCancel.index())
+      Redirect(routes.ItemOtherCancel.index())
           .flashing(ERROR_MSG_KEY -> Messages(formWithErrors.errors.map(_.message +"<br>").mkString("\n"))),
 
-      ItemCarReserveData => {
-        if(ItemCarReserveData.checkVal.zipWithIndex.length > 0){
+      ItemOtherReserveData => {
+        if(ItemOtherReserveData.checkVal.zipWithIndex.length > 0){
             var setData = List[CancelItem]()
 
-          ItemCarReserveData.itemId.zipWithIndex.map { case (itemId, i) =>
-            ItemCarReserveData.checkVal.zipWithIndex.map { case (check, j) =>
+          ItemOtherReserveData.itemId.zipWithIndex.map { case (itemId, i) =>
+            ItemOtherReserveData.checkVal.zipWithIndex.map { case (check, j) =>
                 if(i == check){
-                  val vItemTypeId = ItemCarReserveData.itemTypeIdList(i)
+                  val vItemTypeId = ItemOtherReserveData.itemTypeIdList(i)
                   setData = setData :+ CancelItem(vItemTypeId,itemId,placeId,true)
                 }
               }
             }
-            val result = carDAO.cancelItemCar(setData)
+            val result = otherDAO.cancelItemOther(setData)
             if (result == "success") {
-              Redirect(routes.ItemCarCancel.index())
-                .flashing(SUCCESS_MSG_KEY -> Messages("success.site.carCancel.cancel"))
+              Redirect(routes.ItemOtherCancel.index())
+                .flashing(SUCCESS_MSG_KEY -> Messages("success.site.otherCancel.cancel"))
             }else {
-              Redirect(routes.ItemCarCancel.index())
-                .flashing(ERROR_MSG_KEY -> Messages("error.site.carCancel.cancel"))
+              Redirect(routes.ItemOtherCancel.index())
+                .flashing(ERROR_MSG_KEY -> Messages("error.site.otherCancel.cancel"))
             }
         }else{
-          Redirect(routes.ItemCarCancel.index())
-            .flashing(ERROR_MSG_KEY -> Messages("error.site.carCancel.noselect"))
+          Redirect(routes.ItemOtherCancel.index())
+            .flashing(ERROR_MSG_KEY -> Messages("error.site.otherCancel.noselect"))
         }
       }
     )
@@ -148,31 +142,35 @@ class ItemCarCancel @Inject()(config: Configuration
     getSearchData(placeId)
 
     // 部署情報
-    val carFormSearchData = itemCarSearchForm.bindFromRequest.get
-    ITEM_TYPE_FILTER = carFormSearchData.itemTypeId
-    COMPANY_NAME_FILTER = carFormSearchData.companyName
-    WORK_TYPE_FILTER = carFormSearchData.workTypeName
-    RESERVE_DATE = carFormSearchData.inputDate
+    val otherFormSearchData = itemOtherSearchForm.bindFromRequest.get
+    ITEM_TYPE_FILTER = otherFormSearchData.itemTypeId
+    COMPANY_NAME_FILTER = otherFormSearchData.companyName
+    WORK_TYPE_FILTER = otherFormSearchData.workTypeName
+    RESERVE_START_DATE = otherFormSearchData.inputStartDate
+    RESERVE_END_DATE = otherFormSearchData.inputEndDate
 
-    var dbDatas : Seq[CarViewer] = null;
-    dbDatas = carDAO.selectCarMasterCancel(placeId,itemIdList)
-    var carListApi = beaconService.getItemCarBeaconPosition(dbDatas,true,placeId)
+    var dbDatas : Seq[OtherViewer] = null;
+    if (RESERVE_START_DATE != "" && RESERVE_END_DATE != "") {
+      dbDatas = otherDAO.selectOtherMasterCancelSearch(placeId,itemIdList,RESERVE_START_DATE,RESERVE_END_DATE)
+    }else {
+      dbDatas = otherDAO.selectOtherMasterCancel(placeId,itemIdList)
+    }
+
+    var otherListApi = beaconService.getItemOtherBeaconPosition(dbDatas,true,placeId)
 
     if (ITEM_TYPE_FILTER != 0) {
-      carListApi = carListApi.filter(_.item_type_id == ITEM_TYPE_FILTER)
+      otherListApi = otherListApi.filter(_.item_type_id == ITEM_TYPE_FILTER)
     }
     if (WORK_TYPE_FILTER != "") {
-      carListApi = carListApi.filter(_.work_type_name == WORK_TYPE_FILTER)
+      otherListApi = otherListApi.filter(_.work_type_name == WORK_TYPE_FILTER)
     }
     if (COMPANY_NAME_FILTER != "") {
-      carListApi = carListApi.filter(_.company_name == COMPANY_NAME_FILTER)
-    }
-    if (RESERVE_DATE != "") {
-      carListApi = carListApi.filter(_.reserve_start_date == RESERVE_DATE)
+      otherListApi = otherListApi.filter(_.company_name == COMPANY_NAME_FILTER)
     }
 
-    Ok(views.html.site.itemCarCancel(ITEM_TYPE_FILTER,COMPANY_NAME_FILTER,WORK_TYPE_FILTER,RESERVE_DATE
-      ,carListApi,itemTypeList,companyNameList,floorNameList,workTypeList,WORK_TYPE))
+
+    Ok(views.html.site.itemOtherCancel(ITEM_TYPE_FILTER,COMPANY_NAME_FILTER,WORK_TYPE_FILTER,RESERVE_START_DATE,RESERVE_END_DATE
+      ,otherListApi,itemTypeList,companyNameList,floorNameList,workTypeList,WORK_TYPE))
   }
 
   /** 初期表示 */
@@ -184,13 +182,13 @@ class ItemCarCancel @Inject()(config: Configuration
       getSearchData(placeId)
 
       // dbデータ取得
-      val dbDatas = carDAO.selectCarMasterCancel(placeId,itemIdList)
-      var carListApi = beaconService.getItemCarBeaconPosition(dbDatas,true,placeId)
+      val dbDatas = otherDAO.selectOtherMasterCancel(placeId,itemIdList)
+      var otherListApi = beaconService.getItemOtherBeaconPosition(dbDatas,true,placeId)
 
 
-      System.out.println("carListApi:" + carListApi.length)
-      Ok(views.html.site.itemCarCancel(ITEM_TYPE_FILTER,COMPANY_NAME_FILTER,WORK_TYPE_FILTER,RESERVE_DATE
-        ,carListApi,itemTypeList,companyNameList,floorNameList,workTypeList,WORK_TYPE))
+      System.out.println("otherListApi:" + otherListApi.length)
+      Ok(views.html.site.itemOtherCancel(ITEM_TYPE_FILTER,COMPANY_NAME_FILTER,WORK_TYPE_FILTER,RESERVE_START_DATE,RESERVE_END_DATE
+        ,otherListApi,itemTypeList,companyNameList,floorNameList,workTypeList,WORK_TYPE))
   }
 
 }

@@ -23,6 +23,18 @@ object FloorSortPostJsonRequestObj {
   implicit def jsonWrites = Json.writes[FloorSortPostJsonRequestObj]
 }
 
+
+case class FloorAll(
+  floor_id: Int,
+  floor_name: String,
+  display_order: Int,
+  place_id: Int,
+  active_flg: Boolean,
+  floor_map_width: Int,
+  floor_map_height: Int,
+  floor_map_image: String
+)
+
 case class FloorSummery(
   floor: String,
   cntMorning: String,
@@ -32,6 +44,13 @@ case class FloorSummery(
 case class Floor(
   floor_Id: Int,
   floor_name: String
+)
+
+case class FloorMapInfo(
+  floorId: Int,
+  floorName: String,
+  exbDeviceNoList: Seq[String],
+  exbDeviceIdList: Seq[String]
 )
 
 case class FloorInfo(
@@ -285,6 +304,75 @@ Logger.debug(s"""EXBマスタを更新""")
 
       // コミット
       connection.commit()
+    }
+  }
+
+
+  /*exbeacn情報を取得 Parser 20180724*/
+  val simpleFloorAll = {
+      get[Int]("floor_id") ~
+      get[String]("floor_name") ~
+      get[Int]("display_order") ~
+      get[Int]("place_id") ~
+      get[Boolean]("active_flg") ~
+      get[Int]("floor_map_width") ~
+      get[Int]("floor_map_height") ~
+      get[String]("floor_map_image")map {
+        case floor_id ~ floor_name ~ display_order ~ place_id ~ active_flg ~ floor_map_width ~ floor_map_height ~ floor_map_image =>
+          FloorAll(floor_id, floor_name, display_order, place_id, active_flg,floor_map_width, floor_map_height, floor_map_image)
+      }
+  }
+
+  /**
+    * フロア情報の取得
+    * @return
+    */
+  //def selectFloorAll(placeId: Int) = {
+  def selectFloorAll(placeId: Int): Seq[FloorAll] = {
+
+    db.withConnection { implicit connection =>
+      val sql = SQL("""
+        select
+          floor_id,
+          floor_name ,
+          display_order,
+          place_id ,
+          active_flg,
+          floor_map_width,
+          floor_map_height,
+          floor_map_image
+          from floor_master as floor
+          where floor.place_id = {placeId}
+          --and floor.active_flg = true
+          order by display_order;
+       """).on(
+        "placeId" -> placeId
+      )
+
+    sql.as(simpleFloorAll.*)
+    }
+  }
+
+
+  def updateFloorMap(map_id: Int, map_image: String, map_width: Int, map_height: Int): Int = {
+    //System.out.println("map_id::" + map_id);
+    //System.out.println("map_image::" + map_image);
+    System.out.println("=======data===========");
+    db.withConnection { implicit connection =>
+      val sql = SQL("""
+        update floor_master
+            set floor_map_image = {map_image},
+            floor_map_width = {map_width},
+            floor_map_height = {map_height}
+            where floor_id = {map_id};
+        """).on(
+        "map_id" -> map_id,
+        "map_image" -> map_image,
+        "map_width" -> map_width,
+        "map_height" -> map_height
+      )
+
+      sql.executeUpdate()
     }
   }
 

@@ -38,8 +38,8 @@ function dbExecuteManager(routeUrl){
 function btnEvent(){
 
     // DatePickerの設定 start---------------------------------------
-     gDatePicker.dayClickEvent();
-     gDatePicker.htmlDayClickEvent();
+     gDatePicker.dayClickEvent2();
+      gDatePicker.htmlClickEvent();
     // DatePickerの設定 end-----------------------------------------
 
 
@@ -72,8 +72,10 @@ function btnEvent(){
             // inputDate結果をfromへ設定
             var inputDate = document.getElementById("inputDate")
             inputDate.value = gDatePicker.startSqlTime
+            var inputDate2 = document.getElementById("inputDate2")
+            inputDate2.value = gDatePicker.endSqlTime
 
-            dbExecuteManager("../site/itemCarCancel/cancel")
+            dbExecuteManager("../site/itemOtherCancel/cancel")
         }
     });
 
@@ -111,12 +113,16 @@ function btnEvent(){
         }
 
         // inputDate結果をfromへ設定
-        var mReserveDate = document.getElementById("mReserveDate")
+        var mReserveStartDate = document.getElementById("mReserveStartDate")
         var inputDate = document.getElementById("inputDate")
         if(inputDate.value != ""){
-            mReserveDate.textContent = gDatePicker.startSqlTime
+            mReserveStartDate.textContent = gDatePicker.startSqlTime
         }
-
+        var mReserveEndDate = document.getElementById("mReserveEndDate")
+        var inputDate2 = document.getElementById("inputDate2")
+        if(inputDate2.value != ""){
+            mReserveEndDate.textContent = gDatePicker.endSqlTime
+        }
 
     });
 
@@ -139,8 +145,11 @@ function btnEvent(){
 
         // inputDate結果をfromへ設定
         var inputDate = document.getElementById("inputDate")
+        var inputDate2 = document.getElementById("inputDate2")
         inputDate.value = gDatePicker.startSqlTime
-        dbExecuteManager("../site/itemCarCancel")
+        inputDate2.value = gDatePicker.endSqlTime
+
+        dbExecuteManager("../site/itemOtherCancel")
 
     });
 

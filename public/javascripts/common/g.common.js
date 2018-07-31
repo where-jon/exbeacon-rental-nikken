@@ -2131,19 +2131,9 @@ var gViewerManage = {
                 pinFrame.className = "exb__viewer--frame";
                 pinFrame.textContent = beaconData.posNum;
 
-                if(beaconData.floor == "3"){
-                    var tempElement = document.getElementById("beaconMap-" +beaconData.floor)
-                    if(tempElement!= null)
+                var tempElement = document.getElementById("beaconMap-" +beaconData.floor)
+                if(tempElement!= null)
                     tempElement.appendChild(pinFrame);
-                }else if (beaconData.floor == "2"){
-                    var tempElement = document.getElementById("beaconMap-" +beaconData.floor)
-                    if(tempElement!= null)
-                    tempElement.appendChild(pinFrame);
-                }else if (beaconData.floor == "1"){
-                    var tempElement = document.getElementById("beaconMap-" +beaconData.floor)
-                    if(tempElement!= null)
-                    tempElement.appendChild(pinFrame);
-                }
                 // 非表示のopacityを設定
                 if(beaconData.visible == "false"){
                     //pinFrame.style.opacity = 0.8;
@@ -2218,19 +2208,9 @@ var gViewerManage = {
                 pinFrame.className = "exb__viewer--frame";
                 pinFrame.textContent = beaconData.posNum;
 
-                if(beaconData.floor == "3"){
-                    var tempElement = document.getElementById("beaconMap-" +beaconData.floor)
-                    if(tempElement!= null)
+                var tempElement = document.getElementById("beaconMap-" +beaconData.floor)
+                if(tempElement!= null)
                     tempElement.appendChild(pinFrame);
-                }else if (beaconData.floor == "2"){
-                    var tempElement = document.getElementById("beaconMap-" +beaconData.floor)
-                    if(tempElement!= null)
-                    tempElement.appendChild(pinFrame);
-                }else if (beaconData.floor == "1"){
-                    var tempElement = document.getElementById("beaconMap-" +beaconData.floor)
-                    if(tempElement!= null)
-                    tempElement.appendChild(pinFrame);
-                }
                 // 非表示のopacityを設定
                 if(beaconData.visible == "false"){
                     //pinFrame.style.opacity = 0.8;

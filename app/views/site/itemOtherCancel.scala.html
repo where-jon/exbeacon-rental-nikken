@@ -2,8 +2,9 @@
 ITEM_TYPE_FILTER: Int,
 COMPANY_NAME_FILTER:String,
 WORK_TYPE_FILTER:String,
-RESERVE_DATE:String,
-carList: Seq[itemCarBeaconPositionData],
+RESERVE_START_DATE:String,
+RESERVE_END_DATE:String,
+otherList: Seq[itemOtherBeaconPositionData],
 itemTypeList: Seq[ItemType],
 companyNameList :Seq[Company],
 floorNameList :Seq[Floor],
@@ -34,7 +35,7 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
                 <!-- メッセージ -->
                 @views.html.templates.msgDiv()
                 <!--タイトル-->
-                @Messages("lang.site.carCancel.page.title")
+                @Messages("lang.site.otherCancel.page.title")
             </div>
 
             <!-- ボタン-->
@@ -44,15 +45,29 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
 
                     <div class="text-center col-xs-2 col-sm-2 col-md-2" style="display: -webkit-box;">
                         予約希望日：
-                            <div class='input-group date' id='datetimepicker'
-                                    style="margin-top: -5px;">
+                        <div class='input-group date' id='datetimepicker'
+                             style="margin-top: -5px;">
                                 <span class="input-group-addon">
                                     <span class="glyphicon glyphicon-calendar"></span>
                                 </span>
-                                <input type='text' class="form-control inputClass" id="inputDate" name="inputDate" value="@RESERVE_DATE"
-                                    style="width: 100px;"/>
+                            <input type='text' class="form-control inputClass" id="inputDate" name="inputStartDate" value="@RESERVE_START_DATE"
+                                   style="width: 100px;"/>
 
-                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="text-center col-xs-2 col-sm-2 col-md-2" style="display: -webkit-box;">
+                        ～&nbsp;&nbsp;
+                        <div class='input-group date' id='datetimepicker'
+                             style="margin-top: -5px;">
+                                <span class="input-group-addon">
+                                    <span class="glyphicon glyphicon-calendar"></span>
+                                </span>
+                            <input type='text' class="form-control inputClass" id="inputDate2" name="inputEndDate" value="@RESERVE_END_DATE"
+                                   style="width: 100px;"/>
+
+                        </div>
 
                     </div>
 
@@ -105,7 +120,7 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
                         <table class="table table-bordered table-condensed itemTable">
                             <thead>
                             <tr>
-                                <th colspan="12" class="tableTitleTh">@Messages("lang.site.carCancel.page.title")</th>
+                                <th colspan="13" class="tableTitleTh">@Messages("lang.site.otherCancel.page.title")</th>
                             </tr>
                             <tr>
                                 <th class="tableTh ">選択</th>
@@ -117,32 +132,34 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
                                 <th class="tableTh ">種別</th>
                                 <th class="tableTh ">名称</th>
                                 <th class="tableTh ">予約業者</th>
-                                <th class="tableTh ">予約日</th>
+                                <th class="tableTh ">予約最初日</th>
+                                <th class="tableTh ">予約最終日</th>
                                 <th class="tableTh ">予約期間</th>
                                 <th class="tableTh ">予約ID</th>
                             </tr>
                             </thead>
                             <tbody>
-                            @carList.zipWithIndex.map { case(car, i) =>
-                                <tr class="rowColor rowHover" data-carId="@car.item_car_id" id="@car.item_car_id">
+                            @otherList.zipWithIndex.map { case(other, i) =>
+                                <tr class="rowColor rowHover" data-carId="@other.item_other_id" id="@other.item_other_id">
                                     <td class="item common__check--frame" id="check-@i">
                                         <input class= "checkTotal" type="checkbox" id="isCheckBox-@i" name="checkVal[@i]" value=@i>
                                     </td>
-                                    <td class="itemTd text-center ">@car.cur_pos_name</td>
-                                    <td class="itemTd text-center modalSelect">@car.cur_exb_name</td>
-                                    <td class="itemTd text-center ">@car.item_car_id
-                                        <input class="hidden form-control input-sm" type="text" id="itemId-@i" name="itemId[@i]" value="@car.item_car_id">
+                                    <td class="itemTd text-center ">@other.cur_pos_name</td>
+                                    <td class="itemTd text-center modalSelect">@other.cur_exb_name</td>
+                                    <td class="itemTd text-center ">@other.item_other_id
+                                        <input class="hidden form-control input-sm" type="text" id="itemId-@i" name="itemId[@i]" value="@other.item_other_id">
                                     </td>
-                                    <td class="itemTd text-center ">@car.item_car_btx_id</td>
-                                    <td class="itemTd text-center ">@car.item_type_id
-                                        <input class="hidden form-control input-sm" type="text" id="itemTypeIdList-@i" name="itemTypeIdList[@i]" value="@car.item_type_id">
+                                    <td class="itemTd text-center ">@other.item_other_btx_id</td>
+                                    <td class="itemTd text-center ">@other.item_type_id
+                                        <input class="hidden form-control input-sm" type="text" id="itemTypeIdList-@i" name="itemTypeIdList[@i]" value="@other.item_type_id">
                                     </td>
-                                    <td class="itemTd text-center ">@car.item_type_name</td>
-                                    <td class="itemTd text-center ">@car.item_car_name</td>
-                                    <td class="itemTd text-center ">@car.company_name</td>
-                                    <td class="itemTd text-center ">@car.reserve_start_date</td>
-                                    <td class="itemTd text-center ">@car.work_type_name</td>
-                                    <td class="itemTd text-center ">@car.reserve_id</td>
+                                    <td class="itemTd text-center ">@other.item_type_name</td>
+                                    <td class="itemTd text-center ">@other.item_other_name</td>
+                                    <td class="itemTd text-center ">@other.company_name</td>
+                                    <td class="itemTd text-center ">@other.reserve_start_date</td>
+                                    <td class="itemTd text-center ">@other.reserve_end_date</td>
+                                    <td class="itemTd text-center ">@other.work_type_name</td>
+                                    <td class="itemTd text-center ">@other.reserve_id</td>
                                 </tr>
                             }
                             </tbody>
@@ -182,7 +199,7 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
                             <input type="hidden" name="inputPlaceId" value="">
                             <input type="hidden" id="inputItemKindId" name="inputItemKindId">
                             <input type="hidden" id="actualItemInfoStr" name="actualItemInfoStr">
-                            <div class="modal-header" style="">@Messages("lang.site.carCancel.page.title")</div>
+                            <div class="modal-header" style="">@Messages("lang.site.otherCancel.page.title")</div>
                             <div class="modal-body">
                                 <div class="form-group" style="margin-bottom: 5px;">
                                     <label class="text-right  control-label col-xs-6">予約希望日</label>
@@ -213,7 +230,7 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
                                     <button type="button" class="btn btn-default" data-dismiss="modal">@Messages("cancel")</button>
                                 </div>
                                 <div class="col-xs-6 text-center">
-                                    <button id="itemRegisterFooter"  type="" class="text-center btn btn-primary">@Messages("lang.site.carCancel.cancelBtn")</button>
+                                    <button id="itemRegisterFooter"  type="" class="text-center btn btn-primary">@Messages("lang.site.otherCancel.cancelBtn")</button>
                                 </div>
                             </div>
                     </div>
@@ -225,7 +242,7 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
     </div>
 </div>
 
-<script type="text/javascript" src="@routes.MyAssets.js("site/itemCarCancel.js")"></script>
+<script type="text/javascript" src="@routes.MyAssets.js("site/itemOtherCancel.js")"></script>
 <script></script>
 
 </body>

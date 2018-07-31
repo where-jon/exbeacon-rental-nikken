@@ -20,6 +20,7 @@ case class User(
     placeId: Option[Int],
     currentPlaceId: Option[Int],
     isSysMng: Boolean,
+    level: Int,
     /*
 	 * A user can register some accounts from third-party services, then it will have access to different parts of the webpage. The 'master' privilege has full access.
 	 * Ex: ("master") -> full access to every point of the webpage.
@@ -66,8 +67,11 @@ class UserDAO @Inject() (dbapi: DBApi) {
     get[String]("email") ~
       get[String]("name") ~
       get[String]("password") ~
-      get[Option[Int]]("place_id") ~ get[Option[Int]]("current_place_id") map {
-        case id ~ email ~ name ~ password ~ place_id ~ current_place_id =>
+      get[Option[Int]]("place_id") ~
+      get[Option[Int]]("current_place_id")~
+      get[Int]("permission")~
+      get[Int]("user_master.permission") map {
+        case id ~ email ~ name ~ password ~ place_id ~ current_place_id  ~ level~ permission=>
           User(
             Some(id.toString.toLong)
             , email
@@ -85,7 +89,8 @@ class UserDAO @Inject() (dbapi: DBApi) {
                 current_place_id
               }
             , (place_id == None)
-            , List("master")
+            , level
+            , List(if (permission == 4) "master" else if (permission == 3) "level3" else if (permission == 2) "level2" else if (permission == 1) "level1"  else "none")
           )
       }
   }
@@ -103,6 +108,7 @@ class UserDAO @Inject() (dbapi: DBApi) {
               , password
               , place_id
               , current_place_id
+              , permission
             from
               user_master
             where
@@ -140,6 +146,7 @@ class UserDAO @Inject() (dbapi: DBApi) {
           , user.placeId
           , user.currentPlaceId
           , (user.placeId == None)
+          , user.level
           , user.services)
         User.update(Some(newUser)).get
       }

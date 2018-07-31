@@ -52,8 +52,10 @@ GET    /site/itemCarReserve                 controllers.site.ItemCarReserve.inde
 POST   /site/itemCarReserve                 controllers.site.ItemCarReserve.search
 POST   /site/itemCarReserve/reserve         controllers.site.ItemCarReserve.reserve
 
-# 作業車・立馬取消
+# 作業車・立馬予約取消
 GET    /site/itemCarCancel                 controllers.site.ItemCarCancel.index
+POST   /site/itemCarCancel                 controllers.site.ItemCarCancel.search
+POST   /site/itemCarCancel/cancel         controllers.site.ItemCarCancel.cancel
 
 
 # その他仮設材一覧
@@ -65,6 +67,12 @@ GET    /site/itemOtherReserve                 controllers.site.ItemOtherReserve.
 POST   /site/itemOtherReserve                 controllers.site.ItemOtherReserve.search
 POST   /site/itemOtherReserve/reserve         controllers.site.ItemOtherReserve.reserve
 
+
+# その他仮設材予約取消
+GET    /site/itemOtherCancel                 controllers.site.ItemOtherCancel.index
+POST   /site/itemOtherCancel                 controllers.site.ItemOtherCancel.search
+POST   /site/itemOtherCancel/cancel         controllers.site.ItemOtherCancel.cancel
+
 # 作業車移動状況分析
 GET    /analysis/MovementCar                 controllers.analysis.MovementCar.index
 
@@ -72,12 +80,12 @@ GET    /analysis/MovementCar                 controllers.analysis.MovementCar.in
 GET    /manage/mapManager              controllers.manage.MapManager.index
 POST   /manage/uploadMap               controllers.manage.MapManager.uploadMap
 
-# exbマネージャー
+# EXB管理
 GET    /manage/exbManager              controllers.manage.ExbManager.index
 POST   /exb/deleteExb      		       controllers.manage.ExbManager.deleteExb
-POST   /exb/updateExb      		       controllers.manage.ExbManager.updateExb
+#POST   /exb/updateExb      		       controllers.manage.ExbManager.updateExb
 
-# exb座標マネージャー
+# EXB位置管理
 GET    /manage/exbViewerManager        controllers.manage.ExbViewerManager.index
 POST   /manage/updateExbViewer         controllers.manage.ExbViewerManager.updateViewerManager
 

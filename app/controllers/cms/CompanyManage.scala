@@ -4,6 +4,7 @@ import javax.inject.{Inject, Singleton}
 
 import com.mohiva.play.silhouette.api.Silhouette
 import controllers.BaseController
+import controllers.site
 import play.api._
 import play.api.data.Form
 import play.api.data.Forms._
@@ -32,19 +33,16 @@ class CompanyManage @Inject()(config: Configuration
 
   /** 初期表示 */
   def index = SecuredAction { implicit request =>
-
-    if(super.isCmsLogged){
+    val reqIdentity = request.identity
+    if(reqIdentity.level >= 2){
       // 選択された現場の現場ID
       val placeId = super.getCurrentPlaceId
-
       // 業者情報
       val companyList = companyDAO.selectCompany(placeId)
-
       Ok(views.html.cms.companyManage(companyList, placeId))
-    }else{
-      Redirect(CMS_NOT_LOGGED_RETURN_PATH).flashing(ERROR_MSG_KEY -> Messages("error.cmsLogged.invalid"))
+    }else {
+      Redirect(site.routes.WorkPlace.index)
     }
-
   }
 
 
