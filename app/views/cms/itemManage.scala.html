@@ -32,13 +32,12 @@
                             <table class="table table-bordered table-condensed itemTable">
                                 <thead>
                                     <tr>
-                                        <th colspan="4" class="tableTitleTh">@Messages("lang.cms.itemManage.item.list.header.title")</th>
+                                        <th colspan="3" class="tableTitleTh">@Messages("lang.cms.itemManage.item.list.header.title")</th>
                                     </tr>
                                     <tr>
-                                        <th class="tableTh noTh text-center">@Messages("lang.cms.itemManage.item.list.header.id")</th>
+                                        <th class="tableTh noTh text-center">@Messages("lang.cms.itemManage.item.list.header.tagId")</th>
+                                        <th class="tableTh">@Messages("lang.cms.itemManage.item.list.header.type")</th>
                                         <th class="tableTh">@Messages("lang.cms.itemManage.item.list.header.name")</th>
-                                        <th class="tableTh">@Messages("lang.cms.itemManage.item.list.header.biko")</th>
-                                        <th class="tableTh noTh">@Messages("lang.cms.itemManage.item.list.header.count")</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -47,10 +46,6 @@
                                             <td class="itemTd text-center itemKindId">@{item.itemKindId}</td>
                                             <td class="itemTd text-left itemKindName">@{item.itemKindName}</td>
                                             <td class="itemTd text-left note">@{item.note}</td>
-                                            <td class="itemTd text-right itemCount">@{item.itemCount}</span>
-                                            @for(data <- item.actualItemInfoList){
-                                            <span class="item hidden" data-itemId="@data.itemId" data-itemNo="@data.itemNo" data-itemBtxId="@data.itemBtxId"></span>
-                                            }</td>
                                         </tr>
                                     }
                                 </tbody>
@@ -88,41 +83,21 @@
                     <div class="modal-header" style="">@Messages("lang.cms.itemManage.itemUpdate.popup.title")</div>
                     <div class="modal-body">
                         <div class="form-group">
-                            <label class="control-label col-xs-4">@Messages("lang.cms.itemManage.itemUpdate.popup.itemName")</label>
+                            <label class="control-label col-xs-4">@Messages("lang.cms.itemManage.itemUpdate.popup.tagId")</label>
                             <div class="col-xs-3" style="padding-left: 0px;padding-right: 0px;">
-                                <input type="text" id="inputItemKindName" name="inputItemKindName" class="form-control" placeholder="@Messages("lang.cms.itemManage.itemUpdate.popup.itemName.placeholder")">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label col-xs-4">@Messages("lang.cms.itemManage.itemUpdate.popup.itemBiko")</label>
-                            <div class="col-xs-5" style="padding-left: 0px;padding-right: 0px;">
-                                <input type="text" id="inputNote" name="inputNote" class="form-control">
+                                <input type="text" id="inputItemKindName" name="inputItemKindName" class="form-control">
                             </div>
                         </div>
                         <div class="form-group" style="margin-bottom: 5px;">
-                            <label class="control-label col-xs-4">@Messages("lang.cms.itemManage.itemUpdate.popup.itemNo")</label>
+                            <label class="control-label col-xs-4">@Messages("lang.cms.itemManage.itemUpdate.popup.type")</label>
                             <div class="col-xs-2" style="padding-left: 0px;padding-right: 0px;margin-right: 10px;">
-                                <input type="text" maxlength="3" id="inputItemNo" class="form-control" placeholder="@Messages("lang.cms.itemManage.itemUpdate.popup.itemNo.placeholder")">
-                            </div>
-                            <div class="col-xs-2" style="padding-left: 0px;padding-right: 0px;margin-right: 10px;">
-                                <input type="text" id="inputItemBtxId" class="form-control" placeholder="@Messages("lang.cms.itemManage.itemUpdate.popup.txNo.placeholder")">
-                            </div>
-                            <div class="col-xs-2" style="padding-left: 0px;padding-right: 0px;">
-                                <a href="javascript:addTagRow();"class="btn btn-default"><i class="fa fa-plus" aria-hidden="true"></i></a>
+                                <input type="text" maxlength="3" id="inputTagId" class="form-control">
                             </div>
                         </div>
-                        <div class="form-group template hidden" style="margin-bottom: 5px;">
-                            <label class="control-label col-xs-4"></label>
-                            <div class="col-xs-2 text-center inputManageNoDiv">
-                                <span class="inputItemNoSpan"></span>
-                            </div>
-                            <div class="col-xs-2 text-center inputTxTagNoDiv">
-                                <span class="inputItemBtxIdSpan"></span>
-                            </div>
-                            <div class="col-xs-2" style="padding-left: 0px;padding-right: 0px;">
-                                <a onclick="removeTagRow(this);" class="btn btn-default removeRowBtn">
-                                    <i class="fa fa-close fa-1x" aria-hidden="true"></i>
-                                </a>
+                        <div class="form-group" style="margin-bottom: 5px;">
+                            <label class="control-label col-xs-4">@Messages("lang.cms.itemManage.itemUpdate.popup.name")</label>
+                            <div class="col-xs-2" style="padding-left: 0px;padding-right: 0px;margin-right: 10px;">
+                                <input type="text" maxlength="3" id="inputName" class="form-control">
                             </div>
                         </div>
                     </div>
