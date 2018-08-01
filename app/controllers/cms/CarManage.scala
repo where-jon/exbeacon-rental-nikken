@@ -14,7 +14,7 @@ import utils.silhouette.MyEnv
 
 
 /**
-  * 作業車管理アクションクラス
+  * 作業車・立場管理アクションクラス
   *
   *
   */
@@ -24,9 +24,10 @@ case class CarUpdateForm(
      inputPlaceId: String
    , inputCarId: String
    , inputCarNo: String
-   , inputCarName: String
    , inputCarBtxId: String
    , inputCarKeyBtxId: String
+   , inputCarTypeName: String
+   , inputCarName: String
 )
 
 case class CarDeleteForm(
@@ -38,6 +39,8 @@ class CarManage @Inject()(config: Configuration
                           , val silhouette: Silhouette[MyEnv]
                           , val messagesApi: MessagesApi
                           , carDAO: models.itemCarDAO
+                          , exbDAO: models.ExbDAO
+                          , itemTypeDAO:models.ItemTypeDAO
                           , btxDAO: models.btxDAO
                                ) extends BaseController with I18nSupport {
 
@@ -49,7 +52,9 @@ class CarManage @Inject()(config: Configuration
       // 選択された現場の現場ID
       val placeId = super.getCurrentPlaceId
       // 業者情報
-      val carList = carDAO.selectCarInfo(placeId = placeId)
+//      val carList = carDAO.selectCarInfo(placeId = placeId)
+      val carList = carDAO.selectCarMasterInfo(placeId = placeId)
+
       Ok(views.html.cms.carManage(carList, placeId))
     }else {
       Redirect(site.routes.WorkPlace.index)
@@ -63,9 +68,10 @@ class CarManage @Inject()(config: Configuration
         "inputPlaceId" -> text
       , "inputCarId" -> text
       , "inputCarNo" -> text.verifying(Messages("error.cms.CarManage.update.inputCarNo.empty"), {_.matches("^[0-9]+$")})
-      , "inputCarName" -> text
       , "inputCarBtxId" -> text.verifying(Messages("error.cms.CarManage.update.inputCarBtxId.empty"), {_.matches("^[0-9]+$")})
       , "inputCarKeyBtxId" -> text.verifying(Messages("error.cms.CarManage.update.inputCarKeyBtxId.empty"), {_.matches("^[0-9]+$")})
+      , "inputCarTypeName" -> text
+      , "inputCarName" -> text
     )(CarUpdateForm.apply)(CarUpdateForm.unapply))
 
     // フォームの取得
@@ -81,6 +87,12 @@ class CarManage @Inject()(config: Configuration
       if(f.inputCarBtxId == f.inputCarKeyBtxId){
         errMsg :+= Messages("error.cms.CarManage.update.inputCarBtxId.inputCarKeyBtxId.duplicate", f.inputCarNo)
       }
+
+//      // 種別存在チェック
+//      val itemTypeList = itemTypeDAO.selectItemTypeCheck(f.inputCarTypeName, f.inputPlaceId.toInt)
+//      if(itemTypeList.isEmpty){
+//        errMsg :+= Messages("error.cms.CarManage.update.NotTypeName", f.inputCarNo)
+//      }
 
       if(f.inputCarId.isEmpty){
         // 新規登録の場合 --------------------------
@@ -114,10 +126,10 @@ class CarManage @Inject()(config: Configuration
         // 更新の場合 --------------------------
         // 作業車番号重複チェック
         var carList = carDAO.selectCarInfo(super.getCurrentPlaceId, f.inputCarNo)
-        carList = carList.filter(_.itemCarId != f.inputCarId.toInt).filter(_.itemCarNo == f.inputCarNo)
-        if(carList.length > 0){
-          errMsg :+= Messages("error.cms.CarManage.update.inputCarNo.duplicate", f.inputCarNo)
-        }
+//        carList = carList.filter(_.itemCarId != f.inputCarId.toInt).filter(_.itemCarNo == f.inputCarNo)
+//        if(carList.length > 0){
+//          errMsg :+= Messages("error.cms.CarManage.update.inputCarNo.duplicate", f.inputCarNo)
+//        }
 
         // 変更前タグ情報
         val preCarInfo = carDAO.selectCarInfo(super.getCurrentPlaceId, "", Option(f.inputCarId.toInt)).last
