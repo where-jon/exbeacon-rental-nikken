@@ -38,6 +38,7 @@ class CarManage @Inject()(config: Configuration
                           , val silhouette: Silhouette[MyEnv]
                           , val messagesApi: MessagesApi
                           , carDAO: models.itemCarDAO
+                          , exbDAO: models.ExbDAO
                           , btxDAO: models.btxDAO
                                ) extends BaseController with I18nSupport {
 
@@ -49,7 +50,8 @@ class CarManage @Inject()(config: Configuration
       // 選択された現場の現場ID
       val placeId = super.getCurrentPlaceId
       // 業者情報
-      val carList = carDAO.selectCarInfo(placeId = placeId)
+//      val carList = carDAO.selectCarInfo(placeId = placeId)
+      val carList = carDAO.selectCarMasterInfo(placeId = placeId)
       Ok(views.html.cms.carManage(carList, placeId))
     }else {
       Redirect(site.routes.WorkPlace.index)

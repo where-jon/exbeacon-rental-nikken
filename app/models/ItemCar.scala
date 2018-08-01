@@ -1,8 +1,8 @@
 package models
 
 import java.sql.SQLException
-import javax.inject.Inject
 
+import javax.inject.Inject
 import anorm.SqlParser._
 import anorm.{~, _}
 import controllers.site.{CancelItem, ReserveItem}
@@ -56,6 +56,18 @@ case class ItemCar(
   placeId: Int
 )
 
+case class ItemCarViewer(
+  itemCarId: Int,
+  itemTypeId: Int,
+  itemTypeName: String,
+  note: String,
+  itemCarNo: String,
+  itemCarName: String,
+  itemCarBtxId: Int,
+  itemCarKeyBtxId: Int,
+  placeId: Int
+)
+
 case class CarViewer(
   item_car_id: Int,
   item_car_btx_id: Int,
@@ -88,21 +100,22 @@ class itemCarDAO @Inject()(dbapi: DBApi) {
 
   private val db = dbapi.database("default")
 
-  val simple = {
+  val carmanage = {
     get[Int]("item_car_id") ~
       get[Int]("item_type_id") ~
+      get[String]("item_type_name") ~
       get[String]("note") ~
       get[String]("item_car_no") ~
       get[String]("item_car_name") ~
       get[Int]("item_car_btx_id") ~
       get[Int]("item_car_key_btx_id") ~
       get[Int]("place_id") map {
-      case item_car_id ~ item_type_id ~ note ~ item_car_no ~ item_car_name ~ item_car_btx_id ~ item_car_key_btx_id ~ place_id  =>
-        ItemCar(item_car_id, item_type_id, note, item_car_no, item_car_name, item_car_btx_id, item_car_key_btx_id, place_id)
+      case item_car_id ~ item_type_id ~ item_type_name ~ note ~ item_car_no ~ item_car_name ~ item_car_btx_id ~ item_car_key_btx_id ~ place_id  =>
+        ItemCarViewer(item_car_id, item_type_id, item_type_name, note, item_car_no, item_car_name, item_car_btx_id, item_car_key_btx_id, place_id)
     }
   }
 
-  def selectCarMasterInfo(placeId: Int): Seq[ItemCar] = {
+  def selectCarMasterInfo(placeId: Int): Seq[ItemCarViewer] = {
     db.withConnection { implicit connection =>
       val sql = SQL(
         """
@@ -126,7 +139,21 @@ class itemCarDAO @Inject()(dbapi: DBApi) {
 		          """).on(
         "placeId" -> placeId
       )
-      sql.as(simple.*)
+      sql.as(carmanage.*)
+    }
+  }
+
+  val simple = {
+    get[Int]("item_car_id") ~
+      get[Int]("item_type_id") ~
+      get[String]("note") ~
+      get[String]("item_car_no") ~
+      get[String]("item_car_name") ~
+      get[Int]("item_car_btx_id") ~
+      get[Int]("item_car_key_btx_id") ~
+      get[Int]("place_id") map {
+      case item_car_id ~ item_type_id ~ note ~ item_car_no ~ item_car_name ~ item_car_btx_id ~ item_car_key_btx_id ~ place_id  =>
+        ItemCar(item_car_id, item_type_id, note, item_car_no, item_car_name, item_car_btx_id, item_car_key_btx_id, place_id)
     }
   }
 

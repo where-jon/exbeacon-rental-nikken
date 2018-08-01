@@ -1,4 +1,4 @@
-@(carList: Seq[ItemCar], placeId: Int)(implicit user: User, messages: Messages, request: RequestHeader, flash: Flash)
+@(carList: Seq[ItemCarViewer], placeId: Int)(implicit user: User, messages: Messages, request: RequestHeader, flash: Flash)
 
 @import controllers.routes
 @import helper._
@@ -35,19 +35,19 @@
                                         <th colspan="4" class="tableTitleTh">@Messages("lang.cms.carManage.car.list.header.title")</th>
                                     </tr>
                                     <tr>
-                                        <th class="tableTh carNoTh">@Messages("lang.cms.carManage.car.list.header.number")</th>
+                                        <th class="tableTh carTagIdTh">@Messages("lang.cms.carManage.car.list.header.tagId")</th>
+                                        <th class="tableTh carKeyTagIdTh">@Messages("lang.cms.carManage.car.list.header.keyTagId")</th>
+                                        <th class="tableTh carTypeTh">@Messages("lang.cms.carManage.car.list.header.type")</th>
                                         <th class="tableTh carNameTh">@Messages("lang.cms.carManage.car.list.header.name")</th>
-                                        <th class="tableTh carTxNoTh">@Messages("lang.cms.carManage.car.list.header.carNumber")</th>
-                                        <th class="tableTh keyTxNoTh">@Messages("lang.cms.carManage.car.list.header.keyNumber")</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @for(car <- carList){
                                         <tr class="rowColor rowHover" data-carId="@car.itemCarId" id="@car.itemCarId">
-                                            <td class="itemTd text-center carNo">@car.itemCarNo</td>
-                                            <td class="itemTd text-left carName">@car.itemCarName</td>
                                             <td class="itemTd text-center carBtxId">@car.itemCarBtxId</td>
                                             <td class="itemTd text-center carKeyBtxId">@car.itemCarKeyBtxId</td>
+                                            <td class="itemTd text-center typeId">@car.itemTypeName</td>
+                                            <td class="itemTd text-center carName">@car.itemCarName</td>
                                         </tr>
                                     }
                                 </tbody>

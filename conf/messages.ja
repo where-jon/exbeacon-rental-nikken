@@ -232,16 +232,16 @@ lang.cms.floorManage.floorDelete.popup.title=フロア情報削除
 lang.cms.floorManage.floorDelete.popup.message=フロア情報を削除します。\nよろしいですか？
 
 # CMS文字列（作業車管理）
-lang.cms.carManage.title=作業車管理
-lang.cms.carManage.page.title=作業車一覧画面
-lang.cms.carManage.car.list.header.title=作業車管理
-lang.cms.carManage.car.list.header.number=作業車番号
-lang.cms.carManage.car.list.header.name=作業車名称
-lang.cms.carManage.car.list.header.carNumber=作業車TxタグNo.
-lang.cms.carManage.car.list.header.keyNumber=鍵TxタグNo.
-lang.cms.carManage.car.button.editCar=選択した作業車を編集
-lang.cms.carManage.car.button.addCar=新規作業車追加
-lang.cms.carManage.car.button.deleteCar=選択した作業車を削除
+lang.cms.carManage.title=作業車・立馬管理
+lang.cms.carManage.page.title=作業車・立馬管理
+lang.cms.carManage.car.list.header.title=作業車・立馬管理
+lang.cms.carManage.car.list.header.tagId=Tag ID
+lang.cms.carManage.car.list.header.keyTagId=鍵Tag ID
+lang.cms.carManage.car.list.header.type=種別
+lang.cms.carManage.car.list.header.name=名称
+lang.cms.carManage.car.button.editCar=選択した作業車・立場を編集
+lang.cms.carManage.car.button.addCar=新規作業車・立場追加
+lang.cms.carManage.car.button.deleteCar=選択した作業車・立場を削除
 lang.cms.carManage.carUpdate.popup.name=作業車情報更新
 lang.cms.carManage.carUpdate.popup.carNumber=作業車番号
 lang.cms.carManage.carUpdate.popup.carNumber.placeholder=001
