@@ -67,7 +67,7 @@ class BeaconService @Inject() (config: Configuration,
         var vTest = "検知EXB無"
           exbDatas.map { index =>
             vFloorName = index.cur_floor_name
-            vExbName = index.exb_device_name
+            vExbName = index.exb_pos_name
           }
 
         itemCarBeaconPositionData(
@@ -152,7 +152,7 @@ class BeaconService @Inject() (config: Configuration,
         var vTest = "検知EXB無"
         exbDatas.map { index =>
           vFloorName = index.cur_floor_name
-          vExbName = index.exb_device_name
+          vExbName = index.exb_pos_name
         }
 
         itemOtherBeaconPositionData(
@@ -237,7 +237,7 @@ class BeaconService @Inject() (config: Configuration,
         var vTest = "検知EXB無"
         exbDatas.map { index =>
           vFloorName = index.cur_floor_name
-          vExbName = index.exb_device_name
+          vExbName = index.exb_pos_name
         }
 
         itemBeaconPositionData(
