@@ -1,5 +1,7 @@
 package models
 
+import java.text.SimpleDateFormat
+import java.util.{Calendar, Date, Locale}
 import javax.inject.Inject
 
 import anorm.SqlParser._
@@ -68,12 +70,33 @@ class ItemLogDAO @Inject() (dbapi: DBApi) {
     }
   }
 
-  def insert(itemLogData: itemBeaconPositionData): Boolean = {
+  def insert(itemLogData: itemLogPositionData): Boolean = {
     var vStartData =itemLogData.reserve_start_date
     var vEndData = itemLogData.reserve_end_date
     var vUpdateData = itemLogData.updatetime
+    var vWorkType = itemLogData.work_type_name
+    var vReserveFlg = false
+    var vWorkingFlg = itemLogData.work_flg
+
+    // 現在時刻設定
+    val mSimpleDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.JAPAN)
+    val currentTime = new Date();
+    val mTime = mSimpleDateFormat.format(currentTime)
+    val mHour = new SimpleDateFormat("HH").format(Calendar.getInstance().getTime()).toInt
+
     if(vStartData == "date"){
       vStartData = null
+    }else{ // 予約時間がある場合
+      if(mTime >= vStartData && mTime <= vEndData){ // 予約して使ってるかをチェック
+        if(mHour <= 12 && vWorkType =="終日" )
+          vReserveFlg = true
+        else if(mHour <= 12 && vWorkType =="終日" )
+          vReserveFlg = true
+        else if(mHour <= 24 && vWorkType =="午後" )
+          vReserveFlg = true
+        else if(mHour <= 24 && vWorkType =="終日" )
+          vReserveFlg = true
+      }
     }
     if(vEndData == "date"){
       vEndData = null
@@ -94,8 +117,8 @@ class ItemLogDAO @Inject() (dbapi: DBApi) {
                       values
                       ({item_type_id}, {item_id},
                        {item_name}, {item_btx_id}, {item_car_key_btx_id},
-                       false, to_date({reserve_start_date}, 'YYYY-MM-DD'), to_date({reserve_end_date}, 'YYYY-MM-DD'),
-                       false, -1, {finish_floor_name}, -1, {finish_exb_name}, TO_TIMESTAMP({finish_updatetime}, 'YYYY-MM-DD HH24:MI:SS'),
+                       {reserve_flg}, to_date({reserve_start_date}, 'YYYY-MM-DD'), to_date({reserve_end_date}, 'YYYY-MM-DD'),
+                       {working_flg},{finish_floor_id}, {finish_floor_name}, {finish_exb_id}, {finish_exb_name}, TO_TIMESTAMP({finish_updatetime}, 'YYYY-MM-DD HH24:MI:SS'),
                        {company_id},{company_name}, {place_id}, now());
 
         """
@@ -107,8 +130,12 @@ class ItemLogDAO @Inject() (dbapi: DBApi) {
         "item_name" -> itemLogData.item_name,
         "item_btx_id" -> itemLogData.item_btx_id,
         "item_car_key_btx_id" -> itemLogData.item_key_btx,
+        "reserve_flg" -> vReserveFlg,
         "reserve_start_date" -> vStartData,
         "reserve_end_date" -> vEndData,
+        "working_flg" -> vWorkingFlg,
+        "finish_floor_id" -> -1,
+        "finish_exb_id" -> itemLogData.pos_id,
         "finish_updatetime" -> vUpdateData,
         "place_id" -> itemLogData.place_id,
         "company_id" -> -1,

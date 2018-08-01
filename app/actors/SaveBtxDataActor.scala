@@ -23,7 +23,7 @@ class SaveBtxDataActor @Inject()(    config: Configuration
                                 ) extends Actor {
   val BATCH_NAME = "仮設材記録"
   private val schedule = config.getString("akka.quartz.schedules.ExbLogActor.expression").getOrElse("NONE")
-  private val enableLogging = config.getBoolean("exeoofficeweb.setting.logging").getOrElse(false)
+  private val enableLogging = config.getBoolean("daidanWeb.setting.logging").getOrElse(false)
 
   def receive = {
     case msg:String => {
@@ -44,7 +44,7 @@ class SaveBtxDataActor @Inject()(    config: Configuration
         if(place.btxApiUrl != null && place.btxApiUrl != ""){
           val placeId = place.placeId
           val dbDatas = beaconDAO.selectBeaconViewer(placeId)
-          val beaconListApi = beaconService.getBeaconPosition(dbDatas,true,placeId)
+          val beaconListApi = beaconService.getItemLogPosition(dbDatas,true,placeId)
           beaconListApi.zipWithIndex.map { case (beacon, i) =>
             System.out.println("-------beaconData--------" + beacon)
             itemlogDAO.insert(beacon)
