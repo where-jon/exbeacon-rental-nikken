@@ -77,6 +77,25 @@ class ItemTypeDAO @Inject() (dbapi: DBApi) {
     }
   }
 
+  /*
+   * 種別チェック
+   */
+  def selectItemTypeCheck(itemTypeName: String, placeId: Int): Seq[ItemType] = {
+    db.withConnection { implicit connection =>
+      val sql = SQL("""
+              select item_type_id ,item_type_name ,item_type_category ,item_type_icon_color ,item_type_text_color ,item_type_row_color, note , place_id , active_flg
+              from item_type
+              where place_id = {placeId}
+              and item_type_name = {itemTypeName}
+              and active_flg = true
+              order by item_type_id;
+              """).on(
+        "placeId" -> placeId
+      )
+      sql.as(simple.*)
+    }
+  }
+
   /**
     * 仮設材種別の削除
     * @return

@@ -56,6 +56,7 @@ case class ItemCar(
   placeId: Int
 )
 
+/*作業車・立馬管理検索用*/
 case class ItemCarViewer(
   itemCarId: Int,
   itemTypeId: Int,
@@ -115,6 +116,10 @@ class itemCarDAO @Inject()(dbapi: DBApi) {
     }
   }
 
+  /**
+    * 作業車・立場情報の取得
+    * @return
+    */
   def selectCarMasterInfo(placeId: Int): Seq[ItemCarViewer] = {
     db.withConnection { implicit connection =>
       val sql = SQL(
@@ -158,7 +163,7 @@ class itemCarDAO @Inject()(dbapi: DBApi) {
   }
 
   /**
-    * 作業車情報の取得
+    * 作業車・立場情報の取得
     * @return
     */
   def selectCarInfo(placeId: Int, carNo: String = "", carId: Option[Int] = None): Seq[ItemCar] = {

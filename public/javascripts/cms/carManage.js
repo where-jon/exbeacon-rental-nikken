@@ -83,9 +83,10 @@ function showInputModal(isRegister){
     if(isRegister){
         $('#inputCarId').val('');
         $('#inputCarNo').val('');
-        $('#inputCarName').val('');
         $('#inputCarBtxId').val('');
         $('#inputCarKeyBtxId').val('');
+        $('#inputCarTypeName').val('');
+        $('#inputCarName').val('');
 
         // ボタン表示の切り替え
         $('#carRegisterFooter').removeClass('hidden');
@@ -96,9 +97,10 @@ function showInputModal(isRegister){
             var carId = $('.rowHoverSelectedColor').attr('data-carId');
             $('#inputCarId').val(carId);
             $('#inputCarNo').val($('#'+carId).find('.carNo').text());
-            $('#inputCarName').val($('#'+carId).find('.carName').text());
             $('#inputCarBtxId').val($('#'+carId).find('.carBtxId').text());
             $('#inputCarKeyBtxId').val($('#'+carId).find('.carKeyBtxId').text());
+            $('#inputCarTypeName').val($('#'+carId).find('.carTypeName').text());
+            $('#inputCarName').val($('#'+carId).find('.carName').text());
 
             // ボタン表示の切り替え
             $('#carUpdateFooter').removeClass('hidden');
