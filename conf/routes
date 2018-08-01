@@ -74,6 +74,11 @@ GET    /site/itemOtherCancel                 controllers.site.ItemOtherCancel.in
 POST   /site/itemOtherCancel                 controllers.site.ItemOtherCancel.search
 POST   /site/itemOtherCancel/cancel         controllers.site.ItemOtherCancel.cancel
 
+# 未検出の仮設材
+GET    /site/unDetected                 controllers.site.UnDetected.index
+POST   /site/unDetected                 controllers.site.UnDetected.search
+
+
 # 作業車移動状況分析
 GET    /analysis/MovementCar                 controllers.analysis.MovementCar.index
 
