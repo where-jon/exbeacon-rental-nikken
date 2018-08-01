@@ -24,10 +24,13 @@ case class ItemDeleteForm(
 )
 case class ItemUpdateForm(
     inputPlaceId: String
-  , inputItemKindId: String
-  , inputItemKindName: String
-  , inputNote: String
-  , actualItemInfoStr: String
+  , inputItemOtherId: String
+  , inputItemTypeId: String
+  , inputItemOtherBtxId: String
+  , inputItemOtherNo: String
+  , inputItemOtherName: String
+  , inputItemNote: String
+  , inputItemTypeName: String
 )
 
 @Singleton
@@ -60,11 +63,14 @@ class ItemManage @Inject()(config: Configuration
 
     // フォームの準備
     val inputForm = Form(mapping(
-      "inputPlaceId" -> text
-      , "inputItemKindId" -> text
-      , "inputItemKindName" -> text.verifying(Messages("error.cms.ItemManage.update.inputItemKindName.empty"), {!_.isEmpty})
-      , "inputNote" -> text
-      , "actualItemInfoStr" -> text.verifying(Messages("error.cms.ItemManage.update.actualItemInfoStr.empty"), {!_.isEmpty})
+        "inputPlaceId" -> text
+      , "inputItemOtherId" -> text
+      , "inputItemTypeId" -> text
+      , "inputItemOtherBtxId" -> text
+      , "inputItemOtherNo" -> text
+      , "inputItemOtherName" -> text
+      , "inputItemNote" -> text
+      , "inputItemTypeName" -> text
     )(ItemUpdateForm.apply)(ItemUpdateForm.unapply))
 
     // フォームの取得
@@ -76,53 +82,53 @@ class ItemManage @Inject()(config: Configuration
       var errMsg = Seq[String]()
       val f = form.get
 
-      if(f.inputItemKindId.isEmpty){
+      if(f.inputItemOtherId.isEmpty){
         // 新規登録
 
-        // 名称重複チェック
-        val list = itemDAO.selectItemInfo(f.inputPlaceId.toInt, f.inputItemKindName, None)
-        if(list.nonEmpty){
-          errMsg :+= Messages("error.cms.ItemManage.update.inputItemKindName.duplicate", f.inputItemKindName)
-        }
-        // 管理No / BTXタグ
-        var itemNoList = Seq[String]()
-        var btxList = Seq[String]()
-        val lineList:Seq[String] = f.actualItemInfoStr.split("-").toSeq.filter(_.isEmpty == false).map{ line =>
-          itemNoList :+= line.split(",")(0)
-          btxList :+= line.split(",")(1)
-          line
-        }
+//        // 名称重複チェック
+//        val list = itemDAO.selectItemInfo(f.inputPlaceId.toInt, f.inputItemKindName, None)
+//        if(list.nonEmpty){
+//          errMsg :+= Messages("error.cms.ItemManage.update.inputItemKindName.duplicate", f.inputItemKindName)
+//        }
+//        // 管理No / BTXタグ
+//        var itemNoList = Seq[String]()
+//        var btxList = Seq[String]()
+//        val lineList:Seq[String] = f.actualItemInfoStr.split("-").toSeq.filter(_.isEmpty == false).map{ line =>
+//          itemNoList :+= line.split(",")(0)
+//          btxList :+= line.split(",")(1)
+//          line
+//        }
 
         // 重複チェック用
         val dbItemNoList = itemDAO.selectActualItemInfo(f.inputPlaceId.toInt)
         val dbBtxList = btxDAO.select(super.getCurrentPlaceId)
 
-        // 管理Noのチェック
-        if(itemNoList.exists(!_.matches("^[0-9]+$"))){
-          errMsg :+= Messages("error.cms.ItemManage.update.inputItemNo.notNumeric")
-        } else {
-          val duplicateList = itemNoList.filter(dbItemNoList.map{d => d.itemNo} contains _)
-          if(duplicateList.nonEmpty) {
-            errMsg :+= Messages("error.cms.ItemManage.update.inputItemNo.duplicate", duplicateList.mkString(","))
-          }
-        }
+//        // 管理Noのチェック
+//        if(itemNoList.exists(!_.matches("^[0-9]+$"))){
+//          errMsg :+= Messages("error.cms.ItemManage.update.inputItemNo.notNumeric")
+//        } else {
+//          val duplicateList = itemNoList.filter(dbItemNoList.map{d => d.itemNo} contains _)
+//          if(duplicateList.nonEmpty) {
+//            errMsg :+= Messages("error.cms.ItemManage.update.inputItemNo.duplicate", duplicateList.mkString(","))
+//          }
+//        }
 
-        // BTXタグのチェック
-        if(btxList.exists(!_.matches("^[0-9]+$"))){
-          errMsg :+= Messages("error.cms.ItemManage.update.inputBtxId.notNumeric")
-        } else {
-          val duplicateList = btxList.filter(dbBtxList.map{d => d.btxId} contains _.toInt)
-          if(duplicateList.nonEmpty){
-            errMsg :+= Messages("error.cms.ItemManage.update.inputBtxId.duplicate", duplicateList.mkString(","))
-          }
-        }
+//        // BTXタグのチェック
+//        if(btxList.exists(!_.matches("^[0-9]+$"))){
+//          errMsg :+= Messages("error.cms.ItemManage.update.inputBtxId.notNumeric")
+//        } else {
+//          val duplicateList = btxList.filter(dbBtxList.map{d => d.btxId} contains _.toInt)
+//          if(duplicateList.nonEmpty){
+//            errMsg :+= Messages("error.cms.ItemManage.update.inputBtxId.duplicate", duplicateList.mkString(","))
+//          }
+//        }
 
         if(errMsg.nonEmpty){
           // エラーで遷移
           Redirect(routes.ItemManage.index).flashing(ERROR_MSG_KEY -> errMsg.mkString(HTML_BR))
         }else{
           // 登録の実行
-          itemDAO.insert(f.inputItemKindName, f.inputNote, f.inputPlaceId.toInt, lineList, btxList.map{b=>b.toInt})
+//          itemDAO.insert(f.inputItemKindName, f.inputNote, f.inputPlaceId.toInt, lineList, btxList.map{b=>b.toInt})
 
           Redirect(routes.ItemManage.index)
             .flashing(SUCCESS_MSG_KEY -> Messages("success.cms.ItemManage.update"))
@@ -132,47 +138,47 @@ class ItemManage @Inject()(config: Configuration
         // 更新
 
         // 名称重複チェック
-        var list = itemDAO.selectItemInfo(f.inputPlaceId.toInt, f.inputItemKindName, None)
-        list = list.filter(_.itemKindId != f.inputItemKindId.toInt).filter(_.itemKindName == f.inputItemKindName)
-        if(list.nonEmpty){
-          errMsg :+= Messages("error.cms.ItemManage.update.inputItemKindName.duplicate", f.inputItemKindName)
-        }
-
-        // 管理No / BTXタグ
-        var itemNoList = Seq[String]()
-        var btxList = Seq[String]()
-        val lineList:Seq[String] = f.actualItemInfoStr.split("-").toSeq.filter(_.isEmpty == false).map{ line =>
-          itemNoList :+= line.split(",")(0)
-          btxList :+= line.split(",")(1)
-          line
-        }
-
-        // 重複チェック用
-        val dbItemNoList = itemDAO.selectActualItemInfo(placeId =f.inputPlaceId.toInt, excludeItemKindId = Option(f.inputItemKindId.toInt))
-        val originalBtxList = itemDAO.selectActualItemInfo(placeId = f.inputPlaceId.toInt, includeItemKindId = Option(f.inputItemKindId.toInt))
-        var dbBtxList :Seq[models.Btx] = btxDAO.select(f.inputPlaceId.toInt)
-        dbBtxList = dbBtxList.filter(d=>{
-          (originalBtxList.map{x=>x.itemBtxId}.contains(d.btxId) == false)
-        })
+//        var list = itemDAO.selectItemInfo(f.inputPlaceId.toInt, f.inputItemKindName, None)
+//        list = list.filter(_.itemKindId != f.inputItemKindId.toInt).filter(_.itemKindName == f.inputItemKindName)
+//        if(list.nonEmpty){
+//          errMsg :+= Messages("error.cms.ItemManage.update.inputItemKindName.duplicate", f.inputItemKindName)
+//        }
+//
+//        // 管理No / BTXタグ
+//        var itemNoList = Seq[String]()
+//        var btxList = Seq[String]()
+//        val lineList:Seq[String] = f.actualItemInfoStr.split("-").toSeq.filter(_.isEmpty == false).map{ line =>
+//          itemNoList :+= line.split(",")(0)
+//          btxList :+= line.split(",")(1)
+//          line
+//        }
+//
+//        // 重複チェック用
+//        val dbItemNoList = itemDAO.selectActualItemInfo(placeId =f.inputPlaceId.toInt, excludeItemKindId = Option(f.inputItemKindId.toInt))
+//        val originalBtxList = itemDAO.selectActualItemInfo(placeId = f.inputPlaceId.toInt, includeItemKindId = Option(f.inputItemKindId.toInt))
+//        var dbBtxList :Seq[models.Btx] = btxDAO.select(f.inputPlaceId.toInt)
+//        dbBtxList = dbBtxList.filter(d=>{
+//          (originalBtxList.map{x=>x.itemBtxId}.contains(d.btxId) == false)
+//        })
 
         // 管理Noのチェック
-        if(itemNoList.exists(!_.matches("^[0-9]+$"))){
-          errMsg :+= Messages("error.cms.ItemManage.update.inputItemNo.notNumeric")
-        } else {
-          val duplicateList = itemNoList.filter(dbItemNoList.map{d => d.itemNo} contains _)
-          if(duplicateList.nonEmpty) {
-            errMsg :+= Messages("error.cms.ItemManage.update.inputItemNo.duplicate", duplicateList.mkString(","))
-          }
-        }
+//        if(itemNoList.exists(!_.matches("^[0-9]+$"))){
+//          errMsg :+= Messages("error.cms.ItemManage.update.inputItemNo.notNumeric")
+//        } else {
+//          val duplicateList = itemNoList.filter(dbItemNoList.map{d => d.itemNo} contains _)
+//          if(duplicateList.nonEmpty) {
+//            errMsg :+= Messages("error.cms.ItemManage.update.inputItemNo.duplicate", duplicateList.mkString(","))
+//          }
+//        }
         // BTXタグのチェック
-        if(btxList.exists(!_.matches("^[0-9]+$"))){
-          errMsg :+= Messages("error.cms.ItemManage.update.inputBtxId.notNumeric")
-        } else {
-          val duplicateList = btxList.filter(dbBtxList.map{d => d.btxId} contains _.toInt)
-          if(duplicateList.nonEmpty){
-            errMsg :+= Messages("error.cms.ItemManage.update.inputBtxId.duplicate", duplicateList.mkString(","))
-          }
-        }
+//        if(btxList.exists(!_.matches("^[0-9]+$"))){
+//          errMsg :+= Messages("error.cms.ItemManage.update.inputBtxId.notNumeric")
+//        } else {
+//          val duplicateList = btxList.filter(dbBtxList.map{d => d.btxId} contains _.toInt)
+//          if(duplicateList.nonEmpty){
+//            errMsg :+= Messages("error.cms.ItemManage.update.inputBtxId.duplicate", duplicateList.mkString(","))
+//          }
+//        }
 
         if(errMsg.nonEmpty){
           // エラーで遷移
@@ -180,7 +186,7 @@ class ItemManage @Inject()(config: Configuration
             .flashing(ERROR_MSG_KEY -> errMsg.mkString(HTML_BR))
         }else{
           // 更新の実行
-          itemDAO.update(f.inputItemKindId.toInt, f.inputItemKindName, f.inputNote, f.inputPlaceId.toInt, lineList, btxList.map{b=>b.toInt})
+//          itemDAO.update(f.inputItemKindId.toInt, f.inputItemKindName, f.inputNote, f.inputPlaceId.toInt, lineList, btxList.map{b=>b.toInt})
 
           // リダイレクト
           Redirect(routes.ItemManage.index)

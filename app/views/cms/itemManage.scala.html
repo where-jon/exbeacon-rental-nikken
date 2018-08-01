@@ -42,9 +42,9 @@
                                 </thead>
                                 <tbody>
                                     @for(item <- itemList){
-                                        <tr class="rowColor rowHover" id="@item.itemOtherId">
+                                        <tr class="rowColor rowHover" data-itemOtherId="@item.itemOtherId" id="@item.itemOtherId">
                                             <td class="itemTd text-center itemOtherBtxId">@{item.itemOtherBtxId}</td>
-                                            <td class="itemTd text-left itemOtherTypeName">@{item.itemTypeName}</td>
+                                            <td class="itemTd text-left itemTypeName">@{item.itemTypeName}</td>
                                             <td class="itemTd text-left itemOtherName">@{item.itemOtherName}</td>
                                         </tr>
                                     }
@@ -78,26 +78,25 @@
                 <form id="itemForm" name="itemForm" enctype="multipart/form-data" class="form-horizontal" method="post" action="@controllers.cms.routes.ItemManage.update.path">
                     @CSRF.formField
                     <input type="hidden" name="inputPlaceId" value="@placeId">
-                    <input type="hidden" id="inputItemKindId" name="inputItemKindId">
-                    <input type="hidden" id="actualItemInfoStr" name="actualItemInfoStr">
+                    <input type="hidden" id="inputItemOtherId" name="inputItemOtherId">
                     <div class="modal-header" style="">@Messages("lang.cms.itemManage.itemUpdate.popup.title")</div>
                     <div class="modal-body">
                         <div class="form-group">
                             <label class="control-label col-xs-4">@Messages("lang.cms.itemManage.itemUpdate.popup.tagId")</label>
                             <div class="col-xs-3" style="padding-left: 0px;padding-right: 0px;">
-                                <input type="text" id="inputItemKindName" name="inputItemKindName" class="form-control">
+                                <input type="text" id="inputItemOtherBtxId" name="inputItemOtherBtxId" class="form-control">
                             </div>
                         </div>
                         <div class="form-group" style="margin-bottom: 5px;">
                             <label class="control-label col-xs-4">@Messages("lang.cms.itemManage.itemUpdate.popup.type")</label>
                             <div class="col-xs-3" style="padding-left: 0px;padding-right: 0px;margin-right: 10px;">
-                                <input type="text" id="inputTagId" class="form-control">
+                                <input type="text" id="inputItemTypeName" name="inputItemTypeName" class="form-control">
                             </div>
                         </div>
                         <div class="form-group" style="margin-bottom: 5px;">
                             <label class="control-label col-xs-4">@Messages("lang.cms.itemManage.itemUpdate.popup.name")</label>
                             <div class="col-xs-3" style="padding-left: 0px;padding-right: 0px;margin-right: 10px;">
-                                <input type="text" id="inputName" class="form-control">
+                                <input type="text" id="inputItemOtherName" name="inputItemTypeName" class="form-control">
                             </div>
                         </div>
                     </div>

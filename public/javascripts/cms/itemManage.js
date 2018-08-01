@@ -33,12 +33,13 @@ function bindMouseAndTouch(){
 function showInputModal(isRegister){
     if(isRegister){
         // 新規
-        $('#inputItemKindId').val('');
-        $('#actualItemInfoStr').val('');
-        $('#inputItemKindName').val('');
-        $('#inputNote').val('');
-        $('#inputItemNo').val('');
-        $('#inputItemBtxId').val('');
+        $('#inputItemOtherId').val('');
+        $('#inputItemTypeId').val('');
+        $('#inputItemOtherBtxId').val('');
+        $('#inputItemOtherNo').val('');
+        $('#inputItemOtherName').val('');
+        $('#inputItemNote').val('');
+        $('#inputItemTypeName').val('');
         $('.cloned').remove();
         // ボタン表示の切り替え
         $('#itemUpdateFooter').addClass('hidden');
@@ -47,29 +48,30 @@ function showInputModal(isRegister){
         $('#inputModal').modal();
     }else{
         if($('.rowHoverSelectedColor').length > 0){
-            var itemKindId = $('.rowHoverSelectedColor .itemKindId').html();
+            var itemOtherId = $('.rowHoverSelectedColor').attr('data-itemOtherId');
             $('.cloned').remove();
-            $('#inputItemKindId').val(itemKindId);
-            $('#actualItemInfoStr').val('');
-            $('#inputItemKindName').val($('#'+itemKindId).find('.itemKindName').text());
-            $('#inputNote').val($('#'+itemKindId).find('.note').text());
-            $('#inputItemNo').val('');
-            $('#inputItemBtxId').val('');
+            $('#inputItemOtherId').val(itemOtherId);
+            $('#inputItemTypeId').val('');
+            $('#inputItemOtherBtxId').val($('#'+itemOtherId).find('.itemOtherBtxId').text());
+            $('#inputItemOtherNo').val('');
+            $('#inputItemOtherName').val($('#'+itemOtherId).find('.itemOtherName').text());
+            $('#inputItemNote').val('note');
+            $('#inputItemTypeName').val($('#'+itemOtherId).find('.itemTypeName').text());
 
-            var spanObjList = $('#'+itemKindId).find('span.item');
-            $(spanObjList).each(function(index, element){
-                var clonedRow = $('.template').clone();
-                clonedRow.addClass('cloned');
-                clonedRow.removeClass('template');
-                clonedRow.find('span.inputItemNoSpan').text($(element).attr('data-itemNo'));
-                clonedRow.find('span.inputItemBtxIdSpan').text($(element).attr('data-itemBtxId'));
-                $('.template').before(clonedRow);
-                var value = $('#actualItemInfoStr').val();
-                $('#actualItemInfoStr').val(value + "-" + $(element).attr('data-itemNo')
-                                                        + ',' + $(element).attr('data-itemBtxId')
-                                                        )
-                clonedRow.removeClass('hidden');
-            });
+//            var spanObjList = $('#'+itemKindId).find('span.item');
+//            $(spanObjList).each(function(index, element){
+//                var clonedRow = $('.template').clone();
+//                clonedRow.addClass('cloned');
+//                clonedRow.removeClass('template');
+//                clonedRow.find('span.inputItemNoSpan').text($(element).attr('data-itemNo'));
+//                clonedRow.find('span.inputItemBtxIdSpan').text($(element).attr('data-itemBtxId'));
+//                $('.template').before(clonedRow);
+//                var value = $('#actualItemInfoStr').val();
+//                $('#actualItemInfoStr').val(value + "-" + $(element).attr('data-itemNo')
+//                                                        + ',' + $(element).attr('data-itemBtxId')
+//                                                        )
+//                clonedRow.removeClass('hidden');
+//            });
 
             // ボタン表示の切り替え
             $('#itemUpdateFooter').removeClass('hidden');
