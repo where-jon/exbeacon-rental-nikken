@@ -76,8 +76,7 @@ POST   /site/itemOtherCancel/cancel         controllers.site.ItemOtherCancel.can
 
 # 未検出の仮設材
 GET    /site/unDetected                 controllers.site.UnDetected.index
-#POST   /site/unDetected                 controllers.site.UnDetected.search
-#POST   /site/unDetected/reserve         controllers.site.UnDetected.reserve
+POST   /site/unDetected                 controllers.site.UnDetected.search
 
 
 # 作業車移動状況分析
