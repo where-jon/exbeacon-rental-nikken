@@ -61,6 +61,18 @@ case class ItemOther(
   placeId: Int
 )
 
+/*その他仮設材管理用*/
+case class ItemOtherViewer(
+  itemOtherId: Int,
+  itemTypeId: Int,
+  itemTypeName: String,
+  note: String,
+  itemOtherNo: String,
+  itemOtherName: String,
+  itemOtherBtxId: Int,
+  placeId: Int
+)
+
 case class OtherViewer(
   item_other_id: Int,
   item_other_btx_id: Int,
@@ -93,20 +105,24 @@ class itemOtherDAO @Inject()(dbapi: DBApi) {
 
   private val db = dbapi.database("default")
 
-  val simple = {
+  val itemmanage = {
     get[Int]("item_other_id") ~
       get[Int]("item_type_id") ~
+      get[String]("item_type_name") ~
       get[String]("note") ~
       get[String]("item_other_no") ~
       get[String]("item_other_name") ~
       get[Int]("item_other_btx_id") ~
       get[Int]("place_id") map {
-      case item_other_id ~ item_type_id ~ note ~ item_other_no ~ item_other_name ~ item_other_btx_id ~  place_id  =>
-        ItemOther(item_other_id, item_type_id, note, item_other_no, item_other_name, item_other_btx_id, place_id)
+      case item_other_id ~ item_type_id ~ item_type_name ~ note ~ item_other_no ~ item_other_name ~ item_other_btx_id ~  place_id  =>
+        ItemOtherViewer(item_other_id, item_type_id, item_type_name, note, item_other_no, item_other_name, item_other_btx_id, place_id)
     }
   }
-
-  def selectOtherMasterInfo(placeId: Int): Seq[ItemOther] = {
+  /**
+    * その他仮設材情報の取得
+    * @return
+    */
+  def selectOtherMasterInfo(placeId: Int): Seq[ItemOtherViewer] = {
     db.withConnection { implicit connection =>
       val sql = SQL(
         """
@@ -129,7 +145,20 @@ class itemOtherDAO @Inject()(dbapi: DBApi) {
 		          """).on(
         "placeId" -> placeId
       )
-      sql.as(simple.*)
+      sql.as(itemmanage.*)
+    }
+  }
+
+  val simple = {
+    get[Int]("item_other_id") ~
+      get[Int]("item_type_id") ~
+      get[String]("note") ~
+      get[String]("item_other_no") ~
+      get[String]("item_other_name") ~
+      get[Int]("item_other_btx_id") ~
+      get[Int]("place_id") map {
+      case item_other_id ~ item_type_id ~ note ~ item_other_no ~ item_other_name ~ item_other_btx_id ~  place_id  =>
+        ItemOther(item_other_id, item_type_id, note, item_other_no, item_other_name, item_other_btx_id, place_id)
     }
   }
 

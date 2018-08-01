@@ -1,4 +1,4 @@
-@(itemList: Seq[ItemListInfo], placeId: Int)(implicit user: User, messages: Messages, request: RequestHeader, flash: Flash)
+@(itemList: Seq[ItemOtherViewer], placeId: Int)(implicit user: User, messages: Messages, request: RequestHeader, flash: Flash)
 
 @import controllers.routes
 @import helper._
@@ -42,10 +42,10 @@
                                 </thead>
                                 <tbody>
                                     @for(item <- itemList){
-                                        <tr class="rowColor rowHover" id="@item.itemKindId">
-                                            <td class="itemTd text-center itemKindId">@{item.itemKindId}</td>
-                                            <td class="itemTd text-left itemKindName">@{item.itemKindName}</td>
-                                            <td class="itemTd text-left note">@{item.note}</td>
+                                        <tr class="rowColor rowHover" id="@item.itemOtherId">
+                                            <td class="itemTd text-center itemOtherBtxId">@{item.itemOtherBtxId}</td>
+                                            <td class="itemTd text-left itemOtherTypeName">@{item.itemTypeName}</td>
+                                            <td class="itemTd text-left itemOtherName">@{item.itemOtherName}</td>
                                         </tr>
                                     }
                                 </tbody>
@@ -90,14 +90,14 @@
                         </div>
                         <div class="form-group" style="margin-bottom: 5px;">
                             <label class="control-label col-xs-4">@Messages("lang.cms.itemManage.itemUpdate.popup.type")</label>
-                            <div class="col-xs-2" style="padding-left: 0px;padding-right: 0px;margin-right: 10px;">
-                                <input type="text" maxlength="3" id="inputTagId" class="form-control">
+                            <div class="col-xs-3" style="padding-left: 0px;padding-right: 0px;margin-right: 10px;">
+                                <input type="text" id="inputTagId" class="form-control">
                             </div>
                         </div>
                         <div class="form-group" style="margin-bottom: 5px;">
                             <label class="control-label col-xs-4">@Messages("lang.cms.itemManage.itemUpdate.popup.name")</label>
-                            <div class="col-xs-2" style="padding-left: 0px;padding-right: 0px;margin-right: 10px;">
-                                <input type="text" maxlength="3" id="inputName" class="form-control">
+                            <div class="col-xs-3" style="padding-left: 0px;padding-right: 0px;margin-right: 10px;">
+                                <input type="text" id="inputName" class="form-control">
                             </div>
                         </div>
                     </div>
