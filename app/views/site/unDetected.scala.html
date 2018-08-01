@@ -1,13 +1,10 @@
 @(
 ITEM_TYPE_FILTER: Int,
-WORK_TYPE_FILTER:String,
-RESERVE_DATE:String,
-carList: Seq[itemCarBeaconPositionData],
+FLOOR_NAME_FILTER :String,
+DETECT_DATE:String,
+unDetectedList: Seq[ItemLog],
 itemTypeList: Seq[ItemType],
-companyNameList :Seq[Company],
-floorNameList :Seq[Floor],
-workTypeList :Seq[WorkType],
-workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: RequestHeader, flash: Flash)
+floorNameList :Seq[Floor])(implicit user: User, messages: Messages, request: RequestHeader, flash: Flash)
 @import b3.vertical.fieldConstructor
 @import controllers.routes
 @import helper._
@@ -42,16 +39,30 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
                 <div class="row tableRow" style="margin-top: 10px;">
 
                     <div class="text-center col-xs-3 col-sm-3 col-md-3" style="display: -webkit-box;margin-right: 70px;">
-                        予約希望日：
+                        検出日：
                         <div class='input-group date' id='datetimepicker'
                              style="margin-top: -5px;">
                                 <span class="input-group-addon">
                                     <span class="glyphicon glyphicon-calendar"></span>
                                 </span>
-                            <input type='text' class="form-control inputClass" id="inputDate" name="inputDate" value="@RESERVE_DATE"
+                            <input type='text' class="form-control inputClass" id="inputDate" name="inputDate" value="@DETECT_DATE"
                                    style="width: 100px;"/>
 
                         </div>
+
+                    </div>
+
+                    <div class="text-center col-xs-3 col-sm-3 col-md-3" style="padding:0;">
+                        フロア :
+                        <select id="FLOOR_NAME_FILTER" style="width: 100px;">
+                            <!--フロアテーブルから検索フィルタを設置-->
+                            <option value=""></option>
+                            @floorNameList.zipWithIndex.map { case(floor, i) =>
+                            <option value="@floor.floor_name">@floor.floor_name</option>
+                            }
+                            <option value="検知フロア無">検知フロア無</option>
+                        </select>
+                        <input class="hidden form-control input-sm" type="text" id="floorName" name="floorName" value="@FLOOR_NAME_FILTER">
 
                     </div>
 
@@ -67,19 +78,9 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
                         <input class="hidden form-control input-sm" type="text" id="itemTypeId" name="itemTypeId" value="@ITEM_TYPE_FILTER">
                     </div>
 
-                    <div class="text-center col-xs-3 col-sm-3 col-md-3" style="padding:0;">
-                        期間 :
-                        <select id="WORK_TYPE_FILTER" style="width: 100px;">
-                            <option value=""></option>
-                            @workTypeList.zipWithIndex.map { case(workType, i) =>
-                            <option value="@workType.work_type_name">@workType.work_type_name</option>
-                            }
-                        </select>
-                        <input class="hidden form-control input-sm" type="text" id="workTypeName" name="workTypeName" value="@WORK_TYPE_FILTER">
-                    </div>
                     <!--表示ボタン-->
                     <div id = "viewBtn" class="text-center btn btn__view--frame">
-                        空き情報確認
+                        @Messages("lang.btn.show")
                     </div>
                 </div>
 
@@ -90,73 +91,37 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
                             <table class="table table-bordered table-condensed itemTable">
                                 <thead>
                                 <tr>
-                                    <th colspan="11" class="tableTitleTh">@Messages("lang.site.unDetected.page.title")</th>
+                                    <th colspan="7" class="tableTitleTh">@Messages("lang.site.unDetected.page.title")</th>
                                 </tr>
                                 <tr>
-                                    <th class="tableTh ">選択</th>
-                                    <th class="tableTh ">現在フロア</th>
-                                    <th class="tableTh ">現在位置</th>
-                                    <th class="tableTh ">実ID</th>
                                     <th class="tableTh ">Tag ID</th>
-                                    <th class="hidden tableTh ">種別ID</th>
+                                    <th class="tableTh ">フロア</th>
+                                    <th class="tableTh ">検知位置</th>
+                                    <th class="tableTh ">最終受信日時</th>
+                                    <th class="tableTh ">当日予約業者</th>
                                     <th class="tableTh ">種別</th>
                                     <th class="tableTh ">名称</th>
-                                    <th class="tableTh ">予約日</th>
-                                    <th class="tableTh ">予約期間</th>
-                                    <th class="tableTh ">予約ID</th>
                                 </tr>
                                 </thead>
                                 <tbody>
-                                @carList.zipWithIndex.map { case(car, i) =>
-                                <tr class="rowColor rowHover" data-carId="@car.item_car_id" id="@car.item_car_id">
-                                    @if(i == 0){
-                                    <td class="item common__check--frame" id="check-@i">
-                                        <input class= "checkTotal" type="checkbox" id="isCheckBox-@i" name="checkVal[@i]" value=@i >
-                                    </td>
+                                @unDetectedList.zipWithIndex.map { case(unDetected, i) =>
+                                <tr class="rowColor rowHover" data-carId="@unDetected.item_id" id="@unDetected.item_id">
+                                    <td class="itemTd text-center ">@unDetected.item_btx_id</td>
+                                    <td class="itemTd text-center ">@unDetected.finish_floor_name</td>
+                                    <td class="itemTd text-center ">@unDetected.finish_exb_name</td>
+                                    @if(unDetected.finish_detected_time == "0001-01-01 00:00:00"){
+                                        <td class="itemTd text-center ">未検知</td>
                                     }else{
-                                    @if(carList(i-1).item_car_id == carList(i).item_car_id){
-                                    <td class="itemTd text-center ">-</td>
-                                    }else{
-                                    <td class="item common__check--frame" id="check-@i">
-                                        <input class= "checkTotal" type="checkbox" id="isCheckBox-@i" name="checkVal[@i]" value=@i>
-                                    </td>
+                                        <td class="itemTd text-center ">@unDetected.finish_detected_time</td>
                                     }
-                                    }
-                                    <td class="itemTd text-center ">@car.cur_pos_name</td>
-                                    <td class="itemTd text-center modalSelect">@car.cur_exb_name</td>
-                                    <td class="itemTd text-center ">@car.item_car_id
-                                        <input class="hidden  form-control input-sm" type="text" id="itemId-@i" name="itemId[@i]" value="@car.item_car_id">
-                                    </td>
-                                    <td class="itemTd text-center ">@car.item_car_btx_id</td>
-                                    <td class="hidden itemTd text-center ">@car.item_type_id
-                                        <input class="hidden  form-control input-sm" type="text" id="itemTypeIdList-@i" name="itemTypeIdList[@i]" value="@car.item_type_id">
-                                    </td>
-                                    <td class="itemTd text-center ">@car.item_type_name</td>
-                                    <td class="itemTd text-center ">@car.item_car_name</td>
-                                    <td class="itemTd text-center ">@car.reserve_start_date</td>
-                                    <td class="itemTd text-center ">@car.work_type_name</td>
-                                    <td class="itemTd text-center ">@car.reserve_id</td>
+                                    <td class="itemTd text-center ">@unDetected.company_name</td>
+                                    <td class="itemTd text-center ">@unDetected.item_type_name</td>
+                                    <td class="itemTd text-center ">@unDetected.item_name</td>
                                 </tr>
                                 }
                                 </tbody>
                             </table>
                         </div>
-                    </div>
-                </div>
-
-                <!--footer 更新部-->
-                <div class="row tableRow" style="margin-top: 30px;">
-
-                    <div class="text-center col-xs-3 col-sm-3 col-md-3" style="padding:0;">
-                        業者 :
-                        <select id="COMPANY_NAME_FILTER" style="width: 100px;">
-                            <!--業者マスターから検索フィルタを設置-->
-                            <option value=""></option>
-                            @companyNameList.zipWithIndex.map { case(company, i) =>
-                            <option value="@company.companyName">@company.companyName</option>
-                            }
-                        </select>
-                        <input class="hidden  form-control input-sm" type="text" id="companyName" name="companyName" value="">
                     </div>
                 </div>
 

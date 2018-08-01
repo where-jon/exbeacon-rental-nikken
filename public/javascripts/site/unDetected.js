@@ -5,14 +5,14 @@ function getFilterCheck(){
     if(inputItemType!=null){
          $('#ITEM_TYPE_FILTER').val(inputItemType.value)
     }
-    var inputWorkTypeName = document.getElementById("workTypeName")
-    if(inputWorkTypeName!=null){
-         $('#WORK_TYPE_FILTER').val(inputWorkTypeName.value)
+    var inputFloorNameName = document.getElementById("floorName")
+    if(inputFloorNameName!=null){
+         $('#FLOOR_NAME_FILTER').val(inputFloorNameName.value)
     }
 
     var inputDate = document.getElementById("inputDate")
     if(inputDate!=null){
-         $('#RESERVE_DATE').val(inputDate.value)
+         $('#DETECT_DATE').val(inputDate.value)
     }
 }
 
@@ -43,10 +43,10 @@ function btnEvent(){
         var inputItemType = document.getElementById("itemTypeId")
         inputItemType.value = itemTypeFilterResult
 
-        // work_type_name結果をfromへ設定
-        var workTypeNameFilterResult = $('#WORK_TYPE_FILTER option:selected').val();
-        var inputWorkTypeName = document.getElementById("workTypeName")
-        inputWorkTypeName.value = workTypeNameFilterResult
+        // floorName結果をfromへ設定
+        var floorNameFilterResult = $('#FLOOR_NAME_FILTER option:selected').val();
+        var inputFloorName = document.getElementById("floorName")
+        inputFloorName.value = floorNameFilterResult
 
         // inputDate結果をfromへ設定
         var inputDate = document.getElementById("inputDate")

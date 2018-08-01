@@ -1,39 +1,44 @@
 package models
 
-import java.text.SimpleDateFormat
 import javax.inject.Inject
 
 import anorm.SqlParser._
 import anorm.{~, _}
 import play.api.db._
-import play.api.libs.json.{JsPath, Json, Reads}
 import play.api.libs.functional.syntax._
+import play.api.libs.json.{JsPath, Json, Reads}
+
+
+/*未検出の仮設材検索用formクラス*/
+case class UnDetectedSearchData(
+  itemTypeId: Int,
+  floorName: String,
+  inputDate: String
+)
 
 case class ItemLog(
-                    btx_id: Int,
-                    btx_record_time: String,
-                    btx_name: String,
-                    btx_tantou: String,
-                    btx_yakushoku: String,
-                    pos_id: Int,
-                    pos_name: String,
-                    department_name:  String,
-                    sitting_status: String,
-                    updatetime: String
-                  )
+item_id: Int
+,item_btx_id: Int
+,finish_floor_name: String
+,finish_exb_name: String
+,finish_detected_time: String
+,company_name: String
+,item_type_id: Int
+,item_type_name: String
+,item_name: String
+)
 
 object ItemLog {
   implicit val jsonReads: Reads[ItemLog] = (
-    (JsPath \ "btx_id").read[Int] ~
-      (JsPath \ "btx_record_time").read[String] ~
-      ((JsPath \ "btx_name").read[String] | Reads.pure("")) ~
-      ((JsPath \ "btx_tantou").read[String] | Reads.pure("")) ~
-      ((JsPath \ "btx_yakushoku").read[String] | Reads.pure("")) ~
-      (JsPath \ "pos_id").read[Int] ~
-      ((JsPath \ "pos_name").read[String] | Reads.pure("")) ~
-      ((JsPath \ "department_name").read[String] | Reads.pure("")) ~
-      ((JsPath \ "sitting_status").read[String] | Reads.pure("")) ~
-      (JsPath \ "updatetime").read[String]
+    (JsPath \ "item_id").read[Int] ~
+      (JsPath \ "item_btx_id").read[Int] ~
+      ((JsPath \ "finish_floor_name").read[String] | Reads.pure("")) ~
+      ((JsPath \ "finish_exb_name").read[String] | Reads.pure("")) ~
+      ((JsPath \ "finish_detected_time").read[String] | Reads.pure("")) ~
+      ((JsPath \ "company_name").read[String]| Reads.pure("")) ~
+      (JsPath \ "item_type_id").read[Int] ~
+      ((JsPath \ "item_type_name").read[String] | Reads.pure("")) ~
+      ((JsPath \ "item_name").read[String] | Reads.pure(""))
     )(ItemLog.apply _)
 
   implicit def jsonWrites = Json.writes[ItemLog]
@@ -45,39 +50,38 @@ class ItemLogDAO @Inject() (dbapi: DBApi) {
 
   // Parser
   val simple = {
-    get[Int]("btx_id") ~
-      get[String]("btx_record_time") ~
-      get[String]("btx_name") ~
-      get[String]("btx_tantou") ~
-      get[String]("btx_yakushoku") ~
-      get[Int]("pos_id") ~
-      get[String]("pos_name") ~
-      get[String]("department_name") ~
-      get[String]("sitting_status") ~
-      get[String]("updatetime") map {
-      case btx_id ~ btx_record_time ~ btx_name ~
-        btx_tantou ~ btx_yakushoku ~ pos_id ~ pos_name ~
-        department_name ~ sitting_status ~ updatetime =>
-        ItemLog(btx_id, btx_record_time, btx_name,
-          btx_tantou, btx_yakushoku, pos_id, pos_name,
-          department_name, sitting_status, updatetime)
+    get[Int]("item_id") ~
+      get[Int]("item_btx_id") ~
+      get[String]("finish_floor_name") ~
+      get[String]("finish_exb_name") ~
+      get[String]("finish_detected_time") ~
+      get[String]("company_name") ~
+      get[Int]("item_type_id") ~
+      get[String]("item_type_name") ~
+      get[String]("item_name")  map {
+      case item_id ~ item_btx_id ~ finish_floor_name ~
+        finish_exb_name ~ finish_detected_time ~ company_name ~
+        item_type_id ~ item_type_name ~ item_name =>
+        ItemLog(item_id, item_btx_id, finish_floor_name,
+          finish_exb_name, finish_detected_time, company_name,
+          item_type_id,item_type_name, item_name)
     }
   }
 
   def insert(itemLogData: itemBeaconPositionData): Boolean = {
-    val format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS")
     var vStartData =itemLogData.reserve_start_date
     var vEndData = itemLogData.reserve_end_date
     var vUpdateData = itemLogData.updatetime
-    if(vEndData == "date"){
-      vStartData = "0001-01-01"
+    if(vStartData == "date"){
+      vStartData = null
     }
     if(vEndData == "date"){
-      vEndData = "0001-01-01"
+      vEndData = null
     }
     if(vUpdateData == "" || vUpdateData == "no"){
-      vUpdateData = "0001-01-01"
+      vUpdateData = "0001-01-01 00:00:00"
     }
+
 
     db.withConnection { implicit connection =>
       val sql = SQL("""
@@ -91,7 +95,7 @@ class ItemLogDAO @Inject() (dbapi: DBApi) {
                       ({item_type_id}, {item_id},
                        {item_name}, {item_btx_id}, {item_car_key_btx_id},
                        false, to_date({reserve_start_date}, 'YYYY-MM-DD'), to_date({reserve_end_date}, 'YYYY-MM-DD'),
-                       false, -1, {finish_floor_name}, -1, {finish_exb_name}, to_date({finish_updatetime}, 'YYYY-MM-DD'),
+                       false, -1, {finish_floor_name}, -1, {finish_exb_name}, TO_TIMESTAMP({finish_updatetime}, 'YYYY-MM-DD HH24:MI:SS'),
                        {company_id},{company_name}, {place_id}, now());
 
         """
@@ -115,30 +119,37 @@ class ItemLogDAO @Inject() (dbapi: DBApi) {
     }
   }
 
-  def selectAllTime(dateBegin: String, dateEnd: String): Seq[ItemLog] = {
+  def selectUnDetectedData(placeId: Int, detectDate: String): Seq[ItemLog] = {
     db.withConnection { implicit connection =>
       val sql = SQL(
         """
-          SELECT
-          A.btx_id,
-          to_char(A.btx_record_time, 'YYYY-MM-DD HH24:MI:SS') as btx_record_time,
-          A.btx_name,
-          A.btx_tantou,
-          A.btx_yakushoku,
-          A.pos_id,
-          A.pos_name,
-          A.department_name,
-          A.sitting_status,
-          to_char(A.updatetime, 'YYYY-MM-DD HH24:MI:SS') as updatetime
-          FROM
-            btx_log as A
-          WHERE
-            A.btx_record_time between to_date({date_begin}, 'YYYY-MM-DD') AND to_date({date_end}, 'YYYY-MM-DD') + interval '1 day'
-          ORDER BY
-            btx_record_time, btx_id
+           select
+              item.item_id
+              ,item.item_btx_id
+              ,item.finish_floor_name
+              ,max(item.finish_exb_name) as finish_exb_name
+              ,to_char(max(item.finish_updatetime), 'YYYY-MM-DD HH24:MI:SS') as finish_detected_time
+              ,item.company_name
+              ,itemType.item_type_id
+              ,itemType.item_type_name
+              ,item.item_name
+              from item_log as item
+              inner join item_type as itemType on itemType.item_type_id = item.item_type_id
+              where item.place_id = {place_id}
+              and not item.finish_updatetime >= to_date({finish_updatetime}, 'YYYY-MM-DD') - 1
+              group by
+              item.item_id
+              ,item.item_btx_id
+              ,item.finish_floor_name
+              ,item.company_name
+              ,itemType.item_type_id
+              ,itemType.item_type_name
+              ,item.item_name
+              order by item.item_btx_id
         """
       ).on(
-        'date_begin -> dateBegin, 'date_end -> dateEnd
+        'place_id -> placeId,
+        'finish_updatetime -> detectDate
       )
       sql.as(simple.*)
     }

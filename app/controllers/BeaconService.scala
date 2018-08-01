@@ -60,14 +60,14 @@ class BeaconService @Inject() (config: Configuration,
       val floor = bpd.find(_.btx_id == bpd.get.pos_id)
       //!bpd.get.btx_name.isEmpty
       val blankTargetMode = if (blankInclude) true else true
+      var vExbName = "検知位置無"
+      var vFloorName = "検知フロア無"
+
       if (bpd.isDefined && blankTargetMode) {
         val exbDatas =exbDao.selectExbApiInfo(placeId,bpd.get.pos_id)
-        var vFloorName = "検知フロア無"
-        var vExbName = "検知EXB無"
-        var vTest = "検知EXB無"
           exbDatas.map { index =>
-            vFloorName = index.cur_floor_name
             vExbName = index.exb_pos_name
+            vFloorName = index.cur_floor_name
           }
 
         itemCarBeaconPositionData(
@@ -95,7 +95,7 @@ class BeaconService @Inject() (config: Configuration,
           v.reserve_id
         )
       } else {
-        itemCarBeaconPositionData("検知フロア無","検知EXB無",-1, -1, -1, 0, "no",
+        itemCarBeaconPositionData(vExbName,vFloorName,-1, -1, -1, 0, "no",
           v.item_car_id,
           v.item_car_btx_id,
           v.item_car_key_btx_id,
@@ -145,14 +145,13 @@ class BeaconService @Inject() (config: Configuration,
       val floor = bpd.find(_.btx_id == bpd.get.pos_id)
       //!bpd.get.btx_name.isEmpty
       val blankTargetMode = if (blankInclude) true else true
+      var vExbName = "検知位置無"
+      var vFloorName = "検知フロア無"
       if (bpd.isDefined && blankTargetMode) {
         val exbDatas =exbDao.selectExbApiInfo(placeId,bpd.get.pos_id)
-        var vFloorName = "検知フロア無"
-        var vExbName = "検知EXB無"
-        var vTest = "検知EXB無"
         exbDatas.map { index =>
-          vFloorName = index.cur_floor_name
           vExbName = index.exb_pos_name
+          vFloorName = index.cur_floor_name
         }
 
         itemOtherBeaconPositionData(
@@ -180,7 +179,7 @@ class BeaconService @Inject() (config: Configuration,
           v.reserve_id
         )
       } else {
-        itemOtherBeaconPositionData("現在フロア","現在位置",-1, -1, -1, 0, "no",
+        itemOtherBeaconPositionData(vExbName,vFloorName,-1, -1, -1, 0, "no",
           v.item_other_id,
           v.item_other_btx_id,
           v.item_type_id,
@@ -229,15 +228,14 @@ class BeaconService @Inject() (config: Configuration,
       val bpd = posList.find(_.btx_id == v.item_btx_id)
       val floor = bpd.find(_.btx_id == bpd.get.pos_id)
       //!bpd.get.btx_name.isEmpty
+      var vExbName = "検知位置無"
+      var vFloorName = "検知フロア無"
       val blankTargetMode = if (blankInclude) true else true
       if (bpd.isDefined && blankTargetMode) {
         val exbDatas =exbDao.selectExbApiInfo(placeId,bpd.get.pos_id)
-        var vFloorName = "検知フロア無"
-        var vExbName = "検知EXB無"
-        var vTest = "検知EXB無"
         exbDatas.map { index =>
-          vFloorName = index.cur_floor_name
           vExbName = index.exb_pos_name
+          vFloorName = index.cur_floor_name
         }
 
         itemBeaconPositionData(
@@ -265,7 +263,7 @@ class BeaconService @Inject() (config: Configuration,
           v.reserve_end_date
         )
       } else {
-        itemBeaconPositionData("現在フロア","現在位置",-1, -1, 0, "no",
+        itemBeaconPositionData(vExbName,vFloorName,-1, -1, 0, "no",
           v.item_id,
           v.item_btx_id,
           v.item_key_btx,
