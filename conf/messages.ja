@@ -410,6 +410,7 @@ lang.btn.addRow = 行追加
 lang.btn.update = 更新
 lang.btn.delete = 削除
 lang.btn.reload = 再表示
+lang.btn.show = 表示
 
 
 lang.deviceID = 端末ID
