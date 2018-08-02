@@ -104,13 +104,13 @@ class CarManage @Inject()(config: Configuration
           errMsg :+= Messages("error.cms.CarManage.update.inputCarNo.duplicate", f.inputCarNo)
         }
         // TxタグNo重複チェック
-        val exbList = exbDAO.select(super.getCurrentPlaceId)
-        if(exbList.filter(_.btxId == f.inputCarBtxId.toInt).isEmpty == false){
-          errMsg :+= Messages("error.cms.CarManage.update.inputCarBtxId.duplicate", f.inputCarBtxId)
-        }
-        if(exbList.filter(_.btxId == f.inputCarKeyBtxId.toInt).isEmpty == false){
-          errMsg :+= Messages("error.cms.CarManage.update.inputCarKeyBtxId.duplicate", f.inputCarKeyBtxId)
-        }
+//        val exbList = exbDAO.select(super.getCurrentPlaceId)
+//        if(exbList.filter(_.btxId == f.inputCarBtxId.toInt).isEmpty == false){
+//          errMsg :+= Messages("error.cms.CarManage.update.inputCarBtxId.duplicate", f.inputCarBtxId)
+//        }
+//        if(exbList.filter(_.btxId == f.inputCarKeyBtxId.toInt).isEmpty == false){
+//          errMsg :+= Messages("error.cms.CarManage.update.inputCarKeyBtxId.duplicate", f.inputCarKeyBtxId)
+//        }
 
         if(errMsg.isEmpty == false){
           // エラーで遷移
@@ -148,9 +148,9 @@ class CarManage @Inject()(config: Configuration
             if (btxId._1 == btxId._2) {
               // 変更前と同じの場合何もしない
             } else {
-              val exbList = exbDAO.select(super.getCurrentPlaceId, Seq[Int](btxId._2))
-              // 対象現場に既存登録がある場合
-              if (!exbList.isEmpty) {
+//              val exbList = exbDAO.select(super.getCurrentPlaceId, Seq[Int](btxId._2))
+//              // 対象現場に既存登録がある場合
+//              if (!exbList.isEmpty) {
                   // 登録が重複する場合
                 if (i == 0) {
                   if (f.inputCarBtxId.toInt == preCarInfo.itemCarKeyBtxId) {
@@ -165,7 +165,7 @@ class CarManage @Inject()(config: Configuration
                     errMsg :+= Messages("error.cms.CarManage.update.inputCarKeyBtxId.duplicate", btxId._2)
                   }
                 }
-              }
+//              }
             }
           }
         }
@@ -195,9 +195,6 @@ class CarManage @Inject()(config: Configuration
     }
   }
 
-
-
-
   /** 削除 */
   def delete = SecuredAction { implicit request =>
     // フォームの準備
@@ -220,16 +217,9 @@ class CarManage @Inject()(config: Configuration
       // 検索
       val carList = carDAO.selectCarInfo(super.getCurrentPlaceId, "", Option(f.deleteCarId.toInt))
       // タグ
-      var txTagList = Seq[Int]()
       if (carList.length > 0) {
-        // タグ情報収集
-        carList.map { car =>
-          txTagList :+= car.itemCarBtxId
-          txTagList :+= car.itemCarKeyBtxId
-        }
-
         // 削除
-        carDAO.delete(f.deleteCarId.toInt, super.getCurrentPlaceId, txTagList)
+        carDAO.delete(f.deleteCarId.toInt, super.getCurrentPlaceId)
       }
 
       // リダイレクト

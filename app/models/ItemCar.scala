@@ -206,18 +206,11 @@ class itemCarDAO @Inject()(dbapi: DBApi) {
 
 
   /**
-    * 作業車の削除
+    * 作業車・立馬の削除
     * @return
     */
-  def delete(carId:Int, placeId: Int, btxIdList: Seq[Int]): Unit = {
+  def delete(carId:Int, placeId: Int): Unit = {
     db.withTransaction { implicit connection =>
-
-      // Txの削除
-      SQL(
-        """
-          delete from btx_master where place_id = {placeId} and btx_id in ({btxIdList}) ;
-        """)
-        .on('placeId -> placeId, 'btxIdList -> btxIdList).executeUpdate()
 
       // 作業車の削除
       SQL("""delete from item_car_master where item_car_id = {carId} ;""").on('carId -> carId).executeUpdate()
@@ -225,7 +218,7 @@ class itemCarDAO @Inject()(dbapi: DBApi) {
       // コミット
       connection.commit()
 
-      Logger.debug(s"""業者を削除、ID：" + ${carId.toString}""")
+      Logger.debug(s"""作業車・立馬を削除、ID：" + ${carId.toString}""")
     }
   }
 

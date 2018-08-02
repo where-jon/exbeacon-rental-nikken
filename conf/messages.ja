@@ -131,8 +131,8 @@ success.cms.FloorManage.floorUpdate=フロア情報を更新しました。
 success.cms.CompanyManage.delete=業者情報を削除しました。
 success.cms.CompanyManage.update=業者情報を更新しました。
 
-success.cms.CarManage.delete=作業車情報を削除しました。
-success.cms.CarManage.update=作業車情報を更新しました。
+success.cms.CarManage.delete=作業車情報・立馬を削除しました。
+success.cms.CarManage.update=作業車情報・立馬を更新しました。
 
 success.cms.ItemManage.delete=仮設材情報を削除しました。
 success.cms.ItemManage.update=仮設材情報を更新しました。
