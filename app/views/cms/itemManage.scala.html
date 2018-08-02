@@ -32,12 +32,15 @@
                             <table class="table table-bordered table-condensed itemTable">
                                 <thead>
                                     <tr>
-                                        <th colspan="3" class="tableTitleTh">@Messages("lang.cms.itemManage.item.list.header.title")</th>
+                                        <th colspan="6" class="tableTitleTh">@Messages("lang.cms.itemManage.item.list.header.title")</th>
                                     </tr>
                                     <tr>
                                         <th class="tableTh noTh text-center">@Messages("lang.cms.itemManage.item.list.header.tagId")</th>
                                         <th class="tableTh">@Messages("lang.cms.itemManage.item.list.header.type")</th>
                                         <th class="tableTh">@Messages("lang.cms.itemManage.item.list.header.name")</th>
+                                        <th class="tableTh">@Messages("lang.cms.itemManage.item.list.header.otherId")</th>
+                                        <th class="tableTh">@Messages("lang.cms.itemManage.item.list.header.otherName")</th>
+                                        <th class="tableTh">@Messages("lang.cms.itemManage.item.list.header.otherNote")</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -46,6 +49,9 @@
                                             <td class="itemTd text-center itemOtherBtxId">@{item.itemOtherBtxId}</td>
                                             <td class="itemTd text-left itemTypeName">@{item.itemTypeName}</td>
                                             <td class="itemTd text-left itemOtherName">@{item.itemOtherName}</td>
+                                            <td class="itemTd text-left itemOtherName">@{item.itemOtherId}</td>
+                                            <td class="itemTd text-left itemOtherName">@{item.itemOtherName}</td>
+                                            <td class="itemTd text-left itemOtherName">@{item.note}</td>
                                         </tr>
                                     }
                                 </tbody>
