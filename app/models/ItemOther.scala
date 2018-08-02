@@ -66,7 +66,7 @@ case class ItemOtherViewer(
   itemOtherId: Int,
   itemTypeId: Int,
   itemTypeName: String,
-  note: String,
+  itemOtherNote: String,
   itemOtherNo: String,
   itemOtherName: String,
   itemOtherBtxId: Int,

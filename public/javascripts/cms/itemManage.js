@@ -53,9 +53,9 @@ function showInputModal(isRegister){
             $('#inputItemOtherId').val(itemOtherId);
             $('#inputItemTypeId').val('');
             $('#inputItemOtherBtxId').val($('#'+itemOtherId).find('.itemOtherBtxId').text());
-            $('#inputItemOtherNo').val('');
+            $('#inputItemOtherNo').val($('#'+itemOtherId).find('.itemOtherNo').text());;
             $('#inputItemOtherName').val($('#'+itemOtherId).find('.itemOtherName').text());
-            $('#inputItemNote').val('note');
+            $('#inputItemNote').val($('#'+itemOtherId).find('.itemOtherNote').text());;
             $('#inputItemTypeName').val($('#'+itemOtherId).find('.itemTypeName').text());
 
 //            var spanObjList = $('#'+itemKindId).find('span.item');

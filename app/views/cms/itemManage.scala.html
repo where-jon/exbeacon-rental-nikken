@@ -36,22 +36,22 @@
                                     </tr>
                                     <tr>
                                         <th class="tableTh noTh text-center">@Messages("lang.cms.itemManage.item.list.header.tagId")</th>
-                                        <th class="tableTh">@Messages("lang.cms.itemManage.item.list.header.type")</th>
-                                        <th class="tableTh">@Messages("lang.cms.itemManage.item.list.header.name")</th>
-                                        <th class="tableTh">@Messages("lang.cms.itemManage.item.list.header.otherId")</th>
-                                        <th class="tableTh">@Messages("lang.cms.itemManage.item.list.header.otherName")</th>
-                                        <th class="tableTh">@Messages("lang.cms.itemManage.item.list.header.otherNote")</th>
+                                        <th class="tableTh itemTypeTh">@Messages("lang.cms.itemManage.item.list.header.type")</th>
+                                        <th class="tableTh itemNameTh">@Messages("lang.cms.itemManage.item.list.header.name")</th>
+                                        <th class="tableTh itemOtherIdTh">@Messages("lang.cms.itemManage.item.list.header.otherId")</th>
+                                        <th class="tableTh itemOtherNoTh">@Messages("lang.cms.itemManage.item.list.header.otherNo")</th>
+                                        <th class="tableTh itemOtherNoteTh">@Messages("lang.cms.itemManage.item.list.header.otherNote")</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @for(item <- itemList){
                                         <tr class="rowColor rowHover" data-itemOtherId="@item.itemOtherId" id="@item.itemOtherId">
                                             <td class="itemTd text-center itemOtherBtxId">@{item.itemOtherBtxId}</td>
-                                            <td class="itemTd text-left itemTypeName">@{item.itemTypeName}</td>
-                                            <td class="itemTd text-left itemOtherName">@{item.itemOtherName}</td>
-                                            <td class="itemTd text-left itemOtherName">@{item.itemOtherId}</td>
-                                            <td class="itemTd text-left itemOtherName">@{item.itemOtherName}</td>
-                                            <td class="itemTd text-left itemOtherName">@{item.note}</td>
+                                            <td class="itemTd text-center itemTypeName">@{item.itemTypeName}</td>
+                                            <td class="itemTd text-center itemOtherName">@{item.itemOtherName}</td>
+                                            <td class="itemTd text-center itemOtherId">@{item.itemOtherId}</td>
+                                            <td class="itemTd text-center itemOtherNo">@{item.itemOtherNo}</td>
+                                            <td class="itemTd text-center itemOtherNote">@{item.itemOtherNote}</td>
                                         </tr>
                                     }
                                 </tbody>
@@ -102,7 +102,19 @@
                         <div class="form-group" style="margin-bottom: 5px;">
                             <label class="control-label col-xs-4">@Messages("lang.cms.itemManage.itemUpdate.popup.name")</label>
                             <div class="col-xs-3" style="padding-left: 0px;padding-right: 0px;margin-right: 10px;">
-                                <input type="text" id="inputItemOtherName" name="inputItemTypeName" class="form-control">
+                                <input type="text" id="inputItemOtherName" name="inputItemOtherName" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group" style="margin-bottom: 5px;">
+                            <label class="control-label col-xs-4">@Messages("lang.cms.itemManage.itemUpdate.popup.No")</label>
+                            <div class="col-xs-3" style="padding-left: 0px;padding-right: 0px;margin-right: 10px;">
+                                <input type="text" id="inputItemOtherNo" name="inputItemOtherNo" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group" style="margin-bottom: 5px;">
+                            <label class="control-label col-xs-4">@Messages("lang.cms.itemManage.itemUpdate.popup.Note")</label>
+                            <div class="col-xs-3" style="padding-left: 0px;padding-right: 0px;margin-right: 10px;">
+                                <input type="text" id="inputItemNote" name="inputItemNote" class="form-control">
                             </div>
                         </div>
                     </div>
