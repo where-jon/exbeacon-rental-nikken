@@ -1,11 +1,15 @@
 package controllers.analysis
 
+import java.text.SimpleDateFormat
+import java.util.{Date, Locale}
 import javax.inject.{Inject, Singleton}
 
 import com.mohiva.play.silhouette.api.Silhouette
 import controllers.{BaseController, BeaconService}
 import models._
 import play.api._
+import play.api.data.Form
+import play.api.data.Forms._
 import play.api.i18n.{I18nSupport, MessagesApi}
 import utils.silhouette.MyEnv
 
@@ -18,43 +22,37 @@ import utils.silhouette.MyEnv
 
 @Singleton
 class MovementCar @Inject()(config: Configuration
-                               , val silhouette: Silhouette[MyEnv]
-                               , val messagesApi: MessagesApi
-                               , carDAO: models.itemCarDAO
-                               , companyDAO: models.companyDAO
-                               , beaconService: BeaconService
-                               , floorDAO: models.floorDAO
-                               , btxDAO: models.btxDAO
-                               , itemTypeDAO: models.ItemTypeDAO
-                               , workTypeDAO: models.WorkTypeDAO
-                             ) extends BaseController with I18nSupport {
+, val silhouette: Silhouette[MyEnv]
+, val messagesApi: MessagesApi
+, carDAO: models.itemCarDAO
+, companyDAO: models.companyDAO
+, beaconService: BeaconService
+, floorDAO: models.floorDAO
+, btxDAO: models.btxDAO
+, itemTypeDAO: models.ItemTypeDAO
+, workTypeDAO: models.WorkTypeDAO
+) extends BaseController with I18nSupport {
 
    /*検索用*/
-  var ITEM_TYPE_FILTER = 0;
-  var RESERVE_DATE = "";
-  var WORK_TYPE_FILTER = "";
+  var DETECT_MONTH = "";
 
-  /*enum形*/
-  val WORK_TYPE = WorkTypeEnum().map;
+  val movementCarSearchForm = Form(mapping(
+    "inputDate" -> text
+  )(MovementCarSearchData.apply)(MovementCarSearchData.unapply))
 
   /*登録用*/
-  var COMPANY_NAME_FILTER = "";
-  var FLOOR_NAME_FILTER = "";
 
   var itemTypeList :Seq[ItemType] = null; // 仮設材種別
   var itemIdList :Seq[Int] = null; // 仮設材種別id
-  var companyNameList :Seq[Company] = null; // 業者
-  var floorNameList :Seq[Floor] = null; // フロア
-  var workTypeList :Seq[WorkType] = null; // 作業期間種別
 
   /** 　初期化 */
-  def init() {
-    ITEM_TYPE_FILTER = 0
-    WORK_TYPE_FILTER = ""
-    RESERVE_DATE = ""
+  def init(): Unit = {
 
-    COMPANY_NAME_FILTER = ""
-    FLOOR_NAME_FILTER = ""
+    // 現在時刻設定
+    val mSimpleDateFormat = new SimpleDateFormat("yyyy/MM", Locale.JAPAN)
+    val currentTime = new Date();
+    val mTime = mSimpleDateFormat.format(currentTime)
+    DETECT_MONTH = mTime
   }
 
   /** 　検索側データ取得 */
@@ -66,14 +64,25 @@ class MovementCar @Inject()(config: Configuration
     if(itemIdList.isEmpty){
       itemIdList = Seq(-1)
     }
-    /*作業期間種別取得*/
-    workTypeList = workTypeDAO.selectWorkInfo(_placeId);
-
-    /*業者取得*/
-    companyNameList = companyDAO.selectCompany(_placeId);
-    /*フロア取得*/
-    floorNameList = floorDAO.selectFloor(_placeId);
   }
+
+  /** 　検索ロジック */
+  def search = SecuredAction { implicit request =>
+    System.out.println("start search:")
+    val placeId = super.getCurrentPlaceId
+    //検索側データ取得
+    getSearchData(placeId)
+
+    // 検索情報
+    val searchForm = movementCarSearchForm.bindFromRequest.get
+    DETECT_MONTH = searchForm.inputDate
+
+    val dbDatas = carDAO.selectCarMasterReserve(placeId,itemIdList)
+    var carListApi = beaconService.getItemCarBeaconPosition(dbDatas,true,placeId)
+
+    Ok(views.html.analysis.movementCar(DETECT_MONTH,carListApi))
+  }
+
 
 
   /** 初期表示 */
@@ -92,8 +101,7 @@ class MovementCar @Inject()(config: Configuration
     //carListApi = carListApi.filter(_.reserve_id == -1)
 
     System.out.println("carListApi:" + carListApi.length)
-    Ok(views.html.analysis.movementCar(ITEM_TYPE_FILTER,WORK_TYPE_FILTER,RESERVE_DATE
-      ,carListApi,itemTypeList,companyNameList,floorNameList,workTypeList,WORK_TYPE))
+    Ok(views.html.analysis.movementCar(DETECT_MONTH,carListApi))
   }
 
 }

@@ -11,6 +11,11 @@ import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, Json, Reads}
 
 
+/*作業車動線分析検索用formクラス*/
+case class MovementCarSearchData(
+  inputDate: String
+)
+
 /*未検出の仮設材検索用formクラス*/
 case class UnDetectedSearchData(
   itemTypeId: Int,
