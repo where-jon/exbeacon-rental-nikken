@@ -31,6 +31,7 @@ case class ExbMasterData(
 case class ExbApi(
   exb_id: Int,
   exb_device_name: String,
+  exb_pos_name: String,
   floor_id: Int,
   cur_floor_name: String
 )
@@ -117,10 +118,11 @@ class ExbDAO @Inject() (dbapi: DBApi) {
   val simpleApi = {
     get[Int]("exb_id") ~
       get[String]("exb_device_name") ~
+      get[String]("exb_pos_name") ~
       get[Int]("floor_id") ~
       get[String]("cur_floor_name") map {
-      case exb_id ~ exb_device_name ~ floor_id ~ cur_floor_name =>
-        ExbApi(exb_id, exb_device_name, floor_id, cur_floor_name)
+      case exb_id ~ exb_device_name ~ exb_pos_name~ floor_id ~ cur_floor_name =>
+        ExbApi(exb_id, exb_device_name, exb_pos_name,floor_id, cur_floor_name)
     }
   }
   def selectExbApiInfo(placeId: Int, exbId: Int): Seq[ExbApi] = {
@@ -130,6 +132,7 @@ class ExbDAO @Inject() (dbapi: DBApi) {
         select
            e.exb_id
           , e.exb_device_name
+          , e.exb_pos_name
           , floor.floor_id
           , floor.floor_name as cur_floor_name
         from

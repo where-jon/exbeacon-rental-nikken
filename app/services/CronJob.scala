@@ -2,20 +2,18 @@ package services
 
 import javax.inject.{Inject, Named, Singleton}
 
-
-import akka.actor.{ActorRef, ActorSystem, Props}
+import akka.actor.{ActorRef, ActorSystem}
 import com.typesafe.akka.extension.quartz.QuartzSchedulerExtension
 import play.api.inject.ApplicationLifecycle
-import play.api.libs.concurrent.Akka
 
 trait Cron
 
 @Singleton
 class CronJob @Inject() (system: ActorSystem
                          , lifeCycle: ApplicationLifecycle
-                         , @Named("SaveBtxDataActor") saveBtxDataActor: ActorRef
+                         , @Named("ItemLogDataActor") itemLogDataActor: ActorRef
                         ) extends Cron {
 
-  // BTXデータ保存バッチ起動
-  QuartzSchedulerExtension(system).schedule("SaveBtxDataActor", saveBtxDataActor, "SaveBtxDataActor")
+  // itemLogテーブルデータ保存バッチ起動
+  QuartzSchedulerExtension(system).schedule("ItemLogDataActor", itemLogDataActor, "ItemLogDataActor")
 }
