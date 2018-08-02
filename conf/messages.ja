@@ -233,7 +233,7 @@ lang.cms.floorManage.floorUpdate.popup.deviceNo.placeholder=半角数字のみ
 lang.cms.floorManage.floorDelete.popup.title=フロア情報削除
 lang.cms.floorManage.floorDelete.popup.message=フロア情報を削除します。\nよろしいですか？
 
-# CMS文字列（作業車・立場管理）
+# CMS文字列（作業車・立馬管理）
 lang.cms.carManage.title=作業車・立馬管理
 lang.cms.carManage.page.title=作業車・立馬管理
 lang.cms.carManage.car.list.header.title=作業車・立馬管理
@@ -244,10 +244,10 @@ lang.cms.carManage.car.list.header.carName=名称
 lang.cms.carManage.car.list.header.carId=ID
 lang.cms.carManage.car.list.header.carNo=番号
 lang.cms.carManage.car.list.header.carNote=備考
-lang.cms.carManage.car.button.editCar=選択した作業車・立場を編集
-lang.cms.carManage.car.button.addCar=新規作業車・立場追加
-lang.cms.carManage.car.button.deleteCar=選択した作業車・立場を削除
-lang.cms.carManage.carUpdate.popup.name=作業車・立場情報更新
+lang.cms.carManage.car.button.editCar=選択した作業車・立馬を編集
+lang.cms.carManage.car.button.addCar=新規作業車・立馬追加
+lang.cms.carManage.car.button.deleteCar=選択した作業車・立馬を削除
+lang.cms.carManage.carUpdate.popup.name=作業車・立馬情報更新
 lang.cms.carManage.carUpdate.popup.carBtxId=Tag ID
 lang.cms.carManage.carUpdate.popup.carBtxId.placeholder=001
 lang.cms.carManage.carUpdate.popup.carKeyBtxId=鍵Tag ID
@@ -260,8 +260,8 @@ lang.cms.carManage.carUpdate.popup.carId=ID
 lang.cms.carManage.carUpdate.popup.carNo=番号
 lang.cms.carManage.carUpdate.popup.carNo.placeholder=100
 lang.cms.carManage.carUpdate.popup.carNote=備考
-lang.cms.carManage.carDelete.popup.title=作業車・立場情報削除
-lang.cms.carManage.carDelete.popup.message=作業車・立場情報を削除します。\nよろしいですか？
+lang.cms.carManage.carDelete.popup.title=作業車・立馬情報削除
+lang.cms.carManage.carDelete.popup.message=作業車・立馬情報を削除します。\nよろしいですか？
 
 # CMS文字列（仮設材管理）
 lang.cms.itemManage.title=仮設材管理
