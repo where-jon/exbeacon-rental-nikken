@@ -61,7 +61,7 @@ case class ItemCarViewer(
   itemCarId: Int,
   itemTypeId: Int,
   itemTypeName: String,
-  note: String,
+  itemCarNote: String,
   itemCarNo: String,
   itemCarName: String,
   itemCarBtxId: Int,

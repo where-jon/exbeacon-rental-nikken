@@ -28,6 +28,7 @@ case class CarUpdateForm(
    , inputCarKeyBtxId: String
    , inputCarTypeName: String
    , inputCarName: String
+   , inputCarNote: String
 )
 
 case class CarDeleteForm(
@@ -72,6 +73,7 @@ class CarManage @Inject()(config: Configuration
       , "inputCarKeyBtxId" -> text.verifying(Messages("error.cms.CarManage.update.inputCarKeyBtxId.empty"), {_.matches("^[0-9]+$")})
       , "inputCarTypeName" -> text
       , "inputCarName" -> text
+      , "inputCarNote" -> text
     )(CarUpdateForm.apply)(CarUpdateForm.unapply))
 
     // フォームの取得

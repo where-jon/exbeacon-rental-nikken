@@ -233,26 +233,33 @@ lang.cms.floorManage.floorUpdate.popup.deviceNo.placeholder=半角数字のみ
 lang.cms.floorManage.floorDelete.popup.title=フロア情報削除
 lang.cms.floorManage.floorDelete.popup.message=フロア情報を削除します。\nよろしいですか？
 
-# CMS文字列（作業車管理）
+# CMS文字列（作業車・立場管理）
 lang.cms.carManage.title=作業車・立馬管理
 lang.cms.carManage.page.title=作業車・立馬管理
 lang.cms.carManage.car.list.header.title=作業車・立馬管理
-lang.cms.carManage.car.list.header.tagId=Tag ID
-lang.cms.carManage.car.list.header.keyTagId=鍵Tag ID
-lang.cms.carManage.car.list.header.type=種別
-lang.cms.carManage.car.list.header.name=名称
+lang.cms.carManage.car.list.header.carTagId=Tag ID
+lang.cms.carManage.car.list.header.carKeyTagId=鍵Tag ID
+lang.cms.carManage.car.list.header.carType=種別
+lang.cms.carManage.car.list.header.carName=名称
+lang.cms.carManage.car.list.header.carId=ID
+lang.cms.carManage.car.list.header.carNo=番号
+lang.cms.carManage.car.list.header.carNote=備考
 lang.cms.carManage.car.button.editCar=選択した作業車・立場を編集
 lang.cms.carManage.car.button.addCar=新規作業車・立場追加
 lang.cms.carManage.car.button.deleteCar=選択した作業車・立場を削除
 lang.cms.carManage.carUpdate.popup.name=作業車・立場情報更新
-lang.cms.carManage.carUpdate.popup.carBtxId=作業車・立場TagId
+lang.cms.carManage.carUpdate.popup.carBtxId=Tag ID
 lang.cms.carManage.carUpdate.popup.carBtxId.placeholder=001
-lang.cms.carManage.carUpdate.popup.carKeyBtxId=作業車・立場鍵TagId
-lang.cms.carManage.carUpdate.popup.carKeyBtxId.placeholder=高所作業車A
-lang.cms.carManage.carUpdate.popup.carTypeName=作業車・立場種別
-lang.cms.carManage.carUpdate.popup.carTypeName.placeholder=110
-lang.cms.carManage.carUpdate.popup.carName=作業車・立場名称
-lang.cms.carManage.carUpdate.popup.carName.placeholder=101
+lang.cms.carManage.carUpdate.popup.carKeyBtxId=鍵Tag ID
+lang.cms.carManage.carUpdate.popup.carKeyBtxId.placeholder=002
+lang.cms.carManage.carUpdate.popup.carTypeName=種別
+lang.cms.carManage.carUpdate.popup.carTypeName.placeholder=作業車
+lang.cms.carManage.carUpdate.popup.carName=名称
+lang.cms.carManage.carUpdate.popup.carName.placeholder=作業車1
+lang.cms.carManage.carUpdate.popup.carId=ID
+lang.cms.carManage.carUpdate.popup.carNo=番号
+lang.cms.carManage.carUpdate.popup.carNo.placeholder=100
+lang.cms.carManage.carUpdate.popup.carNote=備考
 lang.cms.carManage.carDelete.popup.title=作業車・立場情報削除
 lang.cms.carManage.carDelete.popup.message=作業車・立場情報を削除します。\nよろしいですか？
 
