@@ -104,6 +104,50 @@ class placeDAO @Inject() (dbapi: DBApi) {
     }
   }
 
+
+  /**
+    * 現場情報を指定されたソート順で取得
+    * @return
+    */
+  def selectPlaceAll(): Seq[Place] = {
+
+    val list = {
+      get[Int]("place_id") ~
+        get[String]("place_name") ~
+        get[Int]("place_id2") ~
+        get[Int]("status") ~
+        get[String]("btx_api_url")~
+        get[String]("exb_telemetry_url")~
+        get[String]("gateway_telemetry_url")map {
+        case place_id ~ place_name ~ place_id2 ~ status
+          ~ btx_api_url ~ exb_telemetry_url ~ gateway_telemetry_url =>
+          val statusName = PlaceEnum().map(status)
+          Place(place_id, place_name, place_id2, status, statusName, btx_api_url,exb_telemetry_url,gateway_telemetry_url)
+      }
+    }
+    db.withConnection { implicit connection =>
+
+      var selectSQL =
+        s"""
+          select
+             place_id
+           , place_name
+           , place_id as place_id2
+           , status
+           , btx_api_url
+           , exb_telemetry_url
+           , gateway_telemetry_url
+         from
+           place_master pm
+         where
+           pm.active_flg = true
+           order by place_id
+
+          """
+      SQL(selectSQL).as(list.*)
+    }
+  }
+
   /**
     * 現場情報を指定されたソート順で取得
     * @return

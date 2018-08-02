@@ -6,7 +6,7 @@ import com.mohiva.play.silhouette.api.Silhouette
 import controllers.{BaseController, BeaconService}
 import models.itemBeaconPositionData
 import play.api.Configuration
-import play.api.i18n.{I18nSupport, Messages, MessagesApi}
+import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json._
 import play.api.libs.ws.WSClient
 import utils.silhouette.MyEnv
@@ -22,6 +22,7 @@ class WorkPlace @Inject()(config: Configuration
                           , ws: WSClient
                           , exbDAO: models.ExbDAO
                           , floorDAO: models.floorDAO
+                          , itemTypeDAO: models.ItemTypeDAO
                          ) extends BaseController with I18nSupport {
 
   var beaconList :Seq[itemBeaconPositionData]= null;
@@ -39,10 +40,12 @@ class WorkPlace @Inject()(config: Configuration
   /** 初期表示 */
   def index = SecuredAction { implicit request =>
     val placeId = super.getCurrentPlaceId
+    /*仮設材種別取得*/
+    val itemTypeList = itemTypeDAO.selectItemTypeInfo(placeId);
     // map情報
     val mapViewer = floorDAO.selectFloorAll(placeId)
     val exbData = exbDAO.selectExbAll(placeId)
-    Ok(views.html.site.workPlace(mapViewer,exbData))
+    Ok(views.html.site.workPlace(itemTypeList,mapViewer,exbData))
   }
 
 }

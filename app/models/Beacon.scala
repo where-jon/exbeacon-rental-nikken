@@ -227,7 +227,6 @@ object itemOtherBeaconPositionData {
   *
   * @param btx_id        BeaconTXのID
   * @param pos_id        位置を表すID
-  * @param phase         電波強度算出時の検出タイミング
   * @param power_level   BeaconTXの電池残量
   * @param updatetime    当日最後に検出した時刻
   */
@@ -236,7 +235,6 @@ case class itemBeaconPositionData(
   cur_pos_name: String,
   btx_id: Int,
   pos_id: Int,
-  phase: Int,
   power_level: Int,
   updatetime: String,
   item_id: Int,
@@ -252,7 +250,9 @@ case class itemBeaconPositionData(
   company_name: String,
   work_type_name: String,
   reserve_floor_name: String,
-  reserve_id: Int
+  reserve_id: Int,
+  reserve_start_date:String,
+  reserve_end_date: String
 )
 
 object itemBeaconPositionData {
@@ -261,7 +261,6 @@ object itemBeaconPositionData {
     ((JsPath \ "cur_pos_name ").read[String] | Reads.pure(""))~
     (JsPath \ "btx_id").read[Int] ~
     (JsPath \ "pos_id").read[Int] ~
-    ((JsPath \ "phase").read[Int] | Reads.pure(0)) ~
     (JsPath \ "power_level").read[Int] ~
     ((JsPath \ "updatetime").read[String] | Reads.pure(""))~
     (JsPath \ "item_id").read[Int] ~
@@ -277,11 +276,75 @@ object itemBeaconPositionData {
     ((JsPath \ "company_name").read[String] | Reads.pure(""))~
     ((JsPath \ "work_type_name").read[String] | Reads.pure(""))~
     ((JsPath \ "reserve_floor_name").read[String] | Reads.pure(""))~
-    (JsPath \ "reserve_id").read[Int]
+    (JsPath \ "reserve_id").read[Int]~
+    ((JsPath \ "reserve_start_date").read[String] | Reads.pure(""))~
+    ((JsPath \ "reserve_end_date").read[String] | Reads.pure(""))
     )(itemBeaconPositionData.apply _)
   implicit def jsonWrites = Json.writes[itemBeaconPositionData]
 }
 
+
+
+/**
+  * ItemLog用測位APIの結果をフロントエンド側に返却するためのデータモデル
+  *
+  * @param btx_id        BeaconTXのID
+  * @param pos_id        位置を表すID
+  * @param work_flg   BeaconTXの電池残量
+  * @param updatetime    当日最後に検出した時刻
+  */
+case class itemLogPositionData(
+  cur_exb_name: String,
+  cur_pos_name: String,
+  btx_id: Int,
+  pos_id: Int,
+  work_flg: Boolean,
+  updatetime: String,
+  item_id: Int,
+  item_btx_id: Int,
+  item_key_btx: Int,
+  item_type_id: Int,
+  item_type_name:String,
+  item_no: String,
+  item_name:String,
+  place_id: Int,
+  item_type_icon_color:String,
+  item_type_text_color: String,
+  company_name: String,
+  work_type_name: String,
+  reserve_floor_name: String,
+  reserve_id: Int,
+  reserve_start_date:String,
+  reserve_end_date: String
+)
+
+object itemLogPositionData {
+  implicit val jsonReads: Reads[itemLogPositionData] = (
+    ((JsPath \ "cur_exb_name").read[String] | Reads.pure(""))~
+      ((JsPath \ "cur_pos_name ").read[String] | Reads.pure(""))~
+      (JsPath \ "btx_id").read[Int] ~
+      (JsPath \ "pos_id").read[Int] ~
+      (JsPath \ "work_flg").read[Boolean] ~
+      ((JsPath \ "updatetime").read[String] | Reads.pure(""))~
+      (JsPath \ "item_id").read[Int] ~
+      (JsPath \ "item_btx_id").read[Int] ~
+      (JsPath \ "item_key_btx").read[Int] ~
+      (JsPath \ "item_type_id").read[Int] ~
+      ((JsPath \ "item_type_name").read[String] | Reads.pure("")) ~
+      ((JsPath \ "item_no").read[String] | Reads.pure("")) ~
+      ((JsPath \ "item_name").read[String] | Reads.pure("")) ~
+      ((JsPath \ "place_id").read[Int])~
+      ((JsPath \ "item_type_icon_color").read[String] | Reads.pure("")) ~
+      ((JsPath \ "item_type_text_color").read[String] | Reads.pure("")) ~
+      ((JsPath \ "company_name").read[String] | Reads.pure(""))~
+      ((JsPath \ "work_type_name").read[String] | Reads.pure(""))~
+      ((JsPath \ "reserve_floor_name").read[String] | Reads.pure(""))~
+      (JsPath \ "reserve_id").read[Int]~
+      ((JsPath \ "reserve_start_date").read[String] | Reads.pure(""))~
+      ((JsPath \ "reserve_end_date").read[String] | Reads.pure(""))
+    )(itemLogPositionData.apply _)
+  implicit def jsonWrites = Json.writes[itemLogPositionData]
+}
 
 case class BeaconViewer(
    item_id: Int,
@@ -305,6 +368,42 @@ case class BeaconViewer(
    reserve_floor_name: String,
    reserve_id: Int
 )
+
+
+/**
+  * EXCloud測位APIから取得するデータモデル
+  *
+  * @param num          GwのID
+  * @param deviceid     位置を表すID
+  * @param updated      電波強度算出時の検出タイミング
+  * @param timestamp    当日最後に検出した時刻
+  */
+case class gateWayState(
+                         num: Int,
+                         deviceid: Int,
+                         updated: Long,
+                         timestamp: Long
+                       ) {
+  def copy(
+            num: Int = this.num,
+            deviceid: Int = this.deviceid,
+            updated: Long = this.updated,
+            timestamp: Long = this.timestamp
+          ): gateWayState = {
+    gateWayState(num, deviceid, updated, timestamp)
+  }
+}
+
+object gateWayState {
+  implicit val jsonReads: Reads[gateWayState] = (
+    (JsPath \ "num").read[Int] ~
+      (JsPath \ "deviceid").read[Int] ~
+      ((JsPath \ "updated").read[Long] | Reads.pure(0L)) ~
+      ((JsPath \ "timestamp").read[Long] | Reads.pure(0L))
+    )(gateWayState.apply _)
+
+  implicit def jsonWrites = Json.writes[gateWayState]
+}
 
 @javax.inject.Singleton
 class beaconDAO @Inject()(dbapi: DBApi) {

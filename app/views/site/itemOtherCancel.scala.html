@@ -43,32 +43,34 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
                 <!--header 検索部-->
                 <div class="row tableRow" style="margin-top: 10px;">
 
-                    <div class="text-center col-xs-2 col-sm-2 col-md-2" style="display: -webkit-box;">
-                        予約希望日：
-                        <div class='input-group date' id='datetimepicker'
-                             style="margin-top: -5px;">
-                                <span class="input-group-addon">
-                                    <span class="glyphicon glyphicon-calendar"></span>
-                                </span>
-                            <input type='text' class="form-control inputClass" id="inputDate" name="inputStartDate" value="@RESERVE_START_DATE"
-                                   style="width: 100px;"/>
+                    <div class="text-center col-xs-5 col-sm-7 col-md-5" style="display: -webkit-box;margin-right: -23px;">
+                        <div class="text-center col-xs-5 col-sm-5 col-md-5" style="display: -webkit-box;margin-right: 40px;">
+                            希望日：
+                            <div class='input-group date' id='datetimepicker'
+                                 style="margin-top: -5px;">
+                                    <span class="input-group-addon">
+                                        <span class="glyphicon glyphicon-calendar"></span>
+                                    </span>
+                                <input type='text' class="form-control inputClass" id="inputDate" name="inputStartDate" value="@RESERVE_START_DATE"
+                                       style="width: 100px;"/>
+
+                            </div>
 
                         </div>
 
-                    </div>
+                        <div class="text-center col-xs-5 col-sm-7 col-md-5" style="display: -webkit-box;">
+                            ～&nbsp;&nbsp;
+                            <div class='input-group date' id='datetimepicker'
+                                 style="margin-top: -5px;">
+                                    <span class="input-group-addon">
+                                        <span class="glyphicon glyphicon-calendar"></span>
+                                    </span>
+                                <input type='text' class="form-control inputClass" id="inputDate2" name="inputEndDate" value="@RESERVE_END_DATE"
+                                       style="width: 100px;"/>
 
-                    <div class="text-center col-xs-2 col-sm-2 col-md-2" style="display: -webkit-box;">
-                        ～&nbsp;&nbsp;
-                        <div class='input-group date' id='datetimepicker'
-                             style="margin-top: -5px;">
-                                <span class="input-group-addon">
-                                    <span class="glyphicon glyphicon-calendar"></span>
-                                </span>
-                            <input type='text' class="form-control inputClass" id="inputDate2" name="inputEndDate" value="@RESERVE_END_DATE"
-                                   style="width: 100px;"/>
+                            </div>
 
                         </div>
-
                     </div>
 
                     <div class="text-center col-xs-2 col-sm-2 col-md-2" style="padding:0;">
