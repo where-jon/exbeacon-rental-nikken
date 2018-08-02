@@ -412,6 +412,7 @@ lang.btn.addRow = 行追加
 lang.btn.update = 更新
 lang.btn.delete = 削除
 lang.btn.reload = 再表示
+lang.btn.show = 表示
 
 
 lang.deviceID = 端末ID
@@ -423,6 +424,9 @@ lang.siteName = 設置場所名
 # 現場状況文字列
 lang.site.workPlace.page.title=現場状況
 lang.site.workPlace.page.maxDevice=3個以上
+
+# 未検出の仮設材
+lang.site.unDetected.page.title=未検出の仮設材
 
 
 # 作業車動線（分析）

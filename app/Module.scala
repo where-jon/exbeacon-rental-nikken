@@ -2,7 +2,7 @@
 import com.google.inject.AbstractModule
 import play.api.libs.concurrent.AkkaGuiceSupport
 
-import actors.{SaveBtxDataActor}
+import actors.{ItemLogDataActor}
 import services.{Cron, CronJob}
 
 /**
@@ -19,7 +19,7 @@ class Module extends AbstractModule with AkkaGuiceSupport{
 
   override def configure() = {
     // cronで動かすバッチクラスの設定
-    bindActor[SaveBtxDataActor]("SaveBtxDataActor")
+    bindActor[ItemLogDataActor]("ItemLogDataActor")
     // cron設定
     bind(classOf[Cron]).to(classOf[CronJob]).asEagerSingleton()
   }
