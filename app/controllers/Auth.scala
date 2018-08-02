@@ -27,6 +27,19 @@ import net.ceedubs.ficus.Ficus._
 import javax.inject.{ Inject, Singleton }
 import views.html.{ auth => viewsAuth }
 
+case class ChangePassword2Form(
+  selectUser: String = "",
+  devUser: String = "",
+  devUserCurrent: String = "",
+  devUserpassword1: String = "",
+  devUserpassword2: String = "",
+  sysUser: String = "",
+  sysUserCurrent: String = "",
+  sysUserpassword1: String = "",
+  sysUserpassword2: String = ""
+)
+
+
 @Singleton
 class Auth @Inject() (
     val silhouette: Silhouette[MyEnv],
@@ -240,28 +253,175 @@ class Auth @Inject() (
     "password2" -> nonEmptyText
   ) verifying (Messages("auth.passwords.notequal"), passwords => passwords._3 == passwords._2))
 
+  var changePassword2Form = Form(
+    mapping(
+      "selectUser" -> nonEmptyText, // 開発管理者かシステム管理者か
+      "devUser" -> text, // 開発管理者のID
+      "devUserCurrent" -> text, // 開発管理者の現在のパスワード
+      "devUserPassword1" -> text, // 開発管理者の変更したいパスワード
+      "devUserPassword2" -> text, // 開発管理者の変更したいパスワードの確認用
+      "sysUser" -> text, // システム管理者のID
+      "sysUserCurrent" -> text, // システム管理者の現在のパスワード
+      "sysUserPassword1" -> text, // システム管理者の変更したいパスワード
+      "sysUserPassword2" -> text // システム管理者の変更したいパスワードの確認用
+    )
+    (ChangePassword2Form.apply)
+    (ChangePassword2Form.unapply)
+    verifying(
+      Messages("error.changePassword.devUser.current.empty"), // "開発管理者の現在のパスワードは必須入力です。"
+      form => {
+        if (form.selectUser == "dev") {
+          // 開発管理者を選択している場合は開発管理者の現在のパスワードは必須入力
+          form.devUserCurrent != ""
+        } else {
+          true
+        }
+      }
+    )
+    verifying(
+      Messages("error.changePassword.devUser.password1.empty"), // "開発管理者の新しいパスワードは必須入力です。",
+      form => {
+        if (form.selectUser == "dev") {
+          // 開発管理者を選択している場合は開発管理者のパスワード1は必須入力
+          form.devUserpassword1 != ""
+        } else {
+          true
+        }
+      }
+    )
+    verifying(
+      Messages("error.changePassword.devUser.password2.notequal"), // "開発管理者の新しいパスワードと確認用パスワードが違います。",
+      form => {
+        if (form.selectUser == "dev") {
+          // 開発管理者を選択している場合は開発管理者のパスワード1とパスワード2が同じであること
+          form.devUserpassword1 == form.devUserpassword2
+        } else {
+          true
+        }
+      }
+    )
+    //
+    verifying(
+      Messages("error.changePassword.sysUser.current.empty"), // "システム管理者の現在のパスワードは必須入力です。",
+      form => {
+        if (form.selectUser == "sys") {
+          // システム管理者を選択している場合はシステム管理者の現在のパスワードは必須入力
+          form.sysUserCurrent != ""
+        } else {
+          true
+        }
+      }
+    )
+      verifying(
+      Messages("error.changePassword.sysUser.password1.empty"), // "システム管理者の新しいパスワードは必須入力です。",
+      form => {
+        if (form.selectUser == "sys") {
+          // システム管理者を選択している場合はシステム管理者のパスワード1は必須入力
+          form.sysUserpassword1 != ""
+        } else {
+          true
+        }
+      }
+    )
+    verifying(
+      Messages("error.changePassword.sysUser.password2.notequal"), // "システム管理者の新しいパスワードと確認用パスワードが違います。",
+      form => {
+        if (form.selectUser == "sys") {
+          // システム管理者を選択している場合はシステム管理者のパスワード1とパスワード2が同じであること
+          form.sysUserpassword1 == form.sysUserpassword2
+        } else {
+          true
+        }
+      }
+    )
+  )
+
   /**
    * Starts the change password mechanism. It shows a form to insert his current password and the new one.
    */
   def changePassword = SecuredAction { implicit request =>
-    Ok(viewsAuth.changePassword(changePasswordForm))
+    // Form初期値
+    var passForm = changePassword2Form.fill(
+      ChangePassword2Form.apply(
+        selectUser = "dev", // 初期値は開発管理者
+        devUser = userService.findDevUser().get.email, // 開発管理者のID
+        sysUser = userService.findSysUser().get.email // システム管理者のID
+      )
+    )
+    // Viewを表示
+    Ok(viewsAuth.changePassword(passForm))
   }
 
   /**
    * Saves the new password and renew the cookie
    */
   def handleChangePassword = SecuredAction.async { implicit request =>
-    changePasswordForm.bindFromRequest.fold(
-      formWithErrors => Future.successful(BadRequest(viewsAuth.changePassword(formWithErrors))),
+    changePassword2Form.bindFromRequest().fold(
+      formWithErrors => {
+        // Varidationエラーがあった場合Viewに戻ってエラー表示
+        Future.successful(BadRequest(viewsAuth.changePassword(formWithErrors)))
+      },
       passwords => {
-        credentialsProvider.authenticate(Credentials(request.identity.email, passwords._1)).flatMap { loginInfo =>
-          for {
-            _ <- authInfoRepository.update(loginInfo, passwordHasherRegistry.current.hash(passwords._2))
-            authenticator <- env.authenticatorService.create(loginInfo)
-            result <- env.authenticatorService.renew(authenticator, Redirect(routes.Application.myAccount).flashing("success" -> Messages("auth.password.changed")))
-          } yield result
+        var userId = "" // パスワードを変更するユーザID
+        var currentPassword = "" // パスワードを変更するユーザの現在のパスワード
+        var newPassword = "" // 新しいパスワード
+        if (passwords.selectUser == "dev") { // 開発管理者の場合
+          userId = passwords.devUser
+          currentPassword = passwords.devUserCurrent
+          newPassword = passwords.devUserpassword1
+        }
+        if (passwords.selectUser == "sys") { // システム管理者の場合
+          userId = passwords.sysUser
+          currentPassword = passwords.sysUserCurrent
+          newPassword = passwords.sysUserpassword1
+        }
+        // 現在のパスワードと入力された現在のパスワードが合っているか確認し
+        credentialsProvider.authenticate(
+          Credentials(
+            userId,
+            currentPassword
+          )
+        ).flatMap {
+          loginInfo => {
+            if (request.identity.email == userId) {
+              for {
+                _ <- authInfoRepository.update(
+                  loginInfo,
+                  passwordHasherRegistry.current.hash(newPassword)
+                )
+                authenticator <- env.authenticatorService.create(loginInfo)
+                result <-
+                  env.authenticatorService.renew(
+                    authenticator,
+                    Redirect(routes.Auth.changePassword)
+                      .flashing("success" -> Messages("success.changePassword.devUser.update")))
+              } yield result
+            } else {
+              for {
+                _ <- authInfoRepository.update(
+                  loginInfo,
+                  passwordHasherRegistry.current.hash(newPassword)
+                )
+                result <- {
+                  Future.successful(Redirect(routes.Auth.changePassword)
+                    .flashing("success" -> Messages("success.changePassword.sysUser.update")))
+                }
+              } yield result
+            }
+          }
         }.recover {
-          case e: ProviderException => BadRequest(viewsAuth.changePassword(changePasswordForm.withError("current", Messages("auth.currentpwd.incorrect"))))
+          case e: ProviderException => {
+            // 例外発生時は普通に元の画面に戻す
+            var passForm = changePassword2Form.fill(
+              ChangePassword2Form.apply(
+                selectUser = "sys",
+                devUser = userService.findDevUser().get.email,
+                sysUser = userService.findSysUser().get.email
+              )
+            )
+            BadRequest(viewsAuth.changePassword(passForm
+              .withGlobalError(Messages("error.changePassword.password.current.notequal"))))
+          }
         }
       }
     )

@@ -115,6 +115,15 @@ error.cms.ItemTypeManage.IconColor=アイコン色コード指定に誤りがあ
 error.cms.ItemTypeManage.TextColor=アイコン文字色コード指定に誤りがあります。
 error.cms.ItemTypeManage.RowColor=行色コード指定に誤りがあります。
 
+error.changePassword.update=パスワードの更新ができませんでした。
+error.changePassword.devUser.current.empty=開発管理者の現在のパスワードは必須入力です。
+error.changePassword.devUser.password1.empty=開発管理者の新しいパスワードは必須入力です。
+error.changePassword.devUser.password2.notequal=開発管理者の新しいパスワードと確認用パスワードが違います。
+error.changePassword.sysUser.current.empty=システム管理者の現在のパスワードは必須入力です。
+error.changePassword.sysUser.password1.empty=システム管理者の新しいパスワードは必須入力です。
+error.changePassword.sysUser.password2.notequal=システム管理者の新しいパスワードと確認用パスワードが違います。
+error.changePassword.password.current.notequal=現在のパスワードと異なります。
+
 ################################################################################################
 # SUCCESS
 success.CarReserve.registerModal=予約を登録しました。
@@ -137,6 +146,9 @@ success.cms.ItemManage.update=仮設材情報を更新しました。
 
 success.cms.ItemTypeManage.delete=仮設材種別情報を削除しました。
 success.cms.ItemTypeManage.update=仮設材種別を更新しました
+
+success.changePassword.devUser.update=開発管理者のパスワードを更新しました。
+success.changePassword.sysUser.update=システム管理者のパスワードを更新しました。
 
 # MAILS
 
@@ -227,6 +239,8 @@ lang.auth.passwordchg.sys.user_current_pass=現在パスワード
 lang.auth.passwordchg.sys.user_pass1=新規パスワード
 lang.auth.passwordchg.sys.user_pass2=パスワード確認
 lang.auth.passwordchg.separate=：
+
+
 
 # CMS文字列（フロア管理）
 lang.cms.floorManage.title=フロア管理画面
