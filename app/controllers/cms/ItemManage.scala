@@ -65,11 +65,11 @@ class ItemManage @Inject()(config: Configuration
     val inputForm = Form(mapping(
         "inputPlaceId" -> text
       , "inputItemOtherId" -> text
-      , "inputItemOtherBtxId" -> text
-      , "inputItemOtherNo" -> text
-      , "inputItemOtherName" -> text
+      , "inputItemOtherBtxId" -> text.verifying(Messages("error.cms.ItemManage.update.inputItemOtherBtxId.empty"), {_.matches("^[0-9]+$")})
+      , "inputItemOtherNo" -> text.verifying(Messages("error.cms.ItemManage.update.inputItemOtherNo.empty"), {!_.isEmpty})
+      , "inputItemOtherName" -> text.verifying(Messages("error.cms.ItemManage.update.inputItemOtherName.empty"), {!_.isEmpty})
       , "inputItemNote" -> text
-      , "inputItemTypeName" -> text
+      , "inputItemTypeName" -> text.verifying(Messages("error.cms.ItemManage.update.inputItemTypeName.empty"), {!_.isEmpty})
     )(ItemUpdateForm.apply)(ItemUpdateForm.unapply))
 
     // フォームの取得
@@ -89,43 +89,24 @@ class ItemManage @Inject()(config: Configuration
 
       if(f.inputItemOtherId.isEmpty){
         // 新規登録
+        // その他仮設材重複チェック用
+        var dbItemNoList = itemOtherDAO.selectOtherInfo(super.getCurrentPlaceId, f.inputItemOtherNo)
+        dbItemNoList = dbItemNoList.filter(_.itemOtherId != f.inputItemOtherId.toInt)
+          .filter(_.itemOtherNo == f.inputItemOtherNo)
+ //        if(dbItemNoList.length > 0){
+ //          errMsg :+= Messages("error.cms.ItemManage.update.inputItemNo.duplicate", f.inputItemOtherNo)
+ //        }
 
-//        // 名称重複チェック
-//        val list = itemDAO.selectItemInfo(f.inputPlaceId.toInt, f.inputItemKindName, None)
-//        if(list.nonEmpty){
-//          errMsg :+= Messages("error.cms.ItemManage.update.inputItemKindName.duplicate", f.inputItemKindName)
-//        }
-//        // 管理No / BTXタグ
-//        var itemNoList = Seq[String]()
-//        var btxList = Seq[String]()
-//        val lineList:Seq[String] = f.actualItemInfoStr.split("-").toSeq.filter(_.isEmpty == false).map{ line =>
-//          itemNoList :+= line.split(",")(0)
-//          btxList :+= line.split(",")(1)
-//          line
-//        }
+        // 作業車・立馬TxビーコンIDが存在しないか
+        val itemOtherBtxList = itemOtherDAO.selectItemOtherBtxListBtxCheck(super.getCurrentPlaceId, f.inputItemOtherBtxId.toInt)
+        if(itemOtherBtxList.length > 0){
+          errMsg :+= Messages("error.cms.ItemManage.update.inputItemBtxId.use", f.inputItemOtherBtxId)
+        }
 
-        // 重複チェック用
-//        val dbItemNoList = itemDAO.selectActualItemInfo(f.inputPlaceId.toInt)
-//        val dbBtxList = btxDAO.select(super.getCurrentPlaceId)
-
-//        // 管理Noのチェック
-//        if(itemNoList.exists(!_.matches("^[0-9]+$"))){
-//          errMsg :+= Messages("error.cms.ItemManage.update.inputItemNo.notNumeric")
-//        } else {
-//          val duplicateList = itemNoList.filter(dbItemNoList.map{d => d.itemNo} contains _)
-//          if(duplicateList.nonEmpty) {
-//            errMsg :+= Messages("error.cms.ItemManage.update.inputItemNo.duplicate", duplicateList.mkString(","))
-//          }
-//        }
-
-//        // BTXタグのチェック
-//        if(btxList.exists(!_.matches("^[0-9]+$"))){
-//          errMsg :+= Messages("error.cms.ItemManage.update.inputBtxId.notNumeric")
-//        } else {
-//          val duplicateList = btxList.filter(dbBtxList.map{d => d.btxId} contains _.toInt)
-//          if(duplicateList.nonEmpty){
-//            errMsg :+= Messages("error.cms.ItemManage.update.inputBtxId.duplicate", duplicateList.mkString(","))
-//          }
+//        // 予約情報テーブルに作業車・立馬IDが存在していないか
+//        val itemOtherReserveList = itemOtherDAO.selectCarReserveCheck(super.getCurrentPlaceId, f.inputItemOtherId.toInt)
+//        if(itemOtherReserveList.length > 0){
+//          errMsg :+= Messages("error.cms.ItemManage.update.inputItemOtherIdReserve.use", f.inputItemOtherId)
 //        }
 
         if(errMsg.nonEmpty){
@@ -133,7 +114,7 @@ class ItemManage @Inject()(config: Configuration
           Redirect(routes.ItemManage.index).flashing(ERROR_MSG_KEY -> errMsg.mkString(HTML_BR))
         }else{
           // 登録の実行
-//          itemDAO.insert(f.inputItemKindName, f.inputNote, f.inputPlaceId.toInt, lineList, btxList.map{b=>b.toInt})
+          itemOtherDAO.insert(f.inputItemOtherNo, f.inputItemOtherName, f.inputItemOtherBtxId.toInt, f.inputItemNote, itemTypeList.last.item_type_id, super.getCurrentPlaceId)
 
           Redirect(routes.ItemManage.index)
             .flashing(SUCCESS_MSG_KEY -> Messages("success.cms.ItemManage.update"))
@@ -141,7 +122,6 @@ class ItemManage @Inject()(config: Configuration
 
       }else{
         // 更新の場合 --------------------------
-        // 作業車・立場番号重複チェック
         // その他仮設材重複チェック用
         var dbItemNoList = itemOtherDAO.selectOtherInfo(super.getCurrentPlaceId, f.inputItemOtherNo)
         dbItemNoList = dbItemNoList.filter(_.itemOtherId != f.inputItemOtherId.toInt)
@@ -195,6 +175,7 @@ class ItemManage @Inject()(config: Configuration
   /** その他仮設材削除 */
   def delete = SecuredAction { implicit request =>
     // フォームの準備
+    var errMsg = Seq[String]()
     val inputForm = Form(mapping(
       "deleteItemOtherId" -> text.verifying(Messages("error.cms.ItemManage.delete.empty"), {
         !_.isEmpty
@@ -210,6 +191,12 @@ class ItemManage @Inject()(config: Configuration
       Redirect(routes.ItemManage.index).flashing(ERROR_MSG_KEY -> errMsg)
     } else {
       val f = form.get
+
+      // 予約情報テーブルに作業車・立馬IDが存在していないか
+      val itemOtherReserveList = itemOtherDAO.selectCarReserveCheck(super.getCurrentPlaceId, f.deleteItemOtherId.toInt)
+      if(itemOtherReserveList.length > 0){
+        errMsg :+= Messages("error.cms.ItemManage.update.inputItemOtherIdReserve.use", f.deleteItemOtherId)
+      }
 
       // 検索
       val itemOtherList = itemOtherDAO.selectOtherInfo(super.getCurrentPlaceId, "", Option(f.deleteItemOtherId.toInt))

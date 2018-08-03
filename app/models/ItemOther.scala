@@ -229,36 +229,119 @@ class itemOtherDAO @Inject()(dbapi: DBApi) {
     }
   }
 
-
   /**
-    * 作業車の新規登録
+    * 仮設材のBtxID
     * @return
     */
-  def insert(carNo: String, carName: String, carBtxId: Int, carKeyBtxId: Int, placeId: Int, itemTypeId: Int): Int = {
+  def selectItemOtherBtxListBtxCheck(placeId: Int, itemOtherBtxId: Int): Seq[ItemOther] = {
+    db.withConnection { implicit connection =>
+      val selectPh =
+        """
+          select
+                c.item_other_id
+               , c.item_type_id
+               , c.item_other_btx_id
+               , c.item_other_no
+               , c.item_other_name
+               , c.note
+               , c.place_id
+          from
+            place_master p
+            inner join item_other_master c
+              on p.place_id = c.place_id
+              and p.active_flg = true
+              and c.active_flg = true
+        """
+
+      var wherePh =
+        """
+           where p.place_id = {placeId}
+           and c.item_other_btx_id = {itemOtherBtxId}
+        """.stripMargin
+      val orderPh =
+        """
+          order by
+            c.item_other_id
+        """
+      SQL(selectPh + wherePh + orderPh).on('placeId -> placeId, 'itemOtherBtxId -> itemOtherBtxId).as(simple.*)
+    }
+  }
+
+  val reserveMasterCheck = {
+    get[Int]("item_id") ~
+      get[Int]("work_type_id") ~
+      get[String]("reserve_start_date")~
+      get[String]("reserve_end_date") map {
+      case item_id ~ work_type_id ~ reserve_start_date ~ reserve_end_date =>
+        ReserveMasterCheck(item_id, work_type_id, reserve_start_date, reserve_end_date)
+    }
+  }
+  /*作業車・立馬予約状況確認*/
+  def selectCarReserveCheck(
+                             placeId: Int,
+                             carId: Int
+                           ): Seq[ReserveMasterCheck] = {
+
+    db.withConnection { implicit connection =>
+      val selectPh =
+        """
+          select
+               r.item_id
+             , r.work_type_id
+             , to_char(r.reserve_start_date, 'YYYYMMDD') as reserve_start_date
+             , to_char(r.reserve_end_date, 'YYYYMMDD') as reserve_end_date
+          from
+           place_master p
+             inner join reserve_table r
+               on p.place_id = r.place_id
+               and p.active_flg = true
+               and r.active_flg = true
+          where
+            r.active_flg = true
+            and r.place_id = """  + {placeId} + """
+
+        """
+      // 追加検索条件
+      var wherePh = ""
+      wherePh += s""" and r.item_id = ${carId} """
+
+      // 表示順を設定
+      val orderPh =
+        """
+          order by
+            r.item_id
+        """
+      SQL(selectPh + wherePh + orderPh).as(reserveMasterCheck.*)
+    }
+  }
+
+  /**
+    * 仮設材の新規登録
+    * @return
+    */
+  def insert(
+              ItemOtherNo: String,
+              ItemOtherName: String,
+              ItemOtherBtxId: Int,
+              ItemOtherNote: String,
+              ItemTypeId: Int,
+              placeId: Int): Int = {
     db.withTransaction { implicit connection =>
-
-      // BTXマスタの登録
-      val btxList = Seq[Int](carBtxId, carKeyBtxId)
-      btxList.foreach( btxId =>{
-        SQL("""insert into btx_master (btx_id, place_id) values ({btxId}, {placeId})""")
-          .on('btxId -> btxId, 'placeId -> placeId).executeInsert()
-      })
-
       // 作業車マスタの登録
       // パラメータのセット
       val params: Seq[NamedParameter] = Seq(
-        "carNo" -> carNo
-        ,"carName" -> carName
-        ,"carBtxId" -> carBtxId
-        ,"carKeyBtxId" -> carKeyBtxId
+        "ItemOtherNo" -> ItemOtherNo
+        ,"ItemOtherName" -> ItemOtherName
+        ,"ItemOtherBtxId" -> ItemOtherBtxId
         ,"placeId" -> placeId
-        ,"itemTypeId" -> itemTypeId
+        ,"ItemTypeId" -> ItemTypeId
+        ,"ItemOtherNote" -> ItemOtherNote
       )
       // クエリ
       val sql = SQL(
         """
-          insert into item_other_master (item_other_no,item_type_id, item_other_name, item_other_btx_id, place_id)
-          values ({carNo}, {itemTypeId}, {carName}, {carBtxId}, {carKeyBtxId}, {placeId})
+          insert into item_other_master (item_other_no,item_type_id, item_other_name, ItemOtherBtxId, note, place_id)
+          values ({ItemOtherNo}, {ItemTypeId}, {ItemOtherName}, {ItemOtherBtxId}, {note}, {placeId})
         """)
         .on(params:_*)
 
@@ -268,7 +351,7 @@ class itemOtherDAO @Inject()(dbapi: DBApi) {
       // コミット
       connection.commit()
 
-      Logger.debug("作業車を新規登録、ID：" + id.get.toString)
+      Logger.debug("仮設材を新規登録、ID：" + id.get.toString)
 
       id.get.toInt
     }
