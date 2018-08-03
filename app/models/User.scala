@@ -169,8 +169,7 @@ class UserDAO @Inject() (dbapi: DBApi) {
     )
   }
 
-
-  def findDevUser(): Option[User] = {
+  def selectSuperUserList(): Seq[User] = {
     db.withConnection { implicit connection =>
       val sql = SQL(
         """
@@ -181,37 +180,17 @@ class UserDAO @Inject() (dbapi: DBApi) {
         , password
         , place_id
         , current_place_id
+        , active_flg
         , permission
         from user_master
         where
-          user_id = 1
-          and permission = 4
+          permission = 4
           and active_flg = true
+        order by user_id
       """)
-      User.update(sql.as(simple.singleOpt))
+      sql.as(simple.*)
     }
   }
 
-  def findSysUser(): Option[User] = {
-    db.withConnection { implicit connection =>
-      val sql = SQL(
-        """
-      select
-        user_id
-        , email
-        , name
-        , password
-        , place_id
-        , current_place_id
-        , permission
-        from user_master
-        where
-          user_id <> 1
-          and permission = 4
-          and active_flg = true
-      """)
-      User.update(sql.as(simple.singleOpt))
-    }
-  }
 
 }

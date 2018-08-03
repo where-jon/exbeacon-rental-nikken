@@ -10,6 +10,5 @@ import javax.inject.Inject
 class UserService @Inject() (userDAO: models.UserDAO) extends IdentityService[User] {
   def retrieve(loginInfo: LoginInfo): Future[Option[User]] = userDAO.findByEmail(loginInfo)
   def save(user: User): Future[User] = userDAO.save(user)
-  def findDevUser(): Option[User] = userDAO.findDevUser()
-  def findSysUser(): Option[User] = userDAO.findSysUser()
+  def selectSuperUserList(): Seq[User] = userDAO.selectSuperUserList()
 }

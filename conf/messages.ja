@@ -116,13 +116,13 @@ error.cms.ItemTypeManage.TextColor=アイコン文字色コード指定に誤り
 error.cms.ItemTypeManage.RowColor=行色コード指定に誤りがあります。
 
 error.changePassword.update=パスワードの更新ができませんでした。
-error.changePassword.devUser.current.empty=開発管理者の現在のパスワードは必須入力です。
-error.changePassword.devUser.password1.empty=開発管理者の新しいパスワードは必須入力です。
-error.changePassword.devUser.password2.notequal=開発管理者の新しいパスワードと確認用パスワードが違います。
-error.changePassword.sysUser.current.empty=システム管理者の現在のパスワードは必須入力です。
-error.changePassword.sysUser.password1.empty=システム管理者の新しいパスワードは必須入力です。
-error.changePassword.sysUser.password2.notequal=システム管理者の新しいパスワードと確認用パスワードが違います。
-error.changePassword.password.current.notequal=現在のパスワードと異なります。
+error.changePassword.currentPassword.error.required=現在のパスワードは必須項目です。
+error.changePassword.newPassword1.error.minLength=新しいパスワードが短かすぎます。
+error.changePassword.newPassword1.error.required=新しいパスワードは必須入力です。
+error.changePassword.newPassword2.error.minLength=確認用パスワードが短かすぎます。
+error.changePassword.newPassword2.error.required=確認用パスワードは必須入力です。
+error.changePassword.password.notequal=新しいパスワードと確認用パスワードが異なります。
+error.changePassword.password.current.notequal=現在のパスワードが異なります。
 
 ################################################################################################
 # SUCCESS
@@ -228,18 +228,10 @@ lang.cms.placeManage.passwordUpdate.popup.password=パスワード
 lang.cms.placeManage.passwordUpdate.popup.reEnter=パスワード再入力
 
 # CMS文字列（テナント管理->パスワード変更）
-lang.auth.passwordchg.title=テナント管理
-lang.auth.passwordchg.page.title=パスワード変更
-lang.auth.passwordchg.dev.user=開発管理者
-lang.auth.passwordchg.dev.user_current_pass=現在パスワード
-lang.auth.passwordchg.dev.user_pass1=新規パスワード
-lang.auth.passwordchg.dev.user_pass2=パスワード確認
-lang.auth.passwordchg.sys.user=システム管理者
-lang.auth.passwordchg.sys.user_current_pass=現在パスワード
-lang.auth.passwordchg.sys.user_pass1=新規パスワード
-lang.auth.passwordchg.sys.user_pass2=パスワード確認
-lang.auth.passwordchg.separate=：
-
+lang.cms.placeManage.changePassword.title=テナント管理
+lang.cms.placeManage.changePassword.page.title=パスワード変更
+lang.cms.placeManage.changePassword.button.title=パスワードを変更する
+lang.cms.placeManage.changePassword.popup.name=パスワードを変更します。よろしいですか？
 
 
 # CMS文字列（フロア管理）
