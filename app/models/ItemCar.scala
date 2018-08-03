@@ -61,7 +61,7 @@ case class ItemCarViewer(
   itemCarId: Int,
   itemTypeId: Int,
   itemTypeName: String,
-  note: String,
+  itemCarNote: String,
   itemCarNo: String,
   itemCarName: String,
   itemCarBtxId: Int,
@@ -206,18 +206,11 @@ class itemCarDAO @Inject()(dbapi: DBApi) {
 
 
   /**
-    * 作業車の削除
+    * 作業車・立馬の削除
     * @return
     */
-  def delete(carId:Int, placeId: Int, btxIdList: Seq[Int]): Unit = {
+  def delete(carId:Int, placeId: Int): Unit = {
     db.withTransaction { implicit connection =>
-
-      // Txの削除
-      SQL(
-        """
-          delete from btx_master where place_id = {placeId} and btx_id in ({btxIdList}) ;
-        """)
-        .on('placeId -> placeId, 'btxIdList -> btxIdList).executeUpdate()
 
       // 作業車の削除
       SQL("""delete from item_car_master where item_car_id = {carId} ;""").on('carId -> carId).executeUpdate()
@@ -225,7 +218,7 @@ class itemCarDAO @Inject()(dbapi: DBApi) {
       // コミット
       connection.commit()
 
-      Logger.debug(s"""業者を削除、ID：" + ${carId.toString}""")
+      Logger.debug(s"""作業車・立馬を削除、ID：" + ${carId.toString}""")
     }
   }
 
@@ -275,10 +268,10 @@ class itemCarDAO @Inject()(dbapi: DBApi) {
   }
 
   /**
-    * 業者の更新
+    * 作業車・立場の更新
     * @return
     */
-  def update(carId:Int, carNo: String, carName: String, carBtxId:Int, carKeyBtxId:Int, placeId:Int,
+  def update(carId:Int, carNo: String, carName: String, carBtxId:Int, carKeyBtxId:Int, itemTypeId:Int, placeId:Int,
              oldBtxId:Int, oldCarKeyBtxId:Int): Unit = {
     db.withTransaction { implicit connection =>
 
@@ -301,7 +294,7 @@ class itemCarDAO @Inject()(dbapi: DBApi) {
       })
 
 
-      // 作業車マスタの更新
+      // 作業車・立場マスタの更新
       SQL(
         """
           update item_car_master set
@@ -309,10 +302,11 @@ class itemCarDAO @Inject()(dbapi: DBApi) {
             , item_car_name = {carName}
             , item_car_btx_id = {carBtxId}
             , item_car_key_btx_id = {carKeyBtxId}
+            , item_type_id = {itemTypeId}
             , updatetime = now()
           where item_car_id = {carId} ;
         """).on(
-        'carNo -> carNo, 'carName -> carName, 'carBtxId -> carBtxId, 'carKeyBtxId -> carKeyBtxId, 'carId -> carId
+        'carNo -> carNo, 'carName -> carName, 'carBtxId -> carBtxId, 'carKeyBtxId -> carKeyBtxId, 'carId -> carId, 'itemTypeId -> itemTypeId
       ).executeUpdate()
 
       // コミット

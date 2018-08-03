@@ -84,6 +84,47 @@ class ExbDAO @Inject() (dbapi: DBApi) {
 
   private val db = dbapi.database("default")
 
+  /**
+    * EXBマスタ情報の取得
+    * @return
+    */
+  def select(placeId:Int, btxIdList: Seq[Int] = Seq[Int]()): Seq[Btx] = {
+
+    val simple = {
+      get[Int]("exb_id") ~
+        get[Int]("place_id")  map {
+        case exb_id ~ place_id  =>
+          Btx(exb_id, place_id)
+      }
+    }
+
+    db.withConnection { implicit connection =>
+      val selectPh =
+        """
+          select
+              b.exb_id
+            , b.place_id
+          from
+            place_master p
+            inner join exb_master b
+              on p.place_id = b.place_id
+          where
+            p.active_flg = true
+        """
+
+      var wherePh = """ and p.place_id = {placeId} """
+      if(btxIdList.isEmpty == false){
+        wherePh += s""" and b.exb_id in (${btxIdList.mkString(",")}) """
+      }
+      val orderPh =
+        """
+          order by
+            b.exb_id, b.place_id
+        """
+      SQL(selectPh + wherePh + orderPh).on('placeId -> placeId).as(simple.*)
+    }
+  }
+
   // Parser
   val simple = {
     get[Int]("exb_id") ~

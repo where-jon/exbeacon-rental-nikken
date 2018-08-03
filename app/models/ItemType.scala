@@ -90,7 +90,7 @@ class ItemTypeDAO @Inject() (dbapi: DBApi) {
               and active_flg = true
               order by item_type_id;
               """).on(
-        "placeId" -> placeId
+        'placeId -> placeId, 'itemTypeName -> itemTypeName
       )
       sql.as(simple.*)
     }
@@ -102,7 +102,11 @@ class ItemTypeDAO @Inject() (dbapi: DBApi) {
     */
   def deleteById(itemTypeId:Int): Unit = {
     db.withTransaction { implicit connection =>
-      SQL("""delete from item_type where item_type_id = {itemTypeId} ;""").on('itemTypeId -> itemTypeId).executeUpdate()
+      SQL(
+        """delete
+            from item_type
+            where item_type_id = {itemTypeId} ;
+        """.stripMargin).on('itemTypeId -> itemTypeId).executeUpdate()
       // コミット
       connection.commit()
     }

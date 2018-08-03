@@ -1,10 +1,10 @@
 package controllers.cms
 
 import javax.inject.{Inject, Singleton}
-
 import com.mohiva.play.silhouette.api.Silhouette
 import controllers.BaseController
 import controllers.site
+import models.ItemType
 import play.api._
 import play.api.data.Form
 import play.api.data.Forms._
@@ -28,6 +28,7 @@ case class CarUpdateForm(
    , inputCarKeyBtxId: String
    , inputCarTypeName: String
    , inputCarName: String
+   , inputCarNote: String
 )
 
 case class CarDeleteForm(
@@ -41,7 +42,7 @@ class CarManage @Inject()(config: Configuration
                           , carDAO: models.itemCarDAO
                           , exbDAO: models.ExbDAO
                           , itemTypeDAO:models.ItemTypeDAO
-                          , btxDAO: models.btxDAO
+//                          , btxDAO: models.btxDAO
                                ) extends BaseController with I18nSupport {
 
 
@@ -72,6 +73,7 @@ class CarManage @Inject()(config: Configuration
       , "inputCarKeyBtxId" -> text.verifying(Messages("error.cms.CarManage.update.inputCarKeyBtxId.empty"), {_.matches("^[0-9]+$")})
       , "inputCarTypeName" -> text
       , "inputCarName" -> text
+      , "inputCarNote" -> text
     )(CarUpdateForm.apply)(CarUpdateForm.unapply))
 
     // フォームの取得
@@ -88,11 +90,11 @@ class CarManage @Inject()(config: Configuration
         errMsg :+= Messages("error.cms.CarManage.update.inputCarBtxId.inputCarKeyBtxId.duplicate", f.inputCarNo)
       }
 
-//      // 種別存在チェック
-//      val itemTypeList = itemTypeDAO.selectItemTypeCheck(f.inputCarTypeName, f.inputPlaceId.toInt)
-//      if(itemTypeList.isEmpty){
-//        errMsg :+= Messages("error.cms.CarManage.update.NotTypeName", f.inputCarNo)
-//      }
+      // 種別存在チェック
+      val itemTypeList = itemTypeDAO.selectItemTypeCheck(f.inputCarTypeName, f.inputPlaceId.toInt)
+      if(itemTypeList.isEmpty){
+        errMsg :+= Messages("error.cms.CarManage.update.NotTypeName", f.inputCarNo)
+      }
 
       if(f.inputCarId.isEmpty){
         // 新規登録の場合 --------------------------
@@ -102,13 +104,13 @@ class CarManage @Inject()(config: Configuration
           errMsg :+= Messages("error.cms.CarManage.update.inputCarNo.duplicate", f.inputCarNo)
         }
         // TxタグNo重複チェック
-        val btxList = btxDAO.select(super.getCurrentPlaceId)
-        if(btxList.filter(_.btxId == f.inputCarBtxId.toInt).isEmpty == false){
-          errMsg :+= Messages("error.cms.CarManage.update.inputCarBtxId.duplicate", f.inputCarBtxId)
-        }
-        if(btxList.filter(_.btxId == f.inputCarKeyBtxId.toInt).isEmpty == false){
-          errMsg :+= Messages("error.cms.CarManage.update.inputCarKeyBtxId.duplicate", f.inputCarKeyBtxId)
-        }
+//        val exbList = exbDAO.select(super.getCurrentPlaceId)
+//        if(exbList.filter(_.btxId == f.inputCarBtxId.toInt).isEmpty == false){
+//          errMsg :+= Messages("error.cms.CarManage.update.inputCarBtxId.duplicate", f.inputCarBtxId)
+//        }
+//        if(exbList.filter(_.btxId == f.inputCarKeyBtxId.toInt).isEmpty == false){
+//          errMsg :+= Messages("error.cms.CarManage.update.inputCarKeyBtxId.duplicate", f.inputCarKeyBtxId)
+//        }
 
         if(errMsg.isEmpty == false){
           // エラーで遷移
@@ -124,12 +126,12 @@ class CarManage @Inject()(config: Configuration
 
       }else{
         // 更新の場合 --------------------------
-        // 作業車番号重複チェック
+        // 作業車・立場番号重複チェック
         var carList = carDAO.selectCarInfo(super.getCurrentPlaceId, f.inputCarNo)
-//        carList = carList.filter(_.itemCarId != f.inputCarId.toInt).filter(_.itemCarNo == f.inputCarNo)
-//        if(carList.length > 0){
-//          errMsg :+= Messages("error.cms.CarManage.update.inputCarNo.duplicate", f.inputCarNo)
-//        }
+        carList = carList.filter(_.itemCarId != f.inputCarId.toInt).filter(_.itemCarNo == f.inputCarNo)
+        if(carList.length > 0){
+          errMsg :+= Messages("error.cms.CarManage.update.inputCarNo.duplicate", f.inputCarNo)
+        }
 
         // 変更前タグ情報
         val preCarInfo = carDAO.selectCarInfo(super.getCurrentPlaceId, "", Option(f.inputCarId.toInt)).last
@@ -146,9 +148,9 @@ class CarManage @Inject()(config: Configuration
             if (btxId._1 == btxId._2) {
               // 変更前と同じの場合何もしない
             } else {
-              val btxList = btxDAO.select(super.getCurrentPlaceId, Seq[Int](btxId._2))
-              // 対象現場に既存登録がある場合
-              if (!btxList.isEmpty) {
+//              val exbList = exbDAO.select(super.getCurrentPlaceId, Seq[Int](btxId._2))
+//              // 対象現場に既存登録がある場合
+//              if (!exbList.isEmpty) {
                   // 登録が重複する場合
                 if (i == 0) {
                   if (f.inputCarBtxId.toInt == preCarInfo.itemCarKeyBtxId) {
@@ -163,7 +165,7 @@ class CarManage @Inject()(config: Configuration
                     errMsg :+= Messages("error.cms.CarManage.update.inputCarKeyBtxId.duplicate", btxId._2)
                   }
                 }
-              }
+//              }
             }
           }
         }
@@ -180,6 +182,7 @@ class CarManage @Inject()(config: Configuration
             , f.inputCarName
             , f.inputCarBtxId.toInt
             , f.inputCarKeyBtxId.toInt
+            , itemTypeList.last.item_type_id
             , super.getCurrentPlaceId
             , preCarInfo.itemCarBtxId
             , preCarInfo.itemCarKeyBtxId
@@ -191,9 +194,6 @@ class CarManage @Inject()(config: Configuration
       }
     }
   }
-
-
-
 
   /** 削除 */
   def delete = SecuredAction { implicit request =>
@@ -217,16 +217,9 @@ class CarManage @Inject()(config: Configuration
       // 検索
       val carList = carDAO.selectCarInfo(super.getCurrentPlaceId, "", Option(f.deleteCarId.toInt))
       // タグ
-      var txTagList = Seq[Int]()
       if (carList.length > 0) {
-        // タグ情報収集
-        carList.map { car =>
-          txTagList :+= car.itemCarBtxId
-          txTagList :+= car.itemCarKeyBtxId
-        }
-
         // 削除
-        carDAO.delete(f.deleteCarId.toInt, super.getCurrentPlaceId, txTagList)
+        carDAO.delete(f.deleteCarId.toInt, super.getCurrentPlaceId)
       }
 
       // リダイレクト

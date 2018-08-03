@@ -87,6 +87,7 @@ function showInputModal(isRegister){
         $('#inputCarKeyBtxId').val('');
         $('#inputCarTypeName').val('');
         $('#inputCarName').val('');
+        $('#inputCarNote').val('');
 
         // ボタン表示の切り替え
         $('#carRegisterFooter').removeClass('hidden');
@@ -101,6 +102,7 @@ function showInputModal(isRegister){
             $('#inputCarKeyBtxId').val($('#'+carId).find('.carKeyBtxId').text());
             $('#inputCarTypeName').val($('#'+carId).find('.carTypeName').text());
             $('#inputCarName').val($('#'+carId).find('.carName').text());
+            $('#inputCarNote').val($('#'+carId).find('.carNote').text());
 
             // ボタン表示の切り替え
             $('#carUpdateFooter').removeClass('hidden');
