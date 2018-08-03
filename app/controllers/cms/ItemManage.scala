@@ -20,7 +20,7 @@ import utils.silhouette.MyEnv
   */
 // フォーム定義
 case class ItemDeleteForm(
-    deleteItemId: String
+    deleteItemOtherId: String
 )
 case class ItemUpdateForm(
     inputPlaceId: String
@@ -192,17 +192,17 @@ class ItemManage @Inject()(config: Configuration
     }
   }
 
-  /** 削除 */
+  /** その他仮設材削除 */
   def delete = SecuredAction { implicit request =>
     // フォームの準備
-    val deleteForm = Form(mapping(
-      "deleteItemId" -> text.verifying(Messages("error.cms.CarManage.delete.empty"), {
+    val inputForm = Form(mapping(
+      "deleteItemOtherId" -> text.verifying(Messages("error.cms.ItemManage.delete.empty"), {
         !_.isEmpty
       })
     )(ItemDeleteForm.apply)(ItemDeleteForm.unapply))
 
     // フォームの取得
-    val form = deleteForm.bindFromRequest
+    val form = inputForm.bindFromRequest
     if (form.hasErrors) {
       // エラーメッセージ
       val errMsg = form.errors.map(_.message).mkString(HTML_BR)
@@ -210,11 +210,18 @@ class ItemManage @Inject()(config: Configuration
       Redirect(routes.ItemManage.index).flashing(ERROR_MSG_KEY -> errMsg)
     } else {
       val f = form.get
-      // DB処理
-//      itemDAO.deleteById(f.deleteItemId.toInt)
+
+      // 検索
+      val itemOtherList = itemOtherDAO.selectOtherInfo(super.getCurrentPlaceId, "", Option(f.deleteItemOtherId.toInt))
+      // タグ
+      if (itemOtherList.length > 0) {
+        // 削除
+        itemOtherDAO.delete(f.deleteItemOtherId.toInt, super.getCurrentPlaceId)
+      }
 
       // リダイレクト
-      Redirect(routes.ItemManage.index).flashing(SUCCESS_MSG_KEY -> Messages("success.cms.ItemManage.delete"))
+      Redirect(routes.ItemManage.index)
+        .flashing(SUCCESS_MSG_KEY -> Messages("success.cms.ItemManage.delete"))
     }
   }
 }

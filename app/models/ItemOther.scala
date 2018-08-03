@@ -51,6 +51,7 @@ case class ItemOtherSearchData(
   inputEndDate: String
 )
 
+/*その他仮設材管理検索用*/
 case class ItemOther(
   itemOtherId: Int,
   itemTypeId: Int,
@@ -163,10 +164,14 @@ class itemOtherDAO @Inject()(dbapi: DBApi) {
   }
 
   /**
-    * 作業車情報の取得
+    * その他仮設材情報の取得
     * @return
     */
-  def selectOtherInfo(placeId: Int, carNo: String = "", carId: Option[Int] = None): Seq[ItemOther] = {
+  def selectOtherInfo(
+                       placeId: Int,
+                       itemotherNo: String,
+                       itemotherId: Option[Int] = None,
+                       itemOtherBtxId: Option[Int] = None): Seq[ItemOther] = {
 
     db.withConnection { implicit connection =>
       val selectPh =
@@ -174,10 +179,10 @@ class itemOtherDAO @Inject()(dbapi: DBApi) {
           select
                 c.item_other_id
               , c.item_type_id
-              , c.note
+              , c.item_other_btx_id
               , c.item_other_no
               , c.item_other_name
-              , c.item_other_btx_id
+              , c.note
               , c.place_id
           from
             place_master p
@@ -188,11 +193,14 @@ class itemOtherDAO @Inject()(dbapi: DBApi) {
         """
 
       var wherePh = """ where p.place_id = {placeId} """
-      if(carNo.isEmpty == false){
-        wherePh += s""" and c.item_other_no = '${carNo}' """
+      if(itemotherNo.isEmpty == false){
+        wherePh += s""" and c.item_other_no = '${itemotherNo}' """
       }
-      if(carId != None){
-        wherePh += s""" and c.item_other_id = ${carId.get} """
+      if(itemotherId != None){
+        wherePh += s""" and c.item_other_id = ${itemotherId.get} """
+      }
+      if(itemOtherBtxId != None){
+        wherePh += s""" and c.item_other_btx_id = ${itemOtherBtxId.get} """
       }
       val orderPh =
         """
@@ -205,26 +213,19 @@ class itemOtherDAO @Inject()(dbapi: DBApi) {
 
 
   /**
-    * 作業車の削除
+    * 仮設材の削除
     * @return
     */
-  def delete(carId:Int, placeId: Int, btxIdList: Seq[Int]): Unit = {
+  def delete(itemOtherId:Int, placeId: Int): Unit = {
     db.withTransaction { implicit connection =>
 
-      // Txの削除
-      SQL(
-        """
-          delete from btx_master where place_id = {placeId} and btx_id in ({btxIdList}) ;
-        """)
-        .on('placeId -> placeId, 'btxIdList -> btxIdList).executeUpdate()
-
       // 作業車の削除
-      SQL("""delete from item_other_master where item_other_id = {carId} ;""").on('carId -> carId).executeUpdate()
+      SQL("""delete from item_other_master where item_other_id = {itemOtherId} ;""").on('itemOtherId -> itemOtherId).executeUpdate()
 
       // コミット
       connection.commit()
 
-      Logger.debug(s"""業者を削除、ID：" + ${carId.toString}""")
+      Logger.debug(s"""仮設材を削除、ID：" + ${itemOtherId.toString}""")
     }
   }
 
@@ -274,49 +275,43 @@ class itemOtherDAO @Inject()(dbapi: DBApi) {
   }
 
   /**
-    * 業者の更新
+    * その他仮設材情報の更新
     * @return
     */
-  def update(carId:Int, carNo: String, carName: String, carBtxId:Int, carKeyBtxId:Int, placeId:Int,
-             oldBtxId:Int, oldCarKeyBtxId:Int): Unit = {
+  def update(
+              ItemOtherId:Int,
+              ItemOtherNo: String,
+              ItemOtherName: String,
+              ItemOtherBtxId:Int,
+              ItemOtherNote:String,
+              ItemTypeId:Int,
+              placeId:Int): Unit = {
     db.withTransaction { implicit connection =>
 
-      // 古い情報でのBTXマスタ更新リスト
-      val oldBtxList = Seq[Int](oldBtxId, oldCarKeyBtxId)
-      // 削除
-      SQL(
-        """
-          delete from btx_master where btx_id in ({btxIdList}) ;
-        """)
-        .on('btxIdList -> oldBtxList).executeUpdate()
-
-      // 新しい情報でのBTXマスタ更新リスト
-      val newBtxList = Seq[Int](carBtxId, carKeyBtxId)
-
-      // 登録
-      newBtxList.foreach( btxId =>{
-        SQL("""insert into btx_master (btx_id, place_id) values ({btxId}, {placeId})""")
-          .on('btxId -> btxId, 'placeId -> placeId).executeInsert()
-      })
-
-
-      // 作業車マスタの更新
+      // その他仮設材マスタの更新
       SQL(
         """
           update item_other_master set
-              item_other_no = {carNo}
-            , item_other_name = {carName}
-            , item_other_btx_id = {carBtxId}
-            , updatetime = now()
-          where item_other_id = {carId} ;
+                    item_type_id = {ItemTypeId}
+                  , item_other_btx_id = {ItemOtherBtxId}
+                  , item_other_no = {ItemOtherNo}
+                  , item_other_name = {ItemOtherName}
+                  , note = {ItemOtherNote}
+                  , updatetime = now()
+          where item_other_id = {ItemOtherId} ;
         """).on(
-        'carNo -> carNo, 'carName -> carName, 'carBtxId -> carBtxId, 'carKeyBtxId -> carKeyBtxId, 'carId -> carId
+        'ItemTypeId -> ItemTypeId,
+              'ItemOtherBtxId -> ItemOtherBtxId,
+              'ItemOtherNo -> ItemOtherNo,
+              'ItemOtherName -> ItemOtherName,
+              'ItemOtherNote -> ItemOtherNote,
+              'ItemOtherId -> ItemOtherId
       ).executeUpdate()
 
       // コミット
       connection.commit()
 
-      Logger.debug(s"""作業車情報を更新、ID：" + ${carId.toString}""")
+      Logger.debug(s"""その他仮設材情報を更新、ID：" + ${ItemOtherId.toString}""")
     }
   }
 

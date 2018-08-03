@@ -77,7 +77,7 @@
     <script type="text/javascript" src="@routes.MyAssets.js("cms/itemManage.js")"></script>
     <script></script>
 
-    <!-- モーダル画面 -->
+    <!-- 更新モーダル画面 -->
     <div class="modal" id="inputModal" tabindex="-1" role="dialog" aria-labelledby="InputModalLabel" aria-hidden="true" data-show="true" data-keyboard="false" data-backdrop="static">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -135,9 +135,9 @@
     <div class="modal" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true" data-show="true" data-keyboard="false" data-backdrop="static">
         <div class="modal-dialog">
             <div class="modal-content">
-                <form id="deleteForm" name="deleteForm" enctype="multipart/form-data" class="form-horizontal" method="post" action="@controllers.cms.routes.ItemManage.delete.path">
+                <form id="deleteForm" name="deleteForm" class="form-horizontal" method="post" enctype="multipart/form-data" action="@controllers.cms.routes.ItemManage.delete.path">
                     @CSRF.formField
-                    <input type="hidden" id="deleteItemId" name="deleteItemId">
+                    <input type="hidden" id="deleteItemOtherId" name="deleteItemOtherId">
                     <div class="modal-header">@Messages("lang.cms.itemManage.itemDelete.popup.title")</div>
                     <div class="modal-body">
                         <div class="text-center">
@@ -149,7 +149,7 @@
                             <button type="button" class="btn btn-default" data-dismiss="modal">@Messages("cancel")</button>
                         </div>
                         <div class="col-xs-6 text-center">
-                            <button type="submit" class="text-center btn btn-danger">@Messages("delete")</button>
+                            <a href="javascript:deleteItemOtherId();" class="text-center btn btn-danger">@Messages("delete")</a>
                         </div>
                     </div>
                 </form>

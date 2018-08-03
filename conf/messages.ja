@@ -101,12 +101,12 @@ error.cms.CarManage.update.NotTypeName=種別が存在しません。
 
 error.cms.ItemManage.update.inputItemKindName.empty=仮設材名称を入力してください。
 error.cms.ItemManage.update.inputItemKindName.duplicate=仮設材名称が重複しています。
+error.cms.ItemManage.update.inputItemNo.duplicate=仮設材番号が重複しています。(仮設材番号：{0})
 error.cms.ItemManage.update.inputItemNo.notNumeric=管理Noを半角数字で入力してください。
-error.cms.ItemManage.update.inputItemNo.duplicate=管理Noが重複しています。(管理No.{0})
 error.cms.ItemManage.update.inputBtxId.notNumeric=TxタグNoを半角数字で入力してください。
 error.cms.ItemManage.update.inputBtxId.duplicate=TxタグNoが重複しています。(TxタグNo.{0})
 error.cms.ItemManage.update.actualItemInfoStr.empty=Txタグ設定を入力してください。
-
+error.cms.ItemManage.delete.empty=削除対象仮設材を選択してください。
 error.cms.placeManage.move.empty=選択された建築現場は既に削除されています。
 error.cms.placeManage.delete.empty=削除対象の建築現場が選択されていません。
 
