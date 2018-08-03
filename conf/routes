@@ -99,7 +99,7 @@ POST   /exb/deleteExb      		       controllers.manage.ExbManager.deleteExb
 GET    /manage/exbViewerManager        controllers.manage.ExbViewerManager.index
 POST   /manage/updateExbViewer         controllers.manage.ExbViewerManager.updateViewerManager
 
-# 作業車・立場管理
+# 作業車・立馬管理
 GET     /cms/carManage                  controllers.cms.CarManage.index
 POST    /cms/carManage/update           controllers.cms.CarManage.update
 POST    /cms/carManage/delete           controllers.cms.CarManage.delete
