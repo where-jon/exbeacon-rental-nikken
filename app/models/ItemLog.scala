@@ -1,7 +1,7 @@
 package models
 
 import java.text.SimpleDateFormat
-import java.util.{Calendar, Date, Locale}
+import java.util.{Calendar,Date, Locale}
 import javax.inject.Inject
 
 import anorm.SqlParser._
@@ -11,10 +11,40 @@ import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, Json, Reads}
 
 
-/*作業車動線分析検索用formクラス*/
+/*作業車稼働状況分析用クラス*/
+case class WorkRate(
+itemId:Int,
+itemName:String
+,operatingRate : Float
+,reserveOoperatingRate :Float
+)
+
+/*作業車稼働状況分析検索用formクラス*/
 case class MovementCarSearchData(
   inputDate: String
 )
+
+case class MovementWorkingLog(
+item_car_id: Int
+,item_car_name: String
+,item_car_btx_id: Int
+,detected_count: Int
+,operating_rate: Int
+,reserve_operating_rate: Int
+)
+
+object MovementWorkingLog {
+  implicit val jsonReads: Reads[MovementWorkingLog] = (
+    (JsPath \ "item_car_id").read[Int] ~
+      ((JsPath \ "item_car_name").read[String] | Reads.pure("")) ~
+      (JsPath \ "item_car_btx_id").read[Int] ~
+      (JsPath \ "detected_count").read[Int] ~
+      (JsPath \ "operating_rate").read[Int] ~
+      ((JsPath \ "reserve_operating_rate").read[Int])
+    )(MovementWorkingLog.apply _)
+
+  implicit def jsonWrites = Json.writes[MovementWorkingLog]
+}
 
 /*未検出の仮設材検索用formクラス*/
 case class UnDetectedSearchData(
@@ -186,5 +216,55 @@ class ItemLogDAO @Inject() (dbapi: DBApi) {
       sql.as(simple.*)
     }
   }
+
+  // Parser
+  val workingSimple = {
+    get[Int]("item_car_id") ~
+      get[String]("item_car_name") ~
+      get[Int]("item_car_btx_id") ~
+      get[Int]("detected_count") ~
+      get[Int]("operating_rate") ~
+      get[Int]("reserve_operating_rate")  map {
+      case item_car_id ~ item_car_name ~ item_car_btx_id ~ detected_count~
+        operating_rate~ reserve_operating_rate=>
+        MovementWorkingLog(item_car_id, item_car_name, item_car_btx_id, detected_count
+        ,operating_rate,reserve_operating_rate)
+    }
+  }
+
+  def selectWorkingOn(itemCarId: Int,placeId: Int, startDate: String, endDate: String,itemIdList :Seq[Int]): Seq[MovementWorkingLog] = {
+    db.withConnection { implicit connection =>
+      val sql = SQL(
+        """
+        select
+       itemCar.item_car_id
+       ,itemCar.item_car_name
+       ,itemCar.item_car_btx_id
+       ,count(itemLog.item_btx_id) as detected_count
+       ,coalesce(-1) as operating_rate
+        ,coalesce(-1) as reserve_operating_rate
+       from
+       item_car_master as itemCar
+        left join item_log as itemLog on itemLog.item_btx_id = itemCar.item_car_btx_id
+        and itemLog.working_flg = false
+        and itemLog.place_id = """ + {placeId}+ """
+        and itemLog.finish_updatetime
+        between to_date('""" + {startDate}+ """', 'YYYY-MM-DD') and  TO_TIMESTAMP('""" + {endDate}+ """', 'YYYY-MM-DD') + '1 day'
+       where itemCar.place_id = """ + {placeId}+ """
+       and itemCar.active_flg = true
+       and itemCar.item_type_id in ( """ + {itemIdList.mkString(",")} +""" )
+       and itemCar.item_car_id = """ + {itemCarId}+ """
+       group by
+       itemCar.item_car_id
+       ,itemCar.item_car_name
+       ,itemLog.item_btx_id
+       ,itemLog.working_flg
+       order by itemCar.item_car_id
+        """
+      )
+      sql.as(workingSimple.*)
+    }
+  }
+
 }
 

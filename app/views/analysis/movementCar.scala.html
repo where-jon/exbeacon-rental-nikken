@@ -1,6 +1,9 @@
 @(
-DETECT_MONTH:String,
-carList: Seq[itemCarBeaconPositionData]
+allList2: Seq[List[Seq[WorkRate]]]
+,DETECT_MONTH:String
+,logItemData: List[Seq[MovementWorkingLog]]
+,carList: Seq[itemCarBeaconPositionData]
+,TOTAL_LENGTH: Int
 )(implicit user: User, messages: Messages, request: RequestHeader, flash: Flash)
 @import b3.vertical.fieldConstructor
 @import controllers.routes
@@ -66,8 +69,9 @@ carList: Seq[itemCarBeaconPositionData]
                         <table class="table table-bordered table-condensed itemTable">
                             <thead>
                             <tr>
-                                <th colspan="11" class="tableTitleTh">@{
-                                        if(DETECT_MONTH.substring(5) == "12"){
+
+                                <th colspan="@(TOTAL_LENGTH*2+1)" class="tableTitleTh">@{
+                                        if(DETECT_MONTH.substring(5) == "12" || DETECT_MONTH.substring(5) == "11" || DETECT_MONTH.substring(5) == "10"){
                                             DETECT_MONTH.substring(5) + "月"
                                         }else{
                                             DETECT_MONTH.substring(6) + "月"
@@ -78,53 +82,29 @@ carList: Seq[itemCarBeaconPositionData]
                             </tr>
                             <tr>
                                 <th colspan="1" class="tableTitleTh">作業車</th>
-                                <th colspan="2" class="tableTitleTh">1週目</th>
-                                <th colspan="2" class="tableTitleTh">2週目</th>
-                                <th colspan="2" class="tableTitleTh">3週目</th>
-                                <th colspan="2" class="tableTitleTh">4週目</th>
-                                <th colspan="2" class="tableTitleTh">5週目</th>
+                                @logItemData.zipWithIndex.map { case(logData, i) =>
+                                    <th colspan="2" class="tableTitleTh">@(i+1)週目</th>
+                                }
                             </tr>
                             <tr>
                                 <th class="tableTh ">名称</th>
-
-                                <th class="tableTh ">稼働率</th>
-                                <th class="tableTh ">予約/稼働率</th>
-
-                                <th class="tableTh ">稼働率</th>
-                                <th class="tableTh ">予約/稼働率</th>
-
-                                <th class="tableTh ">稼働率</th>
-                                <th class="tableTh ">予約/稼働率</th>
-
-                                <th class="tableTh ">稼働率</th>
-                                <th class="tableTh ">予約/稼働率</th>
-
-                                <th class="tableTh ">稼働率</th>
-                                <th class="tableTh ">予約/稼働率</th>
-
+                                @logItemData.zipWithIndex.map { case(logData, i) =>
+                                    <th class="tableTh ">稼働率</th>
+                                    <th class="tableTh ">予約/稼働率</th>
+                                }
                             </tr>
                             </thead>
                             <tbody>
-                            @carList.zipWithIndex.map { case(car, i) =>
-                                <tr class="rowColor rowHover" data-carId="@car.item_car_id" id="@car.item_car_id">
-                                    <td class="itemTd text-center ">@car.item_car_name</td>
-
-                                    <td class="itemTd text-center ">80%</td>
-                                    <td class="itemTd text-center ">70%</td>
-
-                                    <td class="itemTd text-center ">80%</td>
-                                    <td class="itemTd text-center ">70%</td>
-
-                                    <td class="itemTd text-center ">80%</td>
-                                    <td class="itemTd text-center ">70%</td>
-
-                                    <td class="itemTd text-center ">80%</td>
-                                    <td class="itemTd text-center ">70%</td>
-
-                                    <td class="itemTd text-center ">80%</td>
-                                    <td class="itemTd text-center ">70%</td>
-
-                                </tr>
+                            @allList2.map { v =>
+                            <tr class="rowColor rowHover" data-carId="1" id="1">
+                                @v.zipWithIndex.map { case (logData2, j) =>
+                                    @if(j == 0){
+                                        <td class="itemTd text-center ">@logData2(j).itemName</td>
+                                    }
+                                    <td class="itemTd text-center ">@logData2(0).operatingRate</td>
+                                    <td class="itemTd text-center ">@logData2(0).reserveOoperatingRate</td>
+                                }
+                            </tr>
                             }
                             </tbody>
                         </table>
