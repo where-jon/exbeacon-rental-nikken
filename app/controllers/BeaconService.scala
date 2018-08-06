@@ -1,5 +1,7 @@
 package controllers
 
+import java.time.format.DateTimeFormatter
+import java.time.{ZoneId, ZonedDateTime}
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -33,6 +35,17 @@ class BeaconService @Inject() (config: Configuration,
     GATEWAY_API_URL = vPlaceDao.gatewayTelemetryUrl
     TELEMETRY_API_URL = vPlaceDao.exbTelemetryUrl
   }
+
+
+  def setUpdateTime(jsonTime:String): String = {
+    // iso時間変換
+    val vUpdateTime = if (jsonTime == "") "" else {
+      val dateTime = ZonedDateTime.parse(jsonTime, DateTimeFormatter.ISO_INSTANT.withZone(ZoneId.systemDefault()))
+      dateTime.format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss"))
+    }
+    return vUpdateTime
+  }
+
 
   /**
     * ビーコン位置取得
@@ -70,6 +83,9 @@ class BeaconService @Inject() (config: Configuration,
             vFloorName = index.cur_floor_name
           }
 
+        // jsonからiso時間変換
+        val vUpdateTime = this.setUpdateTime(bpd.get.updatetime)
+
         itemCarBeaconPositionData(
           vExbName,
           vFloorName,
@@ -77,7 +93,7 @@ class BeaconService @Inject() (config: Configuration,
           bpd.get.pos_id,
           bpd.get.phase,
           bpd.get.power_level,
-          bpd.get.updatetime,
+          vUpdateTime,
           v.item_car_id,
           v.item_car_btx_id,
           v.item_car_key_btx_id,
@@ -153,7 +169,7 @@ class BeaconService @Inject() (config: Configuration,
           vExbName = index.exb_pos_name
           vFloorName = index.cur_floor_name
         }
-
+        val vUpdateTime = this.setUpdateTime(bpd.get.updatetime)
         itemOtherBeaconPositionData(
           vExbName,
           vFloorName,
@@ -161,7 +177,7 @@ class BeaconService @Inject() (config: Configuration,
           bpd.get.pos_id,
           bpd.get.phase,
           bpd.get.power_level,
-          bpd.get.updatetime,
+          vUpdateTime,
           v.item_other_id,
           v.item_other_btx_id,
           v.item_type_id,
@@ -237,14 +253,14 @@ class BeaconService @Inject() (config: Configuration,
           vExbName = index.exb_pos_name
           vFloorName = index.cur_floor_name
         }
-
+        val vUpdateTime = this.setUpdateTime(bpd.get.updatetime)
         itemBeaconPositionData(
           vExbName,
           vFloorName,
           bpd.get.btx_id,
           bpd.get.pos_id,
           bpd.get.power_level,
-          bpd.get.updatetime,
+          vUpdateTime,
           v.item_id,
           v.item_btx_id,
           v.item_key_btx,
@@ -335,6 +351,8 @@ class BeaconService @Inject() (config: Configuration,
             vWorkFlg = true;
           }
         }
+        // jsonからiso時間変換
+        val vUpdateTime = this.setUpdateTime(bpd.get.updatetime)
 
         itemLogPositionData(
           vExbName,
@@ -342,7 +360,7 @@ class BeaconService @Inject() (config: Configuration,
           bpd.get.btx_id,
           bpd.get.pos_id,
           vWorkFlg,
-          bpd.get.updatetime,
+          vUpdateTime,
           v.item_id,
           v.item_btx_id,
           v.item_key_btx,
