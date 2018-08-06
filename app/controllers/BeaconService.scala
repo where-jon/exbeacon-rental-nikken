@@ -77,7 +77,7 @@ class BeaconService @Inject() (config: Configuration,
       var vFloorName = "検知フロア無"
 
       if (bpd.isDefined && blankTargetMode) {
-        val exbDatas =exbDao.selectExbApiInfo(placeId,bpd.get.pos_id)
+        val exbDatas = exbDao.selectExbApiInfo(placeId,bpd.get.pos_id)
           exbDatas.map { index =>
             vExbName = index.exb_pos_name
             vFloorName = index.cur_floor_name

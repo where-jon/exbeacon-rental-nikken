@@ -81,13 +81,30 @@ class MovementCar @Inject()(config: Configuration
   }
 
   /** 　作業時間を計算 */
-  def setDetectedCount(detectedCount:Integer, weekTotalTime:Integer) : Float = {
+  def getDetectedCount(detectedCount:Integer, weekTotalTime:Integer) : Float = {
     if(detectedCount == 0 || detectedCount == -1){
       0
     }else{
       (detectedCount * BATCH_INTERVAL_MINUTE) / (weekTotalTime * HOUR_MINUTE).toFloat * 100
     }
   }
+
+  /** 　作業週の曜日を求める */
+  def getYobi(targetDay:String) : String = {
+    val vYobi = calendarDAO.selectGetYoubi(targetDay).last.getDay.trim()
+    val szYobi =
+    if( vYobi == "6.0" ) "土"
+    else if (vYobi == ".0") "日"
+    else if (vYobi == "1.0") "月"
+    else if (vYobi == "2.0") "火"
+    else if (vYobi == "3.0") "水"
+    else if (vYobi == "4.0") "木"
+    else if (vYobi == "5.0") "金"
+    else  ""
+
+    return szYobi
+  }
+
   /** 　item_logテーブルデータ取得 */
   def getAllItemLogData(placeId:Int,itemIdList :Seq[Int],calendarList:List[WeekData]) : Seq[List[WorkRate]] = {
     // ①itemCarテーブルlistからsqlを組むplaceId
@@ -103,11 +120,11 @@ class MovementCar @Inject()(config: Configuration
         if(vWofkFlgDetectCount>0){
           System.out.println(vWofkFlgDetectCount)
         }
-        val vOperatingRate = this.setDetectedCount(vWofkFlgDetectCount,calendar.iWeekTotalTime)
+        val vOperatingRate = this.getDetectedCount(vWofkFlgDetectCount,calendar.iWeekTotalTime)
         // 予約ともに検知フラグがtrue
         val getReserveWorkFlgSqlData =itemlogDAO.selectReserveAndWorkingOn(false,false,car.item_car_id,placeId,calendar.iWeekStartDay,calendar.iWeekEndDay,itemIdList)
         val vReserveWofkFlgDetectCount = getReserveWorkFlgSqlData.last.detected_count
-        val vReserveOperatingRate = this.setDetectedCount(vReserveWofkFlgDetectCount,calendar.iWeekTotalTime)
+        val vReserveOperatingRate = this.getDetectedCount(vReserveWofkFlgDetectCount,calendar.iWeekTotalTime)
 
         WorkRate(car.item_car_id,car.item_car_name,vOperatingRate,vReserveOperatingRate)
 
@@ -131,10 +148,13 @@ class MovementCar @Inject()(config: Configuration
        val intWeekFirstDay =vTemp._2.toInt
        var vRealWorkDay = 0
       if(iWeekIndex == 1){ // 最初の方だけ
+        val szYobi =
+          "1日("+ this.getYobi(DETECT_MONTH + "-01") + ")"
+
         if(intWeekFirstDay == 8){ // 一周目が一日の場合普通に営業日5日
           val vWeekTotalTime = DAY_WORK_TIME * REAL_WORK_DAY
           weekData = weekData :+
-            WeekData(1,DETECT_MONTH + "-01",vWeekLastDay,TOTAL_WORK_DAY,REAL_WORK_DAY,vWeekTotalTime)
+            WeekData(szYobi,1,DETECT_MONTH + "-01",vWeekLastDay,TOTAL_WORK_DAY,REAL_WORK_DAY,vWeekTotalTime)
         }else{  //一周目が一日じゃない場合営業日を出す必要がある
           val vTermDay =
             calendarDAO.selectGetTermDay(iWeekIndex,DETECT_MONTH,DETECT_MONTH+"-01").last.getDay.toInt
@@ -145,7 +165,7 @@ class MovementCar @Inject()(config: Configuration
           }
           val vWeekTotalTime = DAY_WORK_TIME * vRealWorkDay
           weekData = weekData :+
-            WeekData(1,DETECT_MONTH + "-01",vWeekLastDay,vTermDay,vRealWorkDay,vWeekTotalTime)
+            WeekData(szYobi,1,DETECT_MONTH + "-01",vWeekLastDay,vTermDay,vRealWorkDay,vWeekTotalTime)
         }
       }else{
         // indexが2番目から
@@ -158,6 +178,7 @@ class MovementCar @Inject()(config: Configuration
             calendarDAO.selectGetTermStarEndDay(vTargetDate,vWeekBeforeFirstDay).last.getDay.toInt
           vWeekLastDay = vTargetDate
           bWeekLoofCheck = false  // もう次からは当月ではないのでloofを止めさえる
+          val szYobi = vTargetDate + "日("+ this.getYobi(vTargetDate) + ")"
         }else{
           vTermDay =
             calendarDAO.selectGetTermDay(iWeekIndex,DETECT_MONTH,vWeekBeforeFirstDay).last.getDay.toInt
@@ -171,14 +192,18 @@ class MovementCar @Inject()(config: Configuration
         }
         vRealWorkDay = vTermDay - vYasumiCount
         val vWeekTotalTime = DAY_WORK_TIME * vRealWorkDay
+        val vTemp= vWeekBeforeFirstDay.splitAt(8)
+        val intWeekFirstDay =vTemp._2.toInt
+        val szYobi = intWeekFirstDay + "日("+ this.getYobi(vWeekBeforeFirstDay) + ")"
         weekData = weekData :+
-          WeekData(iWeekIndex,vWeekBeforeFirstDay,vWeekLastDay,vTermDay,vRealWorkDay,vWeekTotalTime)
+          WeekData(szYobi,iWeekIndex,vWeekBeforeFirstDay,vWeekLastDay,vTermDay,vRealWorkDay,vWeekTotalTime)
       }
       iWeekIndex = iWeekIndex + 1; // 週目カウントを増加
      }
     System.out.println("=========[" +DETECT_MONTH+"]=======")
     weekData.map{ v=>
       System.out.println("================")
+      System.out.println("曜日：" +v.szYobi)
       System.out.println("週目：" +v.iNum)
       System.out.println("週最初日：" +v.iWeekStartDay)
       System.out.println("週最終日：" +v.iWeekEndDay)
@@ -202,9 +227,9 @@ class MovementCar @Inject()(config: Configuration
     DETECT_MONTH = searchForm.inputDate
 
     val calendarList =  this.getCalendarData()
-    val logItemAllData =  getAllItemLogData(placeId,itemIdList,calendarList)
+    val logItemAllList =  getAllItemLogData(placeId,itemIdList,calendarList)
 
-    Ok(views.html.analysis.movementCar(logItemAllData,calendarList,DETECT_MONTH,TOTAL_LENGTH))
+    Ok(views.html.analysis.movementCar(logItemAllList,calendarList,DETECT_MONTH,TOTAL_LENGTH))
   }
 
   /** 初期表示 */
@@ -217,8 +242,8 @@ class MovementCar @Inject()(config: Configuration
 
     // DB探索になる今月に関するデータをセット
     val calendarList =  this.getCalendarData()
-    val logItemAllData =  getAllItemLogData(placeId,itemIdList,calendarList)
-    Ok(views.html.analysis.movementCar(logItemAllData,calendarList,DETECT_MONTH,TOTAL_LENGTH))
+    val logItemAllList =  getAllItemLogData(placeId,itemIdList,calendarList)
+    Ok(views.html.analysis.movementCar(logItemAllList,calendarList,DETECT_MONTH,TOTAL_LENGTH))
   }
 
 }

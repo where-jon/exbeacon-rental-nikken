@@ -21,6 +21,7 @@ itemName:String
 
 /*作業車稼働状況分析用クラス*/
 case class WeekData(
+szYobi :String,
 iNum :Int,
 iWeekStartDay :String,
 iWeekEndDay :String,

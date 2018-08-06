@@ -1,6 +1,6 @@
 @(
-allList: Seq[List[WorkRate]]
-,calendarData: List[WeekData]
+logItemAllList: Seq[List[WorkRate]]
+,calendarList: List[WeekData]
 ,DETECT_MONTH:String
 ,TOTAL_LENGTH: Int
 )(implicit user: User, messages: Messages, request: RequestHeader, flash: Flash)
@@ -81,27 +81,27 @@ allList: Seq[List[WorkRate]]
                             </tr>
                             <tr>
                                 <th colspan="1" class="tableTitleTh">作業車</th>
-                                @calendarData.zipWithIndex.map { case(logData, i) =>
-                                    <th colspan="2" class="tableTitleTh">@(i+1)週目</th>
+                                @calendarList.zipWithIndex.map { case(calendar, i) =>
+                                    <th colspan="2" class="tableTitleTh">@calendar.szYobi の週</th>
                                 }
                             </tr>
                             <tr>
                                 <th class="tableTh ">名称</th>
-                                @calendarData.zipWithIndex.map { case(logData, i) =>
+                                @calendarList.zipWithIndex.map { case(calendar, i) =>
                                     <th class="tableTh ">稼働率</th>
                                     <th class="tableTh ">予約/稼働率</th>
                                 }
                             </tr>
                             </thead>
                             <tbody>
-                            @allList.map { v =>
+                            @logItemAllList.map { v =>
                             <tr class="rowColor rowHover" data-carId="1" id="1">
-                                @v.zipWithIndex.map { case (logData2, j) =>
+                                @v.zipWithIndex.map { case (logItem, j) =>
                                     @if(j == 0){
-                                        <td class="itemTd text-center ">@logData2.itemName</td>
+                                        <td class="itemTd text-center ">@logItem.itemName</td>
                                     }
-                                    <td class="itemTd text-center ">@logData2.operatingRate</td>
-                                    <td class="itemTd text-center ">@logData2.reserveOperatingRate</td>
+                                    <td class="itemTd text-center ">@logItem.operatingRate</td>
+                                    <td class="itemTd text-center ">@logItem.reserveOperatingRate</td>
                                 }
                             </tr>
                             }
