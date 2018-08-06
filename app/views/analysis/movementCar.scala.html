@@ -1,8 +1,7 @@
 @(
-allList2: Seq[List[Seq[WorkRate]]]
+allList: Seq[List[WorkRate]]
+,calendarData: List[WeekData]
 ,DETECT_MONTH:String
-,logItemData: List[Seq[MovementWorkingLog]]
-,carList: Seq[itemCarBeaconPositionData]
 ,TOTAL_LENGTH: Int
 )(implicit user: User, messages: Messages, request: RequestHeader, flash: Flash)
 @import b3.vertical.fieldConstructor
@@ -82,27 +81,27 @@ allList2: Seq[List[Seq[WorkRate]]]
                             </tr>
                             <tr>
                                 <th colspan="1" class="tableTitleTh">作業車</th>
-                                @logItemData.zipWithIndex.map { case(logData, i) =>
+                                @calendarData.zipWithIndex.map { case(logData, i) =>
                                     <th colspan="2" class="tableTitleTh">@(i+1)週目</th>
                                 }
                             </tr>
                             <tr>
                                 <th class="tableTh ">名称</th>
-                                @logItemData.zipWithIndex.map { case(logData, i) =>
+                                @calendarData.zipWithIndex.map { case(logData, i) =>
                                     <th class="tableTh ">稼働率</th>
                                     <th class="tableTh ">予約/稼働率</th>
                                 }
                             </tr>
                             </thead>
                             <tbody>
-                            @allList2.map { v =>
+                            @allList.map { v =>
                             <tr class="rowColor rowHover" data-carId="1" id="1">
                                 @v.zipWithIndex.map { case (logData2, j) =>
                                     @if(j == 0){
-                                        <td class="itemTd text-center ">@logData2(j).itemName</td>
+                                        <td class="itemTd text-center ">@logData2.itemName</td>
                                     }
-                                    <td class="itemTd text-center ">@logData2(0).operatingRate</td>
-                                    <td class="itemTd text-center ">@logData2(0).reserveOoperatingRate</td>
+                                    <td class="itemTd text-center ">@logData2.operatingRate</td>
+                                    <td class="itemTd text-center ">@logData2.reserveOperatingRate</td>
                                 }
                             </tr>
                             }

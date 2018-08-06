@@ -16,8 +16,19 @@ case class WorkRate(
 itemId:Int,
 itemName:String
 ,operatingRate : Float
-,reserveOoperatingRate :Float
+,reserveOperatingRate :Float
 )
+
+/*作業車稼働状況分析用クラス*/
+case class WeekData(
+iNum :Int,
+iWeekStartDay :String,
+iWeekEndDay :String,
+iWeekTotalWorkDay :Int,
+iWeekRealWorkDay :Int,
+iWeekTotalTime :Int
+)
+
 
 /*作業車稼働状況分析検索用formクラス*/
 case class MovementCarSearchData(
@@ -232,7 +243,7 @@ class ItemLogDAO @Inject() (dbapi: DBApi) {
     }
   }
 
-  def selectWorkingOn(itemCarId: Int,placeId: Int, startDate: String, endDate: String,itemIdList :Seq[Int]): Seq[MovementWorkingLog] = {
+  def selectWorkingOn(workingFlg: Boolean,itemCarId: Int,placeId: Int, startDate: String, endDate: String,itemIdList :Seq[Int]): Seq[MovementWorkingLog] = {
     db.withConnection { implicit connection =>
       val sql = SQL(
         """
@@ -246,7 +257,42 @@ class ItemLogDAO @Inject() (dbapi: DBApi) {
        from
        item_car_master as itemCar
         left join item_log as itemLog on itemLog.item_btx_id = itemCar.item_car_btx_id
-        and itemLog.working_flg = false
+        and itemLog.working_flg =  """ + {workingFlg}+ """
+        and itemLog.place_id = """ + {placeId}+ """
+        and itemLog.finish_updatetime
+        between to_date('""" + {startDate}+ """', 'YYYY-MM-DD') and  TO_TIMESTAMP('""" + {endDate}+ """', 'YYYY-MM-DD') + '1 day'
+       where itemCar.place_id = """ + {placeId}+ """
+       and itemCar.active_flg = true
+       and itemCar.item_type_id in ( """ + {itemIdList.mkString(",")} +""" )
+       and itemCar.item_car_id = """ + {itemCarId}+ """
+       group by
+       itemCar.item_car_id
+       ,itemCar.item_car_name
+       ,itemLog.item_btx_id
+       ,itemLog.working_flg
+       order by itemCar.item_car_id
+        """
+      )
+      sql.as(workingSimple.*)
+    }
+  }
+
+  def selectReserveAndWorkingOn(reserveFlg: Boolean,workingFlg: Boolean,itemCarId: Int,placeId: Int, startDate: String, endDate: String,itemIdList :Seq[Int]): Seq[MovementWorkingLog] = {
+    db.withConnection { implicit connection =>
+      val sql = SQL(
+        """
+        select
+       itemCar.item_car_id
+       ,itemCar.item_car_name
+       ,itemCar.item_car_btx_id
+       ,count(itemLog.item_btx_id) as detected_count
+       ,coalesce(-1) as operating_rate
+        ,coalesce(-1) as reserve_operating_rate
+       from
+       item_car_master as itemCar
+        left join item_log as itemLog on itemLog.item_btx_id = itemCar.item_car_btx_id
+        and itemLog.working_flg =  """ + {workingFlg}+ """
+        and itemLog.reserve_flg = """ + {reserveFlg}+ """
         and itemLog.place_id = """ + {placeId}+ """
         and itemLog.finish_updatetime
         between to_date('""" + {startDate}+ """', 'YYYY-MM-DD') and  TO_TIMESTAMP('""" + {endDate}+ """', 'YYYY-MM-DD') + '1 day'

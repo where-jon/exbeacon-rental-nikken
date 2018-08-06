@@ -14,17 +14,6 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import utils.silhouette.MyEnv
 
 
-
-/*作業車稼働状況分析用クラス*/
-case class WeekData(
-  iNum :Int,
-  iWeekStartDay :String,
-  iWeekEndDay :String,
-  iWeekTotalWorkDay :Int,
-  iWeekRealWorkDay :Int,
-  iWeekTotalTime :Int
-)
-
 /**
   * 作業車稼働状況分析画面
   *
@@ -51,8 +40,8 @@ class MovementCar @Inject()(config: Configuration
   val TOTAL_WORK_DAY = 7;
   val REAL_WORK_DAY = 5;
   val DAY_WORK_TIME = 6;
-  val HOUR_MINUTE = 6;
-  val BATCH_INTERVAL_MINUTE = 30;
+  val HOUR_MINUTE = 60;
+  val BATCH_INTERVAL_MINUTE = 1;
 
 
   var DETECT_MONTH_DAY = "";
@@ -67,13 +56,12 @@ class MovementCar @Inject()(config: Configuration
   var itemTypeList :Seq[ItemType] = null; // 仮設材種別
   var itemIdList :Seq[Int] = null; // 仮設材種別id
 
-
   /** 　初期化 */
   def init(): Unit = {
 
     // 現在時刻設定
-    val mSimpleDateFormat = new SimpleDateFormat("yyyy/MM", Locale.JAPAN)
-    val mSimpleDateFormat2 = new SimpleDateFormat("yyyy/MM/dd", Locale.JAPAN)
+    val mSimpleDateFormat = new SimpleDateFormat("yyyy-MM", Locale.JAPAN)
+    val mSimpleDateFormat2 = new SimpleDateFormat("yyyy-MM-dd", Locale.JAPAN)
     val currentTime = new Date();
     val mTime = mSimpleDateFormat.format(currentTime)
     DETECT_MONTH = mTime
@@ -92,99 +80,40 @@ class MovementCar @Inject()(config: Configuration
     }
   }
 
-
-//  /** 　item_logテーブルデータ取得 */
-//  def getAllItemLogData(placeId:Int,itemIdList :Seq[Int]) : Seq[List[Seq[MovementWorkingLog]]] = {
-//    val dbDatas = carDAO.selectCarMasterViewer(placeId,itemIdList)  // 作業車のみ
-//    val carList = beaconService.getItemCarBeaconPosition(dbDatas,true,placeId)
-//    val calendarList = getCalendarData();
-//    var workData = List[WorkRate]()
-//    //var movementWorkingLog :Seq[MovementWorkingLog]
-//
-//    // ②①から取得したデータへgetCalndarDataを含む
-//    val allData = carList.zipWithIndex.map { case (car, i) =>
-//      calendarList.zipWithIndex.map{ case (calendar, i) =>
-//       // if(car.item_car_id == calendar.)
-//          val stam =itemlogDAO.selectWorkingOn(car.item_car_id,placeId,calendar.iWeekStartDay,calendar.iWeekEndDay,itemIdList)
-//          val vOperatingRate = -1
-//            //(stam.last.detected_count * BATCH_INTERVAL_MINUTE) / (calendar.iWeekTotalTime * 60) * 100
-//          //return stam
-//        //stam.last.item_car_id
-//
-////        workData :+
-////          WorkRate(car.item_car_id,vOperatingRate,-1)
-//
-////        movementWorkingLog = movementWorkingLog :+
-////          MovementWorkingLog(
-////            stam.last.item_car_id
-////            ,stam.last.item_car_name
-////            ,stam.last.item_car_btx_id
-////            ,stam.last.detected_count
-////            ,stam.last.operating_rate
-////            ,stam.last.reserve_operating_rate
-////          )
-////
-//        itemlogDAO.selectWorkingOn(car.item_car_id,placeId,calendar.iWeekStartDay,calendar.iWeekEndDay,itemIdList)
-//      }
-//    }
-//
-//    return allData
-//  }
-
+  /** 　作業時間を計算 */
+  def setDetectedCount(detectedCount:Integer, weekTotalTime:Integer) : Float = {
+    if(detectedCount == 0 || detectedCount == -1){
+      0
+    }else{
+      (detectedCount * BATCH_INTERVAL_MINUTE) / (weekTotalTime * HOUR_MINUTE).toFloat * 100
+    }
+  }
   /** 　item_logテーブルデータ取得 */
-  def getAllItemLogData(placeId:Int,itemIdList :Seq[Int]) : Seq[List[Seq[WorkRate]]] = {
+  def getAllItemLogData(placeId:Int,itemIdList :Seq[Int],calendarList:List[WeekData]) : Seq[List[WorkRate]] = {
     // ①itemCarテーブルlistからsqlを組むplaceId
     val dbDatas = carDAO.selectCarMasterViewer(placeId,itemIdList)  // 作業車のみ
-    val carList = beaconService.getItemCarBeaconPosition(dbDatas,true,placeId)
-    val calendarList = getCalendarData();
-    var workData = List[WorkRate]()
 
-    // ②①から取得したデータへgetCalndarDataを含む
-    val allData = carList.zipWithIndex.map { case (car, i) =>
-      car.item_car_id
+    // ②. ①から取得したデータへgetCalndarDataを含む
+    val allData = dbDatas.zipWithIndex.map { case (car, i) =>
       calendarList.zipWithIndex.map{ case (calendar, i) =>
-        // if(car.item_car_id == calendar.)
-        val getWorkFlgSqlData =itemlogDAO.selectWorkingOn(car.item_car_id,placeId,calendar.iWeekStartDay,calendar.iWeekEndDay,itemIdList)
-        val vWofkFlgDetectCount = getWorkFlgSqlData.last.detected_count
-        val vOperatingRate = if(vWofkFlgDetectCount == 0 || vWofkFlgDetectCount == -1){
-          0
-        }else{
-          (getWorkFlgSqlData.last.detected_count * BATCH_INTERVAL_MINUTE) / (calendar.iWeekTotalTime * 60) * 100
-        }
 
-        workData :+
-        WorkRate(car.item_car_id,car.item_car_name,vOperatingRate,-1)
+        // 検知フラグがtrue
+        val getWorkFlgSqlData =itemlogDAO.selectWorkingOn(false,car.item_car_id,placeId,calendar.iWeekStartDay,calendar.iWeekEndDay,itemIdList)
+        val vWofkFlgDetectCount = getWorkFlgSqlData.last.detected_count
+        if(vWofkFlgDetectCount>0){
+          System.out.println(vWofkFlgDetectCount)
+        }
+        val vOperatingRate = this.setDetectedCount(vWofkFlgDetectCount,calendar.iWeekTotalTime)
+        // 予約ともに検知フラグがtrue
+        val getReserveWorkFlgSqlData =itemlogDAO.selectReserveAndWorkingOn(false,false,car.item_car_id,placeId,calendar.iWeekStartDay,calendar.iWeekEndDay,itemIdList)
+        val vReserveWofkFlgDetectCount = getReserveWorkFlgSqlData.last.detected_count
+        val vReserveOperatingRate = this.setDetectedCount(vReserveWofkFlgDetectCount,calendar.iWeekTotalTime)
+
+        WorkRate(car.item_car_id,car.item_car_name,vOperatingRate,vReserveOperatingRate)
 
       }
     }
     return allData
-  }
-  /** 　item_logテーブルデータ取得 */
-  def getItemLogData(placeId:Int) : List[Seq[MovementWorkingLog]] = {
-    // ①itemCarテーブルlistからsqlを組むplaceId
-    val dbDatas = carDAO.selectCarMasterViewer(placeId,itemIdList)  // 作業車のみ
-    val carList = beaconService.getItemCarBeaconPosition(dbDatas,true,placeId)
-    val calendarList = getCalendarData();
-    // ②①から取得したデータへgetCalndarDataを含む
-//    var gg = carList.zipWithIndex.map { case (car, i) =>
-//      calendarList.zipWithIndex.map{ case (calendar, i) =>
-//        itemlogDAO.selectWorkingOn(placeId,calendar.iWeekStartDay,calendar.iWeekEndDay,itemIdList)
-//      }
-//    }
-
-    val vItemData = calendarList.zipWithIndex.map { case (caledar, i) =>
-//      iNum :Int,
-//      iWeekStartDay :String,
-//      iWeekEndDay :String,
-//      iWeekTotalWorkDay :Int,
-//      iWeekRealWorkDay :Int,
-//      iWeekTotalTime :Int
-
-      // 週を回しながらlistのカラムを更新
-      itemlogDAO.selectWorkingOn(1,placeId,caledar.iWeekStartDay,caledar.iWeekEndDay,itemIdList)
-    }
-    return vItemData
-
   }
   /** 　検索側データ取得 */
   def getCalendarData(): List[WeekData] = {
@@ -245,9 +174,7 @@ class MovementCar @Inject()(config: Configuration
         weekData = weekData :+
           WeekData(iWeekIndex,vWeekBeforeFirstDay,vWeekLastDay,vTermDay,vRealWorkDay,vWeekTotalTime)
       }
-
       iWeekIndex = iWeekIndex + 1; // 週目カウントを増加
-
      }
     System.out.println("=========[" +DETECT_MONTH+"]=======")
     weekData.map{ v=>
@@ -274,17 +201,10 @@ class MovementCar @Inject()(config: Configuration
     val searchForm = movementCarSearchForm.bindFromRequest.get
     DETECT_MONTH = searchForm.inputDate
 
-    // DB探索になる今月に関するデータをセット
-    //val vCalederList = getCalendarData();
+    val calendarList =  this.getCalendarData()
+    val logItemAllData =  getAllItemLogData(placeId,itemIdList,calendarList)
 
-    //val dbDatas = carDAO.selectCarMasterReserve(placeId,itemIdList)
-    //var carListApi = beaconService.getItemCarBeaconPosition(dbDatas,true,placeId)
-    val logItemData =  this.getItemLogData(placeId)
-    val logItemAllData =  getAllItemLogData(placeId,itemIdList)
-    val dbDatas = carDAO.selectCarMasterViewer(placeId,itemIdList)
-    val carList = beaconService.getItemCarBeaconPosition(dbDatas,true,placeId)
-
-    Ok(views.html.analysis.movementCar(logItemAllData,DETECT_MONTH,logItemData,carList,TOTAL_LENGTH))
+    Ok(views.html.analysis.movementCar(logItemAllData,calendarList,DETECT_MONTH,TOTAL_LENGTH))
   }
 
   /** 初期表示 */
@@ -296,25 +216,9 @@ class MovementCar @Inject()(config: Configuration
     getSearchData(placeId)
 
     // DB探索になる今月に関するデータをセット
-    var logItemData =  this.getItemLogData(placeId)
-    logItemData.map { v =>
-      v.zipWithIndex.map { case (logData, i) =>
-          System.out.println("================")
-          System.out.println("carId：" +logData.item_car_id)
-          System.out.println("carId：" +logData.item_car_name)
-          System.out.println("carId：" +logData.item_car_btx_id)
-          System.out.println("carId：" +logData.detected_count)
-      }
-
-    }
-
-    val logItemAllData =  getAllItemLogData(placeId,itemIdList)
-
-    // 全体から空いてるものだけ表示する。
-    //carListApi = carListApi.filter(_.reserve_id == -1)
-    val dbDatas = carDAO.selectCarMasterViewer(placeId,itemIdList)
-    val carList = beaconService.getItemCarBeaconPosition(dbDatas,true,placeId)
-    Ok(views.html.analysis.movementCar(logItemAllData,DETECT_MONTH,logItemData,carList,TOTAL_LENGTH))
+    val calendarList =  this.getCalendarData()
+    val logItemAllData =  getAllItemLogData(placeId,itemIdList,calendarList)
+    Ok(views.html.analysis.movementCar(logItemAllData,calendarList,DETECT_MONTH,TOTAL_LENGTH))
   }
 
 }
