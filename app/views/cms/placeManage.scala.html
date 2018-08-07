@@ -1,4 +1,4 @@
-@(placeList: Seq[Place])(implicit user: User, messages: Messages, request: RequestHeader, flash: Flash)
+@(placeList: Seq[PlaceEx])(implicit user: User, messages: Messages, request: RequestHeader, flash: Flash)
 
 @import controllers.routes
 @import helper._
@@ -39,13 +39,15 @@
                             <table id ="itemTable" class="table table-bordered table-condensed itemTable">
                                 <thead>
                                     <tr>
-                                        <th colspan="4" class="tableTitleTh">@Messages("lang.cms.placeManage.list.header.title")</th>
+                                        <th colspan="6" class="tableTitleTh">@Messages("lang.cms.placeManage.list.header.title")</th>
                                     </tr>
                                     <tr>
                                         <th class="tableTh noTh text-center">@Messages("lang.cms.placeManage.list.header.id")</th>
                                         <th class="tableTh placeNameTh">@Messages("lang.cms.placeManage.list.header.placeName")</th>
                                         <th class="tableTh floorCountTh">@Messages("lang.cms.placeManage.list.header.floor")</th>
                                         <th class="tableTh stateTh">@Messages("lang.cms.placeManage.list.header.status")</th>
+                                        <th class="tableTh userEmailTh">@Messages("lang.cms.placeManage.list.header.userId")</th>
+                                        <th class="tableTh userNameTh">@Messages("lang.cms.placeManage.list.header.userName")</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -55,6 +57,8 @@
                                             <td class="itemTd text-left">@place.placeName</td>
                                             <td class="itemTd text-right">@place.floorCount</td>
                                             <td class="itemTd text-center">@place.statusName</td>
+                                            <td class="itemTd text-left">@place.userEmail</td>
+                                            <td class="itemTd text-left">@place.userName</td>
                                         </tr>
                                     }
                                 </tbody>
@@ -66,7 +70,7 @@
                     @CSRF.formField
                     <input type="hidden" id="inputPlaceId" name="inputPlaceId">
                 </form>
-                    <!-- 欄外-->
+                <!-- 欄外-->
                 <div class="row tableRow" style="margin-top: 10px;">
                     <div class="text-right col-xs-4 col-sm-4 col-md-4" style="padding:0;">
                         <a href="javascript:moveToSelected();" class="btn link">@Messages("lang.cms.placeManage.change.title")</a>
@@ -84,7 +88,7 @@
     <script type="text/javascript" src="@routes.MyAssets.js("cms/placeManage.js")"></script>
     <script></script>
 
-    <!-- 更新モーダル画面 -->
+    <!-- 新規登録モーダル画面 -->
     <div class="modal" id="inputModal" tabindex="-1" role="dialog" aria-labelledby="placeRegisterModalLabel" aria-hidden="true" data-show="true" data-keyboard="false" data-backdrop="static">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -93,9 +97,17 @@
                     <div class="modal-header" style="">@Messages("lang.cms.placeManage.input.popup.title")</div>
                     <div class="modal-body">
                         <div class="form-group">
-                            <label class="control-label col-xs-4">@Messages("lang.cms.placeManage.input.popup.name")</label>
+                            <label class="control-label col-xs-4">@Messages("lang.cms.placeManage.input.popup.placeName")</label>
                             <div class="col-xs-5" style="padding-left: 0px;padding-right: 0px;">
-                                <input type="text" name="placeName" id="inputTitle" class="form-control" placeholder="@Messages("lang.cms.placeManage.input.popup.placeholder")">
+                                <input type="text" name="placeName" id="inputTitle" class="form-control" placeholder='@Messages("lang.cms.placeManage.input.popup.placeName.placeholder")'>
+                            </div>
+                            <label class="control-label col-xs-4">@Messages("lang.cms.placeManage.input.popup.placeUserId")</label>
+                            <div class="col-xs-5" style="padding-left: 0px;padding-right: 0px;">
+                                <input type="text" name="placeUserId" id="placeUserId" class="form-control" placeholder='@Messages("lang.cms.placeManage.input.popup.placeUserId.placeholder")'>
+                            </div>
+                            <label class="control-label col-xs-4">@Messages("lang.cms.placeManage.input.popup.placeUserName")</label>
+                            <div class="col-xs-5" style="padding-left: 0px;padding-right: 0px;">
+                                <input type="text" name="placeUserName" id="placeUserName" class="form-control" placeholder='@Messages("lang.cms.placeManage.input.popup.placeUserName.placeholder")'>
                             </div>
                         </div>
                     </div>

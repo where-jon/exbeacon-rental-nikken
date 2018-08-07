@@ -30,14 +30,14 @@ case class PlaceDeleteForm(deletePlaceId: String)
 case class PlaceSortForm(placeSortId: String)
 
 @Singleton
-class PlaceManage @Inject()(config: Configuration
-                            , val silhouette: Silhouette[MyEnv]
-                            , val messagesApi: MessagesApi
-                            , placeDAO: models.placeDAO
-                            , floorDAO: models.floorDAO
-                            , exbDAO: models.exbModelDAO
-                               ) extends BaseController with I18nSupport {
-
+class PlaceManage @Inject() (
+  config: Configuration,
+  val silhouette: Silhouette[MyEnv],
+  val messagesApi: MessagesApi,
+  placeDAO: models.placeDAO,
+  floorDAO: models.floorDAO,
+  exbDAO: models.exbModelDAO
+) extends BaseController with I18nSupport {
 
   /** 選択されている並び順 */
   var selectedSortType = 0
@@ -45,33 +45,33 @@ class PlaceManage @Inject()(config: Configuration
   /** 初期表示 */
   def index = SecuredAction { implicit request =>
     val reqIdentity = request.identity
-    if(reqIdentity.level >= 4){
-      if(securedRequest2User.isSysMng){
+    if (reqIdentity.level >= 4) {
+      if (securedRequest2User.isSysMng) {
         Redirect(routes.PlaceManage.sortPlaceListWith(selectedSortType))
-      }else{
+      } else {
         // シス管でなければ登録されている現場の管理画面へ遷移
-        if(super.isCmsLogged){
+        if (super.isCmsLogged) {
           Redirect(routes.PlaceManage.detail)
-        }else{
+        } else {
           Redirect(CMS_NOT_LOGGED_RETURN_PATH).flashing(ERROR_MSG_KEY -> Messages("error.cmsLogged.invalid"))
         }
       }
-    }else {
+    } else {
       Redirect(site.routes.WorkPlace.index)
     }
   }
 
   /** 指定順一覧表示 */
   def sortPlaceListWith(sortType:Int = 0) = SecuredAction { implicit request =>
-    if(securedRequest2User.isSysMng){
-      val placeList = placeDAO.selectPlaceListWithSortType(sortType)
+    if (securedRequest2User.isSysMng) {
+      val placeList = placeDAO.selectPlaceListWithSortTypeEx(sortType)
       selectedSortType = sortType
       Ok(views.html.cms.placeManage(placeList))
-    }else{
-      if(super.isCmsLogged){
+    } else {
+      if (super.isCmsLogged) {
         // シス管でなければ登録されている現場の管理画面へ遷移
         Redirect(routes.PlaceManage.detail)
-      }else{
+      } else {
         Redirect(CMS_NOT_LOGGED_RETURN_PATH).flashing(ERROR_MSG_KEY -> Messages("error.cmsLogged.invalid"))
       }
     }

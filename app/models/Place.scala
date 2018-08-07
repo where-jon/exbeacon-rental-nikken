@@ -1,12 +1,10 @@
 package models
 
 import javax.inject.Inject
-
 import anorm.SqlParser._
 import anorm._
 import play.api.db._
 import play.api.Logger
-
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, Json, Reads}
 
@@ -27,8 +25,15 @@ import play.api.libs.json.{JsPath, Json, Reads}
 //}
 
 case class PlaceEnum(
-  map: Map[Int,String] = Map[Int,String](0 -> "施工前", 1 -> "施行中", 9 -> "終了"),
-  sortTypeMap: Map[Int,String] = Map[Int,String](0 -> "pm.place_id", 1 -> "pm.updatetime")
+  map: Map[Int,String] = Map[Int,String](
+    0 -> "施工前",
+    1 -> "施行中",
+    9 -> "終了"
+  ),
+  sortTypeMap: Map[Int,String] = Map[Int,String](
+    0 -> "pm.place_id",
+    1 -> "pm.updatetime"
+  )
 )
 
 case class Place(
@@ -43,6 +48,20 @@ case class Place(
   cmsPassword: String = ""
 )
 
+case class PlaceEx(
+  placeId: Int,
+  placeName: String,
+  floorCount: Int = 0,
+  status: Int,
+  statusName: String = "",
+  btxApiUrl: String = "",
+  exbTelemetryUrl: String = "",
+  gatewayTelemetryUrl: String = "",
+  cmsPassword: String = "",
+  userEmail: String = "",
+  userName: String = ""
+)
+
 @javax.inject.Singleton
 class placeDAO @Inject() (dbapi: DBApi) {
 
@@ -53,7 +72,6 @@ class placeDAO @Inject() (dbapi: DBApi) {
     * @return
     */
   def selectPlaceList(placeIdList: Seq[Int] = Seq[Int]()): Seq[Place] = {
-
     val list = {
       get[Int]("place_id") ~
         get[String]("place_name") ~
@@ -65,11 +83,11 @@ class placeDAO @Inject() (dbapi: DBApi) {
         case place_id ~ place_name ~ floor_count ~ status
           ~ btx_api_url ~ exb_telemetry_url ~ gateway_telemetry_url =>
           val statusName = PlaceEnum().map(status)
-          Place(place_id, place_name, floor_count, status, statusName, btx_api_url,exb_telemetry_url,gateway_telemetry_url)
+          Place(place_id, place_name, floor_count, status, statusName,
+            btx_api_url,exb_telemetry_url,gateway_telemetry_url)
       }
     }
     db.withConnection { implicit connection =>
-
       var selectPh =
         s"""
           select
@@ -104,13 +122,11 @@ class placeDAO @Inject() (dbapi: DBApi) {
     }
   }
 
-
   /**
     * 現場情報を指定されたソート順で取得
     * @return
     */
   def selectPlaceAll(): Seq[Place] = {
-
     val list = {
       get[Int]("place_id") ~
         get[String]("place_name") ~
@@ -122,7 +138,8 @@ class placeDAO @Inject() (dbapi: DBApi) {
         case place_id ~ place_name ~ place_id2 ~ status
           ~ btx_api_url ~ exb_telemetry_url ~ gateway_telemetry_url =>
           val statusName = PlaceEnum().map(status)
-          Place(place_id, place_name, place_id2, status, statusName, btx_api_url,exb_telemetry_url,gateway_telemetry_url)
+          Place(place_id, place_name, place_id2, status, statusName,
+            btx_api_url,exb_telemetry_url,gateway_telemetry_url)
       }
     }
     db.withConnection { implicit connection =>
@@ -153,7 +170,6 @@ class placeDAO @Inject() (dbapi: DBApi) {
     * @return
     */
   def selectPlaceListWithSortType(sortType: Int): Seq[Place] = {
-
     val list = {
       get[Int]("place_id") ~
         get[String]("place_name") ~
@@ -166,7 +182,6 @@ class placeDAO @Inject() (dbapi: DBApi) {
       }
     }
     db.withConnection { implicit connection =>
-
       var selectSQL =
         s"""
           select
@@ -187,7 +202,48 @@ class placeDAO @Inject() (dbapi: DBApi) {
             , pm.place_name
             , pm.status
             order by ${PlaceEnum().sortTypeMap(sortType)}"""
+      SQL(selectSQL).as(list.*)
+    }
+  }
 
+  /**
+    * 現場情報を指定されたソート順で取得
+    * @return
+    */
+  def selectPlaceListWithSortTypeEx(sortType: Int): Seq[PlaceEx] = {
+    val list = {
+      get[Int]("place_id") ~
+        get[String]("place_name") ~
+        get[Int]("floor_count") ~
+        get[Int]("status") ~
+        get[String]("btx_api_url") ~
+        get[String]("cms_password") ~
+        get[String]("user_email") ~
+        get[String]("user_name") map {
+        case place_id ~ place_name ~ floor_count ~ status ~ btx_api_url ~ cms_password ~ user_email ~ user_name =>
+          val statusName = PlaceEnum().map(status)
+          PlaceEx(place_id, place_name, floor_count, status, statusName,
+            btx_api_url, btx_api_url, btx_api_url, cms_password, user_email, user_name)
+      }
+    }
+    db.withConnection { implicit connection =>
+      var selectSQL =
+        s"""
+          SELECT
+              pm.place_id AS place_id,
+              pm.place_name AS place_name,
+              count(f.floor_id) AS floor_count,
+              pm.status AS status,
+              pm.btx_api_url AS btx_api_url,
+              pm.cms_password AS cms_password,
+              COALESCE(u.email, '-') AS user_email,
+              COALESCE(u.name, '-') AS user_name
+          FROM place_master pm
+            LEFT OUTER JOIN floor_master f ON pm.place_id = f.place_id
+            LEFT OUTER JOIN user_master u ON pm.place_id = u.place_id AND u.permission = 4
+          WHERE pm.active_flg = true
+          GROUP BY pm.place_id, pm.place_name, pm.status, u.email, u.name
+          ORDER BY ${PlaceEnum().sortTypeMap(sortType)}"""
       SQL(selectSQL).as(list.*)
     }
   }
@@ -212,7 +268,6 @@ class placeDAO @Inject() (dbapi: DBApi) {
 
       SQL(query).on('placeId -> placeId, 'password -> password).as(scalar[Long].single)
     }
-
     count.toInt > 0
   }
 

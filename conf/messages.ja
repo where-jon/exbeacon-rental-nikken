@@ -195,8 +195,13 @@ lang.sideMenu.link.name.cms.txTagManage=Beaconタグ一覧
 lang.cms.placeManage.tabName=現場一覧
 lang.cms.placeManage.input.title=新規現場登録
 lang.cms.placeManage.input.popup.title=新規現場登録
-lang.cms.placeManage.input.popup.name=建設現場名称
-lang.cms.placeManage.input.popup.placeholder=現場名称
+lang.cms.placeManage.input.popup.placeName=建設現場名称
+lang.cms.placeManage.input.popup.placeName.placeholder=現場名称
+lang.cms.placeManage.input.popup.placeUserId=現場担当ID
+lang.cms.placeManage.input.popup.placeUserId.placeholder=現場担当者のID
+lang.cms.placeManage.input.popup.placeUserName=現場担当者名
+lang.cms.placeManage.input.popup.placeUserName.placeholder=現場担当者の名前
+
 lang.cms.placeManage.change.title=選択した現場を管理
 lang.cms.placeManage.delete.title=選択した現場を削除
 lang.cms.placeManage.delete.popup.title=現場情報削除
@@ -208,6 +213,8 @@ lang.cms.placeManage.list.header.id=ID
 lang.cms.placeManage.list.header.placeName=建設現場名称
 lang.cms.placeManage.list.header.floor=階数
 lang.cms.placeManage.list.header.status=状態
+lang.cms.placeManage.list.header.userId=現場担当者ID
+lang.cms.placeManage.list.header.userName=現場担当者名
 
 # CMS文字列（現場管理）
 lang.cms.placeManage.tabName=現場管理
