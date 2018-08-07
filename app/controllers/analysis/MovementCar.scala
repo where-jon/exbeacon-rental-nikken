@@ -11,7 +11,7 @@ import models._
 import play.api._
 import play.api.data.Form
 import play.api.data.Forms._
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import utils.silhouette.MyEnv
 
 
@@ -60,7 +60,7 @@ class MovementCar @Inject()(config: Configuration
   var itemIdList :Seq[Int] = null; // 仮設材種別id
 
   /*csv用*/
-  private val CSV_HEAD = "#ITEM__V1"
+  private val CSV_HEAD = "#MONTH_MOVEMENT_CAR_V1"
 
   /** 　初期化 */
   def init(): Unit = {
@@ -286,34 +286,54 @@ class MovementCar @Inject()(config: Configuration
   }
 
 
-  /** 　csv出力 */
+  /** csv出力 */
   def csvExport = SecuredAction { implicit request =>
     System.out.println("start csvExport:")
-
     val placeId = super.getCurrentPlaceId
-    //検索側データ取得
-    getSearchData(placeId)
     val calendarList =  this.getCalendarData()
     val logItemAllList =  getAllItemLogData(placeId,itemIdList,calendarList)
 
-    // csv ロジック
-    val file = new File("/tmp/temp_export.csv")
-    if (file.exists()) {
-      file.delete()
+    try{
+      // csv ロジック
+      val file = new File("temp_export.csv")
+      if (file.exists()) {
+        file.delete()
+      }
+      val os = new FileOutputStream(file)
+      val pw = new PrintWriter(new OutputStreamWriter(os, "SJIS"));
+      pw.println(CSV_HEAD)
+      pw.print(s"${DETECT_MONTH} 作業車稼働状況分析")
+      pw.println("")
+      pw.print("作業車,")
+      calendarList.foreach { calendar =>
+        pw.print(s"${calendar.szYobi}の週," +
+          s"実${calendar.iWeekRealWorkDay}/${calendar.iWeekTotalWorkDay}日,"
+        )
+      }
+      pw.println("")
+      pw.print("名称,")
+      calendarList.foreach { calendar =>
+        pw.print(s"稼働率," +
+          s"予約/稼働,"
+        )
+      }
+      pw.println("")
+      logItemAllList.foreach { item =>
+        pw.print(s"${item.last.itemName},")
+        item.map{ v =>
+          pw.print(s"${v.operatingRate}," +
+            s"${v.reserveOperatingRate},"
+          )
+        }
+        pw.println("")
+      }
+      pw.close()
+      Ok.sendFile(content = file, fileName = _ => "MONTH_MOVEMENT_CAR_V1.csv")
+    }catch {
+      case e: Exception =>
+        Redirect(routes.MovementCar.index())
+          .flashing(ERROR_MSG_KEY -> Messages("error.analysis.movementCar.csvExport"))
     }
-    val os = new FileOutputStream(file)
-    val pw = new PrintWriter(new OutputStreamWriter(os, "SJIS"));
-    pw.println(CSV_HEAD)
-    pw.print(s"No,部署コード,担当業務,役職	,氏名,ふりがな,アイコン名,内線番号,備考")
-    pw.println("")
-
-    logItemAllList.foreach { item =>
-      pw.println(s"${item.last.itemId}," +
-        s"${item.last.operatingRate}," +
-        s"${item.last.reserveOperatingRate}")
-    }
-    pw.close()
-    Ok.sendFile(content = file, fileName = _ => "export.csv")
   }
 
   /** 　検索ロジック */
