@@ -92,6 +92,7 @@ error.cms.CarManage.update.inputCarNo.empty=作業車番号を半角数字で入
 error.cms.CarManage.update.inputCarBtxId.empty=作業車TxタグNoを半角数字で入力してください。
 error.cms.CarManage.update.inputCarKeyBtxId.empty=鍵TxタグNoを半角数字で入力してください。
 error.cms.CarManage.update.inputCarTypeName.empty=種別を入力してください。
+error.cms.CarManage.update.inputCarTypeId.empty=種別Idを入力してください。
 error.cms.CarManage.update.inputCarName.empty=名称を入力してください。
 error.cms.CarManage.update.inputCarBtxId.inputCarKeyBtxId.duplicate=作業車TxタグNoと鍵TxタグNoが重複しています。
 error.cms.CarManage.update.inputCarBtxId.use=作業車Txタグは既に使用されています。(作業車TxタグNo.：{0})

@@ -368,24 +368,6 @@ class itemCarDAO @Inject()(dbapi: DBApi) {
              oldBtxId:Int, oldCarKeyBtxId:Int): Unit = {
     db.withTransaction { implicit connection =>
 
-//      // 古い情報でのBTXマスタ更新リスト
-//      val oldBtxList = Seq[Int](oldBtxId, oldCarKeyBtxId)
-//      // 削除
-//      SQL(
-//        """
-//          delete from btx_master where btx_id in ({btxIdList}) ;
-//        """)
-//        .on('btxIdList -> oldBtxList).executeUpdate()
-//
-//      // 新しい情報でのBTXマスタ更新リスト
-//      val newBtxList = Seq[Int](carBtxId, carKeyBtxId)
-//
-//      // 登録
-//      newBtxList.foreach( btxId =>{
-//        SQL("""insert into btx_master (btx_id, place_id) values ({btxId}, {placeId})""")
-//          .on('btxId -> btxId, 'placeId -> placeId).executeInsert()
-//      })
-
       var noteText: String = "note"
       if(!note.isEmpty){
         noteText = note

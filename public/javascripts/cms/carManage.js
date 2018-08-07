@@ -45,16 +45,6 @@ function fixTable(){
             $('.itemTable').tablefix({width:w, fixRows: 2});
         }
     }else{
-//        // PCブラウザ
-//        var w = $('.mainSpace').width()*1.001; // ヘッダー右側ボーダーが切れる為*1.001
-//        if ($('.mainSpace').height() > h) {
-//            w = $('.mainSpace').width()-5;
-//            $('.itemTable').tablefix({width:w, height: h, fixRows: 2});
-//            w = $('.mainSpace').width()-14;
-//            $('.rowTableDiv').width(w);
-//        } else {
-//            $('.rowTableDiv').width(w);
-//        }
         // PCブラウザ
         var w = $('.mainSpace').width();
         $('.itemTable').tablefix({height: h, fixRows: 2});
@@ -86,6 +76,7 @@ function showInputModal(isRegister){
         $('#inputCarBtxId').val('');
         $('#inputCarKeyBtxId').val('');
         $('#inputCarTypeName').val('');
+        $('#inputCarTypeId').val('');
         $('#inputCarName').val('');
         $('#inputCarNote').val('');
 
@@ -100,7 +91,8 @@ function showInputModal(isRegister){
             $('#inputCarNo').val($('#'+carId).find('.carNo').text());
             $('#inputCarBtxId').val($('#'+carId).find('.carBtxId').text());
             $('#inputCarKeyBtxId').val($('#'+carId).find('.carKeyBtxId').text());
-            $('#inputCarTypeName').val($('#'+carId).find('.carTypeName').text());
+            $('#inputCarTypeName').val($('#'+carId).find('.carTypeName').text())
+            $('#ITEM_TYPE_FILTER').val($('#'+carId).find('.carTypeId').text())
             $('#inputCarName').val($('#'+carId).find('.carName').text());
             $('#inputCarNote').val($('#'+carId).find('.carNote').text());
 
@@ -126,9 +118,39 @@ function deleteCar(){
     }
 }
 
+function cartype(){
+    var itemType = $('#ITEM_TYPE_FILTER option:selected').val();
+    if(itemType == "2"){
+       $('#inputCarKeyBtxId').val("-1");
+    }
+}
+
+// 表示ボタンをクリックする時に発生するイベント
+function viewBtnEvent(){
+    var viewBtnElement = document.getElementById("carUpdateFooter")
+        viewBtnElement.addEventListener('click', function(event) {
+            // itemTypeId結果をfromへ設定
+            var itemTypeFilterResult = $('#ITEM_TYPE_FILTER option:selected').val();
+            $('#inputCarTypeId').val(itemTypeFilterResult);
+            var itemTypeNameFilterResult = $('#ITEM_TYPE_FILTER option:selected').text();
+            $('#inputCarTypeName').val(itemTypeNameFilterResult);
+        });
+
+    var viewBtnElement = document.getElementById("carRegisterFooter")
+        viewBtnElement.addEventListener('click', function(event) {
+            // itemTypeId結果をfromへ設定
+            var itemTypeFilterResult = $('#ITEM_TYPE_FILTER option:selected').val();
+            $('#inputCarTypeId').val(itemTypeFilterResult);
+            var itemTypeNameFilterResult = $('#ITEM_TYPE_FILTER option:selected').text();
+            $('#inputCarTypeName').val(itemTypeNameFilterResult);
+        });
+}
+
 $(function(){
     // テーブルを固定
     fixTable();
+    // 表示ボタンをクリック
+    viewBtnEvent();
     // マウス操作とタップ操作をバインド
     bindMouseAndTouch();
 
