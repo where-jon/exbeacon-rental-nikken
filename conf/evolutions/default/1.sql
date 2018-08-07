@@ -162,7 +162,7 @@ CREATE TABLE public.item_car_master (
 	item_car_id serial NOT NULL,
 	item_type_id int4 NOT NULL,
 	item_car_btx_id int4 NOT NULL,
-	item_car_key_btx_id int4 NOT NULL,
+	item_car_key_btx_id int4 NOT NULL DEFAULT '-1'::integer,
 	item_car_no text NOT NULL,
 	item_car_name text NOT NULL,
 	note text NOT NULL DEFAULT ''::text,
