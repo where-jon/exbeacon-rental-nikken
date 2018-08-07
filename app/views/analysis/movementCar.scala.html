@@ -82,14 +82,14 @@ logItemAllList: Seq[List[WorkRate]]
                             <tr>
                                 <th colspan="1" class="tableTitleTh">作業車</th>
                                 @calendarList.zipWithIndex.map { case(calendar, i) =>
-                                    <th colspan="2" class="tableTitleTh">@calendar.szYobi の週</th>
+                                    <th colspan="2" class="tableTitleTh">@calendar.szYobi の週 実(@calendar.iWeekRealWorkDay/@calendar.iWeekTotalWorkDay)日</th>
                                 }
                             </tr>
                             <tr>
                                 <th class="tableTh ">名称</th>
                                 @calendarList.zipWithIndex.map { case(calendar, i) =>
                                     <th class="tableTh ">稼働率</th>
-                                    <th class="tableTh ">予約/稼働率</th>
+                                    <th class="tableTh ">予約/稼働</th>
                                 }
                             </tr>
                             </thead>

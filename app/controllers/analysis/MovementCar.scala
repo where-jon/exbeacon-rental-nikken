@@ -43,6 +43,8 @@ class MovementCar @Inject()(config: Configuration
   val HOUR_MINUTE = 60;
   val BATCH_INTERVAL_MINUTE = 1;
 
+  val CALENDAR_TYPE = "今月のみ";
+  //val CALENDAR_TYPE = "今月以外";
 
   var DETECT_MONTH_DAY = "";
   var NOW_DATE = "";
@@ -132,21 +134,74 @@ class MovementCar @Inject()(config: Configuration
     }
     return allData
   }
-  /** 　検索側データ取得 */
-  def getCalendarData(): List[WeekData] = {
+
+
+  def getMonthData(): List[WeekData] = {
+
     var bWeekLoofCheck = true
     var iWeekIndex = 1
     var weekData = List[WeekData]()
     TOTAL_LENGTH = 0
-     while (bWeekLoofCheck) {
-       TOTAL_LENGTH = TOTAL_LENGTH+ 1
-       val vWeekFirstDay = calendarDAO.selectGetWeek(iWeekIndex,DETECT_MONTH).last.getDay
-       var vWeekLastDay = calendarDAO.selectGetWeekMinusDay(iWeekIndex,-1,DETECT_MONTH).last.getDay
-       val vTemp= vWeekFirstDay.splitAt(8)
-       val vTempMonth= vWeekFirstDay.splitAt(7)
-       val vCurrMonth = vTempMonth._1
-       val intWeekFirstDay =vTemp._2.toInt
-       var vRealWorkDay = 0
+    while (bWeekLoofCheck) {
+      TOTAL_LENGTH = TOTAL_LENGTH+ 1
+      val vWeekFirstDay = calendarDAO.selectGetWeek(iWeekIndex,DETECT_MONTH).last.getDay
+      var vWeekLastDay = calendarDAO.selectGetWeekMinusDay(iWeekIndex+1,-1,DETECT_MONTH).last.getDay
+      var vTemp= vWeekFirstDay.splitAt(8)
+      val vTempMonth= vWeekFirstDay.splitAt(7)
+      val vCurrMonth = vTempMonth._1
+      val intWeekFirstDay = vTemp._2.toInt
+      var vRealWorkDay = 0
+
+
+        // indexが2番目から
+        //val vNextWeekFirstDay = calendarDAO.selectGetWeek(iWeekIndex+1,DETECT_MONTH).last.getDay
+        var vTermDay = 0
+        var vYasumiCount = 0
+        if(vCurrMonth != DETECT_MONTH) { // 現在indexの元になる月が当月を過ぎた場合
+          val vTargetDate = calendarDAO.selectGetLastMonthDay(DETECT_MONTH).last.getDay
+          vTermDay =
+            calendarDAO.selectGetTermStarEndDay(vTargetDate,vWeekFirstDay).last.getDay.toInt
+          vWeekLastDay = vTargetDate
+          bWeekLoofCheck = false  // もう次からは当月ではないのでloofを止めさえる
+          val szYobi = vTargetDate + "日("+ this.getYobi(vTargetDate) + ")"
+        }else{
+          vTermDay = calendarDAO.selectGetTermStarEndDay(vWeekLastDay,vWeekFirstDay).last.getDay.toInt
+            //calendarDAO.selectGetTermDay(iWeekIndex,vNextWeekFirstDay,DETECT_MONTH).last.getDay.toInt
+
+        }
+        var vTermDayList = calendarDAO.selectGetGenerateDay(vWeekFirstDay,vWeekLastDay)
+        vTermDayList.map{ v =>  // 範囲内の土(6.0)日(.0)を検索する
+          val vYobi = calendarDAO.selectGetYoubi(v.getDay).last.getDay.trim()
+          if( vYobi == "6.0" || vYobi == ".0"){
+            vYasumiCount = vYasumiCount+1
+          }
+        }
+        vRealWorkDay = vTermDay - vYasumiCount
+        val vWeekTotalTime = DAY_WORK_TIME * vRealWorkDay
+        vTemp= vWeekFirstDay.splitAt(8)
+        val szYobi = intWeekFirstDay + "日("+ this.getYobi(vWeekFirstDay) + ")"
+        weekData = weekData :+
+          WeekData(szYobi,iWeekIndex,vWeekFirstDay,vWeekLastDay,vTermDay,vRealWorkDay,vWeekTotalTime)
+      iWeekIndex = iWeekIndex + 1; // 週目カウントを増加
+    }
+    return weekData
+  }
+
+  def getOnlyThisMonthData(): List[WeekData] = {
+
+    var bWeekLoofCheck = true
+    var iWeekIndex = 1
+    var weekData = List[WeekData]()
+    TOTAL_LENGTH = 0
+    while (bWeekLoofCheck) {
+      TOTAL_LENGTH = TOTAL_LENGTH+ 1
+      val vWeekFirstDay = calendarDAO.selectGetWeek(iWeekIndex,DETECT_MONTH).last.getDay
+      var vWeekLastDay = calendarDAO.selectGetWeekMinusDay(iWeekIndex,-1,DETECT_MONTH).last.getDay
+      val vTemp= vWeekFirstDay.splitAt(8)
+      val vTempMonth= vWeekFirstDay.splitAt(7)
+      val vCurrMonth = vTempMonth._1
+      val intWeekFirstDay =vTemp._2.toInt
+      var vRealWorkDay = 0
       if(iWeekIndex == 1){ // 最初の方だけ
         val szYobi =
           "1日("+ this.getYobi(DETECT_MONTH + "-01") + ")"
@@ -199,7 +254,18 @@ class MovementCar @Inject()(config: Configuration
           WeekData(szYobi,iWeekIndex,vWeekBeforeFirstDay,vWeekLastDay,vTermDay,vRealWorkDay,vWeekTotalTime)
       }
       iWeekIndex = iWeekIndex + 1; // 週目カウントを増加
-     }
+    }
+    return weekData
+  }
+  /** 　検索側データ取得 */
+  def getCalendarData(): List[WeekData] = {
+
+    val weekData = if (this.CALENDAR_TYPE == "今月のみ") {
+      this.getOnlyThisMonthData() // 今月のみの場合
+    } else {
+      this.getMonthData()
+    }
+
     System.out.println("=========[" +DETECT_MONTH+"]=======")
     weekData.map{ v=>
       System.out.println("================")
@@ -212,7 +278,7 @@ class MovementCar @Inject()(config: Configuration
       System.out.println("週働く時間：" +v.iWeekTotalTime)
       System.out.println("================")
     }
-    return weekData;
+    return weekData
   }
 
   /** 　検索ロジック */
