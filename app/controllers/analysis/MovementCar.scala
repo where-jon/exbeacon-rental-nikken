@@ -297,7 +297,7 @@ class MovementCar @Inject()(config: Configuration
     val logItemAllList =  getAllItemLogData(placeId,itemIdList,calendarList)
 
     // csv ロジック
-    val file = new File("/tmp/temp_export.csv")
+    val file = new File("./temp_export.csv")
     if (file.exists()) {
       file.delete()
     }
