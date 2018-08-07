@@ -1,5 +1,6 @@
 package controllers.analysis
 
+import java.io.{File, FileOutputStream, OutputStreamWriter, PrintWriter}
 import java.text.SimpleDateFormat
 import java.util.{Date, Locale}
 import javax.inject.{Inject, Singleton}
@@ -57,6 +58,9 @@ class MovementCar @Inject()(config: Configuration
   /*登録用*/
   var itemTypeList :Seq[ItemType] = null; // 仮設材種別
   var itemIdList :Seq[Int] = null; // 仮設材種別id
+
+  /*csv用*/
+  private val CSV_HEAD = "#ITEM__V1"
 
   /** 　初期化 */
   def init(): Unit = {
@@ -279,6 +283,37 @@ class MovementCar @Inject()(config: Configuration
       System.out.println("================")
     }
     return weekData
+  }
+
+
+  /** 　csv出力 */
+  def csvExport = SecuredAction { implicit request =>
+    System.out.println("start csvExport:")
+
+    val placeId = super.getCurrentPlaceId
+    //検索側データ取得
+    getSearchData(placeId)
+    val calendarList =  this.getCalendarData()
+    val logItemAllList =  getAllItemLogData(placeId,itemIdList,calendarList)
+
+    // csv ロジック
+    val file = new File("/tmp/temp_export.csv")
+    if (file.exists()) {
+      file.delete()
+    }
+    val os = new FileOutputStream(file)
+    val pw = new PrintWriter(new OutputStreamWriter(os, "SJIS"));
+    pw.println(CSV_HEAD)
+    pw.print(s"No,部署コード,担当業務,役職	,氏名,ふりがな,アイコン名,内線番号,備考")
+    pw.println("")
+
+    logItemAllList.foreach { item =>
+      pw.println(s"${item.last.itemId}," +
+        s"${item.last.operatingRate}," +
+        s"${item.last.reserveOperatingRate}")
+    }
+    pw.close()
+    Ok.sendFile(content = file, fileName = _ => "export.csv")
   }
 
   /** 　検索ロジック */

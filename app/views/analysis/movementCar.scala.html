@@ -55,9 +55,11 @@ logItemAllList: Seq[List[WorkRate]]
                     <div id = "viewBtn" class="text-center btn btn__movement__view--frame">
                         @Messages("lang.btn.show")
                     </div>
-                    <div id = "viewBtn2" class="text-center btn btn__view--frame">
-                        @Messages("lang.btn.csv.export")
-                    </div>
+                    <a href="/analysis/movementCar/csvExport">
+                        <div id = "csvExport" class="text-center btn btn__view--frame">
+                            @Messages("lang.btn.csv.export")
+                        </div>
+                    </a>
 
                 </div>
 

@@ -34,11 +34,10 @@ function btnEvent(){
 
     var viewBtnElement = document.getElementById("viewBtn")
     viewBtnElement.addEventListener('click', function(event) {
-
         // inputDate結果をfromへ設定
         var inputDate = document.getElementById("inputDate")
         inputDate.value = gDatePicker.startSqlTime
-        dbExecuteManager("../analysis/movementCar")
+        dbExecuteManager("/analysis/movementCar")
     });
 }
 
