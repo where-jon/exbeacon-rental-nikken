@@ -230,6 +230,9 @@ lang.cms.placeManage.passwordUpdate.popup.reEnter=パスワード再入力
 # CMS文字列（テナント管理->パスワード変更）
 lang.cms.placeManage.changePassword.title=テナント管理
 lang.cms.placeManage.changePassword.page.title=パスワード変更
+lang.cms.placeManage.changePassword.label.currentPassword=現在のパスワード
+lang.cms.placeManage.changePassword.label.newPassword1=新しいパスワード
+lang.cms.placeManage.changePassword.label.newPassword2=確認用パスワード
 lang.cms.placeManage.changePassword.button.title=パスワードを変更する
 lang.cms.placeManage.changePassword.popup.name=パスワードを変更します。よろしいですか？
 
