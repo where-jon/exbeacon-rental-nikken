@@ -719,7 +719,7 @@ height:100%;
 
 .user__tag--pic--text--1 {
     font-weight: bolder;
-    font-size: 4.0vmin;
+    font-size: 3.0vmin;
     vertical-align: top;
     margin-left: 6.5vmin;
     position: absolute;
@@ -740,7 +740,7 @@ height:100%;
 }
 .user__tag--pic--text--3 {
     font-weight: bolder;
-    font-size: 3.3vmin;
+    font-size: 2.5vmin;
     /* color: black; */
     position: absolute;
     width: 40vmin;
