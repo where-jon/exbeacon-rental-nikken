@@ -30,8 +30,13 @@ class WorkPlace @Inject()(config: Configuration
   /* 仮設材テーブルと予約テーブルとapiを結合したデータを取得*/
   def getData = SecuredAction{ implicit request =>
     val placeId = super.getCurrentPlaceId
+    // ①仮設材すべてを取得
     val dbDatas = beaconDAO.selectBeaconViewer(placeId)
-    val beaconListApi = beaconService.getBeaconPosition(dbDatas,true,placeId)
+    // ②仮設材種別作業車の鍵をものとして取得
+    val dbDatasKeyData = beaconDAO.selectCarKeyViewer(placeId)
+    // ①、②を結合
+    val totalDbDatas = dbDatas union  dbDatasKeyData
+    val beaconListApi = beaconService.getBeaconPosition(totalDbDatas,true,placeId)
 
     Ok(Json.toJson(beaconListApi))
   }
