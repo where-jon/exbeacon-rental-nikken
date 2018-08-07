@@ -27,6 +27,17 @@ import net.ceedubs.ficus.Ficus._
 import javax.inject.{ Inject, Singleton }
 import views.html.{ auth => viewsAuth }
 
+
+/**
+  * パスワード変更画面で使うCase Class
+  */
+case class ChangePasswordForm(
+  email: String = "", // ユーザID
+  currentPassword: String = "", // 入力された現在のパスワード
+  newPassword1: String = "", // 入力された新しいパスワード
+  newPassword2: String = "" // 入力された確認用パスワード
+)
+
 @Singleton
 class Auth @Inject() (
     val silhouette: Silhouette[MyEnv],
@@ -234,34 +245,85 @@ class Auth @Inject() (
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // CHANGE PASSWORD
 
-  val changePasswordForm = Form(tuple(
-    "current" -> nonEmptyText,
-    "password1" -> passwordValidation,
-    "password2" -> nonEmptyText
-  ) verifying (Messages("auth.passwords.notequal"), passwords => passwords._3 == passwords._2))
+  var changePasswordForm = Form(
+    mapping(
+      "email" -> nonEmptyText, // ユーザID
+      "currentPassword" -> nonEmptyText, // 入力された現在のパスワード
+      "newPassword1" -> passwordValidation, // 入力された新しいパスワード
+      "newPassword2" -> nonEmptyText // 入力された確認用パスワード
+    )
+    (ChangePasswordForm.apply)
+    (ChangePasswordForm.unapply)
+      verifying(
+        Messages("error.changePassword.password.notequal"),
+        form => form.newPassword1 == form.newPassword2
+      )
+  )
 
   /**
    * Starts the change password mechanism. It shows a form to insert his current password and the new one.
    */
   def changePassword = SecuredAction { implicit request =>
-    Ok(viewsAuth.changePassword(changePasswordForm))
+    // Viewを表示
+    Ok(viewsAuth.changePassword(changePasswordForm, userService.selectSuperUserList()))
   }
 
   /**
    * Saves the new password and renew the cookie
    */
   def handleChangePassword = SecuredAction.async { implicit request =>
-    changePasswordForm.bindFromRequest.fold(
-      formWithErrors => Future.successful(BadRequest(viewsAuth.changePassword(formWithErrors))),
+    changePasswordForm.bindFromRequest().fold(
+      formWithErrors => {
+        // Varidationエラーがあった場合Viewに戻ってエラー表示
+        Future.successful(BadRequest(viewsAuth.changePassword(formWithErrors, userService.selectSuperUserList())))
+      },
       passwords => {
-        credentialsProvider.authenticate(Credentials(request.identity.email, passwords._1)).flatMap { loginInfo =>
-          for {
-            _ <- authInfoRepository.update(loginInfo, passwordHasherRegistry.current.hash(passwords._2))
-            authenticator <- env.authenticatorService.create(loginInfo)
-            result <- env.authenticatorService.renew(authenticator, Redirect(routes.Application.myAccount).flashing("success" -> Messages("auth.password.changed")))
-          } yield result
+        // 現在のパスワードと入力された現在のパスワードが合っているか確認し
+        credentialsProvider.authenticate(
+          Credentials(
+            passwords.email,
+            passwords.currentPassword
+          )
+        ).flatMap {
+          loginInfo => {
+            if (request.identity.email == passwords.email) {
+              for {
+                _ <- authInfoRepository.update(
+                  loginInfo,
+                  passwordHasherRegistry.current.hash(passwords.newPassword1)
+                )
+                authenticator <- env.authenticatorService.create(loginInfo)
+                result <-
+                  env.authenticatorService.renew(
+                    authenticator,
+                    Redirect(routes.Auth.changePassword)
+                      .flashing("success" -> Messages("success.changePassword.devUser.update")))
+              } yield result
+            } else {
+              for {
+                _ <- authInfoRepository.update(
+                  loginInfo,
+                  passwordHasherRegistry.current.hash(passwords.newPassword1)
+                )
+                result <- {
+                  Future.successful(Redirect(routes.Auth.changePassword)
+                    .flashing("success" -> Messages("success.changePassword.sysUser.update")))
+                }
+              } yield result
+            }
+          }
         }.recover {
-          case e: ProviderException => BadRequest(viewsAuth.changePassword(changePasswordForm.withError("current", Messages("auth.currentpwd.incorrect"))))
+          case e: ProviderException => {
+            // 例外発生時は普通に元の画面に戻す
+            var passForm = changePasswordForm.fill(
+              ChangePasswordForm.apply(
+              )
+            )
+            BadRequest(viewsAuth.changePassword(
+              passForm.withGlobalError(Messages("error.changePassword.password.current.notequal")),
+              userService.selectSuperUserList()
+            ))
+          }
         }
       }
     )

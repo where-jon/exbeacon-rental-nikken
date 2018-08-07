@@ -125,19 +125,19 @@ class UserDAO @Inject() (dbapi: DBApi) {
   def save(user: User): Future[User] = {
     Future.successful(
       db.withConnection { implicit connection =>
-//        val sql = SQL("""
-//            update user_master set password = {password} where email = {email};
-//            insert into user_master (email, name, password)
-//                   select {email}, {name}, {password}
-//                   where not exists (select 1 from user_master where email = {email});
-//          """).on(
-//          'email -> user.email,
-//          'name -> user.name,
-//          'password -> user.password
-//        )
-//
-//        sql.executeUpdate()
-
+        val sql = SQL("""
+            update user_master
+            set password = {password}, updatetime = now()
+            where email = {email};
+            insert into user_master (email, name, password)
+                   select {email}, {name}, {password}
+                   where not exists (select 1 from user_master where email = {email});
+          """).on(
+          'email -> user.email,
+          'name -> user.name,
+          'password -> user.password
+        )
+        sql.executeUpdate()
         val newUser = User(user.id
           , user.email
           , true
@@ -168,5 +168,29 @@ class UserDAO @Inject() (dbapi: DBApi) {
       }
     )
   }
+
+  def selectSuperUserList(): Seq[User] = {
+    db.withConnection { implicit connection =>
+      val sql = SQL(
+        """
+      select
+        user_id
+        , email
+        , name
+        , password
+        , place_id
+        , current_place_id
+        , active_flg
+        , permission
+        from user_master
+        where
+          permission = 4
+          and active_flg = true
+        order by user_id
+      """)
+      sql.as(simple.*)
+    }
+  }
+
 
 }
