@@ -30,7 +30,7 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
         <!-- メイン -->
         <div class="col-lg-12 mainSpace">
             <!-- 画面題字 -->
-            <div class="form-group" style="font-weight:bold;font-size:19px;margin:15px 0px;">
+            <div class="form-group" style="font-weight:bold;font-size:19px;margin:25px 0px;">
                 <!-- メッセージ -->
                 @views.html.templates.msgDiv()
                 <!--タイトル-->
@@ -140,8 +140,12 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
                                     <td class="itemTd text-center ">@car.item_type_name</td>
                                     <td class="itemTd text-center ">@car.item_car_name</td>
                                     <td class="itemTd text-center ">@car.company_name</td>
-                                    <td class="itemTd text-center ">@car.reserve_start_date</td>
-                                    <td class="itemTd text-center ">@car.work_type_name</td>
+                                    <td class="itemTd text-center ">@car.reserve_start_date
+                                        <input class="hidden form-control input-sm" type="text" id="reserveStartDateList-@i" name="reserveStartDateList[@i]" value="@car.reserve_start_date">
+                                    </td>
+                                    <td class="itemTd text-center ">@car.work_type_name
+                                        <input class="hidden form-control input-sm" type="text" id="workTypeNameList-@i" name="workTypeNameList[@i]" value="@car.work_type_name">
+                                    </td>
                                     <td class="itemTd text-center ">@car.reserve_id</td>
                                 </tr>
                             }
