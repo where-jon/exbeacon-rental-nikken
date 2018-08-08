@@ -322,8 +322,8 @@ class MovementCar @Inject()(config: Configuration
       logItemAllList.foreach { item =>
         pw.print(s"${item.last.itemName},")
         item.map{ v =>
-          pw.print(s"${v.operatingRate}," +
-            s"${v.reserveOperatingRate},"
+          pw.print(s"${v.operatingRate}%," +
+            s"${v.reserveOperatingRate}%,"
           )
         }
         pw.println("")
