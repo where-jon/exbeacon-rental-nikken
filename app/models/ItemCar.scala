@@ -197,9 +197,6 @@ class itemCarDAO @Inject()(dbapi: DBApi) {
         """
 
       var wherePh = """ where p.place_id = {placeId} """
-      if(carNo.isEmpty == false){
-        wherePh += s""" and c.item_car_no = '${carNo}' """
-      }
       if(carId != None){
         wherePh += s""" and c.item_car_id = ${carId.get} """
       }
@@ -212,6 +209,45 @@ class itemCarDAO @Inject()(dbapi: DBApi) {
     }
   }
 
+  /**
+    * 作業車・立馬情報TagIDチェック用
+    * @return
+    */
+  def selectCarTagCheck(placeId: Int, carId: Int, chkTagId: Int): Seq[ItemCar] = {
+
+    db.withConnection { implicit connection =>
+      val selectPh =
+        """
+          select
+                c.item_car_id
+              , c.item_type_id
+              , c.note
+              , c.item_car_no
+              , c.item_car_name
+              , c.item_car_btx_id
+              , c.item_car_key_btx_id
+              , c.place_id
+          from
+            place_master p
+            inner join item_car_master c
+              on p.place_id = c.place_id
+              and p.active_flg = true
+              and c.active_flg = true
+        """
+
+      var wherePh = """ where p.place_id = {placeId} """
+          wherePh += s""" and c.item_car_id <> ${carId} """
+          wherePh += s""" and (c.item_car_btx_id = ${chkTagId} """
+          wherePh += s""" or c.item_car_key_btx_id = ${chkTagId}) """
+
+      val orderPh =
+        """
+          order by
+            c.item_car_id
+        """
+      SQL(selectPh + wherePh + orderPh).on('placeId -> placeId).as(simple.*)
+    }
+  }
 
   /**
     * 作業車・立馬の削除

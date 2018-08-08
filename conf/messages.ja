@@ -101,7 +101,6 @@ error.cms.CarManage.update.inputCarIdReserve.use=作業車・立馬IDは既に�
 error.cms.CarManage.update.inputCarBtxId.duplicate=作業車TxタグNoが重複しています。(作業車TxタグNo.{0})
 error.cms.CarManage.update.inputCarKeyBtxId.duplicate=鍵TxタグNoが重複しています。(作業車TxタグNo.{0})
 error.cms.CarManage.update.inputBtxId.duplicate=作業車番号が重複しています。(作業車番号：{0})
-error.cms.CarManage.update.NotTypeName=種別が存在しません。
 error.cms.CarManage.delete.empty=削除対象作業車を選択してください。
 error.cms.CarManage.delete.inputCarIdReserve.use=作業車・立馬IDは既に予約されています。(作業車・立馬ID：{0})
 error.cms.CarManage.delete.inputCarId.empty=作業車・立馬IDは登録されていません。(作業車・立馬ID：{0})

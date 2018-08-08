@@ -1,7 +1,9 @@
+// 鍵TagID 一時保存用
+var btxIdBack = "-1";
+
 // マウス・タッチの動作のバインド
 function bindMouseAndTouch(){
     var ua = navigator.userAgent;
-    var btxIdBack = "-1";
     if (ua.indexOf('iPad') > 0 || ua.indexOf('Android') > 0 || ua.indexOf('iPhone') > 0 || ua.indexOf('iPod') > 0){
         // タッチデバイスの場合
         $(".rowHover").bind({
@@ -78,6 +80,7 @@ function showInputModal(isRegister){
         $('#inputCarKeyBtxId').val('');
         $('#inputCarTypeName').val('');
         $('#inputCarTypeId').val('');
+        $('#car_type').val("0");
         $('#inputCarName').val('');
         $('#inputCarNote').val('');
 
