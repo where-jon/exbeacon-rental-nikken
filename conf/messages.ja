@@ -130,6 +130,15 @@ error.cms.ItemTypeManage.IconColor=アイコン色コード指定に誤りがあ
 error.cms.ItemTypeManage.TextColor=アイコン文字色コード指定に誤りがあります。
 error.cms.ItemTypeManage.RowColor=行色コード指定に誤りがあります。
 
+error.changePassword.update=パスワードの更新ができませんでした。
+error.changePassword.currentPassword.error.required=現在のパスワードは必須項目です。
+error.changePassword.newPassword1.error.minLength=新しいパスワードが短かすぎます。
+error.changePassword.newPassword1.error.required=新しいパスワードは必須入力です。
+error.changePassword.newPassword2.error.minLength=確認用パスワードが短かすぎます。
+error.changePassword.newPassword2.error.required=確認用パスワードは必須入力です。
+error.changePassword.password.notequal=新しいパスワードと確認用パスワードが異なります。
+error.changePassword.password.current.notequal=現在のパスワードが異なります。
+
 ################################################################################################
 # SUCCESS
 success.CarReserve.registerModal=予約を登録しました。
@@ -152,6 +161,9 @@ success.cms.ItemManage.update=仮設材情報を更新しました。
 
 success.cms.ItemTypeManage.delete=仮設材種別情報を削除しました。
 success.cms.ItemTypeManage.update=仮設材種別を更新しました
+
+success.changePassword.devUser.update=開発管理者のパスワードを更新しました。
+success.changePassword.sysUser.update=システム管理者のパスワードを更新しました。
 
 # MAILS
 
@@ -229,6 +241,16 @@ lang.cms.placeManage.placeUpdate.popup.status=状態
 lang.cms.placeManage.passwordUpdate.popup.title=管理パスワード変更
 lang.cms.placeManage.passwordUpdate.popup.password=パスワード
 lang.cms.placeManage.passwordUpdate.popup.reEnter=パスワード再入力
+
+# CMS文字列（テナント管理->パスワード変更）
+lang.cms.placeManage.changePassword.title=テナント管理
+lang.cms.placeManage.changePassword.page.title=パスワード変更
+lang.cms.placeManage.changePassword.label.currentPassword=現在のパスワード
+lang.cms.placeManage.changePassword.label.newPassword1=新しいパスワード
+lang.cms.placeManage.changePassword.label.newPassword2=確認用パスワード
+lang.cms.placeManage.changePassword.button.title=パスワードを変更する
+lang.cms.placeManage.changePassword.popup.name=パスワードを変更します。よろしいですか？
+
 
 # CMS文字列（フロア管理）
 lang.cms.floorManage.title=フロア管理画面
@@ -438,6 +460,7 @@ lang.btn.update = 更新
 lang.btn.delete = 削除
 lang.btn.reload = 再表示
 lang.btn.show = 表示
+lang.btn.csv.export = CSV
 
 
 lang.deviceID = 端末ID
@@ -454,8 +477,10 @@ lang.site.workPlace.page.maxDevice=3個以上
 lang.site.unDetected.page.title=未検出の仮設材
 
 
-# 作業車動線（分析）
-lang.analysis.movementCar.page.title=作業車動線分析
+# 作業車稼働状況分析（分析）
+lang.analysis.movementCar.page.title=作業車稼働状況分析
+error.analysis.movementCar.csvExport=csv出力に問題が発生しました。
+
 
 # GateWay
 lang.analysis.gateway.page.title=GW状態監視
@@ -468,6 +493,7 @@ error.site.carReserve.update=作業車・立馬予約に問題が発生しまし
 error.site.carReserve.noselect=予約対象未選択
 
 lang.site.carCancel.page.title=作業車・立馬予約取消
+lang.site.carCancel.page.delete=選択された作業車・立馬予約を取消します。
 success.site.carCancel.cancel=作業車・立馬予約取消を完了しました。
 error.site.carCancel.cancel=作業車・立馬予約取消に問題が発生しました。<br/>
 error.site.carCancel.noselect=予約対象未選択
@@ -479,6 +505,7 @@ success.site.carCancel.remove=作業車・立馬取消を完了しました。
 lang.site.otherMaster.page.title=その他仮設材一覧
 lang.site.otherReserve.page.title=その他仮設材予約
 lang.site.otherCancel.page.title=その他仮設材予約取消
+lang.site.otherCancel.page.delete=選択されたその他仮設材予約を取消します。
 success.site.otherReserve.update=その他仮設材予約を完了しました。
 error.site.otherReserve.update=その他仮設材予約に問題が発生しました。
 success.site.otherCancel.remove=その他仮設材予約取消を完了しました。

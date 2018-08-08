@@ -471,7 +471,6 @@ class itemCarDAO @Inject()(dbapi: DBApi) {
            from
              		item_car_master as c
              		LEFT JOIN reserve_table as r on c.item_car_id = r.item_id
-                and r.item_type_id in ( """ + {itemIdList.mkString(",")} +""" )
                 and to_char(r.reserve_start_date, 'YYYY-MM-DD') = to_char(current_timestamp, 'YYYY-MM-DD')
              		and r.active_flg = true
 						left JOIN item_type as i on i.item_type_id = c.item_type_id
@@ -484,6 +483,7 @@ class itemCarDAO @Inject()(dbapi: DBApi) {
 				             		and floor.active_flg = true
            where c.place_id = """  + {placeId} + """
            and c.active_flg = true
+           and c.item_type_id in ( """ + {itemIdList.mkString(",")} +""" )
            order by item_car_btx_id ;
 
         """
