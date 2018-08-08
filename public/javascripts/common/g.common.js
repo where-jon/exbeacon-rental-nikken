@@ -217,6 +217,18 @@ var gDatePicker = {
     endDate : null,
     endSqlTime : null,
     endTimeEpoch : null,
+    monthClickEvent : function() {
+            var selectPinElement = [].slice.call(document.querySelectorAll(".inputClass"));
+            selectPinElement.forEach(function(pin, pos) {
+                $(pin).datetimepicker({
+                     format : 'YYYY/MM',
+                     locale: 'ja',
+                 });
+                gDatePicker.dateChangeEvent(pin)
+                gDatePicker.dayDateTimeSetting();
+            });
+        },
+
     dayClickEvent : function() {
         var selectPinElement = [].slice.call(document.querySelectorAll(".inputClass"));
         selectPinElement.forEach(function(pin, pos) {

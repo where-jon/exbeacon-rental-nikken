@@ -21,16 +21,16 @@ import utils.silhouette.MyEnv
 
 @Singleton
 class ItemOtherMaster @Inject()(config: Configuration
-                                , val silhouette: Silhouette[MyEnv]
-                                , val messagesApi: MessagesApi
-                                , otherDAO: models.itemOtherDAO
-                                , companyDAO: models.companyDAO
-                                , beaconService: BeaconService
-                                , floorDAO: models.floorDAO
-                                , btxDAO: models.btxDAO
-                                , itemTypeDAO: models.ItemTypeDAO
-                                , workTypeDAO: models.WorkTypeDAO
-                               ) extends BaseController with I18nSupport {
+, val silhouette: Silhouette[MyEnv]
+, val messagesApi: MessagesApi
+, otherDAO: models.itemOtherDAO
+, companyDAO: models.companyDAO
+, beaconService: BeaconService
+, floorDAO: models.floorDAO
+, btxDAO: models.btxDAO
+, itemTypeDAO: models.ItemTypeDAO
+, workTypeDAO: models.WorkTypeDAO
+) extends BaseController with I18nSupport {
 
   var ITEM_TYPE_FILTER = 0;
   var COMPANY_NAME_FILTER = "";

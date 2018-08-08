@@ -27,16 +27,16 @@ case class CancelItem(
 
 @Singleton
 class ItemCarCancel @Inject()(config: Configuration
-                               , val silhouette: Silhouette[MyEnv]
-                               , val messagesApi: MessagesApi
-                               , carDAO: models.itemCarDAO
-                               , companyDAO: models.companyDAO
-                               , beaconService: BeaconService
-                               , floorDAO: models.floorDAO
-                               , btxDAO: models.btxDAO
-                               , itemTypeDAO: models.ItemTypeDAO
-                               , workTypeDAO: models.WorkTypeDAO
-                             ) extends BaseController with I18nSupport {
+, val silhouette: Silhouette[MyEnv]
+, val messagesApi: MessagesApi
+, carDAO: models.itemCarDAO
+, companyDAO: models.companyDAO
+, beaconService: BeaconService
+, floorDAO: models.floorDAO
+, btxDAO: models.btxDAO
+, itemTypeDAO: models.ItemTypeDAO
+, workTypeDAO: models.WorkTypeDAO
+) extends BaseController with I18nSupport {
 
    /*検索用*/
   var ITEM_TYPE_FILTER = 0;
