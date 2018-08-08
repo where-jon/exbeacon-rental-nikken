@@ -125,7 +125,14 @@ class CarManage @Inject()(config: Configuration
           Redirect(routes.CarManage.index).flashing(ERROR_MSG_KEY -> errMsg.mkString(HTML_BR))
         }else{
           // DB処理
-          carDAO.insert(f.inputCarNo, f.inputCarName, f.inputCarBtxId.toInt, f.inputCarKeyBtxId.toInt, itemTypeList.last.item_type_id, f.inputCarNote, f.inputPlaceId.toInt)
+          carDAO.insert(
+              f.inputCarNo
+            , f.inputCarName
+            , f.inputCarBtxId.toInt
+            , f.inputCarKeyBtxId.toInt
+            , f.inputCarTypeId.toInt
+            , f.inputCarNote
+            , f.inputPlaceId.toInt)
 
           Redirect(routes.CarManage.index)
             .flashing(SUCCESS_MSG_KEY -> Messages("success.cms.CarManage.update"))

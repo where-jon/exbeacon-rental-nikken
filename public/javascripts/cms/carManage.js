@@ -1,6 +1,7 @@
 // マウス・タッチの動作のバインド
 function bindMouseAndTouch(){
     var ua = navigator.userAgent;
+    var btxIdBack = "-1";
     if (ua.indexOf('iPad') > 0 || ua.indexOf('Android') > 0 || ua.indexOf('iPhone') > 0 || ua.indexOf('iPod') > 0){
         // タッチデバイスの場合
         $(".rowHover").bind({
@@ -91,8 +92,18 @@ function showInputModal(isRegister){
             $('#inputCarNo').val($('#'+carId).find('.carNo').text());
             $('#inputCarBtxId').val($('#'+carId).find('.carBtxId').text());
             $('#inputCarKeyBtxId').val($('#'+carId).find('.carKeyBtxId').text());
-            $('#inputCarTypeName').val($('#'+carId).find('.carTypeName').text())
-            $('#ITEM_TYPE_FILTER').val($('#'+carId).find('.carTypeId').text())
+            btxIdBack = $('#inputCarKeyBtxId').val();
+            $('#inputCarTypeName').val($('#'+carId).find('.carTypeName').text());
+            $('#car_type').val($('#'+carId).find('.carTypeId').text());
+            $('#inputCarTypeId').val($('#car_type').val());
+            var ele = document.getElementById("inputCarKeyBtxId");
+            // 立馬の場合は鍵TagIDは入力不可
+            if($('#car_type').val() == "2"){
+               $('#inputCarKeyBtxId').val("-1");
+                ele.readOnly = true;
+            }else{
+                ele.readOnly = false;
+            }
             $('#inputCarName').val($('#'+carId).find('.carName').text());
             $('#inputCarNote').val($('#'+carId).find('.carNote').text());
 
@@ -118,35 +129,45 @@ function deleteCar(){
     }
 }
 
-function cartype(){
-    var itemType = $('#ITEM_TYPE_FILTER option:selected').val();
-    if(itemType == "2"){
-       $('#inputCarKeyBtxId').val("-1");
-    }
-}
-
 // 表示ボタンをクリックする時に発生するイベント
 function viewBtnEvent(){
     var viewBtnElement = document.getElementById("carUpdateFooter")
         viewBtnElement.addEventListener('click', function(event) {
             // itemTypeId結果をfromへ設定
-            var itemTypeFilterResult = $('#ITEM_TYPE_FILTER option:selected').val();
+            var itemTypeFilterResult = $('#car_type option:selected').val();
             $('#inputCarTypeId').val(itemTypeFilterResult);
-            var itemTypeNameFilterResult = $('#ITEM_TYPE_FILTER option:selected').text();
+            var itemTypeNameFilterResult = $('#car_type option:selected').text();
             $('#inputCarTypeName').val(itemTypeNameFilterResult);
         });
 
     var viewBtnElement = document.getElementById("carRegisterFooter")
         viewBtnElement.addEventListener('click', function(event) {
             // itemTypeId結果をfromへ設定
-            var itemTypeFilterResult = $('#ITEM_TYPE_FILTER option:selected').val();
+            var itemTypeFilterResult = $('#car_type option:selected').val();
             $('#inputCarTypeId').val(itemTypeFilterResult);
-            var itemTypeNameFilterResult = $('#ITEM_TYPE_FILTER option:selected').text();
+            var itemTypeNameFilterResult = $('#car_type option:selected').text();
             $('#inputCarTypeName').val(itemTypeNameFilterResult);
         });
 }
 
 $(function(){
+    var floorFrame = $('#car_type');
+        if(floorFrame!=null){
+            // 管理者用selectbox value取得
+            $('#car_type').change(function() {
+            var itemType = $('#car_type option:selected').val();
+            var ele = document.getElementById("inputCarKeyBtxId");
+            // 立馬の場合は鍵TagIDは入力不可
+            if(itemType == "2"){
+               $('#inputCarKeyBtxId').val("-1");
+                ele.readOnly = true;
+            }else{
+                $('#inputCarKeyBtxId').val(btxIdBack);
+                ele.readOnly = false;
+            }
+        });
+    }
+
     // テーブルを固定
     fixTable();
     // 表示ボタンをクリック

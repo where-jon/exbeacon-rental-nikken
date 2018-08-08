@@ -94,7 +94,7 @@
                     <div class="modal-body">
                         <div class="form-group">
                             <label class="control-label col-xs-5">@Messages("lang.cms.carManage.carUpdate.popup.carTypeName")</label>
-                            <select id="ITEM_TYPE_FILTER" onChange="cartype();" style="height: 30px; width: 100px;">
+                            <select id="car_type" style="height: 30px; width: 100px;">
                                 <!--仮設材種別テーブルから検索フィルタを設置-->
                                 <option value="0"></option>
                                 @itemTypeList.zipWithIndex.map { case(itemType, i) =>
