@@ -91,7 +91,8 @@ class MovementCar @Inject()(config: Configuration
     if(detectedCount == 0 || detectedCount == -1){
       0
     }else{
-      (detectedCount * BATCH_INTERVAL_MINUTE) / (weekTotalTime * HOUR_MINUTE).toFloat * 100
+      val vCountResult = (detectedCount * BATCH_INTERVAL_MINUTE) / (weekTotalTime * HOUR_MINUTE).toFloat * 100
+      Math.round(vCountResult*10)/10.0.toFloat  // 小数点2位以下を四捨五
     }
   }
 
