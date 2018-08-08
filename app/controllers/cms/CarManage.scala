@@ -114,14 +114,14 @@ class CarManage @Inject()(config: Configuration
 //        }
 
         // 作業車・立馬TxビーコンIDが存在しないか
-        val carBtxList = carDAO.selectCarBtxCheck(super.getCurrentPlaceId, carBtxId = Option(f.inputCarBtxId.toInt), None)
-        if(carBtxList.length > 0){
+        val chkCarTagIdInf = carDAO.selectCarTagCheck(super.getCurrentPlaceId, None, f.inputCarBtxId.toInt)
+        if(chkCarTagIdInf.length > 0) {
           errMsg :+= Messages("error.cms.CarManage.update.inputCarBtxId.use", f.inputCarBtxId)
         }
         // 作業車・立馬鍵TxビーコンIDが存在しないか
         if(f.inputCarKeyBtxId.toInt > 0) {
-          val carKeyBtxList = carDAO.selectCarBtxCheck(super.getCurrentPlaceId, None, carKeyBtxId = Option(f.inputCarKeyBtxId.toInt))
-          if (carKeyBtxList.length > 0) {
+          val chkCarTagIdInf = carDAO.selectCarTagCheck(super.getCurrentPlaceId, None, f.inputCarKeyBtxId.toInt)
+          if(chkCarTagIdInf.length > 0) {
             errMsg :+= Messages("error.cms.CarManage.update.inputCarKeyBtxId.use", f.inputCarKeyBtxId)
           }
         }
@@ -175,7 +175,7 @@ class CarManage @Inject()(config: Configuration
                   if (f.inputCarBtxId.toInt == preCarInfo.itemCarKeyBtxId) {
                     // 作業車Txに変更前の鍵Txを登録する、且つ鍵Txが変更されている場合は何もしない
                   } else {
-                    val chkCarTagIdInf = carDAO.selectCarTagCheck(super.getCurrentPlaceId, f.inputCarId.toInt, f.inputCarBtxId.toInt)
+                    val chkCarTagIdInf = carDAO.selectCarTagCheck(super.getCurrentPlaceId, carId = Option(f.inputCarId.toInt), f.inputCarBtxId.toInt)
                     if(chkCarTagIdInf.length > 0) {
                       errMsg :+= Messages("error.cms.CarManage.update.inputCarBtxId.duplicate", btxId._2)
                     }
@@ -185,7 +185,7 @@ class CarManage @Inject()(config: Configuration
                   if (f.inputCarKeyBtxId.toInt == preCarInfo.itemCarBtxId) {
                     // 鍵Txに変更前の作業車Txを登録する場合は何もしない
                   } else {
-                    val chkCarTagIdInf = carDAO.selectCarTagCheck(super.getCurrentPlaceId, f.inputCarId.toInt, f.inputCarKeyBtxId.toInt)
+                    val chkCarTagIdInf = carDAO.selectCarTagCheck(super.getCurrentPlaceId, carId = Option(f.inputCarId.toInt), f.inputCarKeyBtxId.toInt)
                     if(chkCarTagIdInf.length > 0) {
                       errMsg :+= Messages("error.cms.CarManage.update.inputCarKeyBtxId.duplicate", btxId._2)
                     }
@@ -197,7 +197,7 @@ class CarManage @Inject()(config: Configuration
                   if (f.inputCarBtxId.toInt == preCarInfo.itemCarKeyBtxId) {
                     // 作業車Txに変更前の鍵Txを登録する、且つ鍵Txが変更されている場合は何もしない
                   } else {
-                    val chkCarTagIdInf = carDAO.selectCarTagCheck(super.getCurrentPlaceId, f.inputCarId.toInt, f.inputCarBtxId.toInt)
+                    val chkCarTagIdInf = carDAO.selectCarTagCheck(super.getCurrentPlaceId, carId = Option(f.inputCarId.toInt), f.inputCarBtxId.toInt)
                     if(chkCarTagIdInf.length > 0) {
                       errMsg :+= Messages("error.cms.CarManage.update.inputCarBtxId.duplicate", btxId._2)
                     }

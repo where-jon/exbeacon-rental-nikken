@@ -213,7 +213,7 @@ class itemCarDAO @Inject()(dbapi: DBApi) {
     * 作業車・立馬情報TagIDチェック用
     * @return
     */
-  def selectCarTagCheck(placeId: Int, carId: Int, chkTagId: Int): Seq[ItemCar] = {
+  def selectCarTagCheck(placeId: Int, carId: Option[Int] = None, chkTagId: Int): Seq[ItemCar] = {
 
     db.withConnection { implicit connection =>
       val selectPh =
@@ -236,9 +236,11 @@ class itemCarDAO @Inject()(dbapi: DBApi) {
         """
 
       var wherePh = """ where p.place_id = {placeId} """
-          wherePh += s""" and c.item_car_id <> ${carId} """
-          wherePh += s""" and (c.item_car_btx_id = ${chkTagId} """
-          wherePh += s""" or c.item_car_key_btx_id = ${chkTagId}) """
+      if(carId != None){
+        wherePh += s""" and c.item_car_id <> ${carId.get} """
+      }
+      wherePh += s""" and (c.item_car_btx_id = ${chkTagId} """
+      wherePh += s""" or c.item_car_key_btx_id = ${chkTagId}) """
 
       val orderPh =
         """
