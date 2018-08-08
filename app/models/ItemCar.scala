@@ -197,9 +197,6 @@ class itemCarDAO @Inject()(dbapi: DBApi) {
         """
 
       var wherePh = """ where p.place_id = {placeId} """
-      if(carNo.isEmpty == false){
-        wherePh += s""" and c.item_car_no = '${carNo}' """
-      }
       if(carId != None){
         wherePh += s""" and c.item_car_id = ${carId.get} """
       }
@@ -212,6 +209,47 @@ class itemCarDAO @Inject()(dbapi: DBApi) {
     }
   }
 
+  /**
+    * 作業車・立馬情報TagIDチェック用
+    * @return
+    */
+  def selectCarTagCheck(placeId: Int, carId: Option[Int] = None, chkTagId: Int): Seq[ItemCar] = {
+
+    db.withConnection { implicit connection =>
+      val selectPh =
+        """
+          select
+                c.item_car_id
+              , c.item_type_id
+              , c.note
+              , c.item_car_no
+              , c.item_car_name
+              , c.item_car_btx_id
+              , c.item_car_key_btx_id
+              , c.place_id
+          from
+            place_master p
+            inner join item_car_master c
+              on p.place_id = c.place_id
+              and p.active_flg = true
+              and c.active_flg = true
+        """
+
+      var wherePh = """ where p.place_id = {placeId} """
+      if(carId != None){
+        wherePh += s""" and c.item_car_id <> ${carId.get} """
+      }
+      wherePh += s""" and (c.item_car_btx_id = ${chkTagId} """
+      wherePh += s""" or c.item_car_key_btx_id = ${chkTagId}) """
+
+      val orderPh =
+        """
+          order by
+            c.item_car_id
+        """
+      SQL(selectPh + wherePh + orderPh).on('placeId -> placeId).as(simple.*)
+    }
+  }
 
   /**
     * 作業車・立馬の削除
@@ -367,24 +405,6 @@ class itemCarDAO @Inject()(dbapi: DBApi) {
   def update(carId:Int, carNo: String, carName: String, carBtxId:Int, carKeyBtxId:Int, itemTypeId:Int, note:String, placeId:Int,
              oldBtxId:Int, oldCarKeyBtxId:Int): Unit = {
     db.withTransaction { implicit connection =>
-
-//      // 古い情報でのBTXマスタ更新リスト
-//      val oldBtxList = Seq[Int](oldBtxId, oldCarKeyBtxId)
-//      // 削除
-//      SQL(
-//        """
-//          delete from btx_master where btx_id in ({btxIdList}) ;
-//        """)
-//        .on('btxIdList -> oldBtxList).executeUpdate()
-//
-//      // 新しい情報でのBTXマスタ更新リスト
-//      val newBtxList = Seq[Int](carBtxId, carKeyBtxId)
-//
-//      // 登録
-//      newBtxList.foreach( btxId =>{
-//        SQL("""insert into btx_master (btx_id, place_id) values ({btxId}, {placeId})""")
-//          .on('btxId -> btxId, 'placeId -> placeId).executeInsert()
-//      })
 
       var noteText: String = "note"
       if(!note.isEmpty){
