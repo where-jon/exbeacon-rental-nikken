@@ -192,5 +192,58 @@ class UserDAO @Inject() (dbapi: DBApi) {
     }
   }
 
+  def insert(user: User): Future[User] = {
+    Future.successful(
+      db.withConnection { implicit connection =>
+        val sql = SQL("""
+            INSERT INTO user_master (
+              user_id,
+              email, name, password,
+              place_id, current_place_id, active_flg,
+              updatetime, permission
+            ) VALUES (
+              (SELECT COALESCE(MAX(user_id), 0) AS user_id FROM user_master) + 1,
+              {email}, {name}, {password},
+              {place_id}, {current_place_id}, true,
+              now(), {permission}
+            )
+          """).on(
+          'email -> user.email,
+          'name -> user.name,
+          'password -> user.password,
+          'place_id -> user.placeId,
+          'current_place_id -> user.currentPlaceId,
+          'permission -> user.level
+        )
+        sql.executeUpdate()
+        val newUser = User(user.id
+          , user.email
+          , true
+          , user.password
+          , user.name
+          , user.placeId
+          , user.currentPlaceId
+          , (user.placeId == None)
+          , user.level
+          , user.services)
+        User.update(Some(newUser)).get
+      }
+    )
+  }
+
+  def deleteLogicalByPlaceId(placeId: Int) = {
+    Future.successful(
+      db.withConnection { implicit connection =>
+        val sql = SQL("""
+            UPDATE user_master
+            SET active_flg = false, updatetime = now()
+            where place_id = {placeId} AND permission = 3
+          """).on(
+          'placeId -> placeId
+        )
+        sql.executeUpdate()
+      }
+    )
+  }
 
 }

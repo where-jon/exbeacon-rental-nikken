@@ -11,4 +11,6 @@ class UserService @Inject() (userDAO: models.UserDAO) extends IdentityService[Us
   def retrieve(loginInfo: LoginInfo): Future[Option[User]] = userDAO.findByEmail(loginInfo)
   def save(user: User): Future[User] = userDAO.save(user)
   def selectSuperUserList(): Seq[User] = userDAO.selectSuperUserList()
+  def insert(user: User): Future[User] = userDAO.insert(user)
+  def deleteLogicalByPlaceId(placeId: Int) = userDAO.deleteLogicalByPlaceId(placeId)
 }

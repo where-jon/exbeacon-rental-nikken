@@ -240,7 +240,7 @@ class placeDAO @Inject() (dbapi: DBApi) {
               COALESCE(u.name, '-') AS user_name
           FROM place_master pm
             LEFT OUTER JOIN floor_master f ON pm.place_id = f.place_id
-            LEFT OUTER JOIN user_master u ON pm.place_id = u.place_id AND u.permission = 4
+            LEFT OUTER JOIN user_master u ON pm.place_id = u.current_place_id AND u.permission = 3
           WHERE pm.active_flg = true
           GROUP BY pm.place_id, pm.place_name, pm.status, u.email, u.name
           ORDER BY ${PlaceEnum().sortTypeMap(sortType)}"""
@@ -291,6 +291,52 @@ class placeDAO @Inject() (dbapi: DBApi) {
 
       // SQL実行
       val placeId: Option[Long] = sql.executeInsert()
+      // コミット
+      connection.commit()
+
+      Logger.debug("現場を新規登録、ID：" + placeId.get.toString)
+
+      placeId.get.toInt
+    }
+  }
+
+  /**
+    * 現場の新規登録
+    * @return
+    */
+  def insertEx(placeEx: PlaceEx): Int = {
+    db.withTransaction { implicit connection =>
+      // 新規IDを求める
+      val maxId = db.withConnection { implicit connection =>
+        val query = "SELECT MAX(place_id) FROM place_master"
+        SQL(query).on().as(scalar[Long].single)
+      }
+      var nextId = maxId.toInt + 1
+
+      // パラメータのセット
+      val params: Seq[NamedParameter] = Seq(
+        "placeId" -> nextId,
+        "placeName" -> placeEx.placeName
+      )
+
+      // INSERT
+      var sql = SQL(
+        """
+          INSERT INTO place_master (
+            place_id, place_name, status,
+            btx_api_url, exb_telemetry_url, gateway_telemetry_url, cms_password,
+            active_flg, updatetime
+          ) VALUES (
+            {placeId}, {placeName}, 0,
+            '-', '-', '-', 'password',
+            true, now()
+          )
+        """
+      ).on(params:_*)
+
+      // SQL実行
+      val placeId: Option[Long] = sql.executeInsert()
+
       // コミット
       connection.commit()
 

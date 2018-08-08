@@ -1,17 +1,18 @@
 package controllers.cms
 
 import javax.inject.{Inject, Singleton}
-
-import com.mohiva.play.silhouette.api.Silhouette
+import com.mohiva.play.silhouette.api.{LoginInfo, Silhouette}
+import com.mohiva.play.silhouette.api.repositories.AuthInfoRepository
+import com.mohiva.play.silhouette.api.util.PasswordHasherRegistry
 import controllers.BaseController
 import controllers.site
-import models.PlaceEnum
+import models.{PlaceEnum, PlaceEx, User}
 import play.api._
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.data.Forms.mapping
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
-import utils.silhouette.MyEnv
+import utils.silhouette.{MyEnv, UserService}
 
 
 /**
@@ -23,7 +24,13 @@ import utils.silhouette.MyEnv
 // フォーム定義
 case class PlaceChangeForm(inputPlaceId: String)
 case class CmsLoginForm(inputPlaceId: String, inputCmsLoginPassword: String, inputReturnPath:String)
-case class PlaceRegisterForm(placeName: String)
+case class PlaceRegisterForm(
+  placeName: String, // 現場名
+  placeUserId: String, // 現場担当者ID
+  placeUserName: String, // 現場担当者名
+  placeUserPassword1: String, // パスワード
+  placeUserPassword2: String // 確認用パスワード
+)
 case class PlaceUpdateForm(inputPlaceId: String, inputPlaceName: String, inputPlaceStatus: String)
 case class PasswordUpdateForm(inputPlaceId: String, inputPassword: String, inputRePassword: String)
 case class PlaceDeleteForm(deletePlaceId: String)
@@ -36,7 +43,9 @@ class PlaceManage @Inject() (
   val messagesApi: MessagesApi,
   placeDAO: models.placeDAO,
   floorDAO: models.floorDAO,
-  exbDAO: models.exbModelDAO
+  exbDAO: models.exbModelDAO,
+  passwordHasherRegistry: PasswordHasherRegistry,
+  userService: UserService
 ) extends BaseController with I18nSupport {
 
   /** 選択されている並び順 */
@@ -147,12 +156,30 @@ class PlaceManage @Inject() (
     }
   }
 
+//  placeName: String, // 現場名
+//  placeUserId: String, // 現場担当者ID
+//  placeUserName: String, // 現場担当者名
+//  placeUserPassword1: String, // パスワード
+//  placeUserPassword2: String // 確認用パスワード
+
   /** 登録 */
   def register = SecuredAction { implicit request =>
     // フォームの準備
-    val inputForm = Form(mapping(
-      "placeName" -> text.verifying(Messages("error.cms.PlaceManage.register.inputPlaceName.empty"), {!_.isEmpty})
-    )(PlaceRegisterForm.apply)(PlaceRegisterForm.unapply))
+    val inputForm = Form(
+      mapping(
+        "placeName" -> text.verifying(Messages("error.cms.PlaceManage.register.inputPlaceName.empty"), {!_.isEmpty}),
+        "placeUserId" -> text.verifying(Messages("error.cms.PlaceManage.register.inputPlaceUserId.empty"), {!_.isEmpty}),
+        "placeUserName" -> text.verifying(Messages("error.cms.PlaceManage.register.inputPlaceUserName.empty"), {!_.isEmpty}),
+        "placeUserPassword1" -> text.verifying(Messages("error.cms.PlaceManage.passwordUpdate.inputPassword.empty"), {!_.isEmpty}),
+        "placeUserPassword2" -> text.verifying(Messages("error.cms.PlaceManage.passwordUpdate.inputRePassword.empty"), {!_.isEmpty})
+      )
+      (PlaceRegisterForm.apply)
+      (PlaceRegisterForm.unapply)
+      verifying (
+        Messages("error.cms.PlaceManage.passwordUpdate.notEqual"),
+        form => form.placeUserPassword1 == form.placeUserPassword2
+      )
+    )
 
     // フォームの取得
     val form = inputForm.bindFromRequest
@@ -163,7 +190,24 @@ class PlaceManage @Inject() (
       Redirect(routes.PlaceManage.sortPlaceListWith(selectedSortType)).flashing(ERROR_MSG_KEY -> errMsg)
     }else{
       // DB登録
-      placeDAO.insert(form.get.placeName)
+      val placeEx = PlaceEx.apply(0, form.get.placeName, 0, 0, "", "", "", "", "", "", "")
+      val placeId = placeDAO.insertEx(placeEx)
+      System.out.println("new placeId=" + placeId)
+      val hs = passwordHasherRegistry.current.hash(form.get.placeUserPassword1)
+      System.out.println("hs=" + hs.password)
+      val user = User.apply(
+        Option(0),
+        form.get.placeUserId,
+        true,
+        hs.password,
+        form.get.placeUserName,
+        Option(placeId),
+        Option(placeId),
+        true,
+        3,
+        null
+      )
+      userService.insert(user)
 
       Redirect(routes.PlaceManage.sortPlaceListWith(selectedSortType)).flashing(SUCCESS_MSG_KEY -> Messages("success.cms.PlaceManage.register"))
     }
@@ -247,6 +291,7 @@ class PlaceManage @Inject() (
       val f = form.get
       // DB処理
       placeDAO.deleteLogicalById(f.deletePlaceId.toInt)
+      userService.deleteLogicalByPlaceId(f.deletePlaceId.toInt)
 
       // 現場一覧の方にリダイレクト
       Redirect(routes.PlaceManage.sortPlaceListWith(selectedSortType)).flashing(SUCCESS_MSG_KEY -> Messages("success.cms.PlaceManage.delete"))
