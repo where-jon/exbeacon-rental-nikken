@@ -30,12 +30,16 @@ case class PlaceRegisterForm(
   placeUserPassword1: String, // パスワード
   placeUserPassword2: String // 確認用パスワード
 )
-case class PlaceUpdateForm(inputPlaceId: String, inputPlaceName: String, inputPlaceStatus: String)
+case class PlaceUpdateForm(
+  placeId: String,
+  placeName: String,
+  placeStatus: String
+)
 case class PasswordUpdateForm(
-  inputPlaceId: String,
-  inputUserId: String,
-  inputPassword: String,
-  inputRePassword: String
+  placeId: String,
+  userId: String,
+  password1: String,
+  password2: String
 )
 case class PlaceDeleteForm(deletePlaceId: String)
 case class PlaceSortForm(placeSortId: String)
@@ -78,8 +82,8 @@ class PlaceManage @Inject() (
   def sortPlaceListWith(sortType:Int = 0) = SecuredAction { implicit request =>
     if (securedRequest2User.isSysMng) {
       val placeList = placeDAO.selectPlaceListWithSortTypeEx(sortType)
-      selectedSortType = sortType
-      Ok(views.html.cms.placeManage(placeList))
+      val statusList = PlaceEnum().map
+      Ok(views.html.cms.placeManage(placeList, statusList))
     } else {
       if (super.isCmsLogged) {
         // シス管でなければ登録されている現場の管理画面へ遷移
@@ -175,7 +179,6 @@ class PlaceManage @Inject() (
         form => form.placeUserPassword1 == form.placeUserPassword2
       )
     )
-
     // フォームの取得
     val form = inputForm.bindFromRequest
     if (form.hasErrors){
@@ -203,9 +206,9 @@ class PlaceManage @Inject() (
   def update = SecuredAction { implicit request =>
     // フォームの準備
     val inputForm = Form(mapping(
-        "inputPlaceId" -> text
-      , "inputPlaceName" -> text.verifying(Messages("error.cms.PlaceManage.register.inputPlaceName.empty"), {!_.isEmpty})
-      , "inputPlaceStatus" -> text.verifying(Messages("error.cms.PlaceManage.register.inputPlaceStatus.empty"), {!_.isEmpty})
+        "placeId" -> text
+      , "placeName" -> text.verifying(Messages("error.cms.PlaceManage.register.inputPlaceName.empty"), {!_.isEmpty})
+      , "placeStatus" -> text.verifying(Messages("error.cms.PlaceManage.register.inputPlaceStatus.empty"), {!_.isEmpty})
     )(PlaceUpdateForm.apply)(PlaceUpdateForm.unapply))
 
     // フォームの取得
@@ -214,14 +217,14 @@ class PlaceManage @Inject() (
       // エラーメッセージ
       val errMsg = form.errors.map(_.message).mkString(HTML_BR)
       // リダイレクトで画面遷移
-      Redirect(routes.PlaceManage.detail()).flashing(ERROR_MSG_KEY -> errMsg)
+      Redirect(routes.PlaceManage.sortPlaceListWith(selectedSortType)).flashing(ERROR_MSG_KEY -> errMsg)
     }else{
       val f = form.get
       // DB登録
-      placeDAO.updateById(f.inputPlaceId.toInt, f.inputPlaceName, f.inputPlaceStatus.toInt)
+      placeDAO.updateById(f.placeId.toInt, f.placeName, f.placeStatus.toInt)
 
-      Redirect(s"""${routes.PlaceManage.detail().path()}?${KEY_PLACE_ID}=${f.inputPlaceId}""")
-        .flashing(SUCCESS_MSG_KEY -> Messages("success.cms.PlaceManage.update"))
+      Redirect(routes.PlaceManage.sortPlaceListWith(selectedSortType))
+        .flashing(SUCCESS_MSG_KEY -> Messages("success.cms.PlaceManage.register"))
     }
   }
 
@@ -229,12 +232,11 @@ class PlaceManage @Inject() (
   def passwordUpdate = SecuredAction { implicit request =>
     // フォームの準備
     val inputForm = Form(mapping(
-        "inputPlaceId" -> text,
-        "inputUserId" -> text,
-        "inputPassword" -> text.verifying(Messages("error.cms.PlaceManage.passwordUpdate.inputPassword.empty"), {!_.isEmpty})
-      , "inputRePassword" -> text.verifying(Messages("error.cms.PlaceManage.passwordUpdate.inputRePassword.empty"), {!_.isEmpty})
+        "placeId" -> text,
+        "userId" -> text,
+        "password1" -> text.verifying(Messages("error.cms.PlaceManage.passwordUpdate.inputPassword.empty"), {!_.isEmpty})
+      , "password2" -> text.verifying(Messages("error.cms.PlaceManage.passwordUpdate.inputRePassword.empty"), {!_.isEmpty})
     )(PasswordUpdateForm.apply)(PasswordUpdateForm.unapply))
-
     // フォームの取得
     val form = inputForm.bindFromRequest
     if (form.hasErrors){
@@ -244,20 +246,16 @@ class PlaceManage @Inject() (
       Redirect(routes.PlaceManage.detail()).flashing(ERROR_MSG_KEY -> errMsg)
     }else{
       val f = form.get
-      if(f.inputPassword != f.inputRePassword){
-        Redirect(routes.PlaceManage.detail()).flashing(ERROR_MSG_KEY -> Messages("error.cms.PlaceManage.passwordUpdate.notEqual"))
+      if(f.password1 != f.password2){
+        Redirect(routes.PlaceManage.sortPlaceListWith(selectedSortType)).flashing(ERROR_MSG_KEY -> Messages("error.cms.PlaceManage.passwordUpdate.notEqual"))
       }else{
         // DB登録
         //placeDAO.updatePassword(f.inputPlaceId.toInt, f.inputPassword)
-        val hs = passwordHasherRegistry.current.hash(form.get.inputPassword)
-        val user = User.apply(
-          Option(0), form.get.inputUserId, true, hs.password, "",
-          Option(0), Option(0),
-          true, 3, null
-        )
-        userService.save(user);
-        Redirect(s"""${routes.PlaceManage.detail().path()}?${KEY_PLACE_ID}=${f.inputPlaceId}""")
-          .flashing(SUCCESS_MSG_KEY -> Messages("success.cms.PlaceManage.passwordUpdate"))
+        val hs = passwordHasherRegistry.current.hash(form.get.password1)
+        userService.changePasswordByEmail(form.get.userId, hs.password)
+
+        Redirect(routes.PlaceManage.sortPlaceListWith(selectedSortType))
+          .flashing(SUCCESS_MSG_KEY -> Messages("success.cms.PlaceManage.register"))
       }
     }
   }
