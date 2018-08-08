@@ -8,22 +8,6 @@ import play.api.Logger
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, Json, Reads}
 
-//case class roomPosition(
-//  room_id: String,
-//  room_name: String,
-//  description: String
-//)
-//object roomPosition {
-//
-//  implicit val jsonReads: Reads[roomPosition] = (
-//      ((JsPath \ "room_id").read[String] | Reads.pure("")) ~
-//      ((JsPath \ "room_name").read[String] | Reads.pure(""))~
-//      ((JsPath \ "description").read[String] | Reads.pure(""))
-//    )(roomPosition.apply _)
-//
-//  implicit def jsonWrites = Json.writes[roomPosition]
-//}
-
 case class PlaceEnum(
   map: Map[Int,String] = Map[Int,String](
     0 -> "施工前",
@@ -32,7 +16,11 @@ case class PlaceEnum(
   ),
   sortTypeMap: Map[Int,String] = Map[Int,String](
     0 -> "pm.place_id",
-    1 -> "pm.updatetime"
+    1 -> "pm.updatetime",
+    2 -> "pm.place_name",
+    3 -> "pm.status",
+    4 -> "user_email",
+    5 -> "user_name"
   )
 )
 
@@ -117,6 +105,56 @@ class placeDAO @Inject() (dbapi: DBApi) {
             , pm.status
           order by
             pm.place_id
+        """
+      SQL(selectPh + groupPh).as(list.*)
+    }
+  }
+
+  def selectPlaceExList(placeIdList: Seq[Int] = Seq[Int]()): Seq[PlaceEx] = {
+    val list = {
+      get[Int]("place_id") ~
+        get[String]("place_name") ~
+        get[Int]("floor_count") ~
+        get[Int]("status") ~
+        get[String]("btx_api_url") ~
+        get[String]("cms_password") ~
+        get[String]("user_email") ~
+        get[String]("user_name") map {
+        case place_id ~ place_name ~ floor_count ~ status ~ btx_api_url ~ cms_password ~ user_email ~ user_name =>
+          val statusName = PlaceEnum().map(status)
+          PlaceEx(place_id, place_name, floor_count, status, statusName,
+            btx_api_url, btx_api_url, btx_api_url, cms_password, user_email, user_name)
+      }
+    }
+    db.withConnection { implicit connection =>
+      var selectPh =
+        s"""
+          SELECT
+            pm.place_id AS place_id,
+            pm.place_name AS place_name,
+            count(f.floor_id) AS floor_count,
+            pm.status AS status,
+            pm.btx_api_url AS btx_api_url,
+            pm.cms_password AS cms_password,
+            COALESCE(u.email, '-') AS user_email,
+            COALESCE(u.name, '-') AS user_name
+          FROM place_master pm
+            LEFT OUTER JOIN floor_master f ON pm.place_id = f.place_id
+            LEFT OUTER JOIN user_master u ON pm.place_id = u.current_place_id AND u.permission = 3
+            WHERE pm.active_flg = true
+        """
+      if(placeIdList.isEmpty == false){
+        selectPh += s""" AND pm.place_id in (${placeIdList.mkString(",")})"""
+      }
+      val groupPh =
+        s"""
+          GROUP BY
+            pm.place_id,
+            pm.place_name,
+            pm.status,
+            u.email,
+            u.name
+          ORDER BY pm.place_id
         """
       SQL(selectPh + groupPh).as(list.*)
     }

@@ -215,6 +215,10 @@ lang.cms.placeManage.delete.popup.title=現場情報削除
 lang.cms.placeManage.delete.popup.message=建設現場の情報を削除します。\nよろしいですか？
 lang.cms.placeManage.sort.id=ID順
 lang.cms.placeManage.sort.updatetime=登録順
+lang.cms.placeManage.sort.placeName=建築現場名称順
+lang.cms.placeManage.sort.status=状態順
+lang.cms.placeManage.sort.user_email=現場担当者ID順
+lang.cms.placeManage.sort.user_name=現場担当者名順
 lang.cms.placeManage.list.header.title=建築現場一覧
 lang.cms.placeManage.list.header.id=ID
 lang.cms.placeManage.list.header.placeName=建設現場名称
@@ -224,6 +228,8 @@ lang.cms.placeManage.list.header.userId=現場担当者ID
 lang.cms.placeManage.list.header.userName=現場担当者名
 
 # CMS文字列（現場管理）
+lang.cms.placeManage.title=テナント管理
+lang.cms.placeManage.place.title=テナント管理
 lang.cms.placeManage.tabName=現場管理
 lang.cms.placeManage.detail.returnManage=現場一覧画面に戻る
 lang.cms.placeManage.place.list.header.title=現場管理

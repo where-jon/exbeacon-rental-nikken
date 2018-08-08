@@ -6,7 +6,7 @@
 <!doctype html>
 <html lang="ja">
 <head>
-    @templates.htmlHead(title = Messages("lang.cms.placeManage.tabName"))
+    @templates.htmlHead(title = Messages("lang.cms.placeManage.place.title"))
     <link rel="stylesheet" href="@routes.MyAssets.css("cms/placeManage.css")"/>
     <script type="text/javascript" src="@routes.MyAssets.lib("jquery.tablefix_1.0.1.js")"></script>
     <script></script>
@@ -27,22 +27,24 @@
                     @Messages("placeManage.title")
                     <div class="pull-right">
                         <a href="@controllers.cms.routes.PlaceManage.sortPlaceListWith(0).path" class="btn sortBtn">@Messages("lang.cms.placeManage.sort.id")</a>
-                    </div>
-                    <div class="pull-right">
                         <a href="@controllers.cms.routes.PlaceManage.sortPlaceListWith(1).path" class="btn sortBtn">@Messages("lang.cms.placeManage.sort.updatetime")</a>
+                        <a href="@controllers.cms.routes.PlaceManage.sortPlaceListWith(2).path" class="btn sortBtn" style="width:150px">@Messages("lang.cms.placeManage.sort.placeName")</a>
+                        <a href="@controllers.cms.routes.PlaceManage.sortPlaceListWith(3).path" class="btn sortBtn">@Messages("lang.cms.placeManage.sort.status")</a>
+                        <a href="@controllers.cms.routes.PlaceManage.sortPlaceListWith(4).path" class="btn sortBtn" style="width:150px">@Messages("lang.cms.placeManage.sort.user_email")</a>
+                        <a href="@controllers.cms.routes.PlaceManage.sortPlaceListWith(5).path" class="btn sortBtn" style="width:150px">@Messages("lang.cms.placeManage.sort.user_name")</a>
                     </div>
                 </div>
                 <!-- テーブルのROW -->
                 <div class="row tableRow">
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="padding:0;">
-                        <div id="table-responsive-body">
+                        <div class="table-responsive-body">
                             <table id ="itemTable" class="table table-bordered table-condensed itemTable">
                                 <thead>
                                     <tr>
                                         <th colspan="6" class="tableTitleTh">@Messages("lang.cms.placeManage.list.header.title")</th>
                                     </tr>
                                     <tr>
-                                        <th class="tableTh noTh text-center">@Messages("lang.cms.placeManage.list.header.id")</th>
+                                        <th class="tableTh noTh">@Messages("lang.cms.placeManage.list.header.id")</th>
                                         <th class="tableTh placeNameTh">@Messages("lang.cms.placeManage.list.header.placeName")</th>
                                         <th class="tableTh floorCountTh">@Messages("lang.cms.placeManage.list.header.floor")</th>
                                         <th class="tableTh stateTh">@Messages("lang.cms.placeManage.list.header.status")</th>
