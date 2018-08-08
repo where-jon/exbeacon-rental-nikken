@@ -449,6 +449,7 @@ lang.btn.update = 更新
 lang.btn.delete = 削除
 lang.btn.reload = 再表示
 lang.btn.show = 表示
+lang.btn.csv.export = CSV
 
 
 lang.deviceID = 端末ID
@@ -465,8 +466,10 @@ lang.site.workPlace.page.maxDevice=3個以上
 lang.site.unDetected.page.title=未検出の仮設材
 
 
-# 作業車動線（分析）
-lang.analysis.movementCar.page.title=作業車動線分析
+# 作業車稼働状況分析（分析）
+lang.analysis.movementCar.page.title=作業車稼働状況分析
+error.analysis.movementCar.csvExport=csv出力に問題が発生しました。
+
 
 # GateWay
 lang.analysis.gateway.page.title=GW状態監視
@@ -479,6 +482,7 @@ error.site.carReserve.update=作業車・立馬予約に問題が発生しまし
 error.site.carReserve.noselect=予約対象未選択
 
 lang.site.carCancel.page.title=作業車・立馬予約取消
+lang.site.carCancel.page.delete=選択された作業車・立馬予約を取消します。
 success.site.carCancel.cancel=作業車・立馬予約取消を完了しました。
 error.site.carCancel.cancel=作業車・立馬予約取消に問題が発生しました。<br/>
 error.site.carCancel.noselect=予約対象未選択
@@ -490,6 +494,7 @@ success.site.carCancel.remove=作業車・立馬取消を完了しました。
 lang.site.otherMaster.page.title=その他仮設材一覧
 lang.site.otherReserve.page.title=その他仮設材予約
 lang.site.otherCancel.page.title=その他仮設材予約取消
+lang.site.otherCancel.page.delete=選択されたその他仮設材予約を取消します。
 success.site.otherReserve.update=その他仮設材予約を完了しました。
 error.site.otherReserve.update=その他仮設材予約に問題が発生しました。
 success.site.otherCancel.remove=その他仮設材予約取消を完了しました。
