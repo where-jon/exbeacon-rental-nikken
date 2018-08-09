@@ -331,17 +331,17 @@ class itemOtherDAO @Inject()(dbapi: DBApi) {
       // パラメータのセット
       val params: Seq[NamedParameter] = Seq(
         "ItemOtherNo" -> ItemOtherNo
+        ,"ItemTypeId" -> ItemTypeId
         ,"ItemOtherName" -> ItemOtherName
         ,"ItemOtherBtxId" -> ItemOtherBtxId
-        ,"placeId" -> placeId
-        ,"ItemTypeId" -> ItemTypeId
         ,"ItemOtherNote" -> ItemOtherNote
+        ,"placeId" -> placeId
       )
       // クエリ
       val sql = SQL(
         """
-          insert into item_other_master (item_other_no,item_type_id, item_other_name, ItemOtherBtxId, note, place_id)
-          values ({ItemOtherNo}, {ItemTypeId}, {ItemOtherName}, {ItemOtherBtxId}, {note}, {placeId})
+          insert into item_other_master (item_other_no,item_type_id, item_other_name, item_other_btx_id, note, place_id)
+          values ({ItemOtherNo}, {ItemTypeId}, {ItemOtherName}, {ItemOtherBtxId}, {ItemOtherNote}, {placeId})
         """)
         .on(params:_*)
 

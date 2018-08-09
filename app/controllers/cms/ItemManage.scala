@@ -1,10 +1,10 @@
 package controllers.cms
 
 import javax.inject.{Inject, Singleton}
-
 import com.mohiva.play.silhouette.api.Silhouette
 import controllers.BaseController
 import controllers.site
+import models.ItemType
 import play.api._
 import play.api.data.Form
 import play.api.data.Forms._
@@ -30,6 +30,7 @@ case class ItemUpdateForm(
   , inputItemOtherName: String
   , inputItemNote: String
   , inputItemTypeName: String
+  , inputItemTypeId: String
 )
 
 @Singleton
@@ -37,10 +38,12 @@ class ItemManage @Inject()(config: Configuration
                            , val silhouette: Silhouette[MyEnv]
                            , val messagesApi: MessagesApi
                            , itemOtherDAO: models.itemOtherDAO
-//                           , itemDAO: models.itemDAO
-//                           , btxDAO: models.btxDAO
+                           , itemDAO: models.itemDAO
                            , itemTypeDAO:models.ItemTypeDAO
                                ) extends BaseController with I18nSupport {
+
+  var ITEM_TYPE_FILTER = 0;
+  var itemTypeList :Seq[ItemType] = Seq.empty; // 仮設材種別
 
   /** 初期表示 */
   def index = SecuredAction { implicit request =>
@@ -49,13 +52,20 @@ class ItemManage @Inject()(config: Configuration
       // 選択された現場の現場ID
       val placeId = super.getCurrentPlaceId
       // 仮設材情報
-//      val itemList = itemDAO.selectItemInfo(placeId)
+      getSearchData(placeId)
+
       // その他仮設材情報
       val itemOtherList = itemOtherDAO.selectOtherMasterInfo(placeId)
-      Ok(views.html.cms.itemManage(itemOtherList, placeId))
+      Ok(views.html.cms.itemManage(ITEM_TYPE_FILTER, itemOtherList, itemTypeList, placeId))
     }else {
       Redirect(site.routes.WorkPlace.index)
     }
+  }
+
+  /** 　検索側データ取得 */
+  def getSearchData(_placeId:Integer): Unit = {
+    /*仮設材種別取得*/
+    itemTypeList = itemTypeDAO.selectItemOtherInfo(_placeId);
   }
 
   /** 更新 */
@@ -70,6 +80,7 @@ class ItemManage @Inject()(config: Configuration
       , "inputItemOtherName" -> text.verifying(Messages("error.cms.ItemManage.update.inputItemOtherName.empty"), {!_.isEmpty})
       , "inputItemNote" -> text
       , "inputItemTypeName" -> text.verifying(Messages("error.cms.ItemManage.update.inputItemTypeName.empty"), {!_.isEmpty})
+      , "inputItemTypeId" -> text.verifying(Messages("error.cms.ItemManage.update.inputItemTypeName.empty"),{_.matches("^[0-9]+$")})
     )(ItemUpdateForm.apply)(ItemUpdateForm.unapply))
 
     // フォームの取得
@@ -89,32 +100,26 @@ class ItemManage @Inject()(config: Configuration
 
       if(f.inputItemOtherId.isEmpty){
         // 新規登録
-        // その他仮設材重複チェック用
-        var dbItemNoList = itemOtherDAO.selectOtherInfo(super.getCurrentPlaceId, f.inputItemOtherNo)
-        dbItemNoList = dbItemNoList.filter(_.itemOtherId != f.inputItemOtherId.toInt)
-          .filter(_.itemOtherNo == f.inputItemOtherNo)
- //        if(dbItemNoList.length > 0){
- //          errMsg :+= Messages("error.cms.ItemManage.update.inputItemNo.duplicate", f.inputItemOtherNo)
- //        }
-
         // 作業車・立馬TxビーコンIDが存在しないか
         val itemOtherBtxList = itemOtherDAO.selectItemOtherBtxListBtxCheck(super.getCurrentPlaceId, f.inputItemOtherBtxId.toInt)
         if(itemOtherBtxList.length > 0){
           errMsg :+= Messages("error.cms.ItemManage.update.inputItemBtxId.use", f.inputItemOtherBtxId)
         }
 
-//        // 予約情報テーブルに作業車・立馬IDが存在していないか
-//        val itemOtherReserveList = itemOtherDAO.selectCarReserveCheck(super.getCurrentPlaceId, f.inputItemOtherId.toInt)
-//        if(itemOtherReserveList.length > 0){
-//          errMsg :+= Messages("error.cms.ItemManage.update.inputItemOtherIdReserve.use", f.inputItemOtherId)
-//        }
-
         if(errMsg.nonEmpty){
           // エラーで遷移
           Redirect(routes.ItemManage.index).flashing(ERROR_MSG_KEY -> errMsg.mkString(HTML_BR))
         }else{
+          var sss: Int = 0
+          sss = sss + 1
           // 登録の実行
-          itemOtherDAO.insert(f.inputItemOtherNo, f.inputItemOtherName, f.inputItemOtherBtxId.toInt, f.inputItemNote, itemTypeList.last.item_type_id, super.getCurrentPlaceId)
+          itemOtherDAO.insert(
+                            f.inputItemOtherNo,
+                            f.inputItemOtherName,
+                            f.inputItemOtherBtxId.toInt,
+                            f.inputItemNote,
+                            f.inputItemTypeId.toInt,
+                            super.getCurrentPlaceId)
 
           Redirect(routes.ItemManage.index)
             .flashing(SUCCESS_MSG_KEY -> Messages("success.cms.ItemManage.update"))
@@ -162,7 +167,7 @@ class ItemManage @Inject()(config: Configuration
                               f.inputItemOtherName,
                               f.inputItemOtherBtxId.toInt,
                               f.inputItemNote,
-                              itemTypeList.last.item_type_id,
+                              f.inputItemTypeId.toInt,
                               super.getCurrentPlaceId)
           // リダイレクト
           Redirect(routes.ItemManage.index)

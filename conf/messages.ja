@@ -109,6 +109,7 @@ error.cms.CarManage.update.NotTypeName=種別が存在しません。
 error.cms.ItemManage.update.inputItemOtherNo.empty=仮設材番号を半角数字で入力してください。
 error.cms.ItemManage.update.inputItemOtherBtxId.empty=TxタグNoを半角数字で入力してください。
 error.cms.ItemManage.update.inputItemTypeName.empty=種別を入力してください。
+error.cms.ItemManage.update.inputItemTypeName.empty=種別Idを入力してください。
 error.cms.ItemManage.update.inputItemOtherName.empty=名称を入力してください。
 error.cms.ItemManage.update.inputItemKindName.empty=仮設材名称を入力してください。
 error.cms.ItemManage.update.inputItemKindName.duplicate=仮設材名称が重複しています。

@@ -1,4 +1,4 @@
-@(itemList: Seq[ItemOtherViewer], placeId: Int)(implicit user: User, messages: Messages, request: RequestHeader, flash: Flash)
+@(ITEM_TYPE_FILTER: Int, itemList: Seq[ItemOtherViewer], itemTypeList: Seq[ItemType], placeId: Int)(implicit user: User, messages: Messages, request: RequestHeader, flash: Flash)
 
 @import controllers.routes
 @import helper._
@@ -48,6 +48,7 @@
                                         <tr class="rowColor rowHover" data-itemOtherId="@item.itemOtherId" id="@item.itemOtherId">
                                             <td class="itemTd text-center itemOtherBtxId">@{item.itemOtherBtxId}</td>
                                             <td class="itemTd text-center itemTypeName">@{item.itemTypeName}</td>
+                                            <td hidden class="itemTd text-center itemTypeId">@item.itemTypeId</td>
                                             <td class="itemTd text-center itemOtherName">@{item.itemOtherName}</td>
                                             <td class="itemTd text-center itemOtherId">@{item.itemOtherId}</td>
                                             <td class="itemTd text-center itemOtherNo">@{item.itemOtherNo}</td>
@@ -85,37 +86,41 @@
                     @CSRF.formField
                     <input type="hidden" name="inputPlaceId" value="@placeId">
                     <input type="hidden" id="inputItemOtherId" name="inputItemOtherId">
+                    <input type="hidden" id="inputItemTypeId" name="inputItemTypeId">
                     <div class="modal-header" style="">@Messages("lang.cms.itemManage.itemUpdate.popup.title")</div>
-                    <div class="modal-body">
-                        <div class="form-group">
-                            <label class="control-label col-xs-4">@Messages("lang.cms.itemManage.itemUpdate.popup.tagId")</label>
-                            <div class="col-xs-3" style="padding-left: 0px;padding-right: 0px;">
-                                <input type="text" id="inputItemOtherBtxId" name="inputItemOtherBtxId" class="form-control">
-                            </div>
+                    <div class="form-group" style="margin-top: 5px; margin-bottom: 5px;">
+                        <label class="control-label col-xs-4">@Messages("lang.cms.itemManage.itemUpdate.popup.type")</label>
+                        <select id="other_type" style="height: 30px; width: 220px;">
+                            <!--仮設材種別テーブルから検索フィルタを設置-->
+                            <option value="0"></option>
+                            @itemTypeList.zipWithIndex.map { case(itemType, i) =>
+                            <option value="@itemType.item_type_id">@itemType.item_type_name</option>
+                            }
+                        </select>
+                        <input class="hidden form-control input-sm" type="text" id="inputItemTypeName" name="inputItemTypeName" value="@ITEM_TYPE_FILTER">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 5px;">
+                        <label class="control-label col-xs-4">@Messages("lang.cms.itemManage.itemUpdate.popup.tagId")</label>
+                        <div class="col-xs-3" style="padding-left: 0px;padding-right: 0px; margin-right: 10px;">
+                            <input type="text" id="inputItemOtherBtxId" name="inputItemOtherBtxId" class="form-control">
                         </div>
-                        <div class="form-group" style="margin-bottom: 5px;">
-                            <label class="control-label col-xs-4">@Messages("lang.cms.itemManage.itemUpdate.popup.type")</label>
-                            <div class="col-xs-3" style="padding-left: 0px;padding-right: 0px;margin-right: 10px;">
-                                <input type="text" id="inputItemTypeName" name="inputItemTypeName" class="form-control">
-                            </div>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 5px;">
+                        <label class="control-label col-xs-4">@Messages("lang.cms.itemManage.itemUpdate.popup.name")</label>
+                        <div class="col-xs-3" style="padding-left: 0px;padding-right: 0px; margin-right: 10px;">
+                            <input type="text" id="inputItemOtherName" name="inputItemOtherName" class="form-control">
                         </div>
-                        <div class="form-group" style="margin-bottom: 5px;">
-                            <label class="control-label col-xs-4">@Messages("lang.cms.itemManage.itemUpdate.popup.name")</label>
-                            <div class="col-xs-3" style="padding-left: 0px;padding-right: 0px;margin-right: 10px;">
-                                <input type="text" id="inputItemOtherName" name="inputItemOtherName" class="form-control">
-                            </div>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 5px;">
+                        <label class="control-label col-xs-4">@Messages("lang.cms.itemManage.itemUpdate.popup.No")</label>
+                        <div class="col-xs-3" style="padding-left: 0px;padding-right: 0px;margin-right: 10px;">
+                            <input type="text" id="inputItemOtherNo" name="inputItemOtherNo" class="form-control">
                         </div>
-                        <div class="form-group" style="margin-bottom: 5px;">
-                            <label class="control-label col-xs-4">@Messages("lang.cms.itemManage.itemUpdate.popup.No")</label>
-                            <div class="col-xs-3" style="padding-left: 0px;padding-right: 0px;margin-right: 10px;">
-                                <input type="text" id="inputItemOtherNo" name="inputItemOtherNo" class="form-control">
-                            </div>
-                        </div>
-                        <div class="form-group" style="margin-bottom: 5px;">
-                            <label class="control-label col-xs-4">@Messages("lang.cms.itemManage.itemUpdate.popup.Note")</label>
-                            <div class="col-xs-3" style="padding-left: 0px;padding-right: 0px;margin-right: 10px;">
-                                <input type="text" id="inputItemNote" name="inputItemNote" class="form-control">
-                            </div>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 5px;">
+                        <label class="control-label col-xs-4">@Messages("lang.cms.itemManage.itemUpdate.popup.Note")</label>
+                        <div class="col-xs-3" style="padding-left: 0px;padding-right: 0px;margin-right: 10px;">
+                            <input type="text" id="inputItemNote" name="inputItemNote" class="form-control">
                         </div>
                     </div>
                     <div class="modal-footer">

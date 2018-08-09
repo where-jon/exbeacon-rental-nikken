@@ -83,6 +83,8 @@ function showInputModal(isRegister){
         $('#inputItemOtherName').val('');
         $('#inputItemNote').val('');
         $('#inputItemTypeName').val('');
+        $('#inputItemTypeId').val('');
+        $('#other_type').val("0");
         $('.cloned').remove();
         // ボタン表示の切り替え
         $('#itemUpdateFooter').addClass('hidden');
@@ -99,6 +101,7 @@ function showInputModal(isRegister){
             $('#inputItemOtherName').val($('#'+itemOtherId).find('.itemOtherName').text());
             $('#inputItemNote').val($('#'+itemOtherId).find('.itemOtherNote').text());
             $('#inputItemTypeName').val($('#'+itemOtherId).find('.itemTypeName').text());
+            $('#other_type').val($('#'+itemOtherId).find('.itemTypeId').text());
 
             // ボタン表示の切り替え
             $('#itemUpdateFooter').removeClass('hidden');
@@ -123,9 +126,40 @@ function deleteItemOtherId(){
     }
 }
 
+// 表示ボタンをクリックする時に発生するイベント
+function viewBtnEvent(){
+    var viewBtnElement = document.getElementById("itemUpdateFooter")
+        viewBtnElement.addEventListener('click', function(event) {
+            // itemTypeId結果をfromへ設定
+            var itemTypeFilterResult = $('#other_type option:selected').val();
+            $('#inputItemTypeId').val(itemTypeFilterResult);
+            var itemTypeNameFilterResult = $('#other_type option:selected').text();
+            $('#inputItemTypeName').val(itemTypeNameFilterResult);
+        });
+
+    var viewBtnElement = document.getElementById("itemRegisterFooter")
+        viewBtnElement.addEventListener('click', function(event) {
+            // itemTypeId結果をfromへ設定
+            var itemTypeFilterResult = $('#other_type option:selected').val();
+            $('#inputItemTypeId').val(itemTypeFilterResult);
+            var itemTypeNameFilterResult = $('#other_type option:selected').text();
+            $('#inputItemTypeName').val(itemTypeNameFilterResult);
+        });
+}
+
 $(function(){
+    var floorFrame = $('#other_type');
+        if(floorFrame!=null){
+            // 管理者用selectbox value取得
+            $('#other_type').change(function() {
+            var itemType = $('#other_type option:selected').val();
+        });
+    }
+
     // テーブルを固定
     fixTable();
+    // 表示ボタンをクリック
+    viewBtnEvent();
     // マウス操作とタップ操作をバインド
     bindMouseAndTouch();
 
