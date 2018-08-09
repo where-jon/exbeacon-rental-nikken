@@ -267,20 +267,22 @@ lang.cms.placeManage.changePassword.popup.name=パスワードを変更します
 
 
 # CMS文字列（フロア管理）
-lang.cms.floorManage.title=フロア管理画面
-lang.cms.floorManage.floor.list.header.title=フロア情報
-lang.cms.floorManage.floor.list.header.floorName=フロア名
-lang.cms.floorManage.floor.list.header.deviceNo=EXBeaconデバイスNo
+lang.cms.floorManage.title=フロア管理
 lang.cms.floorManage.floor.button.floorEdit=選択したフロアを編集
 lang.cms.floorManage.floor.button.addFloor=新規フロア追加
 lang.cms.floorManage.floor.button.deleteFloor=選択したフロアを削除
-lang.cms.floorManage.floorUpdate.popup.title=フロア情報更新
-lang.cms.floorManage.floorUpdate.popup.name=フロア名
-lang.cms.floorManage.floorUpdate.popup.name.placeholder=8F
-lang.cms.floorManage.floorUpdate.popup.deviceNo=EXBeaconデバイスNo
-lang.cms.floorManage.floorUpdate.popup.deviceNo.placeholder=半角数字のみ
-lang.cms.floorManage.floorDelete.popup.title=フロア情報削除
-lang.cms.floorManage.floorDelete.popup.message=フロア情報を削除します。\nよろしいですか？
+
+
+#lang.cms.floorManage.floor.list.header.title=フロア情報
+#lang.cms.floorManage.floor.list.header.floorName=フロア名
+#lang.cms.floorManage.floor.list.header.deviceNo=EXBeaconデバイスNo
+#lang.cms.floorManage.floorUpdate.popup.title=フロア情報更新
+#lang.cms.floorManage.floorUpdate.popup.name=フロア名
+#lang.cms.floorManage.floorUpdate.popup.name.placeholder=8F
+#lang.cms.floorManage.floorUpdate.popup.deviceNo=EXBeaconデバイスNo
+#lang.cms.floorManage.floorUpdate.popup.deviceNo.placeholder=半角数字のみ
+#lang.cms.floorManage.floorDelete.popup.title=フロア情報削除
+#lang.cms.floorManage.floorDelete.popup.message=フロア情報を削除します。\nよろしいですか？
 
 # CMS文字列（作業車・立馬管理）
 lang.cms.carManage.title=作業車・立馬管理
