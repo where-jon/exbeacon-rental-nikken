@@ -179,8 +179,8 @@ var gInitView = {
                 'touchstart': function(e) {
                     if(e.originalEvent.touches.length > 1){
                     }else if(e.originalEvent.touches.length == 1){
-                        $(".modalSelect").removeClass('modalSelect');
-                        $(this).addClass('modalSelect');
+                        $(".rowHoverSelectedColor").removeClass('rowHoverSelectedColor');
+                        $(this).addClass('rowHoverSelectedColor');
                     }
                 },
             });
@@ -194,8 +194,8 @@ var gInitView = {
                     $(this).removeClass('rowHoverColor');
                 },
                 'click': function(e) {
-                    $(".modalSelect").removeClass('modalSelect');
-                    $(this).addClass('modalSelect');
+                    $(".rowHoverSelectedColor").removeClass('rowHoverSelectedColor');
+                    $(this).addClass('rowHoverSelectedColor');
                 },
             });
         }
