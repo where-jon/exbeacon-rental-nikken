@@ -26,6 +26,8 @@ case class ItemCarReserveData(
 case class ItemCarCancelData(
   itemTypeIdList: List[Int],
   itemId: List[Int],
+  workTypeNameList: List[String],
+  reserveStartDateList: List[String],
   checkVal: List[Int]
 )
 

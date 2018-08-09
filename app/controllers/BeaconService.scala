@@ -1,5 +1,6 @@
 package controllers
-
+import java.text.SimpleDateFormat
+import java.util.{Calendar, Date, Locale}
 import java.time.format.DateTimeFormatter
 import java.time.{ZoneId, ZonedDateTime}
 import java.util.concurrent.TimeUnit
@@ -8,6 +9,7 @@ import javax.inject.Inject
 import akka.util.Timeout
 import models._
 import play.api.Configuration
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.libs.json._
 import play.api.libs.ws._
@@ -19,15 +21,56 @@ import scala.concurrent.duration.Duration
 
 class BeaconService @Inject() (config: Configuration,
                                ws: WSClient
+                               , val messagesApi: MessagesApi
                                , carDAO: models.itemCarDAO
                                ,exbDao:models.ExbDAO
                                ,otherDAO: models.itemOtherDAO
                                ,placeDAO: models.placeDAO
-                              ) extends Controller {
+                              ) extends Controller with I18nSupport{
   private[this] implicit val timeout = Timeout(300, TimeUnit.SECONDS)
   var POS_API_URL =""
   var GATEWAY_API_URL =""
   var TELEMETRY_API_URL =""
+
+ /** 予約の際現在時刻から予約に正しいかを判定する*/
+  def currentTimeReserveCheck (vStartDate:String,vWorkType:String): String = {
+     // 現在時刻設定
+    val mSimpleDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.JAPAN)
+    val currentTime = new Date();
+    val mTime = mSimpleDateFormat.format(currentTime)
+    val mHour = new SimpleDateFormat("HH").format(Calendar.getInstance().getTime()).toInt
+
+    if(mTime == vStartDate) { // 現在時刻と同じ日に予約
+      if(mHour < 8 ) "OK"  // 現在時間が8時（作業まえの場合はなんでも予約OK）
+      else if(mHour < 13 && vWorkType =="午後" ) "OK" // 現在時間が13時以前（午後はOK）
+      else Messages("error.site.reserve.overtime")
+    }else if (mTime > vStartDate){  // 現在時間より過去の方予約はNG
+      Messages("error.site.reserve.pretime")
+    }else if (mTime < vStartDate) {  // 現在時間より未来の方+1day OK
+      "OK"
+    }else // 変な場合
+      Messages("error.site.reserve.other")
+  }
+
+  /** 予約取消の際現在時刻から予約取消に正しいかを判定する*/
+  def currentTimeCancelCheck (vStartDate:String,vWorkType:String): String = {
+    // 現在時刻設定
+    val mSimpleDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.JAPAN)
+    val currentTime = new Date();
+    val mTime = mSimpleDateFormat.format(currentTime)
+    val mHour = new SimpleDateFormat("HH").format(Calendar.getInstance().getTime()).toInt
+
+    if(mTime == vStartDate) { // 現在時刻と同じ日に予約
+      if(mHour < 8 ) "OK"  // 現在時間が8時（作業まえの場合はなんでも予約OK）
+      else if(mHour < 13 && vWorkType =="午後" ) "OK" // 現在時間が13時以前（午後はOK）
+      else Messages("error.site.cancel.overtime")
+    }else if (mTime > vStartDate){  // 現在時間より過去の方予約はNG
+      Messages("error.site.cancel.pretime")
+    }else if (mTime < vStartDate) {  // 現在時間より未来の方+1day OK
+      "OK"
+    }else // 変な場合
+      Messages("error.site.cancel.other")
+  }
 
   def getCloudUrl(placeId:Int): Unit = {
     var vPlaceDao = placeDAO.selectPlaceList(Seq[Int](placeId)).last
