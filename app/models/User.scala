@@ -246,4 +246,22 @@ class UserDAO @Inject() (dbapi: DBApi) {
     )
   }
 
+  def changePasswordByEmail(userEmail: String, passwd: String) = {
+    Future.successful(
+      db.withConnection { implicit connection =>
+        val sql = SQL("""
+            UPDATE user_master
+            SET
+              password = {passwd},
+              updatetime = now()
+            where email = {userEmail}
+          """).on(
+          'userEmail -> userEmail,
+          'passwd -> passwd
+        )
+        sql.executeUpdate()
+      }
+    )
+  }
+
 }

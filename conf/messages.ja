@@ -20,7 +20,7 @@ update=更新
 cancel=キャンセル
 delete=削除
 
-placeManage.title=現場一覧画面
+placeManage.title=現場管理画面
 placeManage.detail.title=現場管理画面
 
 ################################################################################################
@@ -197,7 +197,7 @@ lang.sideMenu.link.name.cms.txTagManage=Beaconタグ一覧
 lang.cms.placeManage.tabName=現場一覧
 lang.cms.placeManage.input.title=新規現場登録
 lang.cms.placeManage.input.popup.title=新規現場登録
-lang.cms.placeManage.input.popup.placeName=建設現場名称
+lang.cms.placeManage.input.popup.placeName=現場名称
 lang.cms.placeManage.input.popup.placeName.placeholder=新しい現場の名称を入力してください
 lang.cms.placeManage.input.popup.placeUserId=現場担当者ID
 lang.cms.placeManage.input.popup.placeUserId.placeholder=新しい現場担当者のIDを入力してください
@@ -209,7 +209,7 @@ lang.cms.placeManage.input.popup.placeUserPassword2=確認用パスワード
 lang.cms.placeManage.input.popup.placeUserPassword2.placeholder=確認の為同じパスワードを入力してください
 
 
-lang.cms.placeManage.change.title=選択した現場を管理
+lang.cms.placeManage.change.title=選択した現場を更新
 lang.cms.placeManage.delete.title=選択した現場を削除
 lang.cms.placeManage.delete.popup.title=現場情報削除
 lang.cms.placeManage.delete.popup.message=建設現場の情報を削除します。\nよろしいですか？
@@ -219,9 +219,9 @@ lang.cms.placeManage.sort.placeName=建築現場名称順
 lang.cms.placeManage.sort.status=状態順
 lang.cms.placeManage.sort.user_email=現場担当者ID順
 lang.cms.placeManage.sort.user_name=現場担当者名順
-lang.cms.placeManage.list.header.title=建築現場一覧
+lang.cms.placeManage.list.header.title=現場管理
 lang.cms.placeManage.list.header.id=ID
-lang.cms.placeManage.list.header.placeName=建設現場名称
+lang.cms.placeManage.list.header.placeName=現場名称
 lang.cms.placeManage.list.header.floor=階数
 lang.cms.placeManage.list.header.status=状態
 lang.cms.placeManage.list.header.userId=現場担当者ID
@@ -237,7 +237,7 @@ lang.cms.placeManage.place.list.header.id=ID
 lang.cms.placeManage.place.list.header.placeName=建設現場名称
 lang.cms.placeManage.place.list.header.floor=階数
 lang.cms.placeManage.place.list.header.status=状態
-lang.cms.placeManage.place.button.password=パスワード変更
+lang.cms.placeManage.place.button.password=選択した担当者のパスワードを変更
 lang.cms.placeManage.place.button.edit=編集
 lang.cms.placeManage.placeUpdate.popup.title=編集
 lang.cms.placeManage.placeUpdate.popup.name=建設現場名称
