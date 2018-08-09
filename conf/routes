@@ -117,6 +117,10 @@ POST    /cms/itemTypeManage/delete      controllers.cms.ItemTypeManage.delete
 GET     /cms/companyManage              controllers.cms.CompanyManage.index
 POST    /cms/companyManage/update       controllers.cms.CompanyManage.update
 POST    /cms/companyManage/delete       controllers.cms.CompanyManage.delete
+# 現場アカウント管理
+GET     /cms/accountManage              controllers.cms.AccountManage.index
+POST    /cms/accountManage/update       controllers.cms.AccountManage.update
+POST    /cms/accountManage/delete       controllers.cms.AccountManage.delete
 
 # Beaconタグ管理
 GET     /cms/txTagManage                controllers.cms.TxTagManage.index
