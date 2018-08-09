@@ -21,18 +21,18 @@ import utils.silhouette.MyEnv
 
 @Singleton
 class ItemOtherReserve @Inject()(config: Configuration
-                               , val silhouette: Silhouette[MyEnv]
-                               , val messagesApi: MessagesApi
-                               , carDAO: models.itemCarDAO
-                               , otherDAO: models.itemOtherDAO
-                               , companyDAO: models.companyDAO
-                               , beaconService: BeaconService
-                               , floorDAO: models.floorDAO
-                               , btxDAO: models.btxDAO
-                               ,reserveMasterDAO: models.ReserveMasterDAO
-                               , itemTypeDAO: models.ItemTypeDAO
-                               , workTypeDAO: models.WorkTypeDAO
-                             ) extends BaseController with I18nSupport {
+, val silhouette: Silhouette[MyEnv]
+, val messagesApi: MessagesApi
+, carDAO: models.itemCarDAO
+, otherDAO: models.itemOtherDAO
+, companyDAO: models.companyDAO
+, beaconService: BeaconService
+, floorDAO: models.floorDAO
+, btxDAO: models.btxDAO
+,reserveMasterDAO: models.ReserveMasterDAO
+, itemTypeDAO: models.ItemTypeDAO
+, workTypeDAO: models.WorkTypeDAO
+) extends BaseController with I18nSupport {
 
    /*検索用*/
   var ITEM_TYPE_FILTER = 0;
@@ -120,44 +120,51 @@ class ItemOtherReserve @Inject()(config: Configuration
             .flashing(ERROR_MSG_KEY -> Messages("予約最初日より予約最終日が前日になってます"))
         }else{
           if(ItemOtherReserveData.checkVal.zipWithIndex.length > 0){
-            var setData = List[ReserveItem]()
-            var vCompanyId = companyNameList.filter(_.companyName == ItemOtherReserveData.companyName).last.companyId
-            var vFloorId = floorNameList.filter(_.floor_name == ItemOtherReserveData.floorName).last.floor_Id
-            var vWorkTypeId = workTypeList.filter(_.work_type_name == ItemOtherReserveData.workTypeName).last.work_type_id
-            var vReserveStartDate = ItemOtherReserveData.inputStartDate
-            var vReserveEndDate = ItemOtherReserveData.inputEndDate
-            var idListData = List[Int]()
-            var idTypeListData = List[Int]()
-            ItemOtherReserveData.itemId.zipWithIndex.map { case (itemId, i) =>
-              ItemOtherReserveData.checkVal.zipWithIndex.map { case (check, j) =>
-                if(i == check){
-                  val vItemTypeId = ItemOtherReserveData.itemTypeIdList(i)
-                  idListData = idListData :+itemId
-                  idTypeListData = idTypeListData :+vItemTypeId
-                  setData = setData :+ ReserveItem(vItemTypeId,itemId,vFloorId,placeId,vCompanyId,vReserveStartDate,vReserveEndDate,true,vWorkTypeId)
+            val vCurrentTimeCheck =
+              beaconService.currentTimeReserveCheck(ItemOtherReserveData.inputStartDate,ItemOtherReserveData.workTypeName)
+            if(vCurrentTimeCheck == "OK"){
+              var setData = List[ReserveItem]()
+              var vCompanyId = companyNameList.filter(_.companyName == ItemOtherReserveData.companyName).last.companyId
+              var vFloorId = floorNameList.filter(_.floor_name == ItemOtherReserveData.floorName).last.floor_Id
+              var vWorkTypeId = workTypeList.filter(_.work_type_name == ItemOtherReserveData.workTypeName).last.work_type_id
+              var vReserveStartDate = ItemOtherReserveData.inputStartDate
+              var vReserveEndDate = ItemOtherReserveData.inputEndDate
+              var idListData = List[Int]()
+              var idTypeListData = List[Int]()
+              ItemOtherReserveData.itemId.zipWithIndex.map { case (itemId, i) =>
+                ItemOtherReserveData.checkVal.zipWithIndex.map { case (check, j) =>
+                  if(i == check){
+                    val vItemTypeId = ItemOtherReserveData.itemTypeIdList(i)
+                    idListData = idListData :+itemId
+                    idTypeListData = idTypeListData :+vItemTypeId
+                    setData = setData :+ ReserveItem(vItemTypeId,itemId,vFloorId,placeId,vCompanyId,vReserveStartDate,vReserveEndDate,true,vWorkTypeId)
+                  }
                 }
               }
-            }
-            // 検索ロジック追加あるかどうかを判断する
-            var vAlerdyReserveData = reserveMasterDAO.selectOtherReserve(placeId,idListData,idTypeListData,vWorkTypeId,vReserveStartDate,vReserveEndDate)
-            System.out.println("vCount :" + vAlerdyReserveData)
-            if(vAlerdyReserveData.isEmpty) { // 予約されたものがない
-              val result = otherDAO.reserveItemOther(setData)
-              if (result == "success") {
+              // 検索ロジック追加あるかどうかを判断する
+              var vAlerdyReserveData = reserveMasterDAO.selectOtherReserve(placeId,idListData,idTypeListData,vWorkTypeId,vReserveStartDate,vReserveEndDate)
+              System.out.println("vCount :" + vAlerdyReserveData)
+              if(vAlerdyReserveData.isEmpty) { // 予約されたものがない
+                val result = otherDAO.reserveItemOther(setData)
+                if (result == "success") {
+                  Redirect(routes.ItemOtherReserve.index())
+                    .flashing(SUCCESS_MSG_KEY -> Messages("success.site.otherReserve.update"))
+                }else {
+                  Redirect(routes.ItemOtherReserve.index())
+                    .flashing(ERROR_MSG_KEY -> Messages("error.site.otherReserve.update" ))
+                }
+              }else{ // 予約されたものがある
                 Redirect(routes.ItemOtherReserve.index())
-                  .flashing(SUCCESS_MSG_KEY -> Messages("success.site.otherReserve.update"))
-              }else {
-                Redirect(routes.ItemOtherReserve.index())
-                  .flashing(ERROR_MSG_KEY -> Messages("error.site.otherReserve.update" ))
+                  .flashing(ERROR_MSG_KEY -> Messages("その他仮設材予約に問題が発生しました。" + "<br>"
+                    + "「Id」" + vAlerdyReserveData.last.itemId
+                    + "「作業期間」" + ItemOtherReserveData.workTypeName
+                    + "「予約日」" + vAlerdyReserveData.last.reserveStartDate
+                    + " ~ " + vAlerdyReserveData.last.reserveEndDate
+                    + "すでに予約されてます"))
               }
-            }else{ // 予約されたものがある
+            }else{ // 現在時刻から予約可能かを判定でエラーの場合
               Redirect(routes.ItemOtherReserve.index())
-                .flashing(ERROR_MSG_KEY -> Messages("その他仮設材予約に問題が発生しました。" + "<br>"
-                  + "「Id」" + vAlerdyReserveData.last.itemId
-                  + "「作業期間」" + ItemOtherReserveData.workTypeName
-                  + "「予約日」" + vAlerdyReserveData.last.reserveStartDate
-                  + " ~ " + vAlerdyReserveData.last.reserveEndDate
-                  + "すでに予約されてます"))
+                .flashing(ERROR_MSG_KEY -> Messages(vCurrentTimeCheck))
             }
           }else{
             Redirect(routes.ItemOtherReserve.index())

@@ -125,19 +125,19 @@ class UserDAO @Inject() (dbapi: DBApi) {
   def save(user: User): Future[User] = {
     Future.successful(
       db.withConnection { implicit connection =>
-//        val sql = SQL("""
-//            update user_master set password = {password} where email = {email};
-//            insert into user_master (email, name, password)
-//                   select {email}, {name}, {password}
-//                   where not exists (select 1 from user_master where email = {email});
-//          """).on(
-//          'email -> user.email,
-//          'name -> user.name,
-//          'password -> user.password
-//        )
-//
-//        sql.executeUpdate()
-
+        val sql = SQL("""
+            update user_master
+            set password = {password}, updatetime = now()
+            where email = {email};
+            insert into user_master (email, name, password)
+                   select {email}, {name}, {password}
+                   where not exists (select 1 from user_master where email = {email});
+          """).on(
+          'email -> user.email,
+          'name -> user.name,
+          'password -> user.password
+        )
+        sql.executeUpdate()
         val newUser = User(user.id
           , user.email
           , true
@@ -169,4 +169,116 @@ class UserDAO @Inject() (dbapi: DBApi) {
     )
   }
 
+  def selectSuperUserList(): Seq[User] = {
+    db.withConnection { implicit connection =>
+      val sql = SQL(
+        """
+      select
+        user_id
+        , email
+        , name
+        , password
+        , place_id
+        , current_place_id
+        , active_flg
+        , permission
+        from user_master
+        where
+          permission = 4
+          and active_flg = true
+        order by user_id
+      """)
+      sql.as(simple.*)
+    }
+  }
+
+  def insert(user: User): Future[User] = {
+    Future.successful(
+      db.withConnection { implicit connection =>
+        val sql = SQL("""
+            INSERT INTO user_master (
+              user_id,
+              email, name, password,
+              place_id, current_place_id, active_flg,
+              updatetime, permission
+            ) VALUES (
+              (SELECT COALESCE(MAX(user_id), 0) AS user_id FROM user_master) + 1,
+              {email}, {name}, {password},
+              {place_id}, {current_place_id}, true,
+              now(), {permission}
+            )
+          """).on(
+          'email -> user.email,
+          'name -> user.name,
+          'password -> user.password,
+          'place_id -> user.placeId,
+          'current_place_id -> user.currentPlaceId,
+          'permission -> user.level
+        )
+        sql.executeUpdate()
+        val newUser = User(user.id
+          , user.email
+          , true
+          , user.password
+          , user.name
+          , user.placeId
+          , user.currentPlaceId
+          , (user.placeId == None)
+          , user.level
+          , user.services)
+        User.update(Some(newUser)).get
+      }
+    )
+  }
+
+  def deleteLogicalByPlaceId(placeId: Int) = {
+    Future.successful(
+      db.withConnection { implicit connection =>
+        val sql = SQL("""
+            UPDATE user_master
+            SET active_flg = false, updatetime = now()
+            WHERE place_id = {placeId} AND permission = 3
+          """).on(
+          'placeId -> placeId
+        )
+        sql.executeUpdate()
+      }
+    )
+  }
+
+  def changePasswordByEmail(userEmail: String, passwd: String) = {
+    Future.successful(
+      db.withConnection { implicit connection =>
+        val sql = SQL("""
+            UPDATE user_master
+            SET
+              password = {passwd},
+              updatetime = now()
+            WHERE email = {userEmail}
+          """).on(
+          'userEmail -> userEmail,
+          'passwd -> passwd
+        )
+        sql.executeUpdate()
+      }
+    )
+  }
+
+  def updateUserNameByEmail(userId: String, userName: String) = {
+    Future.successful(
+      db.withConnection { implicit connection =>
+        val sql = SQL("""
+            UPDATE user_master
+            SET
+              name = {userName},
+              updatetime = now()
+            WHERE email = {userEmail}
+          """).on(
+          'userEmail -> userId,
+          'userName -> userName
+        )
+        sql.executeUpdate()
+      }
+    )
+  }
 }

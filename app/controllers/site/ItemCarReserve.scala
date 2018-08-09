@@ -33,17 +33,17 @@ case class ReserveItem(
 
 @Singleton
 class ItemCarReserve @Inject()(config: Configuration
-                               , val silhouette: Silhouette[MyEnv]
-                               , val messagesApi: MessagesApi
-                               , carDAO: models.itemCarDAO
-                               , companyDAO: models.companyDAO
-                               , beaconService: BeaconService
-                               , floorDAO: models.floorDAO
-                               , btxDAO: models.btxDAO
-                               , reserveMasterDAO: models.ReserveMasterDAO
-                               , itemTypeDAO: models.ItemTypeDAO
-                               , workTypeDAO: models.WorkTypeDAO
-                             ) extends BaseController with I18nSupport {
+, val silhouette: Silhouette[MyEnv]
+, val messagesApi: MessagesApi
+, carDAO: models.itemCarDAO
+, companyDAO: models.companyDAO
+, beaconService: BeaconService
+, floorDAO: models.floorDAO
+, btxDAO: models.btxDAO
+, reserveMasterDAO: models.ReserveMasterDAO
+, itemTypeDAO: models.ItemTypeDAO
+, workTypeDAO: models.WorkTypeDAO
+) extends BaseController with I18nSupport {
 
    /*検索用*/
   var ITEM_TYPE_FILTER = 0;
@@ -122,15 +122,18 @@ class ItemCarReserve @Inject()(config: Configuration
 
       ItemCarReserveData => {
         if(ItemCarReserveData.checkVal.zipWithIndex.length > 0){
-          var setData = List[ReserveItem]()
-          var vCompanyId = companyNameList.filter(_.companyName == ItemCarReserveData.companyName).last.companyId
-          var vFloorId = floorNameList.filter(_.floor_name == ItemCarReserveData.floorName).last.floor_Id
-          var vWorkTypeId = workTypeList.filter(_.work_type_name == ItemCarReserveData.workTypeName).last.work_type_id
-          var vReserveDate = ItemCarReserveData.inputDate
-          var idListData = List[Int]()
-          var idTypeListData = List[Int]()
-          ItemCarReserveData.itemId.zipWithIndex.map { case (itemId, i) =>
-            ItemCarReserveData.checkVal.zipWithIndex.map { case (check, j) =>
+          val vCurrentTimeCheck =
+            beaconService.currentTimeReserveCheck(ItemCarReserveData.inputDate,ItemCarReserveData.workTypeName)
+          if(vCurrentTimeCheck == "OK"){  // 現在時刻から予約可能かを判定
+            var setData = List[ReserveItem]()
+            var vCompanyId = companyNameList.filter(_.companyName == ItemCarReserveData.companyName).last.companyId
+            var vFloorId = floorNameList.filter(_.floor_name == ItemCarReserveData.floorName).last.floor_Id
+            var vWorkTypeId = workTypeList.filter(_.work_type_name == ItemCarReserveData.workTypeName).last.work_type_id
+            var vReserveDate = ItemCarReserveData.inputDate
+            var idListData = List[Int]()
+            var idTypeListData = List[Int]()
+            ItemCarReserveData.itemId.zipWithIndex.map { case (itemId, i) =>
+              ItemCarReserveData.checkVal.zipWithIndex.map { case (check, j) =>
                 if(i == check){
                   val vItemTypeId = ItemCarReserveData.itemTypeIdList(i)
                   idListData = idListData :+itemId
@@ -139,27 +142,30 @@ class ItemCarReserve @Inject()(config: Configuration
                 }
               }
             }
-          // 検索ロジック追加あるかどうかを判断する
-          var vAlerdyReserveData = reserveMasterDAO.selectCarReserve(placeId,idListData,idTypeListData,vWorkTypeId,vReserveDate,vReserveDate)
-          System.out.println("vCount :" + vAlerdyReserveData)
-          if(vAlerdyReserveData.isEmpty){ // 予約されたものがない
-            val result = carDAO.reserveItemCar(setData)
-            if (result == "success") {
+            // 検索ロジック追加あるかどうかを判断する
+            var vAlerdyReserveData = reserveMasterDAO.selectCarReserve(placeId,idListData,idTypeListData,vWorkTypeId,vReserveDate,vReserveDate)
+            System.out.println("vCount :" + vAlerdyReserveData)
+            if(vAlerdyReserveData.isEmpty){ // 予約されたものがない
+              val result = carDAO.reserveItemCar(setData)
+              if (result == "success") {
+                Redirect(routes.ItemCarReserve.index())
+                  .flashing(SUCCESS_MSG_KEY -> Messages("success.site.carReserve.update"))
+              }else {
+                Redirect(routes.ItemCarReserve.index())
+                  .flashing(ERROR_MSG_KEY -> Messages("error.site.carReserve.update"))
+              }
+            }else { // 予約されたものがある
               Redirect(routes.ItemCarReserve.index())
-                .flashing(SUCCESS_MSG_KEY -> Messages("success.site.carReserve.update"))
-            }else {
-              Redirect(routes.ItemCarReserve.index())
-                .flashing(ERROR_MSG_KEY -> Messages("error.site.carReserve.update"))
+                .flashing(ERROR_MSG_KEY -> Messages("作業車・立馬予約に問題が発生しました。" + "<br>"
+                  + "「Id」" + vAlerdyReserveData.last.itemId
+                  + "「作業期間」" + ItemCarReserveData.workTypeName
+                  + "「予約日」" + vAlerdyReserveData.last.reserveStartDate
+                  + "すでに予約されてます"))
             }
-          }else { // 予約されたものがある
+          }else{  // 現在時刻から予約可能かを判定でエラーの場合
             Redirect(routes.ItemCarReserve.index())
-              .flashing(ERROR_MSG_KEY -> Messages("作業車・立馬予約に問題が発生しました。" + "<br>"
-                + "「Id」" + vAlerdyReserveData.last.itemId
-                + "「作業期間」" + ItemCarReserveData.workTypeName
-                + "「予約日」" + vAlerdyReserveData.last.reserveStartDate
-                + "すでに予約されてます"))
+              .flashing(ERROR_MSG_KEY -> Messages(vCurrentTimeCheck))
           }
-
         }else{
           Redirect(routes.ItemCarReserve.index())
             .flashing(ERROR_MSG_KEY -> Messages("error.site.carReserve.noselect"))

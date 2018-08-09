@@ -30,7 +30,7 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
         <!-- メイン -->
         <div class="col-lg-12 mainSpace">
             <!-- 画面題字 -->
-            <div class="form-group" style="font-weight:bold;font-size:19px;margin:15px 0px;">
+            <div class="form-group" style="font-weight:bold;font-size:19px;margin:25px 0px;">
                 <!-- メッセージ -->
                 @views.html.templates.msgDiv()
                 <!--タイトル-->
@@ -140,8 +140,12 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
                                     <td class="itemTd text-center ">@car.item_type_name</td>
                                     <td class="itemTd text-center ">@car.item_car_name</td>
                                     <td class="itemTd text-center ">@car.company_name</td>
-                                    <td class="itemTd text-center ">@car.reserve_start_date</td>
-                                    <td class="itemTd text-center ">@car.work_type_name</td>
+                                    <td class="itemTd text-center ">@car.reserve_start_date
+                                        <input class="hidden form-control input-sm" type="text" id="reserveStartDateList-@i" name="reserveStartDateList[@i]" value="@car.reserve_start_date">
+                                    </td>
+                                    <td class="itemTd text-center ">@car.work_type_name
+                                        <input class="hidden form-control input-sm" type="text" id="workTypeNameList-@i" name="workTypeNameList[@i]" value="@car.work_type_name">
+                                    </td>
                                     <td class="itemTd text-center ">@car.reserve_id</td>
                                 </tr>
                             }
@@ -184,20 +188,20 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
                             <input type="hidden" id="actualItemInfoStr" name="actualItemInfoStr">
                             <div class="modal-header" style="">@Messages("lang.site.carCancel.page.title")</div>
                             <div class="modal-body">
-                                <div class="form-group" style="margin-bottom: 5px;">
+                                <div class="hidden form-group" style="margin-bottom: 5px;">
                                     <label class="text-right  control-label col-xs-6">予約希望日</label>
                                     <label id="mReserveDate" class="modalClass control-label">未設定</label>
                                 </div>
-                                <div class="form-group" style="margin-bottom: 5px;">
+                                <div class="hidden form-group" style="margin-bottom: 5px;">
                                     <label class="text-right control-label col-xs-6">種別</label>
                                     <label id="mItemTypeName" class="modalClass control-label">未設定</label>
                                 </div>
-                                <div class="form-group" style="margin-bottom: 5px;">
+                                <div class="hidden form-group" style="margin-bottom: 5px;">
                                     <label class="text-right control-label col-xs-6">期間</label>
                                     <label id="mWorkTypeName" class="modalClass control-label">未設定</label>
                                 </div>
 
-                                <div class="form-group" style="margin-bottom: 5px;">
+                                <div class="hidden form-group" style="margin-bottom: 5px;">
                                     <label class="text-right control-label col-xs-6">業者</label>
                                     <label id="mCompanyName" class="modalClass control-label">未設定</label>
                                 </div>
@@ -205,6 +209,12 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
                                 <div class="hidden form-group" style="margin-bottom: 5px;">
                                     <label class="text-right control-label col-xs-6">予約フロア</label>
                                     <label id="mReserveFloorName" class="modalClass control-label">未設定</label>
+                                </div>
+
+                                <div class="form-group" style="margin-bottom: 5px;text-align: center;font-size: 2vmin;">
+                                    <label class="text-center control-label">
+                                        @Messages("lang.site.carCancel.page.delete")
+                                    </label>
                                 </div>
 
                             </div>

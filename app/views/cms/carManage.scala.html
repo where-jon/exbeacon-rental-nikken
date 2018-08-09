@@ -1,4 +1,4 @@
-@(carList: Seq[ItemCar], placeId: Int)(implicit user: User, messages: Messages, request: RequestHeader, flash: Flash)
+@(ITEM_TYPE_FILTER: Int, carList: Seq[ItemCarViewer], itemTypeList: Seq[ItemType], placeId: Int)(implicit user: User, messages: Messages, request: RequestHeader, flash: Flash)
 
 @import controllers.routes
 @import helper._
@@ -32,22 +32,29 @@
                             <table class="table table-bordered table-condensed itemTable">
                                 <thead>
                                     <tr>
-                                        <th colspan="4" class="tableTitleTh">@Messages("lang.cms.carManage.car.list.header.title")</th>
+                                        <th colspan="7" class="tableTitleTh">@Messages("lang.cms.carManage.car.list.header.title")</th>
                                     </tr>
                                     <tr>
-                                        <th class="tableTh carNoTh">@Messages("lang.cms.carManage.car.list.header.number")</th>
-                                        <th class="tableTh carNameTh">@Messages("lang.cms.carManage.car.list.header.name")</th>
-                                        <th class="tableTh carTxNoTh">@Messages("lang.cms.carManage.car.list.header.carNumber")</th>
-                                        <th class="tableTh keyTxNoTh">@Messages("lang.cms.carManage.car.list.header.keyNumber")</th>
+                                        <th class="tableTh carTagIdTh">@Messages("lang.cms.carManage.car.list.header.carTagId")</th>
+                                        <th class="tableTh carKeyTagIdTh">@Messages("lang.cms.carManage.car.list.header.carKeyTagId")</th>
+                                        <th class="tableTh carTypeNameTh">@Messages("lang.cms.carManage.car.list.header.carType")</th>
+                                        <th class="tableTh carNameTh">@Messages("lang.cms.carManage.car.list.header.carName")</th>
+                                        <th class="tableTh carIdTh">@Messages("lang.cms.carManage.car.list.header.carId")</th>
+                                        <th class="tableTh carNoTh">@Messages("lang.cms.carManage.car.list.header.carNo")</th>
+                                        <th class="tableTh carNoteTh">@Messages("lang.cms.carManage.car.list.header.carNote")</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @for(car <- carList){
                                         <tr class="rowColor rowHover" data-carId="@car.itemCarId" id="@car.itemCarId">
-                                            <td class="itemTd text-center carNo">@car.itemCarNo</td>
-                                            <td class="itemTd text-left carName">@car.itemCarName</td>
                                             <td class="itemTd text-center carBtxId">@car.itemCarBtxId</td>
                                             <td class="itemTd text-center carKeyBtxId">@car.itemCarKeyBtxId</td>
+                                            <td class="itemTd text-center carTypeName">@car.itemTypeName</td>
+                                            <td hidden class="itemTd text-center carTypeId">@car.itemTypeId</td>
+                                            <td class="itemTd text-center carName">@car.itemCarName</td>
+                                            <td class="itemTd text-center carId">@car.itemCarId</td>
+                                            <td class="itemTd text-center carNo">@car.itemCarNo</td>
+                                            <td class="itemTd text-center carNote">@car.itemCarNote</td>
                                         </tr>
                                     }
                                 </tbody>
@@ -58,7 +65,7 @@
                 <!-- ボタン-->
                 <div class="row tableRow" style="margin-top: 10px;">
                     <div class="text-right col-xs-4 col-sm-4 col-md-4" style="padding:0;">
-                        <a href="javascript:showInputModal(false);" class="btn link">@Messages("lang.cms.carManage.car.button.editCar")</a>
+                        <a id = "editCarBtn" href="javascript:showInputModal(false);" class="btn link">@Messages("lang.cms.carManage.car.button.editCar")</a>
                     </div>
                     <div class="text-center col-xs-4 col-sm-4 col-md-4" style="padding:0;">
                         <a href="javascript:showInputModal(true);" class="btn link">@Messages("lang.cms.carManage.car.button.addCar")</a>
@@ -81,12 +88,31 @@
                     @CSRF.formField
                     <input type="hidden" name="inputPlaceId" value="@placeId">
                     <input type="hidden" id="inputCarId" name="inputCarId">
+                    <input type="hidden" id="inputCarTypeId" name="inputCarTypeId">
+                    <!--<input type="hidden" id="inputCarNo" name="inputCarNo">-->
                     <div class="modal-header" style="">@Messages("lang.cms.carManage.carUpdate.popup.name")</div>
                     <div class="modal-body">
                         <div class="form-group">
-                            <label class="control-label col-xs-5">@Messages("lang.cms.carManage.carUpdate.popup.carNumber")</label>
+                            <label class="control-label col-xs-5">@Messages("lang.cms.carManage.carUpdate.popup.carTypeName")</label>
+                            <select id="car_type" style="height: 30px; width: 100px;">
+                                <!--仮設材種別テーブルから検索フィルタを設置-->
+                                <option value="0"></option>
+                                @itemTypeList.zipWithIndex.map { case(itemType, i) =>
+                                    <option value="@itemType.item_type_id">@itemType.item_type_name</option>
+                                }
+                            </select>
+                            <input class="hidden form-control input-sm" type="text" id="inputCarTypeName" name="inputCarTypeName" value="@ITEM_TYPE_FILTER">
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-xs-5">@Messages("lang.cms.carManage.carUpdate.popup.carBtxId")</label>
                             <div class="col-xs-2" style="padding-left: 0px;padding-right: 0px;">
-                                <input type="text" maxlength="3" size="3" name="inputCarNo" id="inputCarNo" class="form-control" placeholder="@Messages("lang.cms.carManage.carUpdate.popup.carNumber.placeholder")">
+                                <input type="text" size="3" name="inputCarBtxId" id="inputCarBtxId" class="form-control" placeholder="@Messages("lang.cms.carManage.carUpdate.popup.carBtxId.placeholder")">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-xs-5">@Messages("lang.cms.carManage.carUpdate.popup.carKeyBtxId")</label>
+                            <div class="col-xs-2" style="padding-left: 0px;padding-right: 0px;">
+                                <input type="text" name="inputCarKeyBtxId" id="inputCarKeyBtxId" class="form-control" placeholder="@Messages("lang.cms.carManage.carUpdate.popup.carKeyBtxId.placeholder")">
                             </div>
                         </div>
                         <div class="form-group">
@@ -96,15 +122,15 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="control-label col-xs-5">@Messages("lang.cms.carManage.carUpdate.popup.carTxNo")</label>
+                            <label class="control-label col-xs-5">@Messages("lang.cms.carManage.carUpdate.popup.carNo")</label>
                             <div class="col-xs-2" style="padding-left: 0px;padding-right: 0px;">
-                                <input type="text" name="inputCarBtxId" id="inputCarBtxId" class="form-control" placeholder="@Messages("lang.cms.carManage.carUpdate.popup.carTxNo.placeholder")">
+                                <input type="text" name="inputCarNo" id="inputCarNo" class="form-control" placeholder="@Messages("lang.cms.carManage.carUpdate.popup.carNo.placeholder")">
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="control-label col-xs-5">@Messages("lang.cms.carManage.carUpdate.popup.keyTxNo")</label>
+                            <label class="control-label col-xs-5">@Messages("lang.cms.carManage.carUpdate.popup.carNote")</label>
                             <div class="col-xs-2" style="padding-left: 0px;padding-right: 0px;">
-                                <input type="text" name="inputCarKeyBtxId" id="inputCarKeyBtxId" class="form-control" placeholder="@Messages("lang.cms.carManage.carUpdate.popup.keyTxNo.placeholder")">
+                                <input type="text" name="inputCarNote" id="inputCarNote" class="form-control">
                             </div>
                         </div>
                     </div>

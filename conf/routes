@@ -35,8 +35,8 @@ POST    /cms/placeManage/cmsLogin       controllers.cms.PlaceManage.cmsLogin
 
 # フロア管理
 GET     /cms/floorManage                controllers.cms.FloorManage.index
-POST    /cms/floorManage/floorUpdate    controllers.cms.FloorManage.floorUpdate
-POST    /cms/floorManage/floorDelete    controllers.cms.FloorManage.floorDelete
+#POST    /cms/floorManage/floorUpdate    controllers.cms.FloorManage.floorUpdate
+#POST    /cms/floorManage/floorDelete    controllers.cms.FloorManage.floorDelete
 #  POST    /cms/floorManage/sort           controllers.cms.FloorManage.sort
 
 
@@ -80,7 +80,9 @@ POST   /site/unDetected                 controllers.site.UnDetected.search
 
 
 # 作業車移動状況分析
-GET    /analysis/MovementCar                 controllers.analysis.MovementCar.index
+GET    /analysis/movementCar                 controllers.analysis.MovementCar.index
+POST   /analysis/movementCar                 controllers.analysis.MovementCar.search
+GET   /analysis/movementCar/csvExport       controllers.analysis.MovementCar.csvExport
 
 # GW状態監視
 GET     /analysis/gateway                     controllers.Gateway.index
@@ -99,7 +101,7 @@ POST   /exb/deleteExb      		       controllers.manage.ExbManager.deleteExb
 GET    /manage/exbViewerManager        controllers.manage.ExbViewerManager.index
 POST   /manage/updateExbViewer         controllers.manage.ExbViewerManager.updateViewerManager
 
-# 作業車管理
+# 作業車・立馬管理
 GET     /cms/carManage                  controllers.cms.CarManage.index
 POST    /cms/carManage/update           controllers.cms.CarManage.update
 POST    /cms/carManage/delete           controllers.cms.CarManage.delete

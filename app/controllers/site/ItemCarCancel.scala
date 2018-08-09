@@ -27,16 +27,16 @@ case class CancelItem(
 
 @Singleton
 class ItemCarCancel @Inject()(config: Configuration
-                               , val silhouette: Silhouette[MyEnv]
-                               , val messagesApi: MessagesApi
-                               , carDAO: models.itemCarDAO
-                               , companyDAO: models.companyDAO
-                               , beaconService: BeaconService
-                               , floorDAO: models.floorDAO
-                               , btxDAO: models.btxDAO
-                               , itemTypeDAO: models.ItemTypeDAO
-                               , workTypeDAO: models.WorkTypeDAO
-                             ) extends BaseController with I18nSupport {
+, val silhouette: Silhouette[MyEnv]
+, val messagesApi: MessagesApi
+, carDAO: models.itemCarDAO
+, companyDAO: models.companyDAO
+, beaconService: BeaconService
+, floorDAO: models.floorDAO
+, btxDAO: models.btxDAO
+, itemTypeDAO: models.ItemTypeDAO
+, workTypeDAO: models.WorkTypeDAO
+) extends BaseController with I18nSupport {
 
    /*検索用*/
   var ITEM_TYPE_FILTER = 0;
@@ -60,6 +60,8 @@ class ItemCarCancel @Inject()(config: Configuration
   val itemCarCancelForm = Form(mapping(
     "itemTypeIdList" -> list(number.verifying("仮設材TypeIDが異常", { itemTypeIdList => itemTypeIdList != null })),
     "itemId" -> list(number.verifying("仮設材IDが異常", { itemId => itemId != null })),
+    "workTypeNameList" -> list(text.verifying("期間異常", { workTypeNameList => !workTypeNameList.isEmpty})),
+    "reserveStartDateList" -> list(text.verifying("予約期間異常", { reserveStartDateList => !reserveStartDateList.isEmpty})),
     "checkVal" -> list(number.verifying("checkVal", { checkVal => checkVal != null }))
   )(ItemCarCancelData.apply)(ItemCarCancelData.unapply))
 
@@ -114,16 +116,23 @@ class ItemCarCancel @Inject()(config: Configuration
 
       ItemCarReserveData => {
         if(ItemCarReserveData.checkVal.zipWithIndex.length > 0){
-            var setData = List[CancelItem]()
-
+          var setData = List[CancelItem]()
+          var vCancelCheck = "OK"
           ItemCarReserveData.itemId.zipWithIndex.map { case (itemId, i) =>
             ItemCarReserveData.checkVal.zipWithIndex.map { case (check, j) =>
                 if(i == check){
                   val vItemTypeId = ItemCarReserveData.itemTypeIdList(i)
+                  val vReserveStartDate = ItemCarReserveData.reserveStartDateList(i)
+                  val vWorkTypeName = ItemCarReserveData.workTypeNameList(i)
+                  val vCheckValue = beaconService.currentTimeCancelCheck(vReserveStartDate,vWorkTypeName)
+                  if(vCheckValue != "OK"){
+                    vCancelCheck = vCheckValue
+                  }
                   setData = setData :+ CancelItem(vItemTypeId,itemId,placeId,true)
                 }
               }
             }
+          if(vCancelCheck == "OK"){ //　現在時刻から予約取消可能かを判定
             val result = carDAO.cancelItemCar(setData)
             if (result == "success") {
               Redirect(routes.ItemCarCancel.index())
@@ -132,6 +141,10 @@ class ItemCarCancel @Inject()(config: Configuration
               Redirect(routes.ItemCarCancel.index())
                 .flashing(ERROR_MSG_KEY -> Messages("error.site.carCancel.cancel"))
             }
+          }else{  // 現在時刻から予約取消可能かを判定でエラーの場合
+            Redirect(routes.ItemCarCancel.index())
+              .flashing(ERROR_MSG_KEY -> Messages(vCancelCheck))
+          }
         }else{
           Redirect(routes.ItemCarCancel.index())
             .flashing(ERROR_MSG_KEY -> Messages("error.site.carCancel.noselect"))

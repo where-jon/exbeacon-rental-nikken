@@ -1,4 +1,4 @@
-@(place: Place, floorInfoList: Seq[FloorInfo], statusMap: Map[Int,String], isSysMng: Boolean)(implicit user: User, messages: Messages, request: RequestHeader, flash: Flash)
+@(place: PlaceEx, statusMap: Map[Int,String], isSysMng: Boolean)(implicit user: User, messages: Messages, request: RequestHeader, flash: Flash)
 
 @import controllers.routes
 @import helper._
@@ -6,7 +6,7 @@
 <!doctype html>
 <html lang="ja">
 <head>
-    @templates.htmlHead(title = Messages("lang.cms.placeManage.tabName"))
+    @templates.htmlHead(title = Messages("lang.cms.placeManage.place.title"))
     <link rel="stylesheet" href="@routes.MyAssets.css("cms/placeManageDetail.css")"/>
     <script type="text/javascript" src="@routes.MyAssets.lib("jquery.tablefix_1.0.1.js")"></script>
     <script></script>
@@ -16,11 +16,10 @@
     <div class="container">
         <!-- ナビバー  -->
         @views.html.templates.navBar()
-        <div class="row" style="margin-top: 40px;">
+        <div class="row" style="margin-top: 50px;">
             <!-- 左サイドバー -->
-            @views.html.templates.sideMenu()
             <!-- メイン -->
-            <div class="col-xs-9 col-sm-9 col-md-10 col-lg-10">
+            <div class="col-lg-12 mainSpace">
                 <!-- メッセージ -->
                 @views.html.templates.msgDiv()
                 <!-- 画面題字 -->
@@ -34,21 +33,25 @@
                             <table class="table table-bordered table-condensed itemTable">
                                 <thead>
                                     <tr>
-                                        <th colspan="4" class="tableTitleTh">@Messages("lang.cms.placeManage.place.list.header.title")</th>
+                                        <th colspan="6" class="tableTitleTh">@Messages("lang.cms.placeManage.place.list.header.title")</th>
                                     </tr>
                                     <tr>
                                         <th class="tableTh noTh">@Messages("lang.cms.placeManage.place.list.header.id")</th>
                                         <th class="tableTh placeNameTh">@Messages("lang.cms.placeManage.place.list.header.placeName")</th>
-                                        <th class="tableTh floorCountTh">@Messages("lang.cms.placeManage.place.list.header.floor")</th>
                                         <th class="tableTh stateTh">@Messages("lang.cms.placeManage.place.list.header.status")</th>
+                                        <th class="tableTh userNameTh">@Messages("lang.cms.placeManage.list.header.userName")</th>
+                                        <th class="tableTh userEmailTh">@Messages("lang.cms.placeManage.list.header.userId")</th>
+                                        <th class="tableTh floorCountTh">@Messages("lang.cms.placeManage.place.list.header.floor")</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr class="rowColor">
                                         <td class="itemTd text-right">@place.placeId</td>
                                         <td class="itemTd text-left">@place.placeName</td>
-                                        <td class="itemTd text-right">@place.floorCount</td>
                                         <td class="itemTd text-center">@place.statusName</td>
+                                        <td class="itemTd text-left">@place.userName</td>
+                                        <td class="itemTd text-left">@place.userEmail</td>
+                                        <td class="itemTd text-right">@place.floorCount</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -87,19 +90,20 @@
             <div class="modal-content">
                 <form id="placeUpdateForm" name="placeUpdateForm" enctype="multipart/form-data" class="form-horizontal" method="post" action="@controllers.cms.routes.PlaceManage.update.path">
                     @CSRF.formField
-                    <input type="hidden" name="inputPlaceId" value="@place.placeId">
+                    <input type="hidden" name="placeId" value="@place.placeId">
+                    <input type="hidden" name="userId" value="@place.userEmail">
                     <div class="modal-header">@Messages("lang.cms.placeManage.placeUpdate.popup.title")</div>
                     <div class="modal-body">
                         <div class="form-group">
                             <label class="control-label col-xs-5">@Messages("lang.cms.placeManage.placeUpdate.popup.name")</label>
                             <div class="col-xs-5" style="padding-left: 0px;padding-right: 0px;">
-                                <input type="text" name="inputPlaceName" value="@place.placeName" class="form-control" placeholder="@Messages("lang.cms.placeManage.placeUpdate.popup.placeholder")">
+                                <input type="text" name="placeName" value="@place.placeName" class="form-control" placeholder='@Messages("lang.cms.placeManage.placeUpdate.popup.placeholder")'>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="control-label col-xs-5" style="padding-top: 0px;">@Messages("lang.cms.placeManage.placeUpdate.popup.status")</label>
                             <div class="col-xs-5" style="padding-left: 0px;padding-right: 0px;">
-                                <select name="inputPlaceStatus" class="form-control">
+                                <select name="placeStatus" class="form-control">
                                     @statusMap.map{case (code, name) =>
                                         @if(code == place.status){
                                             <option selected value="@code">@name</option>
@@ -110,7 +114,14 @@
                                 </select>
                             </div>
                         </div>
+                        <div class="form-group">
+                            <label class="control-label col-xs-5">@Messages("lang.cms.placeManage.placeUpdate.popup.userName")</label>
+                            <div class="col-xs-5" style="padding-left: 0px;padding-right: 0px;">
+                                <input type="text" name="userName" class="form-control" value="@place.userName" placeholder='@Messages("lang.cms.placeManage.placeUpdate.popup.userName.placeholder")' />
+                            </div>
+                        </div>
                     </div>
+                    <div style="height:80px"></div>
                     <div class="modal-footer" style="text-align: center;">
                         <div class="col-xs-6 text-center">
                             <button type="button" class="btn btn-default" data-dismiss="modal">@Messages("cancel")</button>
@@ -132,16 +143,17 @@
                     <div class="modal-header">@Messages("lang.cms.placeManage.passwordUpdate.popup.title")</div>
                     <div class="modal-body">
                         <div class="form-group">
-                            <input type="hidden" name="inputPlaceId" value="@place.placeId">
+                            <input type="hidden" name="placeId" value="@place.placeId">
+                            <input type="hidden" name="userId" value="@place.userEmail">
                             <label class="control-label col-xs-5">@Messages("lang.cms.placeManage.passwordUpdate.popup.password")</label>
                             <div class="col-xs-5" style="padding-left: 0px;padding-right: 0px;">
-                                <input type="password" name="inputPassword" class="form-control">
+                                <input type="password" name="password1" class="form-control">
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="control-label col-xs-5">@Messages("lang.cms.placeManage.passwordUpdate.popup.reEnter")</label>
                             <div class="col-xs-5" style="padding-left: 0px;padding-right: 0px;">
-                                <input type="password" name="inputRePassword" class="form-control">
+                                <input type="password" name="password2" class="form-control">
                             </div>
                         </div>
                     </div>

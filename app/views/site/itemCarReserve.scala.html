@@ -29,7 +29,7 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
         <!-- メイン -->
         <div class="col-lg-12 mainSpace">
             <!-- 画面題字 -->
-            <div class="form-group" style="font-weight:bold;font-size:19px;margin:15px 0px;">
+            <div class="form-group" style="font-weight:bold;font-size:19px;margin:25px 0px;">
                 <!-- メッセージ -->
                 @views.html.templates.msgDiv()
                 <!--タイトル-->
@@ -194,7 +194,7 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
                                     <label class="text-right  control-label col-xs-6">予約希望日</label>
                                     <label id="mReserveDate" class="modalClass control-label">未設定</label>
                                 </div>
-                                <div class="form-group" style="margin-bottom: 5px;">
+                                <div class="hidden form-group" style="margin-bottom: 5px;">
                                     <label class="text-right control-label col-xs-6">種別</label>
                                     <label id="mItemTypeName" class="modalClass control-label">未設定</label>
                                 </div>

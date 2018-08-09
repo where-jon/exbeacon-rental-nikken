@@ -30,7 +30,7 @@ var gIconHeight = 35;
 var PIN_MARGIN_X = 8;
 var PIN_MARGIN_Y = 7;
 var MARGIN_BASE = 1;
-var BASE_ASPECT = 2;
+var BASE_ASPECT = 2.67;
 
 var VIEW_COUNT = 3
 
@@ -179,8 +179,8 @@ var gInitView = {
                 'touchstart': function(e) {
                     if(e.originalEvent.touches.length > 1){
                     }else if(e.originalEvent.touches.length == 1){
-                        $(".modalSelect").removeClass('modalSelect');
-                        $(this).addClass('modalSelect');
+                        $(".rowHoverSelectedColor").removeClass('rowHoverSelectedColor');
+                        $(this).addClass('rowHoverSelectedColor');
                     }
                 },
             });
@@ -194,8 +194,8 @@ var gInitView = {
                     $(this).removeClass('rowHoverColor');
                 },
                 'click': function(e) {
-                    $(".modalSelect").removeClass('modalSelect');
-                    $(this).addClass('modalSelect');
+                    $(".rowHoverSelectedColor").removeClass('rowHoverSelectedColor');
+                    $(this).addClass('rowHoverSelectedColor');
                 },
             });
         }
@@ -217,6 +217,18 @@ var gDatePicker = {
     endDate : null,
     endSqlTime : null,
     endTimeEpoch : null,
+    monthClickEvent : function() {
+            var selectPinElement = [].slice.call(document.querySelectorAll(".inputClass"));
+            selectPinElement.forEach(function(pin, pos) {
+                $(pin).datetimepicker({
+                     format : 'YYYY/MM',
+                     locale: 'ja',
+                 });
+                gDatePicker.dateChangeEvent(pin)
+                gDatePicker.dayDateTimeSetting();
+            });
+        },
+
     dayClickEvent : function() {
         var selectPinElement = [].slice.call(document.querySelectorAll(".inputClass"));
         selectPinElement.forEach(function(pin, pos) {
