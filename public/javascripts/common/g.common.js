@@ -30,7 +30,7 @@ var gIconHeight = 35;
 var PIN_MARGIN_X = 8;
 var PIN_MARGIN_Y = 7;
 var MARGIN_BASE = 1;
-var BASE_ASPECT = 2;
+var BASE_ASPECT = 2.67;
 
 var VIEW_COUNT = 3
 
