@@ -54,6 +54,8 @@ class ItemOtherCancel @Inject()(config: Configuration
   val itemOtherCancelForm = Form(mapping(
     "itemTypeIdList" -> list(number.verifying("仮設材TypeIDが異常", { itemTypeIdList => itemTypeIdList != null })),
     "itemId" -> list(number.verifying("仮設材IDが異常", { itemId => itemId != null })),
+    "workTypeNameList" -> list(text.verifying("期間異常", { workTypeNameList => !workTypeNameList.isEmpty})),
+    "reserveStartDateList" -> list(text.verifying("予約期間異常", { reserveStartDateList => !reserveStartDateList.isEmpty})),
     "checkVal" -> list(number.verifying("checkVal", { checkVal => checkVal != null }))
   )(ItemOtherCancelData.apply)(ItemOtherCancelData.unapply))
 
@@ -108,16 +110,23 @@ class ItemOtherCancel @Inject()(config: Configuration
 
       ItemOtherReserveData => {
         if(ItemOtherReserveData.checkVal.zipWithIndex.length > 0){
-            var setData = List[CancelItem]()
-
+          var setData = List[CancelItem]()
+          var vCancelCheck = "OK"
           ItemOtherReserveData.itemId.zipWithIndex.map { case (itemId, i) =>
             ItemOtherReserveData.checkVal.zipWithIndex.map { case (check, j) =>
                 if(i == check){
                   val vItemTypeId = ItemOtherReserveData.itemTypeIdList(i)
+                  val vReserveStartDate = ItemOtherReserveData.reserveStartDateList(i)
+                  val vWorkTypeName = ItemOtherReserveData.workTypeNameList(i)
+                  val vCheckValue = beaconService.currentTimeCancelCheck(vReserveStartDate,vWorkTypeName)
+                  if(vCheckValue != "OK"){
+                    vCancelCheck = vCheckValue
+                  }
                   setData = setData :+ CancelItem(vItemTypeId,itemId,placeId,true)
                 }
               }
             }
+          if(vCancelCheck == "OK") { //　現在時刻から予約取消可能かを判定
             val result = otherDAO.cancelItemOther(setData)
             if (result == "success") {
               Redirect(routes.ItemOtherCancel.index())
@@ -126,6 +135,11 @@ class ItemOtherCancel @Inject()(config: Configuration
               Redirect(routes.ItemOtherCancel.index())
                 .flashing(ERROR_MSG_KEY -> Messages("error.site.otherCancel.cancel"))
             }
+          }else{  // 現在時刻から予約取消可能かを判定でエラーの場合
+            Redirect(routes.ItemOtherCancel.index())
+              .flashing(ERROR_MSG_KEY -> Messages(vCancelCheck))
+          }
+
         }else{
           Redirect(routes.ItemOtherCancel.index())
             .flashing(ERROR_MSG_KEY -> Messages("error.site.otherCancel.noselect"))

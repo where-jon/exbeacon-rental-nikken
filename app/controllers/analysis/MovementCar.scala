@@ -91,7 +91,8 @@ class MovementCar @Inject()(config: Configuration
     if(detectedCount == 0 || detectedCount == -1){
       0
     }else{
-      (detectedCount * BATCH_INTERVAL_MINUTE) / (weekTotalTime * HOUR_MINUTE).toFloat * 100
+      val vCountResult = (detectedCount * BATCH_INTERVAL_MINUTE) / (weekTotalTime * HOUR_MINUTE).toFloat * 100
+      Math.round(vCountResult*10)/10.0.toFloat  // 小数点2位以下を四捨五
     }
   }
 
@@ -321,8 +322,8 @@ class MovementCar @Inject()(config: Configuration
       logItemAllList.foreach { item =>
         pw.print(s"${item.last.itemName},")
         item.map{ v =>
-          pw.print(s"${v.operatingRate}," +
-            s"${v.reserveOperatingRate},"
+          pw.print(s"${v.operatingRate}%," +
+            s"${v.reserveOperatingRate}%,"
           )
         }
         pw.println("")
