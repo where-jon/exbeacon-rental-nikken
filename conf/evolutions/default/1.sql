@@ -219,7 +219,7 @@ CREATE TABLE public.item_other_master (
 -- Table: item_type (仮設材種別)
 
 CREATE TABLE public.item_type (
-	item_type_id serial NOT NULL,
+	item_type_id int4 NOT NULL,
 	item_type_name text NOT NULL,
 	item_type_category text NOT NULL,
 	item_type_icon_color text NOT NULL,
@@ -229,7 +229,6 @@ CREATE TABLE public.item_type (
 	place_id int4 NOT NULL,
 	active_flg bool NOT NULL DEFAULT true,
 	updatetime timestamp NULL DEFAULT now(),
-	CONSTRAINT item_type_pkey PRIMARY KEY (item_type_id)
 )
 --WITH (
 --  OIDS=FALSE
