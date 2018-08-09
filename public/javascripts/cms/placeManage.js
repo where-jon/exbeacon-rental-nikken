@@ -57,7 +57,14 @@ function showDeleteModal(){
         $('#deleteModal').modal();
     }
 }
-//
+
+function moveToSelected(){
+    if($('.rowHoverSelectedColor').length > 0){
+        var placeId = $('.rowHoverSelectedColor').attr('data-placeId');
+        $('#inputPlaceId').val(placeId)
+        $('#placeChangeForm').submit()
+    }
+}
 
 function deleteSelectPlace() {
     if($('.rowHoverSelectedColor').length > 0){
