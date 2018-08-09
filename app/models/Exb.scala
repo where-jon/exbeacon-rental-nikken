@@ -166,7 +166,7 @@ class ExbDAO @Inject() (dbapi: DBApi) {
         ExbApi(exb_id, exb_device_name, exb_pos_name,floor_id, cur_floor_name)
     }
   }
-  def selectExbApiInfo(placeId: Int, exbId: Int): Seq[ExbApi] = {
+  def selectExbApiInfo(placeId: Int, posId: Int): Seq[ExbApi] = {
     db.withConnection { implicit connection =>
       val sql = SQL(
         """
@@ -182,11 +182,11 @@ class ExbDAO @Inject() (dbapi: DBApi) {
           on e.floor_id = floor.floor_id
           and floor.active_flg = true
           where e.place_id = {placeId} and
-          e.exb_id = {exbId}
+          e.exb_device_id = {posId}
           order by exb_id;
 		          """).on(
         "placeId" -> placeId,
-         "exbId" -> exbId
+         "posId" -> posId
       )
       sql.as(simpleApi.*)
     }
