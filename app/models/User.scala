@@ -11,6 +11,22 @@ import javax.inject.Inject
 import play.api.db._
 import play.api.Logger
 
+case class UserLevelEnum(
+  map: Map[Int, String] = Map[Int,String] (
+    1 -> "一般",
+    2 -> "管理者"
+  )
+)
+
+case class UserAllLevelEnum(
+  map: Map[Int, String] = Map[Int,String] (
+    1 -> "一般",
+    2 -> "管理者",
+    3 -> "現場担当者",
+    4 -> "システム管理者"
+  )
+)
+
 case class User(
     id: Option[Long],
     email: String,
@@ -264,6 +280,49 @@ class UserDAO @Inject() (dbapi: DBApi) {
     )
   }
 
+  def changePasswordById(userId: String, passwd: String) = {
+    Future.successful(
+      db.withConnection { implicit connection =>
+        val sql = SQL("""
+            UPDATE user_master
+            SET
+              password = {passwd},
+              updatetime = now()
+            WHERE user_id = {userId}
+          """).on(
+          'userId -> userId.toInt,
+          'passwd -> passwd
+        )
+        sql.executeUpdate()
+      }
+    )
+  }
+
+  def selectAccountByPlaceId(placeId: Int): Seq[User] = {
+    db.withConnection { implicit connection =>
+      val sql = SQL("""
+        SELECT
+          user_id,
+          email,
+          name,
+          password,
+          place_id,
+          current_place_id,
+          active_flg,
+          permission
+        FROM user_master
+        WHERE
+          place_id = {placeId}
+          AND permission IN (1, 2)
+          AND active_flg = true
+        ORDER by user_id
+      """).on(
+        'placeId -> placeId
+      )
+      sql.as(simple.*)
+    }
+  }
+
   def updateUserNameByEmail(userId: String, userName: String) = {
     Future.successful(
       db.withConnection { implicit connection =>
@@ -276,6 +335,41 @@ class UserDAO @Inject() (dbapi: DBApi) {
           """).on(
           'userEmail -> userId,
           'userName -> userName
+        )
+        sql.executeUpdate()
+      }
+    )
+  }
+
+  def updateUserNameLevelById(userId: String, userName: String, level: String) = {
+    Future.successful(
+      db.withConnection { implicit connection =>
+        val sql = SQL("""
+            UPDATE user_master
+            SET
+              name = {userName},
+              permission = {level},
+              updatetime = now()
+            WHERE user_id = {userId}
+          """).on(
+          'userId -> userId.toInt,
+          'userName -> userName,
+          'level -> level.toInt
+        )
+        sql.executeUpdate()
+      }
+    )
+  }
+
+  def deleteLogicalById(userId: String) = {
+    Future.successful(
+      db.withConnection { implicit connection =>
+        val sql = SQL("""
+            UPDATE user_master
+            SET active_flg = false, updatetime = now()
+            WHERE user_id = {userId}
+          """).on(
+          'userId -> userId.toInt
         )
         sql.executeUpdate()
       }
