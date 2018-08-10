@@ -1,5 +1,5 @@
 @(
-floorInfoList: Seq[FloorAll]
+floorInfoList: Seq[FloorInfoData]
 )(implicit user: User, messages: Messages, request: RequestHeader, flash: Flash)
 
 @import controllers.routes
@@ -37,22 +37,27 @@ floorInfoList: Seq[FloorAll]
                                         <th colspan="5" class="tableTitleTh">@Messages("lang.cms.floorManage.title")</th>
                                     </tr>
                                     <tr>
-                                        <th class="tableTh floorTh">フロア名</th>
                                         <th class="tableTh deviceTh">表示順</th>
+                                        <th class="tableTh floorTh">フロア名</th>
                                         <th class="tableTh deviceTh">現場状況画面表示</th>
+                                        <th class="tableTh deviceTh">EXB設置番号</th>
                                     </tr>
                                 </thead>
                                 <tbody class="sortable">
                                     @for(floor <- floorInfoList){
-                                        <tr class="rowColor rowHover" id="@floor.floor_id" data-floor_id="@floor.floor_id">
-                                            <td class="itemTd text-center floor_name">@floor.floor_name</td>
-                                            <td class="itemTd text-center display_order">@floor.display_order</td>
+                                        <tr class="rowColor rowHover" id="@floor.floor_id" data-floorId="@floor.floor_id">
+                                            <td class="itemTd text-center displayOrder">@floor.display_order</td>
+                                            <td class="itemTd text-center floorName">@floor.floor_name</td>
                                             @if(floor.active_flg){
-                                                <td class="itemTd text-center display_order">表示</td>
+                                                <td class="itemTd text-center activeFlg">表示</td>
                                             }else{
-                                                <td class="itemTd text-center display_order">非表示</td>
+                                                <td class="itemTd text-center activeFlg">非表示</td>
                                             }
-
+                                            <td class="itemTd text-center floor_name">
+                                                @for(exbDeviceId <- floor.exbDeviceIdList){
+                                                <span class="part">@exbDeviceId</span>
+                                                }
+                                            </td>
                                         </tr>
                                     }
                                 </tbody>
@@ -75,6 +80,101 @@ floorInfoList: Seq[FloorAll]
             </div>
         </div>
     </div>
+    <!-- フロア登録、更新モーダル画面 -->
+    <div class="modal" id="floorUpdateModal" tabindex="-1" role="dialog" aria-labelledby="floorUpdateModalLabel" aria-hidden="true" data-show="true" data-keyboard="false" data-backdrop="static">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form id="floorForm" name="floorForm" enctype="multipart/form-data" class="form-horizontal" enctype="multipart/form-data" class="form-horizontal" method="post" action="@controllers.cms.routes.FloorManage.floorUpdate.path">
+                    @CSRF.formField
+                    <input type="hidden" id="inputFloorId" name="inputFloorId">
+                    <input type="hidden" id="inputExbDeviceNoListComma" name="inputExbDeviceNoListComma">
+                    <div class="modal-header">@Messages("lang.cms.floorManage.floorUpdate.popup.title")</div>
+                    <div class="modal-body">
+
+                        <div class="form-group">
+                            <label class="control-label col-xs-5">@Messages("lang.cms.floorManage.floorUpdate.popup.displayOrder")</label>
+                            <div class="col-xs-2" style="padding-left: 0px;padding-right: 0px;">
+                                <input type="text" name="inputDisplayOrder" id="inputDisplayOrder" class="form-control" placeholder="@Messages("lang.cms.floorManage.floorUpdate.popup.displayOrder.placeholder")">
+                            </div>
+                        </div>
+
+
+                        <div class="form-group">
+                            <label class="control-label col-xs-5">現場状況表示</label>
+                            <select id="FLG_FILTER" style="height: 30px; width: 100px;">
+                                <option value="0">非表示</option>
+                                <option value="1" selected>表示</option>
+                            </select>
+                            <input class="form-control" type="text" name="activeFlg" id="activeFlg" value = true>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-xs-5">@Messages("lang.cms.floorManage.floorUpdate.popup.name")</label>
+                            <div class="col-xs-2" style="padding-left: 0px;padding-right: 0px;">
+                                <input type="text" name="inputFloorName" id="inputFloorName" class="form-control" placeholder="@Messages("lang.cms.floorManage.floorUpdate.popup.name.placeholder")">
+                            </div>
+                        </div>
+
+                        <div class="form-group hidden" style="margin-bottom: 5px;">
+                            <label class="control-label col-xs-5">@Messages("lang.cms.floorManage.floorUpdate.popup.deviceNo")</label>
+                            <div class="col-xs-2" style="padding-left: 0px;padding-right: 0px;margin-right:10px;">
+                                <input type="text" name="inputDeviceNo" id="inputDeviceNo" class="form-control" placeholder="@Messages("lang.cms.floorManage.floorUpdate.popup.deviceNo.placeholder")">
+                            </div>
+                            <div class="col-xs-1" style="padding-left: 0px;padding-right: 0px;">
+                                <a href="javascript:addTagRow();"class="btn btn-default"><i class="fa fa-plus" aria-hidden="true"></i></a>
+                            </div>
+                        </div>
+                        <div class="form-group template hidden" style="margin-bottom: 5px;">
+                            <label class="control-label col-xs-5"></label>
+                            <div class="col-xs-2 inputDeviceNoDiv text-center">
+                                <span class="inputDeviceNoSpan"></span>
+                            </div>
+                            <div class="col-xs-1" style="padding-left: 0px;padding-right: 0px;">
+                                <a onclick="removeTagRow(this);" class="btn btn-default removeRowBtn">
+                                    <i class="fa fa-close fa-1x" aria-hidden="true"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="floorFooter" class="modal-footer">
+                        <div class="col-xs-6 text-center">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">@Messages("cancel")</button>
+                        </div>
+                        <div class="col-xs-6 text-center">
+                            <button id="floorUpdateFooter" type="submit" class="text-center btn btn-primary hidden">@Messages("update")</button>
+                            <button id="floorRegisterFooter" type="submit" class="text-center btn btn-primary hidden">@Messages("registration")</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- フロア削除モーダル画面 -->
+    <div class="modal" id="floorDeleteModal" tabindex="-1" role="dialog" aria-labelledby="floorDeleteModalLabel" aria-hidden="true" data-show="true" data-keyboard="false" data-backdrop="static">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form id="deleteForm" name="deleteForm" class="form-horizontal" enctype="multipart/form-data" class="form-horizontal" method="post" action="@controllers.cms.routes.FloorManage.floorDelete.path">
+                    @CSRF.formField
+                    <input type="hidden" id="deleteFloorId" name="deleteFloorId">
+                    <div class="modal-header">@Messages("lang.cms.floorManage.floorDelete.popup.title")</div>
+                    <div class="modal-body">
+                        <div class="text-center">
+                            @Html(Messages("lang.cms.floorManage.floorDelete.popup.message").replaceAll("(\r\n|\r|\n)","<br>"))
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <div class="col-xs-6 text-center">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">@Messages("cancel")</button>
+                        </div>
+                        <div class="col-xs-6 text-center">
+                            <button type="submit" class="text-center btn btn-danger">@Messages("delete")</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <script type="text/javascript" src="@routes.MyAssets.js("cms/floorManage.js")"></script>
     <script></script>
 </body>

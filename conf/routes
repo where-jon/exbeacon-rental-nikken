@@ -35,8 +35,8 @@ POST    /cms/placeManage/cmsLogin       controllers.cms.PlaceManage.cmsLogin
 
 # フロア管理
 GET     /cms/floorManage                controllers.cms.FloorManage.index
-#POST    /cms/floorManage/floorUpdate    controllers.cms.FloorManage.floorUpdate
-#POST    /cms/floorManage/floorDelete    controllers.cms.FloorManage.floorDelete
+POST    /cms/floorManage/floorUpdate    controllers.cms.FloorManage.floorUpdate
+POST    /cms/floorManage/floorDelete    controllers.cms.FloorManage.floorDelete
 #  POST    /cms/floorManage/sort           controllers.cms.FloorManage.sort
 
 
