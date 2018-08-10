@@ -139,9 +139,28 @@ function deleteItemType() {
     }
 }
 
+// 表示ボタンをクリックする時に発生するイベント
+function viewBtnEvent(){
+    var viewBtnElement = document.getElementById("itemTypeUpdateFooter")
+        viewBtnElement.addEventListener('click', function(event) {
+            // itemTypeId結果をfromへ設定
+            var itemTypeFilterResult = $('#item_type option:selected').val();
+            $('#inputItemTypeCategory').val(itemTypeFilterResult);
+        });
+
+    var viewBtnElement = document.getElementById("itemTypeRegisterFooter")
+        viewBtnElement.addEventListener('click', function(event) {
+            // itemTypeId結果をfromへ設定
+            var itemTypeFilterResult = $('#item_type option:selected').val();
+            $('#inputItemTypeCategory').val(itemTypeFilterResult);
+        });
+}
+
 $(function(){
     // テーブルを固定
     fixTable();
+    // 表示ボタンをクリック
+    viewBtnEvent();
     // マウス操作とタップ操作をバインド
     bindMouseAndTouch();
 

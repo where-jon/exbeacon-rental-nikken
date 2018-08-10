@@ -1,10 +1,10 @@
 package controllers.cms
 
 import javax.inject.{Inject, Singleton}
-
 import com.mohiva.play.silhouette.api.Silhouette
 import controllers.BaseController
 import controllers.site
+import models.ItemCategoryEnum
 import play.api._
 import play.api.data.Form
 import play.api.data.Forms._
@@ -37,15 +37,20 @@ class ItemTypeManage @Inject()(config: Configuration
                               , itemTypeDAO: models.ItemTypeDAO
                                ) extends BaseController with I18nSupport {
 
+  var ITEM_TYPE_FILTER = "";
+  /*enum形*/
+  val ITEM_TYPE = ItemCategoryEnum().map;
+
   /** 初期表示 */
   def index = SecuredAction { implicit request =>
+    ITEM_TYPE_FILTER = ""
     val reqIdentity = request.identity
     if(reqIdentity.level >= 2){
       // 選択された現場の現場ID
       val placeId = super.getCurrentPlaceId
       // 仮設材種別情報
       val itemTypeList = itemTypeDAO.selectItemTypeInfo(placeId)
-      Ok(views.html.cms.itemTypeManage(itemTypeList, placeId))
+      Ok(views.html.cms.itemTypeManage(ITEM_TYPE_FILTER, ITEM_TYPE, itemTypeList, placeId))
     }else {
       Redirect(site.routes.WorkPlace.index)
     }
@@ -83,7 +88,7 @@ class ItemTypeManage @Inject()(config: Configuration
             if(f.inputItemTypeId.isEmpty){
               // 新規登録の場合 --------------------------
               // DB処理
-              itemTypeDAO.insert(f.inputItemTypeName, f.inputItemTypeCategory, f.inputItemTypeIconColor, f.inputItemTypeTextColor, f.inputItemTypeRowColor, f.inputNote, f.inputPlaceId.toInt)
+              itemTypeDAO.insert(f.inputItemTypeName, f.inputItemTypeCategory.toInt, f.inputItemTypeIconColor, f.inputItemTypeTextColor, f.inputItemTypeRowColor, f.inputNote, f.inputPlaceId.toInt)
 
               Redirect(routes.ItemTypeManage.index)
                 .flashing(SUCCESS_MSG_KEY -> Messages("success.cms.ItemTypeManage.update"))
@@ -91,7 +96,7 @@ class ItemTypeManage @Inject()(config: Configuration
             }else{
               // 更新の場合 --------------------------
               // DB処理
-              itemTypeDAO.updateById(f.inputItemTypeId.toInt, f.inputItemTypeName, f.inputItemTypeCategory, f.inputItemTypeIconColor, f.inputItemTypeTextColor, f.inputItemTypeRowColor, f.inputNote)
+              itemTypeDAO.updateById(f.inputItemTypeId.toInt, f.inputItemTypeName, f.inputItemTypeCategory.toInt, f.inputItemTypeIconColor, f.inputItemTypeTextColor, f.inputItemTypeRowColor, f.inputNote)
 
               Redirect(routes.ItemTypeManage.index)
                 .flashing(SUCCESS_MSG_KEY -> Messages("success.cms.ItemTypeManage.update"))
@@ -122,7 +127,7 @@ class ItemTypeManage @Inject()(config: Configuration
     val listRgb = rgb.split(",")
     if(listRgb.length == 3) {
       for (rgbInt <- listRgb) {
-        if (BigDecimal(rgbInt) < 0 || BigDecimal(rgbInt) > 255) {
+        if (rgbInt.trim().toInt < 0 || rgbInt.trim().toInt > 255) {
           resFlg = false
         }
       }
