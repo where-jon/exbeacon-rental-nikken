@@ -237,7 +237,7 @@ class UserDAO @Inject() (dbapi: DBApi) {
         val sql = SQL("""
             UPDATE user_master
             SET active_flg = false, updatetime = now()
-            where place_id = {placeId} AND permission = 3
+            WHERE place_id = {placeId} AND permission = 3
           """).on(
           'placeId -> placeId
         )
@@ -254,7 +254,7 @@ class UserDAO @Inject() (dbapi: DBApi) {
             SET
               password = {passwd},
               updatetime = now()
-            where email = {userEmail}
+            WHERE email = {userEmail}
           """).on(
           'userEmail -> userEmail,
           'passwd -> passwd
@@ -264,4 +264,21 @@ class UserDAO @Inject() (dbapi: DBApi) {
     )
   }
 
+  def updateUserNameByEmail(userId: String, userName: String) = {
+    Future.successful(
+      db.withConnection { implicit connection =>
+        val sql = SQL("""
+            UPDATE user_master
+            SET
+              name = {userName},
+              updatetime = now()
+            WHERE email = {userEmail}
+          """).on(
+          'userEmail -> userId,
+          'userName -> userName
+        )
+        sql.executeUpdate()
+      }
+    )
+  }
 }

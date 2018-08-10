@@ -25,6 +25,7 @@ case class PlaceChangeForm(inputPlaceId: String)
 case class CmsLoginForm(inputPlaceId: String, inputCmsLoginPassword: String, inputReturnPath:String)
 case class PlaceRegisterForm(
   placeName: String, // 現場名
+  placeStatus: String, // 状態
   placeUserId: String, // 現場担当者ID
   placeUserName: String, // 現場担当者名
   placeUserPassword1: String, // パスワード
@@ -32,8 +33,10 @@ case class PlaceRegisterForm(
 )
 case class PlaceUpdateForm(
   placeId: String,
+  userId: String,
   placeName: String,
-  placeStatus: String
+  placeStatus: String,
+  userName: String
 )
 case class PasswordUpdateForm(
   placeId: String,
@@ -167,6 +170,7 @@ class PlaceManage @Inject() (
     val inputForm = Form(
       mapping(
         "placeName" -> text.verifying(Messages("error.cms.PlaceManage.register.inputPlaceName.empty"), {!_.isEmpty}),
+        "placeStatus" -> text.verifying(Messages("error.cms.PlaceManage.register.inputPlaceStatus.empty"), {!_.isEmpty}),
         "placeUserId" -> text.verifying(Messages("error.cms.PlaceManage.register.inputPlaceUserId.empty"), {!_.isEmpty}),
         "placeUserName" -> text.verifying(Messages("error.cms.PlaceManage.register.inputPlaceUserName.empty"), {!_.isEmpty}),
         "placeUserPassword1" -> text.verifying(Messages("error.cms.PlaceManage.passwordUpdate.inputPassword.empty"), {!_.isEmpty}),
@@ -188,7 +192,7 @@ class PlaceManage @Inject() (
       Redirect(routes.PlaceManage.sortPlaceListWith(selectedSortType)).flashing(ERROR_MSG_KEY -> errMsg)
     }else{
       // DB登録
-      val placeEx = PlaceEx.apply(0, form.get.placeName, 0, 0, "", "", "", "", "", "", "")
+      val placeEx = PlaceEx.apply(0, form.get.placeName, 0, form.get.placeStatus.toInt, "", "", "", "", "", "", "")
       val placeId = placeDAO.insertEx(placeEx)
       val hs = passwordHasherRegistry.current.hash(form.get.placeUserPassword1)
       val user = User.apply(
@@ -204,31 +208,26 @@ class PlaceManage @Inject() (
 
   /** 更新 */
   def update = SecuredAction { implicit request =>
-    // フォームの準備
     val inputForm = Form(mapping(
-        "placeId" -> text
-      , "placeName" -> text.verifying(Messages("error.cms.PlaceManage.register.inputPlaceName.empty"), {!_.isEmpty})
-      , "placeStatus" -> text.verifying(Messages("error.cms.PlaceManage.register.inputPlaceStatus.empty"), {!_.isEmpty})
+        "placeId" -> text,
+        "userId" -> text,
+        "placeName" -> text.verifying(Messages("error.cms.PlaceManage.register.inputPlaceName.empty"), {!_.isEmpty}),
+        "placeStatus" -> text.verifying(Messages("error.cms.PlaceManage.register.inputPlaceStatus.empty"), {!_.isEmpty}),
+        "userName" -> text.verifying(Messages("error.cms.PlaceManage.register.inputPlaceUserName.empty"), {!_.isEmpty})
     )(PlaceUpdateForm.apply)(PlaceUpdateForm.unapply))
-
-    // フォームの取得
     val form = inputForm.bindFromRequest
     if (form.hasErrors){
-      // エラーメッセージ
-      val errMsg = form.errors.map(_.message).mkString(HTML_BR)
-      // リダイレクトで画面遷移
-      Redirect(routes.PlaceManage.sortPlaceListWith(selectedSortType)).flashing(ERROR_MSG_KEY -> errMsg)
-    }else{
-      val f = form.get
-      // DB登録
-      placeDAO.updateById(f.placeId.toInt, f.placeName, f.placeStatus.toInt)
-
       Redirect(routes.PlaceManage.sortPlaceListWith(selectedSortType))
+        .flashing(ERROR_MSG_KEY -> form.errors.map(_.message).mkString(HTML_BR))
+    }else{
+      placeDAO.updateById(form.get.placeId.toInt, form.get.placeName, form.get.placeStatus.toInt)
+      userService.updateUserNameByEmail(form.get.userId, form.get.userName)
+      Redirect(s"""${routes.PlaceManage.detail().path()}?${KEY_PLACE_ID}=${form.get.placeId}""")
         .flashing(SUCCESS_MSG_KEY -> Messages("success.cms.PlaceManage.register"))
     }
   }
 
-  /** 更新 */
+  /** パスワード更新 */
   def passwordUpdate = SecuredAction { implicit request =>
     // フォームの準備
     val inputForm = Form(mapping(
@@ -237,49 +236,38 @@ class PlaceManage @Inject() (
         "password1" -> text.verifying(Messages("error.cms.PlaceManage.passwordUpdate.inputPassword.empty"), {!_.isEmpty})
       , "password2" -> text.verifying(Messages("error.cms.PlaceManage.passwordUpdate.inputRePassword.empty"), {!_.isEmpty})
     )(PasswordUpdateForm.apply)(PasswordUpdateForm.unapply))
-    // フォームの取得
     val form = inputForm.bindFromRequest
     if (form.hasErrors){
-      // エラーメッセージ
       val errMsg = form.errors.map(_.message).mkString(HTML_BR)
-      // リダイレクトで画面遷移
       Redirect(routes.PlaceManage.detail()).flashing(ERROR_MSG_KEY -> errMsg)
     }else{
-      val f = form.get
-      if(f.password1 != f.password2){
+      if(form.get.password1 != form.get.password2){
         Redirect(routes.PlaceManage.sortPlaceListWith(selectedSortType)).flashing(ERROR_MSG_KEY -> Messages("error.cms.PlaceManage.passwordUpdate.notEqual"))
       }else{
-        // DB登録
-        //placeDAO.updatePassword(f.inputPlaceId.toInt, f.inputPassword)
-        val hs = passwordHasherRegistry.current.hash(form.get.password1)
-        userService.changePasswordByEmail(form.get.userId, hs.password)
-
-        Redirect(routes.PlaceManage.sortPlaceListWith(selectedSortType))
-          .flashing(SUCCESS_MSG_KEY -> Messages("success.cms.PlaceManage.register"))
+        userService.changePasswordByEmail(
+          form.get.userId,
+          passwordHasherRegistry.current.hash(form.get.password1).password
+        )
+        Redirect(s"""${routes.PlaceManage.detail().path()}?${KEY_PLACE_ID}=${form.get.placeId}""")
+          .flashing(SUCCESS_MSG_KEY -> Messages("success.cms.PlaceManage.passwordUpdate"))
       }
     }
   }
 
   /** 削除 */
   def delete = SecuredAction { implicit request =>
-    // フォームの準備
     val inputForm = Form(mapping(
       "deletePlaceId" -> text.verifying(Messages("error.cms.placeManage.delete.empty"), {!_.isEmpty})
     )(PlaceDeleteForm.apply)(PlaceDeleteForm.unapply))
-    // フォームの取得
     val form = inputForm.bindFromRequest
     if (form.hasErrors){
-      // エラーメッセージ
-      val errMsg = form.errors.map(_.message).mkString(HTML_BR)
-      // リダイレクトで画面遷移
-      Redirect(routes.PlaceManage.sortPlaceListWith(selectedSortType)).flashing(ERROR_MSG_KEY -> errMsg)
+      Redirect(routes.PlaceManage.sortPlaceListWith(selectedSortType))
+        .flashing(ERROR_MSG_KEY -> form.errors.map(_.message).mkString(HTML_BR))
     }else{
-      val f = form.get
-      // DB処理
-      placeDAO.deleteLogicalById(f.deletePlaceId.toInt)
-      userService.deleteLogicalByPlaceId(f.deletePlaceId.toInt)
-      // 現場一覧の方にリダイレクト
-      Redirect(routes.PlaceManage.sortPlaceListWith(selectedSortType)).flashing(SUCCESS_MSG_KEY -> Messages("success.cms.PlaceManage.delete"))
+      placeDAO.deleteLogicalById(form.get.deletePlaceId.toInt)
+      userService.deleteLogicalByPlaceId(form.get.deletePlaceId.toInt)
+      Redirect(routes.PlaceManage.sortPlaceListWith(selectedSortType))
+        .flashing(SUCCESS_MSG_KEY -> Messages("success.cms.PlaceManage.delete"))
     }
   }
 }
