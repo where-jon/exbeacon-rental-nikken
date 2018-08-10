@@ -31,7 +31,7 @@ viewType: Seq[ViewType]
 
 			<select id="floor-category" class=" manager__data--floor">
 				@mapViewer.zipWithIndex.map { case(map, i) =>
-					<option value="@map.floor_id" @{if(map.floor_id == 1) "selected" else ""}>@map.floor_name</option>
+					<option value="@map.display_order" @{if(map.display_order == 1) "selected" else ""}>@map.floor_name</option>
 				}
 			</select>
 		</div>
@@ -122,7 +122,7 @@ viewType: Seq[ViewType]
 
 							<select id="input-floor-category-@i" class="exb__select--category inputFloor">
 								@mapViewer.zipWithIndex.map { case(map, i) =>
-								<option value="@map.floor_id"  @{if(map.floor_id == viewer.floor_id.toInt) "selected" else ""}>@map.floor_name</option>
+								<option value="@map.display_order"  @{if(map.display_order == viewer.floor_id.toInt) "selected" else ""}>@map.floor_name</option>
 								}
 							</select>
 						</td>
@@ -179,7 +179,7 @@ viewType: Seq[ViewType]
 	</div>
 	<div class="manager__main--frame" id ="map__main--frame">
 		@mapViewer.zipWithIndex.map { case(map, i) =>
-		<div id="beaconMap-@map.floor_id" class = "hidden level level--@i layer-beacon" aria-label="Level @i">
+		<div id="beaconMap-@map.display_order" class = "hidden level level--@i layer-beacon" aria-label="Level @i">
 			<div class="wrapper__img--canvas" >
 				<img id ="imgFrame-@i" class="img__map__manager--style" src=@map.floor_map_image />
 			</div>

@@ -38,7 +38,7 @@ exbViewer: Seq[ExbAll]
                 <select id="floor-category" class=" manager__data--floor">
                     @mapViewer.zipWithIndex.map { case(map, i) =>
                     <!--<option value="@map.floor_id" @{if(map.floor_id == 1) "selected" else ""}>@map.floor_name</option>-->
-                    <option class= @{if(map.active_flg) "visible" else "hidden"}  value="@map.floor_id" @{if(map.floor_id == 1) "selected" else ""} >@map.floor_name</option>
+                    <option class= @{if(map.active_flg) "visible" else "hidden"}  value="@map.display_order" @{if(map.display_order == 1) "selected" else ""} >@map.floor_name</option>
                     }
                 </select>
             </div>
@@ -61,7 +61,7 @@ exbViewer: Seq[ExbAll]
         </div>
 
         @mapViewer.zipWithIndex.map { case(map, i) =>
-            <div id="beaconMap-@map.floor_id" class = "hidden level level--@i layer-beacon" aria-label="Level @i">
+            <div id="beaconMap-@map.display_order" class = "hidden level level--@i layer-beacon" aria-label="Level @i">
                 <div class="wrapper__img--canvas" >
                     <img id ="imgFrame-@i" class="img__map__manager--style" src=@map.floor_map_image />
                 </div>
@@ -109,24 +109,24 @@ exbViewer: Seq[ExbAll]
                 <tbody>
                 @exbViewer.zipWithIndex.map { case(viewer, i) =>
                 <tr class = "exbViewer">
-                    <td class="item" id="viewer_id-@i">@viewer.exb_id</td>
+                    <td class="item" id="viewer_id-@i">@viewer.exb_device_id</td>
                     <td class="item" id="viewer_visible-@i">@viewer.exb_view_flag</td>
                     <td class="item" id="viewer_pos_type-@i">@viewer.view_type_name</td>
                     <td class="item" id="viewer_pos_x-@i">@viewer.exb_pos_x
-                        <input class="form-control input-sm" type="text" id="input_viewer_pos_x-@viewer.exb_id" value="@viewer.exb_pos_x" name="viewerPosX[@i]">
+                        <input class="form-control input-sm" type="text" id="input_viewer_pos_x-@viewer.exb_device_id" value="@viewer.exb_pos_x" name="viewerPosX[@i]">
                     </td>
                     <td class="item" id="viewer_pos_y-@i">@viewer.exb_pos_y
-                        <input class="form-control input-sm" type="text" id="input_viewer_pos_y-@viewer.exb_id" value="@viewer.exb_pos_y" name="viewerPosY[@i]">
+                        <input class="form-control input-sm" type="text" id="input_viewer_pos_y-@viewer.exb_device_id" value="@viewer.exb_pos_y" name="viewerPosY[@i]">
                     </td>
                     <td class="item" id="viewer_pos_margin-@i">@viewer.view_tx_margin
-                        <input class="form-control input-sm" type="text" id="input_viewer_pos_margin-@viewer.exb_id" value="@viewer.view_tx_margin" name="viewerPosMargin[@i]">
+                        <input class="form-control input-sm" type="text" id="input_viewer_pos_margin-@viewer.exb_device_id" value="@viewer.view_tx_margin" name="viewerPosMargin[@i]">
                     </td>
-                    <td class="item" id="viewer_pos_num-@i">@viewer.exb_id</td>
+                    <td class="item" id="viewer_pos_num-@i">@viewer.exb_device_id</td>
                     <td class="item" id="viewer_pos_count-@i">@viewer.view_tx_count</td>
                     <td class="item" id="viewer_pos_floor-@i">@viewer.floor_id</td>
                     <td class="item" id="viewer_pos_size-@i">@viewer.view_tx_size</td>
                     <td class="item" id="exb_pos_name-@i">@viewer.exb_pos_name</td>
-                    <td class="item" id="exb_id-@i">@viewer.exb_id</td>
+                    <td class="item" id="exb_device_id-@i">@viewer.exb_device_id</td>
                     <td class="item" id="exb_name-@i">@viewer.exb_device_name</td>
                 </tr>
                 }

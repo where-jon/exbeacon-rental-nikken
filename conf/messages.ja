@@ -71,6 +71,7 @@ error.CarReserve.registerModal.inputCarNo.duplicate=入力された作業車は�
 
 # CMS入力エラー
 error.cms.PlaceManage.register.inputPlaceName.empty=現場名称を入力してください。
+error.cms.PlaceManage.register.inputPlaceStatus.empty=状態を選択してください。
 error.cms.PlaceManage.register.inputPlaceUserId.empty=現場担当者IDを入力してください。
 error.cms.PlaceManage.register.inputPlaceUserName.empty=現場担当者名を入力してください。
 error.cms.PlaceManage.register.inputPlaceStatus.empty=状態を選択してください。
@@ -93,11 +94,20 @@ error.cms.CompanyManage.update.inputCompanyName.duplicate=業者名が重複し�
 error.cms.CarManage.update.inputCarNo.empty=作業車番号を半角数字で入力してください。
 error.cms.CarManage.update.inputCarBtxId.empty=作業車TxタグNoを半角数字で入力してください。
 error.cms.CarManage.update.inputCarKeyBtxId.empty=鍵TxタグNoを半角数字で入力してください。
+error.cms.CarManage.update.inputCarTypeName.empty=種別を入力してください。
+error.cms.CarManage.update.inputCarTypeId.empty=種別Idを入力してください。
+error.cms.CarManage.update.inputCarName.empty=名称を入力してください。
 error.cms.CarManage.update.inputCarBtxId.inputCarKeyBtxId.duplicate=作業車TxタグNoと鍵TxタグNoが重複しています。
-error.cms.CarManage.update.inputCarNo.duplicate=作業車番号が重複しています。(作業車番号：{0})
-error.cms.CarManage.update.inputCarBtxId.duplicate=作業車TxタグNoが重複しています。(作業車TxタグNo.{0})
-error.cms.CarManage.update.inputCarKeyBtxId.duplicate=鍵TxタグNoが重複しています。(作業車TxタグNo.{0})
+error.cms.CarManage.update.inputCarBtxId.use=作業車TagIDは既に使用されています。(作業車TagID：{0})
+error.cms.CarManage.update.inputCarKeyBtxId.use=鍵TagIDは既に使用されています。(鍵TagID：{0})
+error.cms.CarManage.update.inputCarIdReserve.use=作業車・立馬IDは既に予約されています。(作業車・立馬ID：{0})
+error.cms.CarManage.update.inputCarBtxId.duplicate=作業車TagIDが重複しています。(作業車:{0})
+error.cms.CarManage.update.inputCarKeyBtxId.duplicate=鍵TagIDが重複しています。(鍵TagID:{0})
+error.cms.CarManage.update.inputBtxId.duplicate=作業車番号が重複しています。(作業車番号：{0})
 error.cms.CarManage.delete.empty=削除対象作業車を選択してください。
+error.cms.CarManage.delete.inputCarIdReserve.use=作業車・立馬IDは既に予約されています。(作業車・立馬ID：{0})
+error.cms.CarManage.delete.inputCarId.empty=作業車・立馬IDは登録されていません。(作業車・立馬ID：{0})
+error.cms.CarManage.update.NotTypeName=種別が存在しません。
 
 error.cms.ItemManage.update.inputItemKindName.empty=仮設材名称を入力してください。
 error.cms.ItemManage.update.inputItemKindName.duplicate=仮設材名称が重複しています。
@@ -140,8 +150,8 @@ success.cms.FloorManage.floorUpdate=フロア情報を更新しました。
 success.cms.CompanyManage.delete=業者情報を削除しました。
 success.cms.CompanyManage.update=業者情報を更新しました。
 
-success.cms.CarManage.delete=作業車情報を削除しました。
-success.cms.CarManage.update=作業車情報を更新しました。
+success.cms.CarManage.delete=作業車情報・立馬を削除しました。
+success.cms.CarManage.update=作業車情報・立馬を更新しました。
 
 success.cms.ItemManage.delete=仮設材情報を削除しました。
 success.cms.ItemManage.update=仮設材情報を更新しました。
@@ -234,15 +244,17 @@ lang.cms.placeManage.tabName=現場管理
 lang.cms.placeManage.detail.returnManage=現場一覧画面に戻る
 lang.cms.placeManage.place.list.header.title=現場管理
 lang.cms.placeManage.place.list.header.id=ID
-lang.cms.placeManage.place.list.header.placeName=建設現場名称
+lang.cms.placeManage.place.list.header.placeName=現場名称
 lang.cms.placeManage.place.list.header.floor=階数
 lang.cms.placeManage.place.list.header.status=状態
-lang.cms.placeManage.place.button.password=選択した担当者のパスワードを変更
+lang.cms.placeManage.place.button.password=パスワード変更
 lang.cms.placeManage.place.button.edit=編集
 lang.cms.placeManage.placeUpdate.popup.title=編集
-lang.cms.placeManage.placeUpdate.popup.name=建設現場名称
-lang.cms.placeManage.placeUpdate.popup.placeholder=現場名称
+lang.cms.placeManage.placeUpdate.popup.name=現場名称
+lang.cms.placeManage.placeUpdate.popup.placeholder=現場名称を入力してください
 lang.cms.placeManage.placeUpdate.popup.status=状態
+lang.cms.placeManage.placeUpdate.popup.userName=現場担当者名
+lang.cms.placeManage.placeUpdate.popup.userName.placeholder=現場担当者名を入力してください
 lang.cms.placeManage.passwordUpdate.popup.title=管理パスワード変更
 lang.cms.placeManage.passwordUpdate.popup.password=パスワード
 lang.cms.placeManage.passwordUpdate.popup.reEnter=パスワード再入力
@@ -258,43 +270,52 @@ lang.cms.placeManage.changePassword.popup.name=パスワードを変更します
 
 
 # CMS文字列（フロア管理）
-lang.cms.floorManage.title=フロア管理画面
-lang.cms.floorManage.floor.list.header.title=フロア情報
-lang.cms.floorManage.floor.list.header.floorName=フロア名
-lang.cms.floorManage.floor.list.header.deviceNo=EXBeaconデバイスNo
+lang.cms.floorManage.title=フロア管理
 lang.cms.floorManage.floor.button.floorEdit=選択したフロアを編集
 lang.cms.floorManage.floor.button.addFloor=新規フロア追加
 lang.cms.floorManage.floor.button.deleteFloor=選択したフロアを削除
-lang.cms.floorManage.floorUpdate.popup.title=フロア情報更新
-lang.cms.floorManage.floorUpdate.popup.name=フロア名
-lang.cms.floorManage.floorUpdate.popup.name.placeholder=8F
-lang.cms.floorManage.floorUpdate.popup.deviceNo=EXBeaconデバイスNo
-lang.cms.floorManage.floorUpdate.popup.deviceNo.placeholder=半角数字のみ
-lang.cms.floorManage.floorDelete.popup.title=フロア情報削除
-lang.cms.floorManage.floorDelete.popup.message=フロア情報を削除します。\nよろしいですか？
 
-# CMS文字列（作業車管理）
-lang.cms.carManage.title=作業車管理
-lang.cms.carManage.page.title=作業車一覧画面
-lang.cms.carManage.car.list.header.title=作業車管理
-lang.cms.carManage.car.list.header.number=作業車番号
-lang.cms.carManage.car.list.header.name=作業車名称
-lang.cms.carManage.car.list.header.carNumber=作業車TxタグNo.
-lang.cms.carManage.car.list.header.keyNumber=鍵TxタグNo.
-lang.cms.carManage.car.button.editCar=選択した作業車を編集
-lang.cms.carManage.car.button.addCar=新規作業車追加
-lang.cms.carManage.car.button.deleteCar=選択した作業車を削除
-lang.cms.carManage.carUpdate.popup.name=作業車情報更新
-lang.cms.carManage.carUpdate.popup.carNumber=作業車番号
-lang.cms.carManage.carUpdate.popup.carNumber.placeholder=001
-lang.cms.carManage.carUpdate.popup.carName=作業車名称
-lang.cms.carManage.carUpdate.popup.carName.placeholder=高所作業車A
-lang.cms.carManage.carUpdate.popup.carTxNo=作業車TxタグNo
-lang.cms.carManage.carUpdate.popup.carTxNo.placeholder=110
-lang.cms.carManage.carUpdate.popup.keyTxNo=鍵TxタグNo
-lang.cms.carManage.carUpdate.popup.keyTxNo.placeholder=101
-lang.cms.carManage.carDelete.popup.title=作業車情報削除
-lang.cms.carManage.carDelete.popup.message=作業車情報を削除します。\nよろしいですか？
+
+#lang.cms.floorManage.floor.list.header.title=フロア情報
+#lang.cms.floorManage.floor.list.header.floorName=フロア名
+#lang.cms.floorManage.floor.list.header.deviceNo=EXBeaconデバイスNo
+#lang.cms.floorManage.floorUpdate.popup.title=フロア情報更新
+#lang.cms.floorManage.floorUpdate.popup.name=フロア名
+#lang.cms.floorManage.floorUpdate.popup.name.placeholder=8F
+#lang.cms.floorManage.floorUpdate.popup.deviceNo=EXBeaconデバイスNo
+#lang.cms.floorManage.floorUpdate.popup.deviceNo.placeholder=半角数字のみ
+#lang.cms.floorManage.floorDelete.popup.title=フロア情報削除
+#lang.cms.floorManage.floorDelete.popup.message=フロア情報を削除します。\nよろしいですか？
+
+# CMS文字列（作業車・立馬管理）
+lang.cms.carManage.title=作業車・立馬管理
+lang.cms.carManage.page.title=作業車・立馬管理
+lang.cms.carManage.car.list.header.title=作業車・立馬管理
+lang.cms.carManage.car.list.header.carTagId=Tag ID
+lang.cms.carManage.car.list.header.carKeyTagId=鍵Tag ID
+lang.cms.carManage.car.list.header.carType=種別
+lang.cms.carManage.car.list.header.carName=名称
+lang.cms.carManage.car.list.header.carId=ID
+lang.cms.carManage.car.list.header.carNo=番号
+lang.cms.carManage.car.list.header.carNote=備考
+lang.cms.carManage.car.button.editCar=選択した作業車・立馬を編集
+lang.cms.carManage.car.button.addCar=新規作業車・立馬追加
+lang.cms.carManage.car.button.deleteCar=選択した作業車・立馬を削除
+lang.cms.carManage.carUpdate.popup.name=作業車・立馬情報更新
+lang.cms.carManage.carUpdate.popup.carBtxId=Tag ID
+lang.cms.carManage.carUpdate.popup.carBtxId.placeholder=001
+lang.cms.carManage.carUpdate.popup.carKeyBtxId=鍵Tag ID
+lang.cms.carManage.carUpdate.popup.carKeyBtxId.placeholder=002
+lang.cms.carManage.carUpdate.popup.carTypeName=種別
+lang.cms.carManage.carUpdate.popup.carTypeName.placeholder=作業車
+lang.cms.carManage.carUpdate.popup.carName=名称
+lang.cms.carManage.carUpdate.popup.carName.placeholder=作業車1
+lang.cms.carManage.carUpdate.popup.carId=ID
+lang.cms.carManage.carUpdate.popup.carNo=番号
+lang.cms.carManage.carUpdate.popup.carNo.placeholder=100
+lang.cms.carManage.carUpdate.popup.carNote=備考
+lang.cms.carManage.carDelete.popup.title=作業車・立馬情報削除
+lang.cms.carManage.carDelete.popup.message=作業車・立馬情報を削除します。\nよろしいですか？
 
 # CMS文字列（仮設材管理）
 lang.cms.itemManage.title=仮設材管理

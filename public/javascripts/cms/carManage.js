@@ -1,3 +1,6 @@
+// 鍵TagID 一時保存用
+var btxIdBack = "-1";
+
 // マウス・タッチの動作のバインド
 function bindMouseAndTouch(){
     var ua = navigator.userAgent;
@@ -45,16 +48,6 @@ function fixTable(){
             $('.itemTable').tablefix({width:w, fixRows: 2});
         }
     }else{
-//        // PCブラウザ
-//        var w = $('.mainSpace').width()*1.001; // ヘッダー右側ボーダーが切れる為*1.001
-//        if ($('.mainSpace').height() > h) {
-//            w = $('.mainSpace').width()-5;
-//            $('.itemTable').tablefix({width:w, height: h, fixRows: 2});
-//            w = $('.mainSpace').width()-14;
-//            $('.rowTableDiv').width(w);
-//        } else {
-//            $('.rowTableDiv').width(w);
-//        }
         // PCブラウザ
         var w = $('.mainSpace').width();
         $('.itemTable').tablefix({height: h, fixRows: 2});
@@ -83,9 +76,13 @@ function showInputModal(isRegister){
     if(isRegister){
         $('#inputCarId').val('');
         $('#inputCarNo').val('');
-        $('#inputCarName').val('');
         $('#inputCarBtxId').val('');
         $('#inputCarKeyBtxId').val('');
+        $('#inputCarTypeName').val('');
+        $('#inputCarTypeId').val('');
+        $('#car_type').val("0");
+        $('#inputCarName').val('');
+        $('#inputCarNote').val('');
 
         // ボタン表示の切り替え
         $('#carRegisterFooter').removeClass('hidden');
@@ -96,9 +93,22 @@ function showInputModal(isRegister){
             var carId = $('.rowHoverSelectedColor').attr('data-carId');
             $('#inputCarId').val(carId);
             $('#inputCarNo').val($('#'+carId).find('.carNo').text());
-            $('#inputCarName').val($('#'+carId).find('.carName').text());
             $('#inputCarBtxId').val($('#'+carId).find('.carBtxId').text());
             $('#inputCarKeyBtxId').val($('#'+carId).find('.carKeyBtxId').text());
+            btxIdBack = $('#inputCarKeyBtxId').val();
+            $('#inputCarTypeName').val($('#'+carId).find('.carTypeName').text());
+            $('#car_type').val($('#'+carId).find('.carTypeId').text());
+            $('#inputCarTypeId').val($('#car_type').val());
+            var ele = document.getElementById("inputCarKeyBtxId");
+            // 立馬の場合は鍵TagIDは入力不可
+            if($('#car_type').val() == "2"){
+               $('#inputCarKeyBtxId').val("-1");
+                ele.readOnly = true;
+            }else{
+                ele.readOnly = false;
+            }
+            $('#inputCarName').val($('#'+carId).find('.carName').text());
+            $('#inputCarNote').val($('#'+carId).find('.carNote').text());
 
             // ボタン表示の切り替え
             $('#carUpdateFooter').removeClass('hidden');
@@ -122,9 +132,49 @@ function deleteCar(){
     }
 }
 
+// 表示ボタンをクリックする時に発生するイベント
+function viewBtnEvent(){
+    var viewBtnElement = document.getElementById("carUpdateFooter")
+        viewBtnElement.addEventListener('click', function(event) {
+            // itemTypeId結果をfromへ設定
+            var itemTypeFilterResult = $('#car_type option:selected').val();
+            $('#inputCarTypeId').val(itemTypeFilterResult);
+            var itemTypeNameFilterResult = $('#car_type option:selected').text();
+            $('#inputCarTypeName').val(itemTypeNameFilterResult);
+        });
+
+    var viewBtnElement = document.getElementById("carRegisterFooter")
+        viewBtnElement.addEventListener('click', function(event) {
+            // itemTypeId結果をfromへ設定
+            var itemTypeFilterResult = $('#car_type option:selected').val();
+            $('#inputCarTypeId').val(itemTypeFilterResult);
+            var itemTypeNameFilterResult = $('#car_type option:selected').text();
+            $('#inputCarTypeName').val(itemTypeNameFilterResult);
+        });
+}
+
 $(function(){
+    var floorFrame = $('#car_type');
+        if(floorFrame!=null){
+            // 管理者用selectbox value取得
+            $('#car_type').change(function() {
+            var itemType = $('#car_type option:selected').val();
+            var ele = document.getElementById("inputCarKeyBtxId");
+            // 立馬の場合は鍵TagIDは入力不可
+            if(itemType == "2"){
+               $('#inputCarKeyBtxId').val("-1");
+                ele.readOnly = true;
+            }else{
+                $('#inputCarKeyBtxId').val(btxIdBack);
+                ele.readOnly = false;
+            }
+        });
+    }
+
     // テーブルを固定
     fixTable();
+    // 表示ボタンをクリック
+    viewBtnEvent();
     // マウス操作とタップ操作をバインド
     bindMouseAndTouch();
 

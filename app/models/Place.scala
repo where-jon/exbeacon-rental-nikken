@@ -354,7 +354,8 @@ class placeDAO @Inject() (dbapi: DBApi) {
       // パラメータのセット
       val params: Seq[NamedParameter] = Seq(
         "placeId" -> nextId,
-        "placeName" -> placeEx.placeName
+        "placeName" -> placeEx.placeName,
+        "placeStatus" -> placeEx.status
       )
 
       // INSERT
@@ -365,7 +366,7 @@ class placeDAO @Inject() (dbapi: DBApi) {
             btx_api_url, exb_telemetry_url, gateway_telemetry_url, cms_password,
             active_flg, updatetime
           ) VALUES (
-            {placeId}, {placeName}, 0,
+            {placeId}, {placeName}, {placeStatus},
             '-', '-', '-', 'password',
             true, now()
           )

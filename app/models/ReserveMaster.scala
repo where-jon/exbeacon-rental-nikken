@@ -15,11 +15,11 @@ case class WorkTypeCount(
 )
 
 case class ReserveMasterInfo(
-     itemId: Int
-    , workTypeId: Int
-    , reserveStartDate: String
-    , reserveEndDate: String
-)
+                               itemId: Int
+                               , workTypeId: Int
+                               , reserveStartDate: String
+                               , reserveEndDate: String
+                             )
 
 @javax.inject.Singleton
 class ReserveMasterDAO @Inject() (dbapi: DBApi) {

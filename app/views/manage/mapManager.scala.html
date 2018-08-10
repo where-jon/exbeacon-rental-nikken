@@ -30,7 +30,7 @@ mapViewer: Seq[FloorAll]
 
                 <select id="floor-category" class=" manager__data--floor">
                     @mapViewer.zipWithIndex.map { case(map, i) =>
-                     <option value="@map.floor_id" @{if(map.floor_id == 1) "selected" else ""} >@map.floor_name</option>
+                     <option value="@map.display_order" @{if(map.display_order == 1) "selected" else ""} >@map.floor_name</option>
                     }
                 </select>
             </div>
@@ -83,7 +83,7 @@ mapViewer: Seq[FloorAll]
             @tags.alertFromRequestDbResult(request, "resultNG")
         </div>
         @mapViewer.zipWithIndex.map { case(map, i) =>
-        <div id="beaconMap-@map.floor_id" class = "hidden level level--@i layer-beacon" aria-label="Level @i">
+        <div id="beaconMap-@map.display_order" class = "hidden level level--@i layer-beacon" aria-label="Level @i">
 
             <form action="/manage/uploadMap" method="POST" enctype="multipart/form-data" class="img__area--frame">
                 <div class = "inputFrame map__input--frame">

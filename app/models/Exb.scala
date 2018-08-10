@@ -84,6 +84,47 @@ class ExbDAO @Inject() (dbapi: DBApi) {
 
   private val db = dbapi.database("default")
 
+  /**
+    * EXBマスタ情報の取得
+    * @return
+    */
+  def select(placeId:Int, btxIdList: Seq[Int] = Seq[Int]()): Seq[Btx] = {
+
+    val simple = {
+      get[Int]("exb_id") ~
+        get[Int]("place_id")  map {
+        case exb_id ~ place_id  =>
+          Btx(exb_id, place_id)
+      }
+    }
+
+    db.withConnection { implicit connection =>
+      val selectPh =
+        """
+          select
+              b.exb_id
+            , b.place_id
+          from
+            place_master p
+            inner join exb_master b
+              on p.place_id = b.place_id
+          where
+            p.active_flg = true
+        """
+
+      var wherePh = """ and p.place_id = {placeId} """
+      if(btxIdList.isEmpty == false){
+        wherePh += s""" and b.exb_id in (${btxIdList.mkString(",")}) """
+      }
+      val orderPh =
+        """
+          order by
+            b.exb_id, b.place_id
+        """
+      SQL(selectPh + wherePh + orderPh).on('placeId -> placeId).as(simple.*)
+    }
+  }
+
   // Parser
   val simple = {
     get[Int]("exb_id") ~
@@ -125,7 +166,7 @@ class ExbDAO @Inject() (dbapi: DBApi) {
         ExbApi(exb_id, exb_device_name, exb_pos_name,floor_id, cur_floor_name)
     }
   }
-  def selectExbApiInfo(placeId: Int, exbId: Int): Seq[ExbApi] = {
+  def selectExbApiInfo(placeId: Int, posId: Int): Seq[ExbApi] = {
     db.withConnection { implicit connection =>
       val sql = SQL(
         """
@@ -141,11 +182,11 @@ class ExbDAO @Inject() (dbapi: DBApi) {
           on e.floor_id = floor.floor_id
           and floor.active_flg = true
           where e.place_id = {placeId} and
-          e.exb_id = {exbId}
+          e.exb_device_id = {posId}
           order by exb_id;
 		          """).on(
         "placeId" -> placeId,
-         "exbId" -> exbId
+         "posId" -> posId
       )
       sql.as(simpleApi.*)
     }

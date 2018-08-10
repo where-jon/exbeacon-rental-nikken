@@ -46,10 +46,10 @@
                                     <tr>
                                         <th class="tableTh noTh">@Messages("lang.cms.placeManage.list.header.id")</th>
                                         <th class="tableTh placeNameTh">@Messages("lang.cms.placeManage.list.header.placeName")</th>
-                                        <th class="tableTh floorCountTh">@Messages("lang.cms.placeManage.list.header.floor")</th>
                                         <th class="tableTh stateTh">@Messages("lang.cms.placeManage.list.header.status")</th>
-                                        <th class="tableTh userEmailTh">@Messages("lang.cms.placeManage.list.header.userId")</th>
                                         <th class="tableTh userNameTh">@Messages("lang.cms.placeManage.list.header.userName")</th>
+                                        <th class="tableTh userEmailTh">@Messages("lang.cms.placeManage.list.header.userId")</th>
+                                        <th class="tableTh floorCountTh">@Messages("lang.cms.placeManage.list.header.floor")</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -57,17 +57,18 @@
                                         <tr class="rowColor rowHover"
                                             data-placeId="@place.placeId"
                                             data-placeName="@place.placeName"
-                                            data-floorCount="@place.floorCount"
-                                            data-statusName="@place.statusName"
                                             data-statusCode="@place.status"
+                                            data-statusName="@place.statusName"
+                                            data-userName="@place.userName"
                                             data-userEmail="@place.userEmail"
-                                            data-userName="@place.userName">
+                                            data-floorCount="@place.floorCount"
+                                        >
                                             <td class="itemTd text-right">@place.placeId</td>
                                             <td class="itemTd text-left">@place.placeName</td>
-                                            <td class="itemTd text-right">@place.floorCount</td>
                                             <td class="itemTd text-center">@place.statusName</td>
-                                            <td class="itemTd text-left">@place.userEmail</td>
                                             <td class="itemTd text-left">@place.userName</td>
+                                            <td class="itemTd text-left">@place.userEmail</td>
+                                            <td class="itemTd text-right">@place.floorCount</td>
                                         </tr>
                                     }
                                 </tbody>
@@ -77,16 +78,17 @@
                 </div>
                 <!-- 欄外-->
                 <div class="row tableRow" style="margin-top: 10px;">
-                    <div class="text-center col-xs-3 col-sm-3 col-md-3" style="padding:0;">
-                        <a href="javascript:showUpdateModal();" class="btn link">@Messages("lang.cms.placeManage.change.title")</a>
+                    <div class="text-center col-xs-4 col-sm-4 col-md-4" style="padding:0;">
+                        <form id="placeChangeForm" name="placeChangeForm" enctype="multipart/form-data" class="hidden" method="post" action="@controllers.cms.routes.PlaceManage.change.path">
+                            @CSRF.formField
+                            <input type="hidden" id="inputPlaceId" name="inputPlaceId">
+                        </form>
+                        <a href="javascript:moveToSelected();" class="btn link">@Messages("lang.cms.placeManage.change.title")</a>
                     </div>
-                    <div class="text-center col-xs-3 col-sm-3 col-md-3" style="padding:0;">
-                        <a href="javascript:showPasswordModal();" class="btn link text-right">@Messages("lang.cms.placeManage.place.button.password")</a>
-                    </div>
-                    <div class="text-center col-xs-3 col-sm-3 col-md-3" style="padding:0;">
+                    <div class="text-center col-xs-4 col-sm-4 col-md-4" style="padding:0;">
                         <a href="javascript:showInputModal();" class="btn link">@Messages("lang.cms.placeManage.input.title")</a>
                     </div>
-                    <div class="text-center col-xs-3 col-sm-3 col-md-3" style="padding:0;">
+                    <div class="text-center col-xs-4 col-sm-4 col-md-4" style="padding:0;">
                         <a href="javascript:showDeleteModal();" class="btn link">@Messages("lang.cms.placeManage.delete.title")</a>
                     </div>
                 </div>
@@ -96,77 +98,6 @@
     <script type="text/javascript" src="@routes.MyAssets.js("cms/placeManage.js")"></script>
     <script></script>
 
-    <!-- 現場情報更新用モーダル画面 -->
-    <div class="modal" id="updateModal" tabindex="-1" role="dialog" aria-labelledby="placeRegisterModalLabel" aria-hidden="true" data-show="true" data-keyboard="false" data-backdrop="static">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <form id="placeUpdateForm" name="placeUpdateForm" enctype="multipart/form-data" class="form-horizontal" method="post" action="@controllers.cms.routes.PlaceManage.update.path">
-                    @CSRF.formField
-                    <div class="modal-header">@Messages("lang.cms.placeManage.placeUpdate.popup.title")</div>
-                    <div class="modal-body">
-                        <div class="form-group">
-                            <input type="hidden" name="placeId" id="updatePlaceId" />
-                            <label class="control-label col-xs-4">@Messages("lang.cms.placeManage.input.popup.placeName")</label>
-                            <div class="col-xs-5" style="padding-left: 0px;padding-right: 0px;">
-                                <input type="text" name="placeName" id="updatePlaceName" class="form-control" placeholder='@Messages("lang.cms.placeManage.input.popup.placeName.placeholder")' />
-                            </div>
-                            <label class="control-label col-xs-4">@Messages("lang.cms.placeManage.placeUpdate.popup.status")</label>
-                            <div class="col-xs-5" style="padding-left: 0px;padding-right: 0px;">
-                                <select name="placeStatus" id="updatePlaceStatus" class="form-control">
-                                    @statusMap.map{case (code, name) =>
-                                    <option value="@code">@name</option>
-                                    }
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <div class="col-xs-6 text-center">
-                            <button type="button" class="btn btn-default" data-dismiss="modal">@Messages("cancel")</button>
-                        </div>
-                        <div class="col-xs-6 text-center">
-                            <button type="submit" class="text-center btn btn-primary">@Messages("update")</button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-    <!-- パスワード画面 -->
-    <div class="modal" id="passwordModal" tabindex="-1" role="dialog" aria-labelledby="passwordModalLabel" aria-hidden="true" data-show="true" data-keyboard="false" data-backdrop="static">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <form id="passwordForm" name="passwordForm" class="form-horizontal" enctype="multipart/form-data" class="form-horizontal" method="post" action="@controllers.cms.routes.PlaceManage.passwordUpdate.path">
-                    @CSRF.formField
-                    <div class="modal-header">@Messages("lang.cms.placeManage.passwordUpdate.popup.title")</div>
-                    <div class="modal-body">
-                        <div class="form-group">
-                            <input type="hidden" name="placeId" id="pwPlaceId" value="">
-                            <input type="hidden" name="userId" id="pwUserId" value="">
-                            <label class="control-label col-xs-5">@Messages("lang.cms.placeManage.passwordUpdate.popup.password")</label>
-                            <div class="col-xs-5" style="padding-left: 0px;padding-right: 0px;">
-                                <input type="password" name="password1" id="pwPassword1" class="form-control">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label col-xs-5">@Messages("lang.cms.placeManage.passwordUpdate.popup.reEnter")</label>
-                            <div class="col-xs-5" style="padding-left: 0px;padding-right: 0px;">
-                                <input type="password" name="password2" id="pwPassword2" class="form-control">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <div class="col-xs-6 text-center">
-                            <button type="button" class="btn btn-default" data-dismiss="modal">@Messages("cancel")</button>
-                        </div>
-                        <div class="col-xs-6 text-center">
-                            <button type="submit" class="text-center btn btn-primary">@Messages("update")</button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
     <!-- 新規登録モーダル画面 -->
     <div class="modal" id="inputModal" tabindex="-1" role="dialog" aria-labelledby="placeRegisterModalLabel" aria-hidden="true" data-show="true" data-keyboard="false" data-backdrop="static">
         <div class="modal-dialog">
@@ -180,13 +111,21 @@
                             <div class="col-xs-5" style="padding-left: 0px;padding-right: 0px;">
                                 <input type="text" name="placeName" id="inputPlaceName" class="form-control" placeholder='@Messages("lang.cms.placeManage.input.popup.placeName.placeholder")' />
                             </div>
-                            <label class="control-label col-xs-4">@Messages("lang.cms.placeManage.input.popup.placeUserId")</label>
+                            <label class="control-label col-xs-4">@Messages("lang.cms.placeManage.placeUpdate.popup.status")</label>
                             <div class="col-xs-5" style="padding-left: 0px;padding-right: 0px;">
-                                <input type="text" name="placeUserId" id="inputPlaceUserId" class="form-control" placeholder='@Messages("lang.cms.placeManage.input.popup.placeUserId.placeholder")' />
+                                <select name="placeStatus" id="inputPlaceStatus" class="form-control">
+                                    @statusMap.map{case (code, name) =>
+                                        <option value="@code">@name</option>
+                                    }
+                                </select>
                             </div>
                             <label class="control-label col-xs-4">@Messages("lang.cms.placeManage.input.popup.placeUserName")</label>
                             <div class="col-xs-5" style="padding-left: 0px;padding-right: 0px;">
                                 <input type="text" name="placeUserName" id="inputPlaceUserName" class="form-control" placeholder='@Messages("lang.cms.placeManage.input.popup.placeUserName.placeholder")' />
+                            </div>
+                            <label class="control-label col-xs-4">@Messages("lang.cms.placeManage.input.popup.placeUserId")</label>
+                            <div class="col-xs-5" style="padding-left: 0px;padding-right: 0px;">
+                                <input type="text" name="placeUserId" id="inputPlaceUserId" class="form-control" placeholder='@Messages("lang.cms.placeManage.input.popup.placeUserId.placeholder")' />
                             </div>
                             <label class="control-label col-xs-4">@Messages("lang.cms.placeManage.input.popup.placeUserPassword1")</label>
                             <div class="col-xs-5" style="padding-left: 0px;padding-right: 0px;">

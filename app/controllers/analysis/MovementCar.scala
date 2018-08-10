@@ -127,11 +127,19 @@ class MovementCar @Inject()(config: Configuration
         if(vWofkFlgDetectCount>0){
           System.out.println(vWofkFlgDetectCount)
         }
-        val vOperatingRate = this.getDetectedCount(vWofkFlgDetectCount,calendar.iWeekTotalTime)
+
+        // 実際働く時間（土、日だけの場合もある）
+        val vRealWorkTime = if(calendar.iWeekRealWorkDay == 0 ){
+          calendar.iWeekTotalWorkDay * DAY_WORK_TIME // 実際残り日（土日最大二日）から動いたら判定に入れる
+        }else {
+          calendar.iWeekTotalTime
+        }
+        // 週末があるため実際
+        val vOperatingRate = this.getDetectedCount(vWofkFlgDetectCount,vRealWorkTime)
         // 予約ともに検知フラグがtrue
         val getReserveWorkFlgSqlData =itemlogDAO.selectReserveAndWorkingOn(false,false,car.item_car_id,placeId,calendar.iWeekStartDay,calendar.iWeekEndDay,itemIdList)
         val vReserveWofkFlgDetectCount = getReserveWorkFlgSqlData.last.detected_count
-        val vReserveOperatingRate = this.getDetectedCount(vReserveWofkFlgDetectCount,calendar.iWeekTotalTime)
+        val vReserveOperatingRate = this.getDetectedCount(vReserveWofkFlgDetectCount,vRealWorkTime)
 
         WorkRate(car.item_car_id,car.item_car_name,vOperatingRate,vReserveOperatingRate)
 
