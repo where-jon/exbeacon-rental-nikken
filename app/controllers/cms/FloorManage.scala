@@ -43,13 +43,13 @@ class FloorManage @Inject()(config: Configuration
     val placeId = securedRequest2User.currentPlaceId.get
     // フォームの取得
     val form = inputForm.bindFromRequest
-    val f = form.get
     if (form.hasErrors){
       // エラーメッセージ
       val errMsg = form.errors.map(_.message).mkString(HTML_BR)
       // リダイレクトで画面遷移
       Redirect(routes.FloorManage.index()).flashing(ERROR_MSG_KEY -> errMsg)
     }else{
+      val f = form.get
       if(f.inputFloorId.isEmpty){// 新規フロア登録の場合
         // DB処理
         floorDAO.insert(f.inputFloorName,f.inputDisplayOrder.toInt,f.activeFlg,placeId)
