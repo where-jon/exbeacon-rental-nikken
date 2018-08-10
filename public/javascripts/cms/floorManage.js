@@ -17,7 +17,8 @@ function showFloorModal(floorId){
         $('.cloned').remove();
         $('#inputFloorId').val(floorId);
         $('#inputExbDeviceNoListComma').val('');
-        if($('#activeFlg').val()=="true"){
+
+        if($('#'+floorId).find('.activeFlg').text()=="true"){
             $("#FLG_FILTER").val("1").prop("selected", true);
         }else{
             $("#FLG_FILTER").val("0").prop("selected", true);
