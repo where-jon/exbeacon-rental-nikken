@@ -10,16 +10,16 @@ import play.api.db._
 
 
 case class WorkTypeCount(
-  item_count: Int,
-  item_id: Int
+item_count: Int,
+item_id: Int
 )
 
 case class ReserveMasterInfo(
-                               itemId: Int
-                               , workTypeId: Int
-                               , reserveStartDate: String
-                               , reserveEndDate: String
-                             )
+itemId: Int
+, workTypeId: Int
+, reserveStartDate: String
+, reserveEndDate: String
+)
 
 @javax.inject.Singleton
 class ReserveMasterDAO @Inject() (dbapi: DBApi) {
@@ -31,13 +31,13 @@ class ReserveMasterDAO @Inject() (dbapi: DBApi) {
     * @return
     */
   def selectCarReserve(
-                        placeId: Int
-                        , itemIdList:Seq[Int] = Seq[Int]()
-                        , itemTypeIdList:Seq[Int] = Seq[Int]()
-                        , workTypeId: Int
-                        , reserveStartDate:String = ""
-                        , reserveEndDate:String = ""
-                      ): Seq[ReserveMasterInfo] = {
+  placeId: Int
+  , itemIdList:Seq[Int] = Seq[Int]()
+  , itemTypeIdList:Seq[Int] = Seq[Int]()
+  , workTypeId: Int
+  , reserveStartDate:String = ""
+  , reserveEndDate:String = ""
+  ): Seq[ReserveMasterInfo] = {
 
     val simple = {
       get[Int]("item_id") ~
@@ -98,13 +98,13 @@ class ReserveMasterDAO @Inject() (dbapi: DBApi) {
     * @return
     */
   def selectOtherReserve(
-                        placeId: Int
-                        , itemIdList:Seq[Int] = Seq[Int]()
-                        , itemTypeIdList:Seq[Int] = Seq[Int]()
-                        , workTypeId: Int
-                        , reserveStartDate:String = ""
-                        , reserveEndDate:String = ""
-                      ): Seq[ReserveMasterInfo] = {
+      placeId: Int
+      , itemIdList:Seq[Int] = Seq[Int]()
+      , itemTypeIdList:Seq[Int] = Seq[Int]()
+      , workTypeId: Int
+      , reserveStartDate:String = ""
+      , reserveEndDate:String = ""
+    ): Seq[ReserveMasterInfo] = {
 
     val simple = {
       get[Int]("item_id") ~
@@ -136,8 +136,8 @@ class ReserveMasterDAO @Inject() (dbapi: DBApi) {
       wherePh += s""" and r.place_id = ${placeId} """
 
       if(!reserveStartDate.isEmpty && !reserveEndDate.isEmpty){
-        wherePh += s""" and reserve_start_date between to_date('${reserveStartDate}', 'YYYY-MM-DD')  and  to_date('${reserveEndDate}', 'YYYY-MM-DD')
-                        or reserve_end_date between to_date('${reserveStartDate}', 'YYYY-MM-DD') and  to_date('${reserveEndDate}', 'YYYY-MM-DD') """
+        wherePh += s""" and (reserve_start_date between to_date('${reserveStartDate}', 'YYYY-MM-DD')  and  to_date('${reserveEndDate}', 'YYYY-MM-DD')
+                        or reserve_end_date between to_date('${reserveStartDate}', 'YYYY-MM-DD') and  to_date('${reserveEndDate}', 'YYYY-MM-DD') )"""
       }
 
       if(!itemIdList.isEmpty){
