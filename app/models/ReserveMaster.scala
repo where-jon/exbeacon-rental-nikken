@@ -81,7 +81,11 @@ class ReserveMasterDAO @Inject() (dbapi: DBApi) {
       }
 
       if(workTypeId!=null){
-        wherePh += s""" and r.work_type_id  =  ${workTypeId} """
+        if(workTypeId == 3){  // 終日の場合
+          wherePh += s""" and r.work_type_id in  (1,2) """
+        }else {
+          wherePh += s""" and r.work_type_id  =  ${workTypeId} """
+        }
       }
 
       val orderPh =
@@ -148,7 +152,12 @@ class ReserveMasterDAO @Inject() (dbapi: DBApi) {
       }
 
       if(workTypeId!=null){
-        wherePh += s""" and r.work_type_id  =  ${workTypeId} """
+        if(workTypeId == 3){  // 終日の場合
+          wherePh += s""" and r.work_type_id in  (1,2) """
+        }else{
+          wherePh += s""" and r.work_type_id  =  ${workTypeId} """
+        }
+
       }
 
       val orderPh =

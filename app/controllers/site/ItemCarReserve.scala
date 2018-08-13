@@ -126,10 +126,10 @@ class ItemCarReserve @Inject()(config: Configuration
             beaconService.currentTimeReserveCheck(ItemCarReserveData.inputDate,ItemCarReserveData.workTypeName)
           if(vCurrentTimeCheck == "OK"){  // 現在時刻から予約可能かを判定
             var setData = List[ReserveItem]()
-            var vCompanyId = companyNameList.filter(_.companyName == ItemCarReserveData.companyName).last.companyId
-            var vFloorId = floorNameList.filter(_.floor_name == ItemCarReserveData.floorName).last.floor_Id
-            var vWorkTypeId = workTypeList.filter(_.work_type_name == ItemCarReserveData.workTypeName).last.work_type_id
-            var vReserveDate = ItemCarReserveData.inputDate
+            val vCompanyId = companyNameList.filter(_.companyName == ItemCarReserveData.companyName).last.companyId
+            val vFloorId = floorNameList.filter(_.floor_name == ItemCarReserveData.floorName).last.floor_Id
+            val vWorkTypeId = workTypeList.filter(_.work_type_name == ItemCarReserveData.workTypeName).last.work_type_id
+            val vReserveDate = ItemCarReserveData.inputDate
             var idListData = List[Int]()
             var idTypeListData = List[Int]()
             ItemCarReserveData.itemId.zipWithIndex.map { case (itemId, i) =>
@@ -143,7 +143,7 @@ class ItemCarReserve @Inject()(config: Configuration
               }
             }
             // 検索ロジック追加あるかどうかを判断する
-            var vAlerdyReserveData = reserveMasterDAO.selectCarReserve(placeId,idListData,idTypeListData,vWorkTypeId,vReserveDate,vReserveDate)
+            val vAlerdyReserveData = reserveMasterDAO.selectCarReserve(placeId,idListData,idTypeListData,vWorkTypeId,vReserveDate,vReserveDate)
             System.out.println("vCount :" + vAlerdyReserveData)
             if(vAlerdyReserveData.isEmpty){ // 予約されたものがない
               val result = carDAO.reserveItemCar(setData)

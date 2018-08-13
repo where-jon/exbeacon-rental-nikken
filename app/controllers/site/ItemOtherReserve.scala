@@ -21,18 +21,18 @@ import utils.silhouette.MyEnv
 
 @Singleton
 class ItemOtherReserve @Inject()(config: Configuration
-, val silhouette: Silhouette[MyEnv]
-, val messagesApi: MessagesApi
-, carDAO: models.itemCarDAO
-, otherDAO: models.itemOtherDAO
-, companyDAO: models.companyDAO
-, beaconService: BeaconService
-, floorDAO: models.floorDAO
-, btxDAO: models.btxDAO
-,reserveMasterDAO: models.ReserveMasterDAO
-, itemTypeDAO: models.ItemTypeDAO
-, workTypeDAO: models.WorkTypeDAO
-) extends BaseController with I18nSupport {
+  , val silhouette: Silhouette[MyEnv]
+  , val messagesApi: MessagesApi
+  , carDAO: models.itemCarDAO
+  , otherDAO: models.itemOtherDAO
+  , companyDAO: models.companyDAO
+  , beaconService: BeaconService
+  , floorDAO: models.floorDAO
+  , btxDAO: models.btxDAO
+  ,reserveMasterDAO: models.ReserveMasterDAO
+  , itemTypeDAO: models.ItemTypeDAO
+  , workTypeDAO: models.WorkTypeDAO
+  ) extends BaseController with I18nSupport {
 
    /*検索用*/
   var ITEM_TYPE_FILTER = 0;
@@ -124,11 +124,11 @@ class ItemOtherReserve @Inject()(config: Configuration
               beaconService.currentTimeReserveCheck(ItemOtherReserveData.inputStartDate,ItemOtherReserveData.workTypeName)
             if(vCurrentTimeCheck == "OK"){
               var setData = List[ReserveItem]()
-              var vCompanyId = companyNameList.filter(_.companyName == ItemOtherReserveData.companyName).last.companyId
-              var vFloorId = floorNameList.filter(_.floor_name == ItemOtherReserveData.floorName).last.floor_Id
-              var vWorkTypeId = workTypeList.filter(_.work_type_name == ItemOtherReserveData.workTypeName).last.work_type_id
-              var vReserveStartDate = ItemOtherReserveData.inputStartDate
-              var vReserveEndDate = ItemOtherReserveData.inputEndDate
+              val vCompanyId = companyNameList.filter(_.companyName == ItemOtherReserveData.companyName).last.companyId
+              val vFloorId = floorNameList.filter(_.floor_name == ItemOtherReserveData.floorName).last.floor_Id
+              val vWorkTypeId = workTypeList.filter(_.work_type_name == ItemOtherReserveData.workTypeName).last.work_type_id
+              val vReserveStartDate = ItemOtherReserveData.inputStartDate
+              val vReserveEndDate = ItemOtherReserveData.inputEndDate
               var idListData = List[Int]()
               var idTypeListData = List[Int]()
               ItemOtherReserveData.itemId.zipWithIndex.map { case (itemId, i) =>
@@ -142,7 +142,7 @@ class ItemOtherReserve @Inject()(config: Configuration
                 }
               }
               // 検索ロジック追加あるかどうかを判断する
-              var vAlerdyReserveData = reserveMasterDAO.selectOtherReserve(placeId,idListData,idTypeListData,vWorkTypeId,vReserveStartDate,vReserveEndDate)
+              val vAlerdyReserveData = reserveMasterDAO.selectOtherReserve(placeId,idListData,idTypeListData,vWorkTypeId,vReserveStartDate,vReserveEndDate)
               System.out.println("vCount :" + vAlerdyReserveData)
               if(vAlerdyReserveData.isEmpty) { // 予約されたものがない
                 val result = otherDAO.reserveItemOther(setData)

@@ -680,23 +680,29 @@ class itemCarDAO @Inject()(dbapi: DBApi) {
       var wherePh = ""
       wherePh += s""" and c.place_id = ${placeId} """
 
-      var vCount = this.getCarMasterSearch(placeId, itemTypeId, workTypeName, reserveDate, itemIdList).length
-        if(workTypeName == "終日" || vCount == 0 ){
+      val vCount = this.getCarMasterSearch(placeId, itemTypeId, workTypeName, reserveDate, itemIdList).length
+      if( vCount == 0 ){
         wherePh += s"""
             and not r.item_id in
-            (select r.item_id from reserve_table where reserve_start_date = to_date('${reserveDate}', 'YYYY-MM-DD'))  """
-      }else if (workTypeName == "") {
-
-        wherePh += s"""
+            (select item_id from reserve_table where reserve_start_date = to_date('${reserveDate}', 'YYYY-MM-DD'))  """
+      }else{
+        if(workTypeName == "終日"){
+          wherePh += s"""
+            and not r.item_id in
+            (select item_id from reserve_table where reserve_start_date = to_date('${reserveDate}', 'YYYY-MM-DD'))  """
+        }else if (workTypeName == "") {
+          wherePh += s"""
              and not r.item_id in
-            (select r.item_id from reserve_table where reserve_start_date = to_date('${reserveDate}', 'YYYY-MM-DD'))  """
-      } else{
+            (select item_id from reserve_table where reserve_start_date = to_date('${reserveDate}', 'YYYY-MM-DD'))  """
+        } else{
           wherePh +=
             s"""
              and not r.item_id in
-            (select r.item_id from reserve_table where work.work_type_name ='${workTypeName}')
-            and reserve_start_date = to_date('${reserveDate}', 'YYYY-MM-DD') """
+            (select item_id from reserve_table where (work.work_type_name ='${workTypeName}' or work_type_id = 3) and reserve_start_date = to_date('${reserveDate}', 'YYYY-MM-DD')
+            ) """
+        }
       }
+
       wherePh += s""" or coalesce(r.reserve_id, -1) = -1 and c.active_flg = true and c.place_id = ${placeId} """
 
       // 表示順を設定
