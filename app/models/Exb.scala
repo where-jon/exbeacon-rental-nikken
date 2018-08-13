@@ -76,7 +76,8 @@ case class ExbAll(
    view_tx_margin: Int,
    view_tx_count: Int,
    place_id: Int,
-   floor_id: Int
+   floor_id: Int,
+   display_order: Int
 )
 
 @javax.inject.Singleton
@@ -304,9 +305,10 @@ class ExbDAO @Inject() (dbapi: DBApi) {
       get[Int]("view_tx_margin") ~
       get[Int]("view_tx_count") ~
       get[Int]("place_id") ~
-      get[Int]("floor_id") map {
-        case exb_id ~ exb_device_id ~ exb_device_no ~ exb_device_name ~ exb_pos_name ~ exb_pos_x ~ exb_pos_y ~ exb_view_flag ~ view_type_id ~ view_type_name~ view_tx_size ~ view_tx_margin ~ view_tx_count ~ place_id ~ floor_id =>
-          ExbAll(exb_id, exb_device_id, exb_device_no, exb_device_name, exb_pos_name,exb_pos_x, exb_pos_y, exb_view_flag, view_type_id, view_type_name, view_tx_size, view_tx_margin, view_tx_count, place_id,floor_id)
+      get[Int]("floor_id")~
+      get[Int]("display_order")map {
+        case exb_id ~ exb_device_id ~ exb_device_no ~ exb_device_name ~ exb_pos_name ~ exb_pos_x ~ exb_pos_y ~ exb_view_flag ~ view_type_id ~ view_type_name~ view_tx_size ~ view_tx_margin ~ view_tx_count ~ place_id ~ floor_id ~ display_order =>
+          ExbAll(exb_id, exb_device_id, exb_device_no, exb_device_name, exb_pos_name,exb_pos_x, exb_pos_y, exb_view_flag, view_type_id, view_type_name, view_tx_size, view_tx_margin, view_tx_count, place_id,floor_id,display_order)
       }
   }
 
@@ -395,7 +397,8 @@ class ExbDAO @Inject() (dbapi: DBApi) {
           view_tx_margin,
           view_tx_count,
           exb.place_id,
-          exb.floor_id
+          exb.floor_id,
+          floor.display_order
         from exb_master as exb
           left JOIN view_type as v on v.view_type_id = exb.view_type_id and v.active_flg = true
           left JOIN floor_master as floor on floor.floor_id = exb.floor_id

@@ -16,13 +16,13 @@ import utils.silhouette.MyEnv
   * EXB設置管理クラス.
   */
 class ExbViewerManager @Inject()(config: Configuration
-                                 , val silhouette: Silhouette[MyEnv]
-                                 , val messagesApi: MessagesApi
-                                 , ws: WSClient
-                                 , exbDAO: models.ExbDAO
-                                 , floorDAO: models.floorDAO
-                                 , viewTypeDAO: models.ViewTypeDAO
-                          ) extends BaseController with I18nSupport {
+  , val silhouette: Silhouette[MyEnv]
+  , val messagesApi: MessagesApi
+  , ws: WSClient
+  , exbDAO: models.ExbDAO
+  , floorDAO: models.floorDAO
+  , viewTypeDAO: models.ViewTypeDAO
+  ) extends BaseController with I18nSupport {
 
   val exbViewerForm = Form(mapping(
     "viewerId" -> list(number),
