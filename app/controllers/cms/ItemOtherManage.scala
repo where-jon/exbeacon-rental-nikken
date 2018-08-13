@@ -4,7 +4,7 @@ import javax.inject.{Inject, Singleton}
 import com.mohiva.play.silhouette.api.Silhouette
 import controllers.BaseController
 import controllers.site
-import models.ItemType
+import models.{ItemCategoryEnum, ItemType}
 import play.api._
 import play.api.data.Form
 import play.api.data.Forms._
@@ -42,8 +42,9 @@ class ItemOtherManage @Inject()(config: Configuration
                            , itemTypeDAO:models.ItemTypeDAO
                                ) extends BaseController with I18nSupport {
 
+  /*enum形*/
   var ITEM_TYPE_FILTER = 0;
-  var itemTypeList :Seq[ItemType] = Seq.empty; // 仮設材種別
+  val ITEM_TYPE = ItemCategoryEnum().map;
 
   /** 初期表示 */
   def index = SecuredAction { implicit request =>
@@ -52,20 +53,14 @@ class ItemOtherManage @Inject()(config: Configuration
       // 選択された現場の現場ID
       val placeId = super.getCurrentPlaceId
       // 仮設材情報
-      getSearchData(placeId)
+      val itemTypeList = itemTypeDAO.selectItemOtherInfo(placeId)
 
       // その他仮設材情報
       val itemOtherList = itemOtherDAO.selectOtherMasterInfo(placeId)
-      Ok(views.html.cms.itemOtherManage(ITEM_TYPE_FILTER, itemOtherList, itemTypeList, placeId))
+      Ok(views.html.cms.itemOtherManage(ITEM_TYPE_FILTER, ITEM_TYPE, itemOtherList, itemTypeList, placeId))
     }else {
       Redirect(site.routes.WorkPlace.index)
     }
-  }
-
-  /** 　検索側データ取得 */
-  def getSearchData(_placeId:Integer): Unit = {
-    /*仮設材種別取得*/
-    itemTypeList = itemTypeDAO.selectItemOtherInfo(_placeId);
   }
 
   /** 更新 */
@@ -80,7 +75,7 @@ class ItemOtherManage @Inject()(config: Configuration
       , "inputItemOtherName" -> text.verifying(Messages("error.cms.ItemManage.update.inputItemOtherName.empty"), {!_.isEmpty})
       , "inputItemNote" -> text
       , "inputItemTypeName" -> text.verifying(Messages("error.cms.ItemManage.update.inputItemTypeName.empty"), {!_.isEmpty})
-      , "inputItemTypeId" -> text.verifying(Messages("error.cms.ItemManage.update.inputItemTypeName.empty"),{_.matches("^[0-9]+$")})
+      , "inputItemTypeId" -> text
     )(ItemUpdateForm.apply)(ItemUpdateForm.unapply))
 
     // フォームの取得

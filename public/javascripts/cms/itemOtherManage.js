@@ -96,12 +96,11 @@ function showInputModal(isRegister){
             var itemOtherId = $('.rowHoverSelectedColor').attr('data-itemOtherId');
             $('.cloned').remove();
             $('#inputItemOtherId').val(itemOtherId);
+            document.itemForm.other_type.selectedIndex = 1;
             $('#inputItemOtherBtxId').val($('#'+itemOtherId).find('.itemOtherBtxId').text());
             $('#inputItemOtherNo').val($('#'+itemOtherId).find('.itemOtherNo').text());
             $('#inputItemOtherName').val($('#'+itemOtherId).find('.itemOtherName').text());
             $('#inputItemNote').val($('#'+itemOtherId).find('.itemOtherNote').text());
-            $('#inputItemTypeName').val($('#'+itemOtherId).find('.itemTypeName').text());
-            $('#other_type').val($('#'+itemOtherId).find('.itemTypeId').text());
 
             // ボタン表示の切り替え
             $('#itemUpdateFooter').removeClass('hidden');

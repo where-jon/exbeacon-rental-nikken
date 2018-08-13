@@ -216,7 +216,7 @@ class ItemTypeDAO @Inject() (dbapi: DBApi) {
     }
   }
 
-  /*カテゴリー名が作業車だけ検索する*/
+  /*カテゴリー名がその他だけ検索する*/
   def selectItemOtherInfo(placeId: Int): Seq[ItemType] = {
     db.withConnection { implicit connection =>
       val sql = SQL("""

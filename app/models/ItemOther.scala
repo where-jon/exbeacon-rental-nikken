@@ -103,6 +103,14 @@ case class ItemOtherData(
   workTypeName: String
 )
 
+/*作業車・立馬一覧用formクラス*/
+case class ItemTypeSerect(
+  itemTypeId: Int,
+  companyName: String,
+  floorName: String,
+  workTypeName: String
+)
+
 @javax.inject.Singleton
 class itemOtherDAO @Inject()(dbapi: DBApi) {
 
@@ -144,7 +152,8 @@ class itemOtherDAO @Inject()(dbapi: DBApi) {
                on i.item_type_id = c.item_type_id
                and i.active_flg = true
                and c.active_flg = true
-		           where c.place_id = {placeId} order by item_other_id ;
+		           where i.item_type_category_id = 2 and c.place_id = {placeId}
+		           order by item_other_id ;
 		          """).on(
         "placeId" -> placeId
       )
