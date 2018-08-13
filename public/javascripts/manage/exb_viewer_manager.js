@@ -22,7 +22,6 @@ var vExbViewerData;
 
 $(function () {
 
-
      var initManager = function() {
          var viewHidden = function() {
             for (var i = 0;i< vMapElement.length; ++i){
@@ -162,8 +161,8 @@ $(function () {
                 document.getElementById("beaconMap-" + result).classList.remove("hidden");
 
                 var vElement = document.getElementById("input_viewer_pos_floor-" + gClickPos)
-                vElement.value = result;
-                vExbViewerData[pos].floor = result;
+                vElement.value =  $('.dataFloorId-' + result).attr('data-floorId');
+                vExbViewerData[pos].displayOrder = result;
                 reloadManager();
 
             });
