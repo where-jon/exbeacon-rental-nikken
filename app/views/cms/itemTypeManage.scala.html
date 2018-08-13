@@ -8,11 +8,9 @@
 <head>
     @templates.htmlHead(title = Messages("lang.cms.itemTypeManage.title"))
     <link rel="stylesheet" href="@routes.MyAssets.css("cms/itemTypeManage.css")"/>
-    <link rel="stylesheet" media="screen" href="@routes.MyAssets.lib("tablesorter/css/theme.bootstrap.css")">
     <link rel="stylesheet" href="@routes.MyAssets.css("color/colorpicker.css")"/>
     <script type="text/javascript" src="@routes.MyAssets.lib("jquery.tablefix_1.0.1.js")"></script>
-    <script type="text/javascript" src="@routes.MyAssets.js("itemTypeManage.js")"></script>
-    <script type="text/javascript" src="./devkit/js/color/colorpicker.js"></script>
+    <script type="text/javascript" src="@routes.MyAssets.js("color/colorpicker.js")"></script>
     <script></script>
 </head>
 <body>
@@ -52,7 +50,8 @@
                                 <td class="itemTd text-right itemTypeId">@itemType.item_type_id</td>
                                 <td class="itemTd text-left itemTypeName">@itemType.item_type_name</td>
 
-                                <td class="itemTd text-left itemTypeCategory">@itemType.item_type_category_id</td>
+                                <td class="hidden text-left itemTypeCategoryId">@itemType.item_type_category_id</td>
+                                <td class="itemTd text-left itemTypeCategory">@itemTypeMap(itemType.item_type_category_id)</td>
 
                                 <!-- 色表示 -->
                                 <td id ="previewBackgroundId" class="item preview_frame" style="background: @itemType.item_type_row_color;" >
