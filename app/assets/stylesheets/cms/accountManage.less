@@ -1,13 +1,13 @@
 td{
     padding:2px;
-    white-space: nowrap!important;
 }
-#table-responsive-body{
+.table-responsive-body{
     border: 1px;
     margin-bottom:0;
     border-top-width: 0px;
 }
 .tableRow{
+    margin-top: 20px;
     margin-right: 0!important;
     margin-left: 0!important;
 }
@@ -20,38 +20,37 @@ td{
 }
 
 .itemTd{
+    font-size: calc(110%);
     white-space: nowrap;
 }
 
 .tableTh{
     padding:0;
-    background-color: #DEEBF7;
+    background-color: #DEEBF7!important;
     text-align: center;
     font-size: calc(110%);
 }
 
-.noTh{
-    width: 6%;
-}
-.placeNameTh{
-    width: 52%;
-}
-.floorCountTh{
-    width: 10%;
-}
-.stateTh{
-    width: 10%;
-}
-.userEmailTh{
-    width: 10%;
+.userLoginIdTh{
+    width: 20%;
 }
 .userNameTh{
-    width: 10%;
+
 }
+.userLevelTh{
+    width: 25%;
+}
+.keyTxNoTh{
+    width: 25%;
+}
+.deleteBtnTh{
+    width: 5%;
+}
+
 
 /*** table-bordered の改変 start ****************************************/
 .itemTable {
-    border: 1px solid #000!important;
+    border: 2px solid #000!important;
     min-width: 99%;
     margin-bottom: 0px;
 }
@@ -87,11 +86,51 @@ td{
     -webkit-user-select: none;
     user-select: none;
 }
-
 th{
     font-weight: normal;
 }
+
 /*** table-bordered の改変 end ****************************************/
+
+
+.btn__movement__view--frame{
+    position: absolute;
+    width: 110px;
+    right: 160px;
+    margin-top: -10px;
+    text-align: center;
+    border: 1px solid #000;
+    background-color: #FFFFFF;
+    padding-right: 0px!important;
+    padding-left: 0px!important;
+    color: #000;
+    font-size: calc(95%) !important;
+    box-shadow: 1px 1px 1px 0px rgba(0, 0, 0, 0.8);
+}
+.btn__movement__view--frame:hover{
+    color: #fff;
+    background-color: #bbb5b5;
+}
+
+.btn__view--frame{
+    position: absolute;
+    width: 110px;
+    right: 15px;
+    margin-top: -10px;
+    text-align: center;
+    border: 1px solid #000;
+    background-color: #FFFFFF;
+    padding-right: 0px!important;
+    padding-left: 0px!important;
+    color: #000;
+    font-size: calc(95%) !important;
+    box-shadow: 1px 1px 1px 0px rgba(0, 0, 0, 0.8);
+}
+.btn__view--frame:hover{
+    color: #fff;
+    background-color: #bbb5b5;
+}
+
 
 .link{
     width: 75%!important;
@@ -103,22 +142,8 @@ th{
     font-size: calc(95%) !important;
     font-family: 'メイリオ', 'Meiryo', sans-serif;
     box-shadow: 1px 1px 1px 0px rgba(0,0,0,0.8);
-    text-align: center;
 }
 .link:hover{
-    color: #000;
-}
-.sortBtn{
-    width: 70px;
-    border: 1px solid #000;
-    background-color: #FFFFFF;
-    color: #000;
-    font-family: 'メイリオ', 'Meiryo', sans-serif;
-    box-shadow: 1px 1px 1px 0px rgba(0,0,0,0.8);
-    text-align: center;
-    margin-left: 10px;
-}
-.sortBtn:hover{
     color: #000;
 }
 
@@ -132,4 +157,3 @@ th{
 .rowHoverSelectedColor{
     background-color: rgb(217, 217, 217)!important;
 }
-

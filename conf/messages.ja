@@ -20,7 +20,7 @@ update=更新
 cancel=キャンセル
 delete=削除
 
-placeManage.title=現場一覧画面
+placeManage.title=現場管理画面
 placeManage.detail.title=現場管理画面
 
 ################################################################################################
@@ -72,12 +72,14 @@ error.CarReserve.registerModal.inputCarNo.duplicate=入力された作業車は�
 # CMS入力エラー
 error.cms.PlaceManage.register.inputPlaceName.empty=現場名称を入力してください。
 error.cms.PlaceManage.register.inputPlaceStatus.empty=状態を選択してください。
+error.cms.PlaceManage.register.inputPlaceUserId.empty=現場担当者IDを入力してください。
+error.cms.PlaceManage.register.inputPlaceUserName.empty=現場担当者名を入力してください。
+error.cms.PlaceManage.register.inputPlaceStatus.empty=状態を選択してください。
 error.cms.PlaceManage.passwordUpdate.inputPassword.empty=パスワードを入力してください。
-error.cms.PlaceManage.passwordUpdate.inputRePassword.empty=パスワード再入力を入力してください。
-error.cms.PlaceManage.passwordUpdate.notEqual=再入力されたパスワードが異なります。
+error.cms.PlaceManage.passwordUpdate.inputRePassword.empty=確認用パスワードを入力してください。
+error.cms.PlaceManage.passwordUpdate.notEqual=パスワードと確認用パスワードが異なります。
 error.cms.PlaceManage.cmsLogin=入力されたパスワードに誤りがあります。
 
-error.cms.floorManage.floorUpdate.inputFloorName.empty=フロア名を入力してください。
 error.cms.floorManage.floorUpdate.inputFloorName.duplicate=フロア名が重複しています。
 error.cms.floorManage.floorUpdate.inputDeviceNo.notNumeric=EXBeaconデバイスNoは半角数字で入力してください。
 error.cms.floorManage.floorUpdate.inputDeviceNo.duplicate=EXBeaconデバイスNoが重複しています。(デバイスNo：{0})
@@ -140,6 +142,21 @@ error.changePassword.newPassword2.error.required=確認用パスワードは必�
 error.changePassword.password.notequal=新しいパスワードと確認用パスワードが異なります。
 error.changePassword.password.current.notequal=現在のパスワードが異なります。
 
+error.cms.AccountManage.create.userName.empty=名前を入力してください。
+error.cms.AccountManage.create.userLoginId.empty=IDを入力してください。
+error.cms.AccountManage.create.userLevel.empty=権限を選択してください。
+error.cms.AccountManage.create.userPassword1.empty=パスワードを入力してください。
+error.cms.AccountManage.create.userPassword2.empty=確認用パスワードを入力してください。
+error.cms.AccountManage.create.passwords.notEqual=パスワードと確認用パスワードが異なります。
+error.cms.AccountManage.update.userId.empty=USER.IDを入力してください。
+error.cms.AccountManage.update.userName.empty=名前を入力してください。
+error.cms.AccountManage.update.userLevel.empty=権限を選択してください。
+error.cms.AccountManage.passwordUpdate.userId.empty=USER.IDを入力してください。
+error.cms.AccountManage.passwordUpdate.userPassword1.empty=パスワードを入力してください。
+error.cms.AccountManage.passwordUpdate.userPassword2.empty=確認パスワードを入力してください。
+error.cms.AccountManage.passwordUpdate.notEqual=パスワードと確認パスワードが異なります。
+error.cms.accountManage.delete.userId.empty=削除するアカウントを指定してください。
+
 ################################################################################################
 # SUCCESS
 success.CarReserve.registerModal=予約を登録しました。
@@ -165,6 +182,11 @@ success.cms.ItemTypeManage.update=仮設材種別を更新しました
 
 success.changePassword.devUser.update=開発管理者のパスワードを更新しました。
 success.changePassword.sysUser.update=システム管理者のパスワードを更新しました。
+
+success.cms.AccountManage.create=新規追加しました。
+success.cms.AccountManage.update=更新しました。
+success.cms.AccountManage.passwordUpdate=パスワードを変更しました。
+success.cms.AccountManage.delete=削除しました。
 
 # MAILS
 
@@ -211,34 +233,54 @@ lang.sideMenu.link.name.cms.txTagManage=Beaconタグ一覧
 lang.cms.placeManage.tabName=現場一覧
 lang.cms.placeManage.input.title=新規現場登録
 lang.cms.placeManage.input.popup.title=新規現場登録
-lang.cms.placeManage.input.popup.name=建設現場名称
-lang.cms.placeManage.input.popup.placeholder=現場名称
+lang.cms.placeManage.input.popup.placeName=現場名称
+lang.cms.placeManage.input.popup.placeName.placeholder=新しい現場の名称を入力してください
+lang.cms.placeManage.input.popup.placeUserId=現場担当者ID
+lang.cms.placeManage.input.popup.placeUserId.placeholder=新しい現場担当者のIDを入力してください
+lang.cms.placeManage.input.popup.placeUserName=現場担当者名
+lang.cms.placeManage.input.popup.placeUserName.placeholder=新しい現場担当者の名前を入力してください
+lang.cms.placeManage.input.popup.placeUserPassword1=パスワード
+lang.cms.placeManage.input.popup.placeUserPassword1.placeholder=新しいパスワードを入力してください
+lang.cms.placeManage.input.popup.placeUserPassword2=確認用パスワード
+lang.cms.placeManage.input.popup.placeUserPassword2.placeholder=確認の為同じパスワードを入力してください
+
+
 lang.cms.placeManage.change.title=選択した現場を管理
 lang.cms.placeManage.delete.title=選択した現場を削除
 lang.cms.placeManage.delete.popup.title=現場情報削除
 lang.cms.placeManage.delete.popup.message=建設現場の情報を削除します。\nよろしいですか？
 lang.cms.placeManage.sort.id=ID順
 lang.cms.placeManage.sort.updatetime=登録順
-lang.cms.placeManage.list.header.title=建築現場一覧
+lang.cms.placeManage.sort.placeName=建築現場名称順
+lang.cms.placeManage.sort.status=状態順
+lang.cms.placeManage.sort.user_email=現場担当者ID順
+lang.cms.placeManage.sort.user_name=現場担当者名順
+lang.cms.placeManage.list.header.title=現場管理
 lang.cms.placeManage.list.header.id=ID
-lang.cms.placeManage.list.header.placeName=建設現場名称
+lang.cms.placeManage.list.header.placeName=現場名称
 lang.cms.placeManage.list.header.floor=階数
 lang.cms.placeManage.list.header.status=状態
+lang.cms.placeManage.list.header.userId=現場担当者ID
+lang.cms.placeManage.list.header.userName=現場担当者名
 
 # CMS文字列（現場管理）
+lang.cms.placeManage.title=テナント管理
+lang.cms.placeManage.place.title=テナント管理
 lang.cms.placeManage.tabName=現場管理
 lang.cms.placeManage.detail.returnManage=現場一覧画面に戻る
 lang.cms.placeManage.place.list.header.title=現場管理
 lang.cms.placeManage.place.list.header.id=ID
-lang.cms.placeManage.place.list.header.placeName=建設現場名称
+lang.cms.placeManage.place.list.header.placeName=現場名称
 lang.cms.placeManage.place.list.header.floor=階数
 lang.cms.placeManage.place.list.header.status=状態
 lang.cms.placeManage.place.button.password=パスワード変更
 lang.cms.placeManage.place.button.edit=編集
 lang.cms.placeManage.placeUpdate.popup.title=編集
-lang.cms.placeManage.placeUpdate.popup.name=建設現場名称
-lang.cms.placeManage.placeUpdate.popup.placeholder=現場名称
+lang.cms.placeManage.placeUpdate.popup.name=現場名称
+lang.cms.placeManage.placeUpdate.popup.placeholder=現場名称を入力してください
 lang.cms.placeManage.placeUpdate.popup.status=状態
+lang.cms.placeManage.placeUpdate.popup.userName=現場担当者名
+lang.cms.placeManage.placeUpdate.popup.userName.placeholder=現場担当者名を入力してください
 lang.cms.placeManage.passwordUpdate.popup.title=管理パスワード変更
 lang.cms.placeManage.passwordUpdate.popup.password=パスワード
 lang.cms.placeManage.passwordUpdate.popup.reEnter=パスワード再入力
@@ -254,20 +296,25 @@ lang.cms.placeManage.changePassword.popup.name=パスワードを変更します
 
 
 # CMS文字列（フロア管理）
-lang.cms.floorManage.title=フロア管理画面
-lang.cms.floorManage.floor.list.header.title=フロア情報
-lang.cms.floorManage.floor.list.header.floorName=フロア名
-lang.cms.floorManage.floor.list.header.deviceNo=EXBeaconデバイスNo
+lang.cms.floorManage.title=フロア管理
+lang.cms.floorManage.floorUpdate.popup.displayOrder=表示順
+lang.cms.floorManage.floorUpdate.popup.displayOrder.placeholder=1
+lang.cms.floorManage.floorUpdate.popup.name=フロア名
+lang.cms.floorManage.floorUpdate.popup.name.placeholder=8F
 lang.cms.floorManage.floor.button.floorEdit=選択したフロアを編集
 lang.cms.floorManage.floor.button.addFloor=新規フロア追加
 lang.cms.floorManage.floor.button.deleteFloor=選択したフロアを削除
-lang.cms.floorManage.floorUpdate.popup.title=フロア情報更新
-lang.cms.floorManage.floorUpdate.popup.name=フロア名
-lang.cms.floorManage.floorUpdate.popup.name.placeholder=8F
-lang.cms.floorManage.floorUpdate.popup.deviceNo=EXBeaconデバイスNo
-lang.cms.floorManage.floorUpdate.popup.deviceNo.placeholder=半角数字のみ
-lang.cms.floorManage.floorDelete.popup.title=フロア情報削除
-lang.cms.floorManage.floorDelete.popup.message=フロア情報を削除します。\nよろしいですか？
+lang.cms.floorManage.floorDelete.popup.title=フロア削除
+lang.cms.floorManage.floorUpdate.popup.title=フロア更新
+lang.cms.floorManage.floorDelete.popup.message=フロアを削除します。\nよろしいですか？
+error.cms.floorManage.delete.exb=EXBが設置されてるため、削除できません。
+error.cms.floorManage.floorUpdate.inputFloorName.empty=フロア名を入力してください。
+error.cms.floorManage.floorUpdate.displayOrder.empty=表示順を数字で入力して下さい。
+
+#lang.cms.floorManage.floor.list.header.title=フロア
+#lang.cms.floorManage.floor.list.header.deviceNo=EXBeaconデバイスNo
+#lang.cms.floorManage.floorUpdate.popup.deviceNo=EXBeaconデバイスNo
+#lang.cms.floorManage.floorUpdate.popup.deviceNo.placeholder=半角数字のみ
 
 # CMS文字列（作業車・立馬管理）
 lang.cms.carManage.title=作業車・立馬管理
@@ -366,6 +413,40 @@ lang.cms.companyManage.companyUpdate.popup.itemName.placeholder=ダクト1
 lang.cms.companyManage.companyUpdate.popup.biko=備考
 lang.cms.companyManage.companyDelete.popup.title=業者情報削除
 lang.cms.companyManage.companyDelete.popup.message=業者情報を削除します。\nよろしいですか？
+
+# CMS文字列（現場アカウント管理）
+lang.cms.accountManage.title=現場アカウント管理
+lang.cms.accountManage.page.title=現場アカウント管理
+lang.cms.accountManage.list.header.title=現場アカウント一覧
+lang.cms.accountManage.list.header.userLoginId=ID
+lang.cms.accountManage.list.header.userName=名前
+lang.cms.accountManage.list.header.userLevel=権限
+lang.cms.accountManage.button.update=選択したアカウントを編集
+lang.cms.accountManage.button.passwordUpdate=選択したアカウントのパスワードを変更
+lang.cms.accountManage.button.create=新規アカウント追加
+lang.cms.accountManage.button.delete=選択したアカウントを削除
+lang.cms.accountManage.create.popup.title=現場アカウント新規作成
+lang.cms.accountManage.create.popup.userName=名前
+lang.cms.accountManage.create.popup.userName.placeholder=名前を入力してください
+lang.cms.accountManage.create.popup.userLoginId=ID
+lang.cms.accountManage.create.popup.userLoginId.placeholder=新しいIDを入力してください
+lang.cms.accountManage.create.popup.userLevel=権限
+lang.cms.accountManage.create.popup.userPassword1=パスワード
+lang.cms.accountManage.create.popup.userPassword1.placeholder=新しいパスワードを入力してください
+lang.cms.accountManage.create.popup.userPassword2=確認用パスワード
+lang.cms.accountManage.create.popup.userPassword2.placeholder=確認の為同じパスワードを入力してください
+lang.cms.accountManage.update.popup.title=現場アカウント更新
+lang.cms.accountManage.update.popup.userName=名前
+lang.cms.accountManage.update.popup.userName.placeholder=名前を入力してください
+lang.cms.accountManage.update.popup.userLevel=権限
+lang.cms.accountManage.passwordUpdate.popup.title=パスワード変更
+lang.cms.accountManage.passwordUpdate.popup.userPassword1=パスワード
+lang.cms.accountManage.passwordUpdate.popup.userPassword2=確認パスワード
+lang.cms.accountManage.delete.popup.title=アカウント削除
+lang.cms.accountManage.delete.popup.message=アカウントを削除します。\nよろしいですか？
+
+
+
 
 # CMS文字列（Beaconタグ一覧）
 lang.cms.txTagManage.title=Beaconタグ管理

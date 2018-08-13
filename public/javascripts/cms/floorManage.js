@@ -1,77 +1,11 @@
-//function bindSortable(){
-//    $('.sortable').bind('sortstop', function (e, ui) {
-//        // ソートが完了したら実行される。
-//        var rows;
-//        if($('.bodyTableDiv').length > 0){
-//            rows = $('.bodyTableDiv').find('.sortable').find('tr');
-//        }else{
-//            rows = $('.sortable').find('tr');
-//        }
-//
-//        var floorIdComma = "";
-//        $(rows).each(function(index, r){
-//            if(index == 0){
-//                floorIdComma += $(r).attr('id');
-//            }else{
-//                floorIdComma += "," + $(r).attr('id');
-//            }
-//        });
-//
-//        $.ajax({
-//            type: "POST",
-//            url: window.location.pathname + "/sort",
-//            data: JSON.stringify({floorIdComma: floorIdComma}),
-//            contentType: 'application/json', // リクエストの Content-Type
-//            dataType: "json",           // レスポンスをJSONとしてパースする
-//            success: function(json_data) {   // 200 OK時
-//                console.log("sort - OK");
-//            },
-//            error: function(e) {         // HTTPエラー時
-//                alert("エラーが発生");
-//                console.log("sort - NG");
-//            },
-//            complete: function() {      // 成功・失敗に関わらず通信が終了した際の処理
-//            }
-//        });
-//    })
-//}
-
-// マウス・タッチの動作のバインド
-function bindMouseAndTouch(){
-    var ua = navigator.userAgent;
-    if (ua.indexOf('iPad') > 0 || ua.indexOf('Android') > 0 || ua.indexOf('iPhone') > 0 || ua.indexOf('iPod') > 0){
-        // タッチデバイスの場合
-        $(".rowHover").bind({
-            'touchstart': function(e) {
-                if(e.originalEvent.touches.length > 1){
-                }else if(e.originalEvent.touches.length == 1){
-                    $(".rowHoverSelectedColor").removeClass('rowHoverSelectedColor');
-                    $(this).addClass('rowHoverSelectedColor');
-                }
-            },
-        });
-    }else{
-        // PCブラウザの場合
-        $(".rowHover").bind({
-            'mouseover': function(e) {
-                $(this).addClass('rowHoverColor');
-            },
-            'mouseout': function(e) {
-                $(this).removeClass('rowHoverColor');
-            },
-            'click': function(e) {
-                $(".rowHoverSelectedColor").removeClass('rowHoverSelectedColor');
-                $(this).addClass('rowHoverSelectedColor');
-            },
-        });
-    }
-}
 
 // フロア追加・更新モーダル画面の表示
 function showFloorModal(floorId){
     if(!floorId){
         // 新規
         $('#inputFloorId').val('');
+        $('#activeFlg').val('true');
+        $("#FLG_FILTER").val("1").prop("selected", true);
         $('#inputExbDeviceNoListComma').val('');
         $('#inputFloorName').val('');
         $('#inputDeviceNo').val('');
@@ -83,27 +17,38 @@ function showFloorModal(floorId){
         $('.cloned').remove();
         $('#inputFloorId').val(floorId);
         $('#inputExbDeviceNoListComma').val('');
+
+        var vShow = $('#'+floorId).find('.activeFlg').text()
+        if(vShow == "表示"){
+            $("#FLG_FILTER_DIALOG").val("1").prop("selected", true);
+            $('#activeFlgDialog').val(true);
+        }else{
+            $("#FLG_FILTER_DIALOG").val("0").prop("selected", true);
+            $('#activeFlgDialog').val(false);
+        }
+
+        $('#inputDisplayOrder').val($('#'+floorId).find('.displayOrder').text());
         $('#inputFloorName').val($('#'+floorId).find('.floorName').text());
         $('#inputDeviceNo').val('');
 
-        var spanObjList = $('#'+floorId).find('span');
-        $(spanObjList).each(function(index, element){
-            var clonedRow = $('.template').clone();
-            clonedRow.addClass('cloned');
-            clonedRow.removeClass('template');
-            var deviceIds = $.trim($(element).text());
-            if (deviceIds != "") {
-                clonedRow.find('span.inputDeviceNoSpan').text(deviceIds);
-                $('.template').before(clonedRow);
-                var value = $('#inputExbDeviceNoListComma').val();
-                if (value != "") {
-                    value = value + "-";
-                }
-                $('#inputExbDeviceNoListComma').val(value + $.trim($(element).text()))
-
-                clonedRow.removeClass('hidden');
-            }
-        });
+//        var spanObjList = $('#'+floorId).find('span');
+//        $(spanObjList).each(function(index, element){
+//            var clonedRow = $('.template').clone();
+//            clonedRow.addClass('cloned');
+//            clonedRow.removeClass('template');
+//            var deviceIds = $.trim($(element).text());
+//            if (deviceIds != "") {
+//                clonedRow.find('span.inputDeviceNoSpan').text(deviceIds);
+//                $('.template').before(clonedRow);
+//                var value = $('#inputExbDeviceNoListComma').val();
+//                if (value != "") {
+//                    value = value + "-";
+//                }
+//                $('#inputExbDeviceNoListComma').val(value + $.trim($(element).text()))
+//
+//                clonedRow.removeClass('hidden');
+//            }
+//        });
 
         // ボタン表示の切り替え
         $('#floorUpdateFooter').removeClass('hidden');
@@ -177,66 +122,45 @@ function removeTagRow(obj){
     clonedRow.remove();
 }
 
-// テーブルの固定
-function fixTable(){
-    // テーブルの固定
-    var h = $(window).height()*0.7;
-    // テーブルの調整
-    var ua = navigator.userAgent;
-    if (ua.indexOf('iPad') > 0 || ua.indexOf('Android') > 0 || ua.indexOf('iPhone') > 0 || ua.indexOf('iPod') > 0){
-        // タッチデバイス
-        if ($('.mainSpace').height() > h) {
-            var w = $('.mainSpace').width()*0.99;
-            $('.itemTable').tablefix({width:w, height: h, fixRows: 2});
-        } else {
-            var w = $('.mainSpace').width();
-            $('.itemTable').tablefix({width:w, fixRows: 2});
-        }
-    }else{
-        // PCブラウザ
-        var w = $('.mainSpace').width();
-        $('.itemTable').tablefix({height: h, fixRows: 2});
-        $('.rowTableDiv').width(w);
+
+// 表示ボタンをクリックする時に発生するイベント
+function btnEvent(){
+    var flgFrame = $('#FLG_FILTER');
+    if(flgFrame != null){
+        // 管理者用selectbox value取得
+        $('#FLG_FILTER').change(function() {
+             var result = $('#FLG_FILTER option:selected').val();
+             console.log("select:" + result)
+             var vActiveFlgElement = document.getElementById("activeFlg");
+             var vResult = false
+             if(result == 1 ) vResult = true
+
+             vActiveFlgElement.value = vResult
+        });
     }
-    $('.bodyTableDiv').find('.itemTable').css('margin-bottom','0');
-    $('.colTableDiv').css("width","");
 
+    var flgFrame2 = $('#FLG_FILTER_DIALOG');
+        if(flgFrame2 != null){
+            // 管理者用selectbox value取得
+            $('#FLG_FILTER_DIALOG').change(function() {
+                 var result = $('#FLG_FILTER_DIALOG option:selected').val();
+                 console.log("select:" + result)
+                 var vActiveFlgElement = document.getElementById("activeFlgDialog");
+                 var vResult = false
+                 if(result == 1 ) vResult = true
+                 vActiveFlgElement.value = vResult
+            });
+        }
 }
-// テーブルのクリア
-function removeTable(){
-    var clonedTable = $('.bodyTableDiv').find('table').clone();
-    $(clonedTable).attr('style', '');
-    $('.baseDiv').remove();
-    $('.floorTable-responsive-body').append(clonedTable.prop("outerHTML"));
-}
-
 // 初期表示
 $(function(){
+
+    // ボタンをイベント
+    btnEvent();
+
     // テーブルを固定
-    fixTable();
+    gInitView.fixTable();
+
     // マウス操作とタップ操作をバインド
-    bindMouseAndTouch();
-
-//    // ソート設定
-//    $('.sortable').sortable();
-//    $('.sortable').disableSelection();
-//    bindSortable();
-
-    // リサイズ対応
-    var timer = false;
-    $(window).resize(function() {
-        if (timer !== false) {
-            clearTimeout(timer);
-        }
-        timer = setTimeout(function() {
-            // 処理の再実行
-            removeTable();
-            fixTable();
-            bindMouseAndTouch();
-//            $('#sortable').sortable();
-//            $('#sortable').disableSelection();
-//            bindSortable();
-
-        }, 200);
-    });
+    gInitView.bindMouseAndTouch();
 });
