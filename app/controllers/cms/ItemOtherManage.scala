@@ -34,7 +34,7 @@ case class ItemUpdateForm(
 )
 
 @Singleton
-class ItemManage @Inject()(config: Configuration
+class ItemOtherManage @Inject()(config: Configuration
                            , val silhouette: Silhouette[MyEnv]
                            , val messagesApi: MessagesApi
                            , itemOtherDAO: models.itemOtherDAO
@@ -56,7 +56,7 @@ class ItemManage @Inject()(config: Configuration
 
       // その他仮設材情報
       val itemOtherList = itemOtherDAO.selectOtherMasterInfo(placeId)
-      Ok(views.html.cms.itemManage(ITEM_TYPE_FILTER, itemOtherList, itemTypeList, placeId))
+      Ok(views.html.cms.itemOtherManage(ITEM_TYPE_FILTER, itemOtherList, itemTypeList, placeId))
     }else {
       Redirect(site.routes.WorkPlace.index)
     }
@@ -87,7 +87,7 @@ class ItemManage @Inject()(config: Configuration
     val form = inputForm.bindFromRequest
     if (form.hasErrors){
       // エラーでリダイレクト遷移
-      Redirect(routes.ItemManage.index()).flashing(ERROR_MSG_KEY -> form.errors.map(_.message).mkString(HTML_BR))
+      Redirect(routes.ItemOtherManage.index()).flashing(ERROR_MSG_KEY -> form.errors.map(_.message).mkString(HTML_BR))
     }else{
       var errMsg = Seq[String]()
       val f = form.get
@@ -108,7 +108,7 @@ class ItemManage @Inject()(config: Configuration
 
         if(errMsg.nonEmpty){
           // エラーで遷移
-          Redirect(routes.ItemManage.index).flashing(ERROR_MSG_KEY -> errMsg.mkString(HTML_BR))
+          Redirect(routes.ItemOtherManage.index).flashing(ERROR_MSG_KEY -> errMsg.mkString(HTML_BR))
         }else{
           var sss: Int = 0
           sss = sss + 1
@@ -121,7 +121,7 @@ class ItemManage @Inject()(config: Configuration
                             f.inputItemTypeId.toInt,
                             super.getCurrentPlaceId)
 
-          Redirect(routes.ItemManage.index)
+          Redirect(routes.ItemOtherManage.index)
             .flashing(SUCCESS_MSG_KEY -> Messages("success.cms.ItemManage.update"))
         }
 
@@ -157,7 +157,7 @@ class ItemManage @Inject()(config: Configuration
 
         if(errMsg.nonEmpty){
           // エラーで遷移
-          Redirect(routes.ItemManage.index)
+          Redirect(routes.ItemOtherManage.index)
             .flashing(ERROR_MSG_KEY -> errMsg.mkString(HTML_BR))
         }else{
           // 更新の実行
@@ -170,7 +170,7 @@ class ItemManage @Inject()(config: Configuration
                               f.inputItemTypeId.toInt,
                               super.getCurrentPlaceId)
           // リダイレクト
-          Redirect(routes.ItemManage.index)
+          Redirect(routes.ItemOtherManage.index)
             .flashing(SUCCESS_MSG_KEY -> Messages("success.cms.ItemManage.update"))
         }
       }
@@ -193,7 +193,7 @@ class ItemManage @Inject()(config: Configuration
       // エラーメッセージ
       val errMsg = form.errors.map(_.message).mkString(HTML_BR)
       // リダイレクトで画面遷移
-      Redirect(routes.ItemManage.index).flashing(ERROR_MSG_KEY -> errMsg)
+      Redirect(routes.ItemOtherManage.index).flashing(ERROR_MSG_KEY -> errMsg)
     } else {
       val f = form.get
 
@@ -212,7 +212,7 @@ class ItemManage @Inject()(config: Configuration
       }
 
       // リダイレクト
-      Redirect(routes.ItemManage.index)
+      Redirect(routes.ItemOtherManage.index)
         .flashing(SUCCESS_MSG_KEY -> Messages("success.cms.ItemManage.delete"))
     }
   }
