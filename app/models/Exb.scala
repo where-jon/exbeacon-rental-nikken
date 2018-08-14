@@ -175,8 +175,8 @@ class ExbDAO @Inject() (dbapi: DBApi) {
            e.exb_id
           , e.exb_device_name
           , e.exb_pos_name
-          , floor.floor_id
-          , floor.floor_name as cur_floor_name
+          , coalesce(floor.floor_id,-1) as floor_id
+          , coalesce(floor.floor_name,'無し') as cur_floor_name
         from
           exb_master e
           left join floor_master floor
@@ -397,8 +397,8 @@ class ExbDAO @Inject() (dbapi: DBApi) {
           view_tx_margin,
           view_tx_count,
           exb.place_id,
-          exb.floor_id,
-          floor.display_order
+          coalesce(exb.floor_id, -1) as floor_id,
+          coalesce(floor.display_order, -1) as display_order
         from exb_master as exb
           left JOIN view_type as v on v.view_type_id = exb.view_type_id and v.active_flg = true
           left JOIN floor_master as floor on floor.floor_id = exb.floor_id
