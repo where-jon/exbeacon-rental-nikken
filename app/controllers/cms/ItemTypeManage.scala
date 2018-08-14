@@ -66,10 +66,10 @@ class ItemTypeManage @Inject()(config: Configuration
       "inputPlaceId" -> text
       , "inputItemTypeId" -> text
       , "inputItemTypeName" -> text.verifying(Messages("error.cms.ItemTypeManage.update.inputItemTypeName.empty"), {!_.isEmpty})
-      , "inputItemTypeCategory" -> text
-      , "inputItemTypeIconColor" -> text
-      , "inputItemTypeTextColor" -> text
-      , "inputItemTypeRowColor" -> text
+      , "inputItemTypeCategory" -> text.verifying(Messages("error.cms.ItemTypeManage.update.inputItemTypeCategory.empty"), {_.matches("^[0-9]+$")})
+      , "inputItemTypeIconColor" -> text.verifying(Messages("error.cms.ItemTypeManage.update.inputItemTypeIconColor.empty"), {!_.isEmpty})
+      , "inputItemTypeTextColor" -> text.verifying(Messages("error.cms.ItemTypeManage.update.inputItemTypeTextColor.empty"), {!_.isEmpty})
+      , "inputItemTypeRowColor" -> text.verifying(Messages("error.cms.ItemTypeManage.update.inputItemTypeRowColor.empty"), {!_.isEmpty})
       , "inputNote" -> text
     )(ItemTypeUpdateForm.apply)(ItemTypeUpdateForm.unapply))
 
