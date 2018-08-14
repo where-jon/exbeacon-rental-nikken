@@ -39,6 +39,21 @@ case class ItemType(
 
                    )
 
+/*仮設材種別*/
+case class ItemTypeOrder(
+                     item_type_id: Int,
+                     item_type_name: String,
+                     item_type_category_id: Int,
+                     item_type_icon_color: String,
+                     item_type_text_color: String,
+                     item_type_row_color: String,
+                     note: String,
+                     item_order: Int,
+                     place_id :Int,
+                     active_flg: Boolean
+
+                   )
+
 @javax.inject.Singleton
 class ItemTypeDAO @Inject() (dbapi: DBApi) {
 
@@ -216,20 +231,57 @@ class ItemTypeDAO @Inject() (dbapi: DBApi) {
     }
   }
 
-  /*カテゴリー名がその他だけ検索する*/
-  def selectItemOtherInfo(placeId: Int): Seq[ItemType] = {
-    db.withConnection { implicit connection =>
-      val sql = SQL("""
-              select item_type_id ,item_type_name ,item_type_category_id ,item_type_icon_color ,item_type_text_color ,item_type_row_color, note , place_id , active_flg
-              from item_type
-              where place_id = {placeId}
-              and active_flg = true
-              and item_type_category_id = 2
-              order by item_type_id;
-              """).on(
-        "placeId" -> placeId
-      )
-      sql.as(simple.*)
-    }
-  }
+//  /*カテゴリー名がその他だけ検索する*/
+//  def selectItemOtherInfo(placeId: Int): Seq[ItemType] = {
+//    db.withConnection { implicit connection =>
+//      val sql = SQL("""
+//              select item_type_id ,item_type_name ,item_type_category_id ,item_type_icon_color ,item_type_text_color ,item_type_row_color, note , place_id , active_flg
+//              from item_type
+//              where place_id = {placeId}
+//              and active_flg = true
+//              and item_type_category_id = 2
+//              order by item_type_id;
+//              """).on(
+//        "placeId" -> placeId
+//      )
+//      sql.as(simple.*)
+//    }
+//  }
+//
+//  // Parser
+//  val simpleOrder = {
+//    get[Int]("item_type_id") ~
+//      get[String]("item_type_name") ~
+//      get[Int]("item_type_category_id") ~
+//      get[String]("item_type_icon_color") ~
+//      get[String]("item_type_text_color") ~
+//      get[String]("item_type_row_color") ~
+//      get[String]("note") ~
+//      get[Int]("item_order") ~
+//      get[Int]("place_id") ~
+//      get[Boolean]("active_flg") map {
+//      case item_type_id ~ item_type_name ~ item_type_category_id ~ item_type_icon_color ~ item_type_text_color ~ item_type_row_color ~
+//        note ~ item_order ~ place_id ~ active_flg=>
+//        ItemTypeOrder(item_type_id ,item_type_name ,item_type_category_id ,item_type_icon_color ,item_type_text_color ,item_type_row_color,
+//          note ,item_order, place_id , active_flg)
+//    }
+//  }
+//
+//  /*カテゴリー名がその他だけ検索する 順番有り*/
+//  def selectItemOtherInfoOrder(placeId: Int): Seq[ItemType] = {
+//    db.withConnection { implicit connection =>
+//      val sql = SQL("""
+//              select item_type_id ,item_type_name ,item_type_category_id ,item_type_icon_color ,item_type_text_color ,item_type_row_color, note , cast(dense_rank() over(order by(item_type_id)) as Int) as item_order, place_id , active_flg
+//              from item_type
+//              where place_id = {placeId}
+//              and active_flg = true
+//              and item_type_category_id = 2
+//              order by item_type_id;
+//              """).on(
+//        "placeId" -> placeId
+//      )
+//      sql.as(simpleOrder.*)
+//    }
+//  }
 }
+

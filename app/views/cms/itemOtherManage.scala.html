@@ -98,8 +98,8 @@ placeId: Int
                         <label class="control-label col-xs-4">@Messages("lang.cms.itemOtherManage.itemUpdate.popup.type")</label>
                         <select id="other_type" style="height: 30px; width: 220px;">
                             <!--仮設材種別テーブルから検索フィルタを設置-->
-                            @itemTypeList.zipWithIndex.map { case(itemType, i) =>
-                            <option value="@itemType.item_type_id">@itemType.item_type_name</option>
+                            @itemTypeList.zipWithIndex.map { case(itemType, name) =>
+                                <option value="@itemType.item_type_id">@itemType.item_type_name</option>
                             }
                         </select>
                         <input class="hidden form-control input-sm" type="text" id="inputItemTypeName" name="inputItemTypeName" value="@ITEM_TYPE_FILTER">

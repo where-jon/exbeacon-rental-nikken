@@ -96,7 +96,6 @@ function showInputModal(isRegister){
             var itemOtherId = $('.rowHoverSelectedColor').attr('data-itemOtherId');
             $('.cloned').remove();
             $('#inputItemOtherId').val(itemOtherId);
-            document.itemForm.other_type.selectedIndex = 1;
             $('#inputItemOtherBtxId').val($('#'+itemOtherId).find('.itemOtherBtxId').text());
             $('#inputItemOtherNo').val($('#'+itemOtherId).find('.itemOtherNo').text());
             $('#inputItemOtherName').val($('#'+itemOtherId).find('.itemOtherName').text());
@@ -147,8 +146,8 @@ function viewBtnEvent(){
 }
 
 $(function(){
-    var floorFrame = $('#other_type');
-        if(floorFrame!=null){
+    var otherTypeFrame = $('#other_type');
+        if(otherTypeFrame!=null){
             // 管理者用selectbox value取得
             $('#other_type').change(function() {
             var itemType = $('#other_type option:selected').val();
