@@ -25,6 +25,16 @@ Map[Int,String](
 2 -> "終日")
 )
 
+/*作業期間種別ID*/
+case class WorkTypeIdEnum(
+  map: Map[String,Int] =
+  Map[String,Int](
+    "午前"-> 1,
+    "午後"-> 2,
+    "終日" -> 3
+  )
+)
+
 /*仮設材種別*/
 case class ItemType(
                      item_type_id: Int,

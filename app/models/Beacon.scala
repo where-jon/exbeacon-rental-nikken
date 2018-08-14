@@ -1,5 +1,7 @@
 package models
 
+import java.text.SimpleDateFormat
+import java.util.{Calendar, Date, Locale}
 import javax.inject.Inject
 
 import anorm.SqlParser.get
@@ -442,6 +444,21 @@ class beaconDAO @Inject()(dbapi: DBApi) {
 
   /*現場状況画面用 sql文 20180723*/
   def selectBeaconViewer(placeId: Int): Seq[BeaconViewer] = {
+
+    // 現在時刻設定
+    val mSimpleDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.JAPAN)
+    val currentTime = new Date();
+    val mTime = mSimpleDateFormat.format(currentTime)
+    val mHour = new SimpleDateFormat("HH").format(Calendar.getInstance().getTime()).toInt
+
+    val vWorkType =
+      if(mHour < 13)
+        WorkTypeIdEnum().map.get("午前").last
+      else
+        WorkTypeIdEnum().map.get("午後").last
+
+    val vWorkAllDayType = WorkTypeIdEnum().map.get("終日").last
+
     db.withConnection { implicit connection =>
       val selectPh =
         """
@@ -492,6 +509,12 @@ class beaconDAO @Inject()(dbapi: DBApi) {
                   ) as c
                 left JOIN reserve_table as r on c.item_id = r.item_id and c.item_type_id = r.item_type_id
                 and r.active_flg = true
+                and r.reserve_start_date  between to_date('
+                """ + {mTime} +"""
+                ', 'YYYY-MM-DD') and  to_date('
+                """ + {mTime} +"""
+                ', 'YYYY-MM-DD')
+                and (r.work_type_id = """ + {vWorkType} +"""or r.work_type_id =""" + {vWorkAllDayType} +""")
                 left JOIN item_type as i on i.item_type_id = c.item_type_id
                 and i.active_flg = true
                 left JOIN company_master as co on co.company_id = r.company_id
@@ -513,6 +536,21 @@ class beaconDAO @Inject()(dbapi: DBApi) {
 
   /*現場状況画面用 sql文 20180723*/
   def selectCarKeyViewer(placeId: Int): Seq[BeaconViewer] = {
+
+    // 現在時刻設定
+    val mSimpleDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.JAPAN)
+    val currentTime = new Date();
+    val mTime = mSimpleDateFormat.format(currentTime)
+    val mHour = new SimpleDateFormat("HH").format(Calendar.getInstance().getTime()).toInt
+
+    val vWorkType =
+      if(mHour < 13)
+        WorkTypeIdEnum().map.get("午前").last
+      else
+        WorkTypeIdEnum().map.get("午後").last
+
+    val vWorkAllDayType = WorkTypeIdEnum().map.get("終日").last
+
     db.withConnection { implicit connection =>
       val selectPh =
         """
@@ -563,6 +601,12 @@ class beaconDAO @Inject()(dbapi: DBApi) {
                   ) as c
                 left JOIN reserve_table as r on c.item_id = r.item_id and c.item_type_id = r.item_type_id
                 and r.active_flg = true
+                and r.reserve_start_date  between to_date('
+                """ + {mTime} +"""
+                ', 'YYYY-MM-DD') and  to_date('
+                """ + {mTime} +"""
+                ', 'YYYY-MM-DD')
+                and (r.work_type_id = """ + {vWorkType} +"""or r.work_type_id =""" + {vWorkAllDayType} +""")
                 left JOIN item_type as i on i.item_type_id = c.item_type_id
                 and i.active_flg = true
                 left JOIN company_master as co on co.company_id = r.company_id

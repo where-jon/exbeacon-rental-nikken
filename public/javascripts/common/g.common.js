@@ -2119,6 +2119,9 @@ var gViewerManage = {
                 var viewer_pos_floor = vExbViewerData[i].floor
                 gExbViewerUiData[vCount].floor = Number(viewer_pos_floor);
 
+                var viewer_pos_display_order = document.getElementById("viewer_pos_display_order-" + i).textContent;
+                gExbViewerUiData[vCount].displayOrder = Number(viewer_pos_display_order);
+
                 var viewer_pos_size = vExbViewerData[i].size
                 gExbViewerUiData[vCount].size = Number(viewer_pos_size);
 
@@ -2143,7 +2146,7 @@ var gViewerManage = {
                 pinFrame.className = "exb__viewer--frame";
                 pinFrame.textContent = beaconData.posNum;
 
-                var tempElement = document.getElementById("beaconMap-" +beaconData.floor)
+                var tempElement = document.getElementById("beaconMap-" +beaconData.displayOrder)
                 if(tempElement!= null)
                     tempElement.appendChild(pinFrame);
                 // 非表示のopacityを設定
@@ -2192,6 +2195,9 @@ var gViewerManage = {
                 var viewer_pos_count = document.getElementById("viewer_pos_count-" + i).textContent;
                 gExbViewerUiData[vCount].posCount = Number(viewer_pos_count);
 
+                var viewer_pos_display_order = document.getElementById("viewer_pos_display_order-" + i).textContent;
+                gExbViewerUiData[vCount].displayOrder = Number(viewer_pos_display_order);
+
                 var viewer_pos_floor = document.getElementById("viewer_pos_floor-" + i).textContent;
                 gExbViewerUiData[vCount].floor = Number(viewer_pos_floor);
 
@@ -2220,7 +2226,7 @@ var gViewerManage = {
                 pinFrame.className = "exb__viewer--frame";
                 pinFrame.textContent = beaconData.posNum;
 
-                var tempElement = document.getElementById("beaconMap-" +beaconData.floor)
+                var tempElement = document.getElementById("beaconMap-" +beaconData.displayOrder)
                 if(tempElement!= null)
                     tempElement.appendChild(pinFrame);
                 // 非表示のopacityを設定
