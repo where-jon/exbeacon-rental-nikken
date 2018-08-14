@@ -159,6 +159,7 @@ success.cms.PlaceManage.update=現場情報を更新しました。
 success.cms.PlaceManage.passwordUpdate=パスワードを更新しました。
 success.cms.PlaceManage.delete=現場情報を削除しました。
 success.cms.FloorManage.floorDelete=フロアを削除しました。
+success.cms.ExbManage.exbDelete=EXBを削除しました。
 success.cms.FloorManage.floorUpdate=フロア情報を更新しました。
 
 success.cms.CompanyManage.delete=業者情報を削除しました。
@@ -303,6 +304,25 @@ lang.cms.floorManage.floorDelete.popup.message=フロアを削除します。\n�
 error.cms.floorManage.delete.exb=EXBが設置されてるため、削除できません。
 error.cms.floorManage.floorUpdate.inputFloorName.empty=フロア名を入力してください。
 error.cms.floorManage.floorUpdate.displayOrder.empty=表示順を数字で入力して下さい。
+
+# CMS文字列（EXB管理）
+lang.cms.exbManage.title=EXB管理
+lang.cms.exbManage.exb.button.exbEdit=選択したEXBを編集
+lang.cms.exbManage.exb.button.addExb=新規EXBを追加
+lang.cms.exbManage.exb.button.deleteExb=選択したEXBを削除
+lang.cms.exbManage.exbDelete.popup.title=EXB削除
+lang.cms.exbManage.exbDelete.popup.message=EXBを削除します。\nよろしいですか？
+error.cms.exbManage.exbUpdate.delete.empty=削除対象EXBを選択してください。
+
+#lang.cms.exbManage.exbUpdate.popup.displayOrder=表示順
+#lang.cms.exbManage.exbUpdate.popup.displayOrder.placeholder=1
+#lang.cms.exbManage.exbUpdate.popup.name=EXB名
+#lang.cms.exbManage.exbUpdate.popup.name.placeholder=8F
+#lang.cms.exbManage.exbUpdate.popup.title=EXB更新
+#error.cms.exbManage.delete.exb=EXBが設置されてるため、削除できません。
+#error.cms.exbManage.exbUpdate.inputFloorName.empty=EXB名を入力してください。
+#error.cms.exbManage.exbUpdate.displayOrder.empty=表示順を数字で入力して下さい。
+
 
 #lang.cms.floorManage.floor.list.header.title=フロア
 #lang.cms.floorManage.floor.list.header.deviceNo=EXBeaconデバイスNo
@@ -514,11 +534,13 @@ lang.OtherItem.itemTableTitle.name=資材名
 lang.OtherItem.itemTableTitle.value=利用状況
 
 
-# Manage
+# Manage(旧)
 lang.manage.floorManager = フロア管理
 lang.manage.mapManager = フロアマップ登録
 lang.manage.exbManager = EXB管理
 lang.manage.exbViewerManager = EXB設置管理
+
+
 
 #dialog
 dialog.db.result  = 処理結果
