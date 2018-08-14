@@ -2119,7 +2119,7 @@ var gViewerManage = {
                 var viewer_pos_floor = vExbViewerData[i].floor
                 gExbViewerUiData[vCount].floor = Number(viewer_pos_floor);
 
-                var viewer_pos_display_order = vExbViewerData[i].displayOrder
+                var viewer_pos_display_order = document.getElementById("viewer_pos_display_order-" + i).textContent;
                 gExbViewerUiData[vCount].displayOrder = Number(viewer_pos_display_order);
 
                 var viewer_pos_size = vExbViewerData[i].size
