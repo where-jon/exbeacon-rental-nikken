@@ -119,7 +119,6 @@
                         <label class="control-label col-xs-4">@Messages("lang.cms.itemTypeManage.itemTypeUpdate.popup.category")</label>
                         <select id="item_type" style="height: 30px; width: 100px;">
                             !--仮設材カテゴリEnumから検索フィルタを設置-->
-                            <option value="0"></option>
                             @itemTypeMap.map{case (key, value) =>
                             <option value="@(key+1)">@value</option>
                             }
