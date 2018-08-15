@@ -183,7 +183,6 @@ class floorDAO @Inject() (dbapi: DBApi) {
   def deleteById(floorId:Int): Unit = {
     db.withTransaction { implicit connection =>
       SQL("""delete from floor_master where floor_id = {floorId} ;""").on('floorId -> floorId).executeUpdate()
-      SQL("""delete from exb_master where floor_id = {floorId} ;""").on('floorId -> floorId).executeUpdate()
       // コミット
       connection.commit()
 
