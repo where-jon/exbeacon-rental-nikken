@@ -6,6 +6,7 @@ import java.util.{Date, Locale}
 import javax.inject.{Inject, Singleton}
 
 import com.mohiva.play.silhouette.api.Silhouette
+import controllers.site
 import controllers.{BaseController, BeaconService}
 import models._
 import play.api._
@@ -364,16 +365,21 @@ class MovementCar @Inject()(config: Configuration
 
   /** 初期表示 */
   def index = SecuredAction { implicit request =>
-    // 初期化
-    init();
-    val placeId = super.getCurrentPlaceId
-    //検索側データ取得
-    getSearchData(placeId)
+    val reqIdentity = request.identity
+    if(reqIdentity.level >= 2){
+      // 初期化
+      init();
+      val placeId = super.getCurrentPlaceId
+      //検索側データ取得
+      getSearchData(placeId)
 
-    // DB探索になる今月に関するデータをセット
-    val calendarList =  this.getCalendarData()
-    val logItemAllList =  getAllItemLogData(placeId,itemIdList,calendarList)
-    Ok(views.html.analysis.movementCar(logItemAllList,calendarList,DETECT_MONTH,TOTAL_LENGTH))
+      // DB探索になる今月に関するデータをセット
+      val calendarList =  this.getCalendarData()
+      val logItemAllList =  getAllItemLogData(placeId,itemIdList,calendarList)
+      Ok(views.html.analysis.movementCar(logItemAllList,calendarList,DETECT_MONTH,TOTAL_LENGTH))
+    }else{
+      Redirect(site.routes.WorkPlace.index)
+    }
   }
 
 }
