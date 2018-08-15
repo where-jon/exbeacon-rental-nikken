@@ -118,19 +118,6 @@ function btnEvent(){
              vActiveFlgElement.value = Number(result)
         });
     }
-
-    var viewBtnElement = document.getElementById("floorRegisterFooter")
-    viewBtnElement.addEventListener('click', function(event) {
-        var vInputDeviceId = $('#inputDeviceId').val();
-        if(vInputDeviceId == ""){
-            $('#inputDeviceId').val(-1)
-        }
-        var vInputDeviceNo = $('#inputDeviceNo').val();
-        if(vInputDeviceNo == ""){
-            $('#inputDeviceNo').val(-1)
-        }
-
-    });
 }
 // 初期表示
 $(function(){

@@ -21,11 +21,11 @@ import utils.silhouette.MyEnv
 case class ExbDeleteForm(deleteExbId: String, floorId: String)
 case class ExbUpdateForm(
   inputExbId: String
-  ,inputDeviceId:Int
-  ,inputDeviceNo:Int
+  ,inputDeviceId:String
+  ,inputDeviceNo:String
   ,inputDeviceName: String
   ,inputPosName: String
-  ,setupFloorId: Int
+  ,setupFloorId: String
 )
 
 @Singleton
@@ -41,14 +41,11 @@ class ExbManage @Inject()(config: Configuration
   def exbUpdate = SecuredAction { implicit request =>
     val inputForm = Form(mapping(
       "inputExbId" -> text
-      ,"inputDeviceId" -> number.verifying(Messages("error.cms.exbManage.exbUpdate.inputDeviceId.empty")
-        , { inputDeviceId =>(inputDeviceId >= 0 && inputDeviceId < 1000000)})
-      ,"inputDeviceNo" -> number.verifying(Messages("error.cms.exbManage.exbUpdate.inputDeviceNo.empty")
-        , { inputDeviceNo => inputDeviceNo >= 0 && inputDeviceNo < 1000000})
+      , "inputDeviceId" -> text.verifying(Messages("error.cms.exbManage.exbUpdate.inputDeviceId.empty"), {_.matches("^[0-9]+$")})
+      , "inputDeviceNo" -> text.verifying(Messages("error.cms.exbManage.exbUpdate.inputDeviceNo.empty"), {_.matches("^[0-9]+$")})
       , "inputDeviceName" -> text.verifying(Messages("error.cms.exbManage.exbUpdate.inputDeviceName.empty"), {!_.isEmpty})
       , "inputPosName" -> text.verifying(Messages("error.cms.exbManage.exbUpdate.inputPosName.empty"), {!_.isEmpty})
-      , "setupFloorId" -> number.verifying(Messages("error.cms.exbManage.exbUpdate.setupFloorId.empty")
-        , { setupFloorId => setupFloorId >= -1 && setupFloorId < 1000000 })
+      , "setupFloorId" -> text.verifying(Messages("error.cms.exbManage.exbUpdate.setupFloorId.empty"), {_.matches("^[-1-9]+$")})
     )(ExbUpdateForm.apply)(ExbUpdateForm.unapply))
 
     // フォームの取得
@@ -63,11 +60,11 @@ class ExbManage @Inject()(config: Configuration
       val f = form.get
       if(f.inputExbId.isEmpty) {  // 新規EXB登録の場合
         // DB処理
-        exbDAO.insertData(f.inputDeviceId,f.inputDeviceNo,f.inputDeviceName,f.inputPosName,f.setupFloorId,placeId)
+        exbDAO.insertData(f.inputDeviceId.toInt,f.inputDeviceNo.toInt,f.inputDeviceName,f.inputPosName,f.setupFloorId.toInt,placeId)
         Redirect(routes.ExbManage.index)
           .flashing(SUCCESS_MSG_KEY -> Messages("success.cms.exbManage.exbUpdate"))
       }else{ // EXB更新の場合
-        exbDAO.update(f.inputDeviceId,f.inputDeviceNo,f.inputDeviceName,f.inputPosName,f.setupFloorId,f.inputExbId.toInt,placeId)
+        exbDAO.update(f.inputDeviceId.toInt,f.inputDeviceNo.toInt,f.inputDeviceName,f.inputPosName,f.setupFloorId.toInt,f.inputExbId.toInt,placeId)
         Redirect(routes.ExbManage.index)
           .flashing(SUCCESS_MSG_KEY -> Messages("success.cms.exbManage.exbUpdate"))
       }
