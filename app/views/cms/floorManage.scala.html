@@ -34,9 +34,10 @@ floorInfoList: Seq[FloorInfoData]
                             <table class="table table-bordered table-condensed itemTable floorTable">
                                 <thead>
                                     <tr>
-                                        <th colspan="5" class="tableTitleTh">@Messages("lang.cms.floorManage.title")</th>
+                                        <th colspan="6" class="tableTitleTh">@Messages("lang.cms.floorManage.title")</th>
                                     </tr>
                                     <tr>
+                                        <th class="tableTh deviceTh">フロアID</th>
                                         <th class="tableTh deviceTh">表示順</th>
                                         <th class="tableTh floorTh">フロア名</th>
                                         <th class="tableTh deviceTh">現場状況画面表示</th>
@@ -46,6 +47,7 @@ floorInfoList: Seq[FloorInfoData]
                                 <tbody class="sortable">
                                     @for(floor <- floorInfoList){
                                         <tr class="rowColor rowHover" id="@floor.floor_id" data-floorId="@floor.floor_id">
+                                            <td class="itemTd text-center displayOrder">@floor.floor_id</td>
                                             <td class="itemTd text-center displayOrder">@floor.display_order</td>
                                             <td class="itemTd text-center floorName">@floor.floor_name</td>
                                             @if(floor.active_flg){
