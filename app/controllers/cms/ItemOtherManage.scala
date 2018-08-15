@@ -53,7 +53,7 @@ class ItemOtherManage @Inject()(config: Configuration
       // 選択された現場の現場ID
       val placeId = super.getCurrentPlaceId
       // 仮設材情報
-      val itemTypeList = itemTypeDAO.selectItemOtherInfo(placeId)
+      val itemTypeList = itemTypeDAO.selectItemOtherInfoOrder(placeId)
 
       // その他仮設材情報
       val itemOtherList = itemOtherDAO.selectOtherMasterInfo(placeId)

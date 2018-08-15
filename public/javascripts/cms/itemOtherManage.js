@@ -96,6 +96,8 @@ function showInputModal(isRegister){
             var itemOtherId = $('.rowHoverSelectedColor').attr('data-itemOtherId');
             $('.cloned').remove();
             $('#inputItemOtherId').val(itemOtherId);
+            // 種別の初期表示を指定
+            document.itemForm.other_type.selectedIndex = parseInt($('#'+itemOtherId).find('.itemTypeOrder').text()) - 1;
             $('#inputItemOtherBtxId').val($('#'+itemOtherId).find('.itemOtherBtxId').text());
             $('#inputItemOtherNo').val($('#'+itemOtherId).find('.itemOtherNo').text());
             $('#inputItemOtherName').val($('#'+itemOtherId).find('.itemOtherName').text());

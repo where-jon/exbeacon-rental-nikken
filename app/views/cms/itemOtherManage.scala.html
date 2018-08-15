@@ -2,7 +2,7 @@
 ITEM_TYPE_FILTER: Int,
 itemTypeMap: Map[Int,String],
 itemList: Seq[ItemOtherViewer],
-itemTypeList :Seq[ItemType],
+itemTypeList :Seq[ItemTypeOrder],
 placeId: Int
 )(implicit user: User, messages: Messages, request: RequestHeader, flash: Flash)
 
@@ -55,6 +55,11 @@ placeId: Int
                                             <td class="itemTd text-center itemOtherBtxId">@{item.itemOtherBtxId}</td>
                                             <td class="itemTd text-center itemTypeName">@{item.itemTypeName}</td>
                                             <td hidden class="itemTd text-center itemTypeId">@item.itemTypeId</td>
+                                            @for(itemTypeOrder <- itemTypeList){
+                                                @if(itemTypeOrder.item_type_id == item.itemTypeId){
+                                                    <td hidden class="itemTd text-center itemTypeOrder">@itemTypeOrder.item_type_order</td>
+                                                }
+                                            }
                                             <td class="itemTd text-center itemOtherName">@{item.itemOtherName}</td>
                                             <td class="itemTd text-center itemOtherId">@{item.itemOtherId}</td>
                                             <td class="itemTd text-center itemOtherNo">@{item.itemOtherNo}</td>
