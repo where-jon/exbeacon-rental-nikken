@@ -1,10 +1,10 @@
 package controllers.cms
 
 import javax.inject.{Inject, Singleton}
-
 import com.mohiva.play.silhouette.api.Silhouette
 import controllers.BaseController
 import controllers.site
+import models.{ItemCategoryEnum, WorkTypeEnum}
 import play.api._
 import play.api.data.Form
 import play.api.data.Forms._
@@ -27,6 +27,7 @@ class ItemManage @Inject()(config: Configuration
                            , val silhouette: Silhouette[MyEnv]
                            , val messagesApi: MessagesApi
                            , itemDAO: models.itemDAO
+                           , itemTypeDAO: models.ItemTypeDAO
                            , btxDAO: models.btxDAO
                                ) extends BaseController with I18nSupport {
 

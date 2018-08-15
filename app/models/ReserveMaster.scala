@@ -256,7 +256,50 @@ class ReserveMasterDAO @Inject() (dbapi: DBApi) {
     }
   }
 
+  /**
+    * 仮設材種別チェック用
+    * @return
+    */
+  def selectReserveItemTypeCheck(
+                        placeId: Int
+                        , itemTypeId: Int
+                      ): Seq[ReserveMasterInfo] = {
 
+    val simple = {
+      get[Int]("item_id") ~
+        get[Int]("work_type_id") ~
+        get[String]("reserve_start_date")~
+        get[String]("reserve_end_date") map {
+        case item_id ~ work_type_id ~ reserve_start_date ~ reserve_end_date  =>
+          ReserveMasterInfo(item_id, work_type_id, reserve_start_date, reserve_end_date)
+      }
+    }
+
+    db.withConnection { implicit connection =>
+      val selectPh =
+        """
+          select
+              r.item_id
+            , r.work_type_id
+            , to_char(r.reserve_start_date, 'YYYYMMDD') as reserve_start_date
+            , to_char(r.reserve_end_date, 'YYYYMMDD') as reserve_end_date
+          from
+              reserve_table as r
+          where
+            r.active_flg = true
+        """
+      var wherePh = ""
+      wherePh += s""" and r.place_id = {placeId} """
+      wherePh += s""" and r.item_type_id = {itemTypeId} """
+
+      val orderPh =
+        """
+          order by
+            r.item_id
+        """
+      SQL(selectPh+ wherePh + orderPh).on('placeId -> placeId, 'itemTypeId -> itemTypeId).as(simple.*)
+    }
+  }
 
 }
 

@@ -136,7 +136,7 @@ class ItemTypeDAO @Inject() (dbapi: DBApi) {
     * 仮設材種別の新規登録
     * @return
     */
-  def insert(itemTypeName: String, itemTypeCategory: String, itemTypeIconColor: String, itemTypeTextColor: String, itemTypeRowColor: String, note: String, placeId: Int): Int = {
+  def insert(itemTypeName: String, itemTypeCategory: Int, itemTypeIconColor: String, itemTypeTextColor: String, itemTypeRowColor: String, note: String, placeId: Int): Int = {
     db.withTransaction { implicit connection =>
       // パラメータのセット
       val params: Seq[NamedParameter] = Seq(
@@ -169,7 +169,7 @@ class ItemTypeDAO @Inject() (dbapi: DBApi) {
     * 仮設材種別の更新
     * @return
     */
-  def updateById(itemTypeId:Int, itemTypeName: String, itemTypeCategory: String, itemTypeIconColor: String, itemTypeTextColor: String, itemTypeRowColor: String, note: String): Unit = {
+  def updateById(itemTypeId:Int, itemTypeName: String, itemTypeCategory: Int, itemTypeIconColor: String, itemTypeTextColor: String, itemTypeRowColor: String, note: String): Unit = {
     db.withTransaction { implicit connection =>
       SQL(
         """

@@ -98,7 +98,9 @@ function showInputModal(isRegister){
     if(isRegister){
         $('#inputItemTypeId').val('');
         $('#inputItemTypeName').val('');
+        $('#inputItemTypeCategoryName').val('');
         $('#inputItemTypeCategory').val('');
+        $('#item_type').val("0");
         $('#inputItemTypeIconColor').val('');
         $('#inputItemTypeTextColor').val('');
         $('#inputItemTypeRowColor').val('');
@@ -112,7 +114,9 @@ function showInputModal(isRegister){
             var itemTypeId = $('.rowHoverSelectedColor .itemTypeId').html();
             $('#inputItemTypeId').val(itemTypeId);
             $('#inputItemTypeName').val($('#'+itemTypeId).find('.itemTypeName').text());
-            $('#inputItemTypeCategory').val($('#'+itemTypeId).find('.itemTypeCategory').text());
+            $('#inputItemTypeCategory').val($('#'+itemTypeId).find('.itemTypeCategoryId').text());
+            $('#item_type').val((parseInt($('#'+itemTypeId).find('.itemTypeCategoryId').text()) + 1).toString());
+
             $('#inputItemTypeIconColor').val($('#'+itemTypeId).find('.itemTypeIconColor').text());
             $('#inputItemTypeTextColor').val($('#'+itemTypeId).find('.itemTypeTextColor').text());
             $('#inputItemTypeRowColor').val($('#'+itemTypeId).find('.itemTypeRowColor').text());
@@ -139,9 +143,28 @@ function deleteItemType() {
     }
 }
 
+// 表示ボタンをクリックする時に発生するイベント
+function viewBtnEvent(){
+    var viewBtnElement = document.getElementById("itemTypeUpdateFooter")
+        viewBtnElement.addEventListener('click', function(event) {
+            // itemTypeId結果をfromへ設定
+            var itemTypeFilterResult = $('#item_type option:selected').val() - 1;
+            $('#inputItemTypeCategory').val(itemTypeFilterResult);
+        });
+
+    var viewBtnElement = document.getElementById("itemTypeRegisterFooter")
+        viewBtnElement.addEventListener('click', function(event) {
+            // itemTypeId結果をfromへ設定
+            var itemTypeFilterResult = $('#item_type option:selected').val() - 1;
+            $('#inputItemTypeCategory').val(itemTypeFilterResult);
+        });
+}
+
 $(function(){
     // テーブルを固定
     fixTable();
+    // 表示ボタンをクリック
+    viewBtnEvent();
     // マウス操作とタップ操作をバインド
     bindMouseAndTouch();
 

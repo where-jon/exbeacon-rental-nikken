@@ -1,10 +1,10 @@
 package controllers.cms
 
 import javax.inject.{Inject, Singleton}
-
 import com.mohiva.play.silhouette.api.Silhouette
 import controllers.BaseController
 import controllers.site
+import models.ItemCategoryEnum
 import play.api._
 import play.api.data.Form
 import play.api.data.Forms._
@@ -35,17 +35,25 @@ class ItemTypeManage @Inject()(config: Configuration
                               , val silhouette: Silhouette[MyEnv]
                               , val messagesApi: MessagesApi
                               , itemTypeDAO: models.ItemTypeDAO
+                              , carDAO: models.itemCarDAO
+                              , itemOtherDAO: models.itemOtherDAO
+                              , reserveMasterDAO: models.ReserveMasterDAO
                                ) extends BaseController with I18nSupport {
+
+  var ITEM_TYPE_FILTER = "";
+  /*enum形*/
+  val ITEM_TYPE = ItemCategoryEnum().map;
 
   /** 初期表示 */
   def index = SecuredAction { implicit request =>
+    ITEM_TYPE_FILTER = ""
     val reqIdentity = request.identity
     if(reqIdentity.level >= 2){
       // 選択された現場の現場ID
       val placeId = super.getCurrentPlaceId
       // 仮設材種別情報
       val itemTypeList = itemTypeDAO.selectItemTypeInfo(placeId)
-      Ok(views.html.cms.itemTypeManage(itemTypeList, placeId))
+      Ok(views.html.cms.itemTypeManage(ITEM_TYPE_FILTER, ITEM_TYPE, itemTypeList, placeId))
     }else {
       Redirect(site.routes.WorkPlace.index)
     }
@@ -58,10 +66,10 @@ class ItemTypeManage @Inject()(config: Configuration
       "inputPlaceId" -> text
       , "inputItemTypeId" -> text
       , "inputItemTypeName" -> text.verifying(Messages("error.cms.ItemTypeManage.update.inputItemTypeName.empty"), {!_.isEmpty})
-      , "inputItemTypeCategory" -> text
-      , "inputItemTypeIconColor" -> text
-      , "inputItemTypeTextColor" -> text
-      , "inputItemTypeRowColor" -> text
+      , "inputItemTypeCategory" -> text.verifying(Messages("error.cms.ItemTypeManage.update.inputItemTypeCategory.empty"), {_.matches("^[0-9]+$")})
+      , "inputItemTypeIconColor" -> text.verifying(Messages("error.cms.ItemTypeManage.update.inputItemTypeIconColor.empty"), {!_.isEmpty})
+      , "inputItemTypeTextColor" -> text.verifying(Messages("error.cms.ItemTypeManage.update.inputItemTypeTextColor.empty"), {!_.isEmpty})
+      , "inputItemTypeRowColor" -> text.verifying(Messages("error.cms.ItemTypeManage.update.inputItemTypeRowColor.empty"), {!_.isEmpty})
       , "inputNote" -> text
     )(ItemTypeUpdateForm.apply)(ItemTypeUpdateForm.unapply))
 
@@ -83,7 +91,7 @@ class ItemTypeManage @Inject()(config: Configuration
             if(f.inputItemTypeId.isEmpty){
               // 新規登録の場合 --------------------------
               // DB処理
-              itemTypeDAO.insert(f.inputItemTypeName, f.inputItemTypeCategory, f.inputItemTypeIconColor, f.inputItemTypeTextColor, f.inputItemTypeRowColor, f.inputNote, f.inputPlaceId.toInt)
+              itemTypeDAO.insert(f.inputItemTypeName, f.inputItemTypeCategory.toInt, f.inputItemTypeIconColor, f.inputItemTypeTextColor, f.inputItemTypeRowColor, f.inputNote, f.inputPlaceId.toInt)
 
               Redirect(routes.ItemTypeManage.index)
                 .flashing(SUCCESS_MSG_KEY -> Messages("success.cms.ItemTypeManage.update"))
@@ -91,7 +99,7 @@ class ItemTypeManage @Inject()(config: Configuration
             }else{
               // 更新の場合 --------------------------
               // DB処理
-              itemTypeDAO.updateById(f.inputItemTypeId.toInt, f.inputItemTypeName, f.inputItemTypeCategory, f.inputItemTypeIconColor, f.inputItemTypeTextColor, f.inputItemTypeRowColor, f.inputNote)
+              itemTypeDAO.updateById(f.inputItemTypeId.toInt, f.inputItemTypeName, f.inputItemTypeCategory.toInt, f.inputItemTypeIconColor, f.inputItemTypeTextColor, f.inputItemTypeRowColor, f.inputNote)
 
               Redirect(routes.ItemTypeManage.index)
                 .flashing(SUCCESS_MSG_KEY -> Messages("success.cms.ItemTypeManage.update"))
@@ -122,7 +130,7 @@ class ItemTypeManage @Inject()(config: Configuration
     val listRgb = rgb.split(",")
     if(listRgb.length == 3) {
       for (rgbInt <- listRgb) {
-        if (BigDecimal(rgbInt) < 0 || BigDecimal(rgbInt) > 255) {
+        if (rgbInt.trim().toInt < 0 || rgbInt.trim().toInt > 255) {
           resFlg = false
         }
       }
@@ -138,7 +146,9 @@ class ItemTypeManage @Inject()(config: Configuration
     val inputForm = Form(mapping(
       "deleteItemTypeId" -> text.verifying(Messages("error.cms.ItemTypeManage.delete.empty"), {!_.isEmpty})
     )(ItemTypeDeleteForm.apply)(ItemTypeDeleteForm.unapply))
-
+    val placeId = super.getCurrentPlaceId
+    // メッセージ格納用
+    var errMsg = Seq[String]()
     // フォームの取得
     val form = inputForm.bindFromRequest
     if (form.hasErrors) {
@@ -148,11 +158,32 @@ class ItemTypeManage @Inject()(config: Configuration
       Redirect(routes.ItemTypeManage.index).flashing(ERROR_MSG_KEY -> errMsg)
     } else {
       val f = form.get
-      // DB処理
-      itemTypeDAO.deleteById(f.deleteItemTypeId.toInt)
+      // 作業車・立馬マスタ　仮設材種別使用チェック
+      val itemCarList = carDAO.selectItemTypeCheck(placeId.toInt, f.deleteItemTypeId.toInt)
+      if(itemCarList.length > 0){
+        errMsg :+= Messages("error.cms.ItemTypeManage.delete.ItemTypeCar", f.deleteItemTypeId)
+      }
+      // その他仮設材マスタ　仮設材種別使用チェック
+      val itemOtherList = itemOtherDAO.selectItemTypeCheck(placeId.toInt, f.deleteItemTypeId.toInt)
+      if(itemOtherList.length > 0){
+        errMsg :+= Messages("error.cms.ItemTypeManage.delete.ItemTypeOther", f.deleteItemTypeId)
+      }
 
-      // リダイレクト
-      Redirect(routes.ItemTypeManage.index).flashing(SUCCESS_MSG_KEY -> Messages("success.cms.ItemTypeManage.delete"))
+      // 予約情報テーブルに作業車・立馬の仮設材種別使用チェック
+      val reserveList = reserveMasterDAO.selectReserveItemTypeCheck(super.getCurrentPlaceId, f.deleteItemTypeId.toInt)
+      if(reserveList.length > 0){
+        errMsg :+= Messages("error.cms.ItemTypeManage.delete.ItemTypeReserve", f.deleteItemTypeId)
+      }
+      if(errMsg.nonEmpty){
+        // エラーで遷移
+        Redirect(routes.ItemTypeManage.index).flashing(ERROR_MSG_KEY -> errMsg.mkString(HTML_BR))
+      }else{
+        // DB処理
+        itemTypeDAO.deleteById(f.deleteItemTypeId.toInt)
+
+        // リダイレクト
+        Redirect(routes.ItemTypeManage.index).flashing(SUCCESS_MSG_KEY -> Messages("success.cms.ItemTypeManage.delete"))
+      }
     }
   }
 
