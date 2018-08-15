@@ -70,11 +70,11 @@ class ItemOtherManage @Inject()(config: Configuration
     val inputForm = Form(mapping(
         "inputPlaceId" -> text
       , "inputItemOtherId" -> text
-      , "inputItemOtherBtxId" -> text.verifying(Messages("error.cms.ItemManage.update.inputItemOtherBtxId.empty"), {_.matches("^[0-9]+$")})
-      , "inputItemOtherNo" -> text.verifying(Messages("error.cms.ItemManage.update.inputItemOtherNo.empty"), {!_.isEmpty})
-      , "inputItemOtherName" -> text.verifying(Messages("error.cms.ItemManage.update.inputItemOtherName.empty"), {!_.isEmpty})
+      , "inputItemOtherBtxId" -> text.verifying(Messages("error.cms.ItemOtherManage.update.inputItemOtherBtxId.empty"), {_.matches("^[0-9]+$")})
+      , "inputItemOtherNo" -> text.verifying(Messages("error.cms.ItemOtherManage.update.inputItemOtherNo.empty"), {!_.isEmpty})
+      , "inputItemOtherName" -> text.verifying(Messages("error.cms.ItemOtherManage.update.inputItemOtherName.empty"), {!_.isEmpty})
       , "inputItemNote" -> text
-      , "inputItemTypeName" -> text.verifying(Messages("error.cms.ItemManage.update.inputItemTypeName.empty"), {!_.isEmpty})
+      , "inputItemTypeName" -> text.verifying(Messages("error.cms.ItemOtherManage.update.inputItemTypeName.empty"), {!_.isEmpty})
       , "inputItemTypeId" -> text
     )(ItemUpdateForm.apply)(ItemUpdateForm.unapply))
 
@@ -98,7 +98,7 @@ class ItemOtherManage @Inject()(config: Configuration
         // 作業車・立馬TxビーコンIDが存在しないか
         val itemOtherBtxList = itemOtherDAO.selectItemOtherBtxListBtxCheck(super.getCurrentPlaceId, f.inputItemOtherBtxId.toInt)
         if(itemOtherBtxList.length > 0){
-          errMsg :+= Messages("error.cms.ItemManage.update.inputItemBtxId.use", f.inputItemOtherBtxId)
+          errMsg :+= Messages("error.cms.ItemOtherManage.update.inputItemBtxId.use", f.inputItemOtherBtxId)
         }
 
         if(errMsg.nonEmpty){
@@ -117,7 +117,7 @@ class ItemOtherManage @Inject()(config: Configuration
                             super.getCurrentPlaceId)
 
           Redirect(routes.ItemOtherManage.index)
-            .flashing(SUCCESS_MSG_KEY -> Messages("success.cms.ItemManage.update"))
+            .flashing(SUCCESS_MSG_KEY -> Messages("success.cms.ItemOtherManage.update"))
         }
 
       }else{
@@ -127,8 +127,14 @@ class ItemOtherManage @Inject()(config: Configuration
         dbItemNoList = dbItemNoList.filter(_.itemOtherId != f.inputItemOtherId.toInt)
                                    .filter(_.itemOtherNo == f.inputItemOtherNo)
 //        if(dbItemNoList.length > 0){
-//          errMsg :+= Messages("error.cms.ItemManage.update.inputItemNo.duplicate", f.inputItemOtherNo)
+//          errMsg :+= Messages("error.cms.ItemOtherManage.update.inputItemNo.duplicate", f.inputItemOtherNo)
 //        }
+
+        // 予約情報テーブルに作業車・立馬IDが存在していないか
+        val itemOtherReserveList = itemOtherDAO.selectCarReserveCheck(super.getCurrentPlaceId, f.inputItemOtherId.toInt)
+        if(itemOtherReserveList.length > 0){
+          errMsg :+= Messages("error.cms.ItemOtherManage.update.inputItemOtherIdReserve.use.noChange", f.inputItemOtherId)
+        }
 
         // 変更前タグ情報
         val preItemInfo = itemOtherDAO.selectOtherInfo(super.getCurrentPlaceId, "", Option(f.inputItemOtherId.toInt)).last
@@ -145,7 +151,7 @@ class ItemOtherManage @Inject()(config: Configuration
             // その他仮設材TxビーコンID重複チェック
             var btxList = itemOtherDAO.selectOtherInfo(super.getCurrentPlaceId, "", None, Option(f.inputItemOtherBtxId.toInt))
             if(btxList.length > 0){
-              errMsg :+= Messages("error.cms.ItemManage.update.inputItemNo.duplicate", f.inputItemOtherBtxId)
+              errMsg :+= Messages("error.cms.ItemOtherManage.update.inputItemNo.duplicate", f.inputItemOtherBtxId)
             }
           }
         }
@@ -166,7 +172,7 @@ class ItemOtherManage @Inject()(config: Configuration
                               super.getCurrentPlaceId)
           // リダイレクト
           Redirect(routes.ItemOtherManage.index)
-            .flashing(SUCCESS_MSG_KEY -> Messages("success.cms.ItemManage.update"))
+            .flashing(SUCCESS_MSG_KEY -> Messages("success.cms.ItemOtherManage.update"))
         }
       }
     }
@@ -177,7 +183,7 @@ class ItemOtherManage @Inject()(config: Configuration
     // フォームの準備
     var errMsg = Seq[String]()
     val inputForm = Form(mapping(
-      "deleteItemOtherId" -> text.verifying(Messages("error.cms.ItemManage.delete.empty"), {
+      "deleteItemOtherId" -> text.verifying(Messages("error.cms.ItemOtherManage.delete.empty"), {
         !_.isEmpty
       })
     )(ItemDeleteForm.apply)(ItemDeleteForm.unapply))
@@ -195,20 +201,20 @@ class ItemOtherManage @Inject()(config: Configuration
       // 予約情報テーブルに作業車・立馬IDが存在していないか
       val itemOtherReserveList = itemOtherDAO.selectCarReserveCheck(super.getCurrentPlaceId, f.deleteItemOtherId.toInt)
       if(itemOtherReserveList.length > 0){
-        errMsg :+= Messages("error.cms.ItemManage.update.inputItemOtherIdReserve.use", f.deleteItemOtherId)
+        errMsg :+= Messages("error.cms.ItemOtherManage.delete.inputItemOtherIdReserve.use.noChange", f.deleteItemOtherId)
       }
 
-      // 検索
-      val itemOtherList = itemOtherDAO.selectOtherInfo(super.getCurrentPlaceId, "", Option(f.deleteItemOtherId.toInt))
-      // タグ
-      if (itemOtherList.length > 0) {
+      if(errMsg.nonEmpty){
+        // エラーで遷移
+        Redirect(routes.ItemOtherManage.index)
+          .flashing(ERROR_MSG_KEY -> errMsg.mkString(HTML_BR))
+      }else{
         // 削除
         itemOtherDAO.delete(f.deleteItemOtherId.toInt, super.getCurrentPlaceId)
+        // リダイレクト
+        Redirect(routes.ItemOtherManage.index)
+          .flashing(SUCCESS_MSG_KEY -> Messages("success.cms.ItemOtherManage.delete"))
       }
-
-      // リダイレクト
-      Redirect(routes.ItemOtherManage.index)
-        .flashing(SUCCESS_MSG_KEY -> Messages("success.cms.ItemManage.delete"))
     }
   }
 }

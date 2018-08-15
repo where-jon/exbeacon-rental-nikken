@@ -48,6 +48,9 @@ $(function () {
         var vMapElement = document.getElementsByClassName("level")
             for (var i = 0;i< vMapElement.length; ++i){
                 vMapElement[i].addEventListener('click', function(event) {
+                        // 設定pullDown位置を表示
+                       var getDisplayOrder =  document.getElementsByClassName("item-" + gClickPos)[0].textContent
+                        $('#input-floor-category-' + gClickPos ).val(getDisplayOrder);
                        if(preClickPos == gClickPos){
                             //alert("同じところ")
                             var vTempElement = document.getElementById("viewer-list-" + gClickPos)
@@ -163,6 +166,7 @@ $(function () {
                 var vElement = document.getElementById("input_viewer_pos_floor-" + gClickPos)
                 vElement.value =  $('.dataFloorId-' + result).attr('data-floorId');
                 vExbViewerData[pos].displayOrder = result;
+                document.getElementsByClassName("item-" + gClickPos)[0].textContent = result
                 reloadManager();
 
             });
@@ -380,6 +384,11 @@ $(function () {
                 // count
                 var viewer_pos_count = document.getElementById("input_viewer_pos_count-" + gClickPos).value;
                 vExbViewerData[i].posCount = Number(viewer_pos_count);
+//
+//                // floor
+//                var viewer_pos_display_order = document.getElementById("viewer_pos_display_order-" + gClickPos).value;
+//                vExbViewerData[i].displayOrder = Number(viewer_pos_display_order);
+
 
             }
         }

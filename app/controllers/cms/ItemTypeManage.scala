@@ -35,6 +35,9 @@ class ItemTypeManage @Inject()(config: Configuration
                               , val silhouette: Silhouette[MyEnv]
                               , val messagesApi: MessagesApi
                               , itemTypeDAO: models.ItemTypeDAO
+                              , carDAO: models.itemCarDAO
+                              , itemOtherDAO: models.itemOtherDAO
+                              , reserveMasterDAO: models.ReserveMasterDAO
                                ) extends BaseController with I18nSupport {
 
   var ITEM_TYPE_FILTER = "";
@@ -63,10 +66,10 @@ class ItemTypeManage @Inject()(config: Configuration
       "inputPlaceId" -> text
       , "inputItemTypeId" -> text
       , "inputItemTypeName" -> text.verifying(Messages("error.cms.ItemTypeManage.update.inputItemTypeName.empty"), {!_.isEmpty})
-      , "inputItemTypeCategory" -> text
-      , "inputItemTypeIconColor" -> text
-      , "inputItemTypeTextColor" -> text
-      , "inputItemTypeRowColor" -> text
+      , "inputItemTypeCategory" -> text.verifying(Messages("error.cms.ItemTypeManage.update.inputItemTypeCategory.empty"), {_.matches("^[0-9]+$")})
+      , "inputItemTypeIconColor" -> text.verifying(Messages("error.cms.ItemTypeManage.update.inputItemTypeIconColor.empty"), {!_.isEmpty})
+      , "inputItemTypeTextColor" -> text.verifying(Messages("error.cms.ItemTypeManage.update.inputItemTypeTextColor.empty"), {!_.isEmpty})
+      , "inputItemTypeRowColor" -> text.verifying(Messages("error.cms.ItemTypeManage.update.inputItemTypeRowColor.empty"), {!_.isEmpty})
       , "inputNote" -> text
     )(ItemTypeUpdateForm.apply)(ItemTypeUpdateForm.unapply))
 
@@ -143,7 +146,9 @@ class ItemTypeManage @Inject()(config: Configuration
     val inputForm = Form(mapping(
       "deleteItemTypeId" -> text.verifying(Messages("error.cms.ItemTypeManage.delete.empty"), {!_.isEmpty})
     )(ItemTypeDeleteForm.apply)(ItemTypeDeleteForm.unapply))
-
+    val placeId = super.getCurrentPlaceId
+    // メッセージ格納用
+    var errMsg = Seq[String]()
     // フォームの取得
     val form = inputForm.bindFromRequest
     if (form.hasErrors) {
@@ -153,11 +158,32 @@ class ItemTypeManage @Inject()(config: Configuration
       Redirect(routes.ItemTypeManage.index).flashing(ERROR_MSG_KEY -> errMsg)
     } else {
       val f = form.get
-      // DB処理
-      itemTypeDAO.deleteById(f.deleteItemTypeId.toInt)
+      // 作業車・立馬マスタ　仮設材種別使用チェック
+      val itemCarList = carDAO.selectItemTypeCheck(placeId.toInt, f.deleteItemTypeId.toInt)
+      if(itemCarList.length > 0){
+        errMsg :+= Messages("error.cms.ItemTypeManage.delete.ItemTypeCar", f.deleteItemTypeId)
+      }
+      // その他仮設材マスタ　仮設材種別使用チェック
+      val itemOtherList = itemOtherDAO.selectItemTypeCheck(placeId.toInt, f.deleteItemTypeId.toInt)
+      if(itemOtherList.length > 0){
+        errMsg :+= Messages("error.cms.ItemTypeManage.delete.ItemTypeOther", f.deleteItemTypeId)
+      }
 
-      // リダイレクト
-      Redirect(routes.ItemTypeManage.index).flashing(SUCCESS_MSG_KEY -> Messages("success.cms.ItemTypeManage.delete"))
+      // 予約情報テーブルに作業車・立馬の仮設材種別使用チェック
+      val reserveList = reserveMasterDAO.selectReserveItemTypeCheck(super.getCurrentPlaceId, f.deleteItemTypeId.toInt)
+      if(reserveList.length > 0){
+        errMsg :+= Messages("error.cms.ItemTypeManage.delete.ItemTypeReserve", f.deleteItemTypeId)
+      }
+      if(errMsg.nonEmpty){
+        // エラーで遷移
+        Redirect(routes.ItemTypeManage.index).flashing(ERROR_MSG_KEY -> errMsg.mkString(HTML_BR))
+      }else{
+        // DB処理
+        itemTypeDAO.deleteById(f.deleteItemTypeId.toInt)
+
+        // リダイレクト
+        Redirect(routes.ItemTypeManage.index).flashing(SUCCESS_MSG_KEY -> Messages("success.cms.ItemTypeManage.delete"))
+      }
     }
   }
 

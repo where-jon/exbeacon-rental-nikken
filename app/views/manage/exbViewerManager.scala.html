@@ -51,7 +51,7 @@ viewType: Seq[ViewType]
 				<td class="item" id="viewer_pos_margin-@i">@viewer.view_tx_margin</td>
 				<td class="item" id="viewer_pos_count-@i">@viewer.view_tx_count</td>
 				<td class="item" id="viewer_pos_floor-@i">@viewer.floor_id</td>
-				<td class="item" id="viewer_pos_display_order-@i">@viewer.display_order</td>
+				<td class="item-@viewer.exb_id" id="viewer_pos_display_order-@i">@viewer.display_order</td>
 				<td class="item" id="viewer_pos_size-@i">@viewer.view_tx_size</td>
 				<td class="item" id="exb_pos_name-@i">@viewer.exb_pos_name</td>
 				<td class="item" id="exb_id-@i">@viewer.exb_id</td>
@@ -120,7 +120,7 @@ viewType: Seq[ViewType]
 						<td class="item viewer__posFloor--frame" style="width: 10%;text-align:  center;">
 							<input class=" form-control input-sm" type="text" data-type = "floor-form" id="input_viewer_pos_floor-@viewer.exb_id" value="@viewer.floor_id" name="viewerPosFloor[@i]">
 
-							<select id="input-floor-category-@i" class="exb__select--category inputFloor">
+							<select id="input-floor-category-@viewer.exb_id" class="exb__select--category inputFloor">
 								@mapViewer.zipWithIndex.map { case(map, i) =>
 								<option class="dataFloorId-@(i+1)" data-floorId="@map.floor_id" value="@map.display_order"  @{if(map.display_order == viewer.floor_id.toInt) "selected" else ""}>@map.floor_name</option>
 								}

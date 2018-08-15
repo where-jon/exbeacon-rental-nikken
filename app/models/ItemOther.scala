@@ -13,102 +13,102 @@ import play.api.db._
 
 /*その他仮設材予約取消用formクラス*/
 case class ItemOtherCancelData(
-itemTypeIdList: List[Int],
-itemId: List[Int],
-workTypeNameList: List[String],
-reserveStartDateList: List[String],
-checkVal: List[Int]
+  itemTypeIdList: List[Int]
+  , itemId: List[Int]
+  , workTypeNameList: List[String]
+  , reserveStartDateList: List[String]
+  , checkVal: List[Int]
 )
 
 
 /*その他仮設材予約取消検索用formクラス*/
 case class ItemOtherCancelSearchData(
-  itemTypeId: Int,
-  workTypeName: String,
-  companyName: String,
-  inputStartDate: String,
-  inputEndDate: String
+  itemTypeId: Int
+  , workTypeName: String
+  , companyName: String
+  , inputStartDate: String
+  , inputEndDate: String
 )
 
 
 /*その他仮設材予約用formクラス*/
 case class ItemOtherReserveData(
-  itemTypeId: Int,
-  workTypeName: String,
-  inputStartDate: String,
-  inputEndDate: String,
-  companyName: String,
-  floorName: String,
-  itemId: List[Int],
-  itemTypeIdList: List[Int],
-  checkVal: List[Int]
+  itemTypeId: Int
+  , workTypeName: String
+  , inputStartDate: String
+  , inputEndDate: String
+  , companyName: String
+  , floorName: String
+  , itemId: List[Int]
+  , itemTypeIdList: List[Int]
+  , checkVal: List[Int]
 
 )
 
 /*その他仮設材検索用formクラス*/
 case class ItemOtherSearchData(
-  itemTypeId: Int,
-  workTypeName: String,
-  inputStartDate: String,
-  inputEndDate: String
+  itemTypeId: Int
+  , workTypeName: String
+  , inputStartDate: String
+  , inputEndDate: String
 )
 
 /*その他仮設材管理検索用*/
 case class ItemOther(
-  itemOtherId: Int,
-  itemTypeId: Int,
-  note: String,
-  itemOtherNo: String,
-  itemOtherName: String,
-  itemOtherBtxId: Int,
-  placeId: Int
+  itemOtherId: Int
+  , itemTypeId: Int
+  , note: String
+  , itemOtherNo: String
+  , itemOtherName: String
+  , itemOtherBtxId: Int
+  , placeId: Int
 )
 
 /*その他仮設材管理用*/
 case class ItemOtherViewer(
-  itemOtherId: Int,
-  itemTypeId: Int,
-  itemTypeName: String,
-  itemOtherNote: String,
-  itemOtherNo: String,
-  itemOtherName: String,
-  itemOtherBtxId: Int,
-  placeId: Int
+  itemOtherId: Int
+  , itemTypeId: Int
+  , itemTypeName: String
+  , itemOtherNote: String
+  , itemOtherNo: String
+  , itemOtherName: String
+  , itemOtherBtxId: Int
+  , placeId: Int
 )
 
 case class OtherViewer(
-  item_other_id: Int,
-  item_other_btx_id: Int,
-  item_type_id: Int,
-  item_type_name:String,
-  note:String,
-  item_other_no: String,
-  item_other_name:String,
-  place_id: Int,
-  reserve_start_date:String,
-  reserve_end_date:String,
-  company_id: Int,
-  company_name: String,
-  work_type_id: Int,
-  work_type_name: String,
-  reserve_floor_name: String,
-  reserve_id: Int
+  item_other_id: Int
+  , item_other_btx_id: Int
+  , item_type_id: Int
+  , item_type_name:String
+  , note:String
+  , item_other_no: String
+  , item_other_name:String
+  , place_id: Int
+  , reserve_start_date:String
+  , reserve_end_date:String
+  , company_id: Int
+  , company_name: String
+  , work_type_id: Int
+  , work_type_name: String
+  , reserve_floor_name: String
+  , reserve_id: Int
 )
 
 /*作業車・立馬一覧用formクラス*/
 case class ItemOtherData(
-  itemTypeId: Int,
-  companyName: String,
-  floorName: String,
-  workTypeName: String
+  itemTypeId: Int
+  , companyName: String
+  , floorName: String
+  , workTypeName: String
 )
 
 /*作業車・立馬一覧用formクラス*/
 case class ItemTypeSerect(
-  itemTypeId: Int,
-  companyName: String,
-  floorName: String,
-  workTypeName: String
+  itemTypeId: Int
+  , companyName: String
+  , floorName: String
+  , workTypeName: String
 )
 
 @javax.inject.Singleton
@@ -179,10 +179,10 @@ class itemOtherDAO @Inject()(dbapi: DBApi) {
     * @return
     */
   def selectOtherInfo(
-                       placeId: Int,
-                       itemotherNo: String,
-                       itemotherId: Option[Int] = None,
-                       itemOtherBtxId: Option[Int] = None): Seq[ItemOther] = {
+   placeId: Int
+   , itemotherNo: String
+   , itemotherId: Option[Int] = None
+   , itemOtherBtxId: Option[Int] = None): Seq[ItemOther] = {
 
     db.withConnection { implicit connection =>
       val selectPh =
@@ -290,7 +290,7 @@ class itemOtherDAO @Inject()(dbapi: DBApi) {
   /*作業車・立馬予約状況確認*/
   def selectCarReserveCheck(
                              placeId: Int,
-                             carId: Int
+                             itemOtherId: Int
                            ): Seq[ReserveMasterCheck] = {
 
     db.withConnection { implicit connection =>
@@ -310,11 +310,10 @@ class itemOtherDAO @Inject()(dbapi: DBApi) {
           where
             r.active_flg = true
             and r.place_id = """  + {placeId} + """
-
         """
       // 追加検索条件
       var wherePh = ""
-      wherePh += s""" and r.item_id = ${carId} """
+      wherePh += s""" and r.item_id = {itemOtherId} """
 
       // 表示順を設定
       val orderPh =
@@ -322,7 +321,7 @@ class itemOtherDAO @Inject()(dbapi: DBApi) {
           order by
             r.item_id
         """
-      SQL(selectPh + wherePh + orderPh).as(reserveMasterCheck.*)
+      SQL(selectPh + wherePh + orderPh).on('placeId -> placeId, 'itemOtherId -> itemOtherId).as(reserveMasterCheck.*)
     }
   }
 
@@ -862,6 +861,43 @@ class itemOtherDAO @Inject()(dbapi: DBApi) {
 
         """
       SQL(selectPh).as(otherMasterViewer.*)
+    }
+  }
+
+  /**
+    * 作業車・立馬情報 仮設材種別チェック用
+    * @return
+    */
+  def selectItemTypeCheck(placeId: Int, itemTypeId: Int): Seq[ItemOther] = {
+
+    db.withConnection { implicit connection =>
+      val selectPh =
+        """
+          select
+                c.item_other_id
+              , c.item_type_id
+              , c.note
+              , c.item_other_no
+              , c.item_other_name
+              , c.item_other_btx_id
+              , c.place_id
+          from
+            place_master p
+            inner join item_other_master c
+              on p.place_id = c.place_id
+              and p.active_flg = true
+              and c.active_flg = true
+        """
+
+      var wherePh = """ where p.place_id = {placeId} """
+          wherePh += s""" and c.item_type_id = {itemTypeId} """
+
+      val orderPh =
+        """
+          order by
+            c.item_other_id
+        """
+      SQL(selectPh + wherePh + orderPh).on('placeId -> placeId, 'itemTypeId -> itemTypeId).as(simple.*)
     }
   }
 
