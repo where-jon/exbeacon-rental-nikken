@@ -18,13 +18,13 @@ import scala.concurrent.ExecutionContext.Implicits._
   */
 @Singleton
 class Gateway @Inject()(config: Configuration
-                        , val silhouette: Silhouette[MyEnv]
-                        , val messagesApi: MessagesApi
-                        , beaconService: BeaconService
-                        , ws: WSClient
-                        , exbDao:models.ExbDAO
-                        , btxLastPositionDAO: models.btxLastPositionDAO
-                       ) extends BaseController with I18nSupport {
+  , val silhouette: Silhouette[MyEnv]
+  , val messagesApi: MessagesApi
+  , beaconService: BeaconService
+  , ws: WSClient
+  , exbDao:models.ExbDAO
+  , btxLastPositionDAO: models.btxLastPositionDAO
+  ) extends BaseController with I18nSupport {
 
 
 
@@ -41,10 +41,14 @@ class Gateway @Inject()(config: Configuration
     * @return
     */
   def index = SecuredAction { implicit request =>
-    val placeId = super.getCurrentPlaceId
-    // 非稼働時間かどうか
-    val isNoWorkTime = (new DateTime().toString("HHmm") < config.getString("noWorkTimeEnd").get)
-
-    Ok(views.html.analysis.gateway(isNoWorkTime))
+    val reqIdentity = request.identity
+    if(reqIdentity.level >= 2){
+      val placeId = super.getCurrentPlaceId
+      // 非稼働時間かどうか
+      val isNoWorkTime = (new DateTime().toString("HHmm") < config.getString("noWorkTimeEnd").get)
+      Ok(views.html.analysis.gateway(isNoWorkTime))
+    }else{
+      Redirect(site.routes.WorkPlace.index)
+    }
   }
 }
