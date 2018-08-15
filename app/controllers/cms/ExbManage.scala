@@ -19,7 +19,14 @@ import utils.silhouette.MyEnv
 
 // フォーム定義
 case class ExbDeleteForm(deleteExbId: String, floorId: String)
-//case class FloorUpdateForm(inputFloorId: String,inputDisplayOrder:String,activeFlg:Boolean,inputFloorName: String)
+case class ExbUpdateForm(
+  inputExbId: String
+  ,inputDeviceId:Int
+  ,inputDeviceNo:Int
+  ,inputDeviceName: String
+  ,inputPosName: String
+  ,setupFloorId: Int
+)
 
 @Singleton
 class ExbManage @Inject()(config: Configuration
@@ -30,41 +37,44 @@ class ExbManage @Inject()(config: Configuration
   , exbDAO: models.ExbDAO
   ) extends BaseController with I18nSupport {
 
-//  /** フロア更新 */
-//  def floorUpdate = SecuredAction { implicit request =>
-//    // フォームの準備
-//    val inputForm = Form(mapping(
-//      "inputFloorId" -> text
-//      ,"inputDisplayOrder" -> text.verifying(Messages("error.cms.exbManage.floorUpdate.displayOrder.empty"), {!_.isEmpty})
-//      ,"activeFlg" -> boolean
-//      , "inputFloorName" -> text.verifying(Messages("error.cms.exbManage.floorUpdate.inputFloorName.empty"), {!_.isEmpty})
-//      // , "inputExbDeviceNoListComma" -> text.verifying(Messages("error.cms.exbManage.floorUpdate.inputExbDeviceNoListComma.empty"), {!_.isEmpty})
-//    )(FloorUpdateForm.apply)(FloorUpdateForm.unapply))
-//    val placeId = securedRequest2User.currentPlaceId.get
-//    // フォームの取得
-//    val form = inputForm.bindFromRequest
-//    if (form.hasErrors){
-//      // エラーメッセージ
-//      val errMsg = form.errors.map(_.message).mkString(HTML_BR)
-//      // リダイレクトで画面遷移
-//      Redirect(routes.ExbManage.index()).flashing(ERROR_MSG_KEY -> errMsg)
-//    }else{
-//      val f = form.get
-//      if(f.inputFloorId.isEmpty){// 新規フロア登録の場合
-//        // DB処理
-//        floorDAO.insert(f.inputFloorName,f.inputDisplayOrder.toInt,f.activeFlg,placeId)
-//        // 成功で遷移
-//        Redirect(routes.ExbManage.index)
-//          .flashing(SUCCESS_MSG_KEY -> Messages("success.cms.ExbManage.floorUpdate"))
-//
-//      }else{  // フロア更新の場合 --------------------------
-//        // DB処理
-//        floorDAO.update(f.inputFloorId.toInt,f.inputFloorName,f.inputDisplayOrder.toInt,f.activeFlg,placeId)
-//        Redirect(routes.ExbManage.index)
-//          .flashing(SUCCESS_MSG_KEY -> Messages("success.cms.ExbManage.floorUpdate"))
-//      }
-//    }
-//  }
+  /** フロア更新 */
+  def exbUpdate = SecuredAction { implicit request =>
+    val inputForm = Form(mapping(
+      "inputExbId" -> text
+      ,"inputDeviceId" -> number.verifying(Messages("error.cms.exbManage.exbUpdate.inputDeviceId.empty")
+        , { inputDeviceId =>(inputDeviceId >= 0 && inputDeviceId < 1000000)})
+      ,"inputDeviceNo" -> number.verifying(Messages("error.cms.exbManage.exbUpdate.inputDeviceNo.empty")
+        , { inputDeviceNo => inputDeviceNo >= 0 && inputDeviceNo < 1000000})
+      , "inputDeviceName" -> text.verifying(Messages("error.cms.exbManage.exbUpdate.inputDeviceName.empty"), {!_.isEmpty})
+      , "inputPosName" -> text.verifying(Messages("error.cms.exbManage.exbUpdate.inputPosName.empty"), {!_.isEmpty})
+      , "setupFloorId" -> number.verifying(Messages("error.cms.exbManage.exbUpdate.setupFloorId.empty")
+        , { setupFloorId => setupFloorId >= -1 && setupFloorId < 1000000 })
+    )(ExbUpdateForm.apply)(ExbUpdateForm.unapply))
+
+    // フォームの取得
+    val form = inputForm.bindFromRequest
+    if (form.hasErrors){
+      // エラーメッセージ
+      val errMsg = form.errors.map(_.message).mkString(HTML_BR)
+      // リダイレクトで画面遷移
+      Redirect(routes.ExbManage.index()).flashing(ERROR_MSG_KEY -> errMsg)
+    }else{
+      val placeId = securedRequest2User.currentPlaceId.get
+      val f = form.get
+      if(f.inputExbId.isEmpty) {  // 新規EXB登録の場合
+        // DB処理
+        exbDAO.insertData(f.inputDeviceId,f.inputDeviceNo,f.inputDeviceName,f.inputPosName,f.setupFloorId,placeId)
+        Redirect(routes.ExbManage.index)
+          .flashing(SUCCESS_MSG_KEY -> Messages("success.cms.exbManage.exbUpdate"))
+      }else{ // EXB更新の場合
+        exbDAO.update(f.inputDeviceId,f.inputDeviceNo,f.inputDeviceName,f.inputPosName,f.setupFloorId,f.inputExbId.toInt,placeId)
+        Redirect(routes.ExbManage.index)
+          .flashing(SUCCESS_MSG_KEY -> Messages("success.cms.exbManage.exbUpdate"))
+      }
+
+    }
+
+  }
   /** フロア削除 */
   def exbDelete = SecuredAction { implicit request =>
     // フォームの準備
@@ -108,10 +118,11 @@ class ExbManage @Inject()(config: Configuration
       // 選択されている現場の現場ID
       val placeId = securedRequest2User.currentPlaceId.get
       // フロア情報の取得
-      //val floorInfoList = floorDAO.selectFloorInfoData(placeId)
+      val floorInfoList = floorDAO.selectFloorInfoData(placeId)
+      // exb情報の取得
       val exbInfoList = exbDAO.selectExbAll(placeId)
 
-      Ok(views.html.cms.exbManage(exbInfoList))
+      Ok(views.html.cms.exbManage(exbInfoList,floorInfoList))
     }else {
       Redirect(site.routes.WorkPlace.index)
     }

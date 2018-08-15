@@ -1,69 +1,51 @@
 
 // フロア追加・更新モーダル画面の表示
-function showFloorModal(floorId){
-    if(!floorId){
+function showExbModal(exbId){
+    if(!exbId){
         // 新規
-        $('#inputFloorId').val('');
-        $('#activeFlg').val('true');
-        $("#FLG_FILTER").val("1").prop("selected", true);
-        $('#inputExbDeviceNoListComma').val('');
-        $('#inputFloorName').val('');
+        $('#inputExbId').val('');
+        $('#inputDeviceId').val('');
         $('#inputDeviceNo').val('');
+        $("#PD_FLOOR").val(-1).prop("selected", true);
+        $('#setupFloorId').val(-1);
+
         $('.cloned').remove();
         // ボタン表示の切り替え
         $('#floorUpdateFooter').addClass('hidden');
         $('#floorRegisterFooter').removeClass('hidden');
     }else{
         $('.cloned').remove();
-        $('#inputFloorId').val(floorId);
-        $('#inputExbDeviceNoListComma').val('');
+        $('#inputExbId').val(exbId);
+        $('#inputDeviceId').val($('#'+exbId).find('.deviceId').text());
+        $('#inputDeviceNo').val($('#'+exbId).find('.deviceNo').text());
+        $('#inputDeviceName').val($('#'+exbId).find('.deviceName').text());
+        $('#inputPosName').val($('#'+exbId).find('.posName').text());
 
-        var vShow = $('#'+floorId).find('.activeFlg').text()
-        if(vShow == "表示"){
-            $("#FLG_FILTER_DIALOG").val("1").prop("selected", true);
-            $('#activeFlgDialog').val(true);
+        var vShow =$('#'+exbId).find('.setupFloorId').text()
+        var vResult = -1
+        if(vShow == "未設置"){
+            vResult = -1
         }else{
-            $("#FLG_FILTER_DIALOG").val("0").prop("selected", true);
-            $('#activeFlgDialog').val(false);
+            vResult = Number(vShow)
         }
+        $("#PD_FLOOR").val(vResult).prop("selected", true);
+        $('#setupFloorId').val(vResult);
 
-        $('#inputDisplayOrder').val($('#'+floorId).find('.displayOrder').text());
-        $('#inputFloorName').val($('#'+floorId).find('.floorName').text());
-        $('#inputDeviceNo').val('');
-
-//        var spanObjList = $('#'+floorId).find('span');
-//        $(spanObjList).each(function(index, element){
-//            var clonedRow = $('.template').clone();
-//            clonedRow.addClass('cloned');
-//            clonedRow.removeClass('template');
-//            var deviceIds = $.trim($(element).text());
-//            if (deviceIds != "") {
-//                clonedRow.find('span.inputDeviceNoSpan').text(deviceIds);
-//                $('.template').before(clonedRow);
-//                var value = $('#inputExbDeviceNoListComma').val();
-//                if (value != "") {
-//                    value = value + "-";
-//                }
-//                $('#inputExbDeviceNoListComma').val(value + $.trim($(element).text()))
-//
-//                clonedRow.removeClass('hidden');
-//            }
-//        });
 
         // ボタン表示の切り替え
         $('#floorUpdateFooter').removeClass('hidden');
         $('#floorRegisterFooter').addClass('hidden');
     }
-    $('#floorUpdateModal').modal();
+    $('#exbUpdateModal').modal();
 }
 
-function showFloorUpdateModal(isRegister){
+function showExbUpdateModal(isRegister){
     if(isRegister){
-        showFloorModal();
+        showExbModal();
     }else{
         if($('.rowHoverSelectedColor').length > 0){
-            var floorId = $('.rowHoverSelectedColor').attr('data-floorId');
-            showFloorModal(floorId);
+            var exbId = $('.rowHoverSelectedColor').attr('data-exbId');
+            showExbModal(exbId);
         }
     }
 }
@@ -127,32 +109,28 @@ function removeTagRow(obj){
 
 // 表示ボタンをクリックする時に発生するイベント
 function btnEvent(){
-    var flgFrame = $('#FLG_FILTER');
-    if(flgFrame != null){
-        // 管理者用selectbox value取得
-        $('#FLG_FILTER').change(function() {
-             var result = $('#FLG_FILTER option:selected').val();
+    var pullDownFrame = $('#PD_FLOOR');
+    if(pullDownFrame != null){
+        $('#PD_FLOOR').change(function() {
+             var result = $('#PD_FLOOR option:selected').val();
              console.log("select:" + result)
-             var vActiveFlgElement = document.getElementById("activeFlg");
-             var vResult = false
-             if(result == 1 ) vResult = true
-
-             vActiveFlgElement.value = vResult
+             var vActiveFlgElement = document.getElementById("setupFloorId");
+             vActiveFlgElement.value = Number(result)
         });
     }
 
-    var flgFrame2 = $('#FLG_FILTER_DIALOG');
-        if(flgFrame2 != null){
-            // 管理者用selectbox value取得
-            $('#FLG_FILTER_DIALOG').change(function() {
-                 var result = $('#FLG_FILTER_DIALOG option:selected').val();
-                 console.log("select:" + result)
-                 var vActiveFlgElement = document.getElementById("activeFlgDialog");
-                 var vResult = false
-                 if(result == 1 ) vResult = true
-                 vActiveFlgElement.value = vResult
-            });
+    var viewBtnElement = document.getElementById("floorRegisterFooter")
+    viewBtnElement.addEventListener('click', function(event) {
+        var vInputDeviceId = $('#inputDeviceId').val();
+        if(vInputDeviceId == ""){
+            $('#inputDeviceId').val(-1)
         }
+        var vInputDeviceNo = $('#inputDeviceNo').val();
+        if(vInputDeviceNo == ""){
+            $('#inputDeviceNo').val(-1)
+        }
+
+    });
 }
 // 初期表示
 $(function(){

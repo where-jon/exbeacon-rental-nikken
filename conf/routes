@@ -100,7 +100,7 @@ POST   /exb/deleteExb      		       controllers.manage.ExbManager.deleteExb
 
 # EXB管理（新）
 GET     /cms/exbManage                controllers.cms.ExbManage.index
-#POST    /cms/exbManage/exbUpdate    controllers.cms.ExbManage.exbUpdate
+POST    /cms/exbManage/exbUpdate    controllers.cms.ExbManage.exbUpdate
 POST    /cms/exbManage/exbDelete    controllers.cms.ExbManage.exbDelete
 
 # EXB位置管理
