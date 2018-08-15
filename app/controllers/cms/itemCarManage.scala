@@ -35,7 +35,7 @@ case class CarDeleteForm(
 )
 
 @Singleton
-class CarManage @Inject()(config: Configuration
+class ItemCarManage @Inject()(config: Configuration
                           , val silhouette: Silhouette[MyEnv]
                           , val messagesApi: MessagesApi
                           , carDAO: models.itemCarDAO
@@ -58,7 +58,7 @@ class CarManage @Inject()(config: Configuration
       //検索側データ取得
       getSearchData(placeId)
 
-      Ok(views.html.cms.carManage(ITEM_TYPE_FILTER, carList, itemTypeList, placeId))
+      Ok(views.html.cms.itemCarManage(ITEM_TYPE_FILTER, carList, itemTypeList, placeId))
     }else {
       Redirect(site.routes.WorkPlace.index)
     }
@@ -89,7 +89,7 @@ class CarManage @Inject()(config: Configuration
     val form = inputForm.bindFromRequest
     if (form.hasErrors){
       // エラーでリダイレクト遷移
-      Redirect(routes.CarManage.index()).flashing(ERROR_MSG_KEY -> form.errors.map(_.message).mkString(HTML_BR))
+      Redirect(routes.ItemCarManage.index()).flashing(ERROR_MSG_KEY -> form.errors.map(_.message).mkString(HTML_BR))
     }else{
 
       var errMsg = Seq[String]()
@@ -128,7 +128,7 @@ class CarManage @Inject()(config: Configuration
 
         if(errMsg.isEmpty == false){
           // エラーで遷移
-          Redirect(routes.CarManage.index).flashing(ERROR_MSG_KEY -> errMsg.mkString(HTML_BR))
+          Redirect(routes.ItemCarManage.index).flashing(ERROR_MSG_KEY -> errMsg.mkString(HTML_BR))
         }else{
           // DB処理
           carDAO.insert(
@@ -140,7 +140,7 @@ class CarManage @Inject()(config: Configuration
             , f.inputCarNote
             , f.inputPlaceId.toInt)
 
-          Redirect(routes.CarManage.index)
+          Redirect(routes.ItemCarManage.index)
             .flashing(SUCCESS_MSG_KEY -> Messages("success.cms.CarManage.update"))
         }
 
@@ -210,7 +210,7 @@ class CarManage @Inject()(config: Configuration
 
         if(errMsg.isEmpty == false){
           // エラーで遷移
-          Redirect(routes.CarManage.index)
+          Redirect(routes.ItemCarManage.index)
             .flashing(ERROR_MSG_KEY -> errMsg.mkString(HTML_BR))
         }else{
           // DB処理
@@ -227,7 +227,7 @@ class CarManage @Inject()(config: Configuration
             , preCarInfo.itemCarKeyBtxId
           )
 
-          Redirect(routes.CarManage.index)
+          Redirect(routes.ItemCarManage.index)
             .flashing(SUCCESS_MSG_KEY -> Messages("success.cms.CarManage.update"))
         }
       }
@@ -250,7 +250,7 @@ class CarManage @Inject()(config: Configuration
       // エラーメッセージ
       val errMsg = form.errors.map(_.message).mkString(HTML_BR)
       // リダイレクトで画面遷移
-      Redirect(routes.CarManage.index).flashing(ERROR_MSG_KEY -> errMsg)
+      Redirect(routes.ItemCarManage.index).flashing(ERROR_MSG_KEY -> errMsg)
     } else {
       val f = form.get
 
@@ -268,13 +268,13 @@ class CarManage @Inject()(config: Configuration
       }
       if(errMsg.isEmpty == false) {
         // エラーで遷移
-        Redirect(routes.CarManage.index)
+        Redirect(routes.ItemCarManage.index)
           .flashing(ERROR_MSG_KEY -> errMsg.mkString(HTML_BR))
       }else{
         // 削除
         carDAO.delete(f.deleteCarId.toInt, super.getCurrentPlaceId)
         // リダイレクト
-        Redirect(routes.CarManage.index)
+        Redirect(routes.ItemCarManage.index)
           .flashing(SUCCESS_MSG_KEY -> Messages("success.cms.CarManage.delete"))
       }
     }

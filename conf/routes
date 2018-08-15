@@ -102,9 +102,9 @@ GET    /manage/exbViewerManager        controllers.manage.ExbViewerManager.index
 POST   /manage/updateExbViewer         controllers.manage.ExbViewerManager.updateViewerManager
 
 # 作業車・立馬管理
-GET     /cms/carManage                  controllers.cms.CarManage.index
-POST    /cms/carManage/update           controllers.cms.CarManage.update
-POST    /cms/carManage/delete           controllers.cms.CarManage.delete
+GET     /cms/itemCarManage             controllers.cms.ItemCarManage.index
+POST    /cms/itemCarManage/update      controllers.cms.ItemCarManage.update
+POST    /cms/itemCarManage/delete      controllers.cms.ItemCarManage.delete
 # 仮設材管理
 GET     /cms/itemOtherManage            controllers.cms.ItemOtherManage.index
 POST    /cms/itemOtherManage/update     controllers.cms.ItemOtherManage.update
