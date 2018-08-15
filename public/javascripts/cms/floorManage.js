@@ -4,7 +4,7 @@ function showFloorModal(floorId){
     if(!floorId){
         // 新規
         $('#inputFloorId').val('');
-        $('#activeFlg').val('true');
+        $('#activeFlgDialog').val(false);
         $("#FLG_FILTER").val("1").prop("selected", true);
         $('#inputExbDeviceNoListComma').val('');
         $('#inputFloorName').val('');
