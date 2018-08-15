@@ -92,10 +92,16 @@ GET     /analysis/gateway/getdata             controllers.Gateway.getData
 GET    /manage/mapManager              controllers.manage.MapManager.index
 POST   /manage/uploadMap               controllers.manage.MapManager.uploadMap
 
-# EXB管理
+# EXB管理（旧）
 GET    /manage/exbManager              controllers.manage.ExbManager.index
 POST   /exb/deleteExb      		       controllers.manage.ExbManager.deleteExb
 #POST   /exb/updateExb      		       controllers.manage.ExbManager.updateExb
+
+
+# EXB管理（新）
+GET     /cms/exbManage                controllers.cms.ExbManage.index
+POST    /cms/exbManage/exbUpdate    controllers.cms.ExbManage.exbUpdate
+POST    /cms/exbManage/exbDelete    controllers.cms.ExbManage.exbDelete
 
 # EXB位置管理
 GET    /manage/exbViewerManager        controllers.manage.ExbViewerManager.index
