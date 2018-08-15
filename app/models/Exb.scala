@@ -5,6 +5,7 @@ import javax.inject.Inject
 
 import anorm.SqlParser._
 import anorm._
+import play.api.Logger
 import play.api.db._
 
 case class Exb(
@@ -192,6 +193,21 @@ class ExbDAO @Inject() (dbapi: DBApi) {
       sql.as(simpleApi.*)
     }
   }
+
+  /**
+    * EXB削除
+    * @return
+    */
+  def deleteById(exbId:Int): Unit = {
+    db.withTransaction { implicit connection =>
+      SQL("""delete from exb_master where exb_id = {exbId} ;""").on('exbId -> exbId).executeUpdate()
+      // コミット
+      connection.commit()
+
+      Logger.debug(s"""EXBを削除、ID：" + ${exbId.toString}""")
+    }
+  }
+
 
   def deleteExb(exb: ExbData): String = {
     var vCheck = false;

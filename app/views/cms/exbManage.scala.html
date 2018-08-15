@@ -47,13 +47,17 @@ exbInfoList: Seq[ExbAll]
                                 </thead>
                                 <tbody class="sortable">
                                     @for(exb <- exbInfoList){
-                                        <tr class="rowColor rowHover" id="@exb.exb_id" data-exbId="@exb.exb_id">
+                                        <tr class="rowColor rowHover" id="@exb.exb_id" data-exbId="@exb.exb_id" data-floorId="@exb.floor_id">
                                             <td class="itemTd text-center ">@exb.exb_id</td>
                                             <td class="itemTd text-center ">@exb.exb_device_id</td>
                                             <td class="itemTd text-center ">@exb.exb_device_no</td>
                                             <td class="itemTd text-center ">@exb.exb_device_name</td>
                                             <td class="itemTd text-center ">@exb.exb_pos_name</td>
-                                            <td class="itemTd text-center ">@exb.floor_id</td>
+                                            @if(exb.floor_id == -1){
+                                                <td class="itemTd text-center ">未設置</td>
+                                            }else{
+                                                <td class="itemTd text-center ">@exb.floor_id</td>
+                                            }
                                         </tr>
                                     }
                                 </tbody>
@@ -83,7 +87,8 @@ exbInfoList: Seq[ExbAll]
             <div class="modal-content">
                 <form id="deleteForm" name="deleteForm" class="form-horizontal" enctype="multipart/form-data" class="form-horizontal" method="post" action="@controllers.cms.routes.ExbManage.exbDelete.path">
                     @CSRF.formField
-                    <input type="hidden" id="deleteExbId" name="deleteExbId">
+                    <input type="" id="deleteExbId" name="deleteExbId">
+                    <input type="" id="deleteFloorId" name="floorId">
                     <div class="modal-header">@Messages("lang.cms.exbManage.exbDelete.popup.title")</div>
                     <div class="modal-body">
                         <div class="text-center">

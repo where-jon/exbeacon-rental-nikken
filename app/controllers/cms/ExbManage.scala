@@ -82,28 +82,22 @@ class ExbManage @Inject()(config: Configuration
       Redirect(routes.ExbManage.index()).flashing(ERROR_MSG_KEY -> errMsg)
     }else {
       val vDeleteExbId = form.get.deleteExbId.toInt
-      val vFloorId = form.get.floorId
-
-      //vFloorId
+      val vFloorId = form.get.floorId.toInt
       val placeId = securedRequest2User.currentPlaceId.get
-      val exbInfoList = exbDAO.selectExbAll(placeId)
-    //  val floorInfoList = floorDAO.selectFloorInfoData(placeId)
-     // val vTarget = floorInfoList.filter(_.floor_id == vDeleteExbId)
-      val vTarget2 = exbInfoList.filter(_.exb_id == vDeleteExbId)
-      //val vAlreadySetupExb = vTarget.last.exbDeviceIdList.last
+      val floorInfoList = floorDAO.selectFloorInfoData(placeId)
+      val vTarget = floorInfoList.filter(_.floor_id == vFloorId)
 
+      val vAlreadySetupExb =
+      if(vTarget.isEmpty) ""
+      else vTarget.last.exbDeviceIdList.last
 
-      Redirect(routes.ExbManage.index)
-                .flashing(SUCCESS_MSG_KEY -> Messages("success.cms.ExbManage.exbDelete"))
-
-      //Redirect(routes.ExbManage.index()).flashing(ERROR_MSG_KEY -> Messages("error.cms.exbManage.delete.exb"))
-//      if(vAlreadySetupExb.nonEmpty){  // exbが設置されてる
-//        Redirect(routes.ExbManage.index()).flashing(ERROR_MSG_KEY -> Messages("error.cms.exbManage.delete.exb"))
-//      }else{  // 正常の場合削除を行う
-//        floorDAO.deleteById(vDeleteFloorId) // 削除処理
-//        Redirect(routes.ExbManage.index)
-//          .flashing(SUCCESS_MSG_KEY -> Messages("success.cms.FloorManage.floorDelete"))
-//      }
+      if(vAlreadySetupExb.nonEmpty) { // exbが設置されてる
+        Redirect(routes.ExbManage.index()).flashing(ERROR_MSG_KEY -> Messages("error.cms.floorManage.delete.exb"))
+      }else{  // 正常の場合削除を行う
+        exbDAO.deleteById(vDeleteExbId) // 削除処理
+        Redirect(routes.ExbManage.index)
+          .flashing(SUCCESS_MSG_KEY -> Messages("success.cms.ExbManage.exbDelete"))
+      }
     }
   }
 

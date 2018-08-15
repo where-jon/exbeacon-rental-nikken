@@ -71,7 +71,9 @@ function showFloorUpdateModal(isRegister){
 function showExbDeleteModal(){
     if($('.rowHoverSelectedColor').length > 0){
         var exbId = $('.rowHoverSelectedColor').attr('data-exbId');
+        var floorId = $('.rowHoverSelectedColor').attr('data-floorId');
         $('#deleteExbId').val(exbId)
+        $('#deleteFloorId').val(floorId)
         $('#exbDeleteModal').modal();
     }
 }
