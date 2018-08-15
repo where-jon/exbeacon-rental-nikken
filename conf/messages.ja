@@ -108,19 +108,26 @@ error.cms.CarManage.delete.inputCarIdReserve.use=作業車・立馬IDは既に�
 error.cms.CarManage.delete.inputCarId.empty=作業車・立馬IDは登録されていません。(作業車・立馬ID：{0})
 error.cms.CarManage.update.NotTypeName=種別が存在しません。
 
-error.cms.ItemManage.update.inputItemKindName.empty=仮設材名称を入力してください。
-error.cms.ItemManage.update.inputItemKindName.duplicate=仮設材名称が重複しています。
-error.cms.ItemManage.update.inputItemNo.notNumeric=管理Noを半角数字で入力してください。
-error.cms.ItemManage.update.inputItemNo.duplicate=管理Noが重複しています。(管理No.{0})
-error.cms.ItemManage.update.inputBtxId.notNumeric=TxタグNoを半角数字で入力してください。
-error.cms.ItemManage.update.inputBtxId.duplicate=TxタグNoが重複しています。(TxタグNo.{0})
-error.cms.ItemManage.update.actualItemInfoStr.empty=Txタグ設定を入力してください。
-
+error.cms.ItemOtherManage.update.inputItemOtherNo.empty=仮設材番号を半角数字で入力してください。
+error.cms.ItemOtherManage.update.inputItemOtherBtxId.empty=TxタグNoを半角数字で入力してください。
+error.cms.ItemOtherManage.update.inputItemTypeName.empty=種別を入力してください。
+error.cms.ItemOtherManage.update.inputItemTypeName.empty=種別Idを入力してください。
+error.cms.ItemOtherManage.update.inputItemOtherName.empty=名称を入力してください。
+error.cms.ItemOtherManage.update.inputItemKindName.empty=仮設材名称を入力してください。
+error.cms.ItemOtherManage.update.inputItemKindName.duplicate=仮設材名称が重複しています。
+error.cms.ItemOtherManage.update.inputItemNo.duplicate=仮設材番号が重複しています。(仮設材番号：{0})
+error.cms.ItemOtherManage.update.inputItemNo.notNumeric=管理Noを半角数字で入力してください。
+error.cms.ItemOtherManage.update.inputBtxId.notNumeric=TxタグNoを半角数字で入力してください。
+error.cms.ItemOtherManage.update.inputItemBtxId.use=Txタグは既に使用されています。(TxタグNo.：{0})
+error.cms.ItemOtherManage.update.inputBtxId.duplicate=TxタグNoが重複しています。(TxタグNo.{0})
+error.cms.ItemOtherManage.update.actualItemInfoStr.empty=Txタグ設定を入力してください。
+error.cms.ItemOtherManage.update.inputItemOtherIdReserve.use.noChange=仮設材IDは現在予約されている為、更新できません。(仮設材ID：{0})
+error.cms.ItemOtherManage.delete.empty=削除対象仮設材を選択してください。
 error.cms.placeManage.move.empty=選択された建築現場は既に削除されています。
 error.cms.placeManage.delete.empty=削除対象の建築現場が選択されていません。
+error.cms.ItemOtherManage.delete.inputItemOtherIdReserve.use.noChange=仮設材IDは現在予約されている為、削除できません。(仮設材ID：{0})
 
 error.cms.ItemTypeManage.update.inputCarName.empty=名称を入力してください。
-
 error.cms.ItemTypeManage.update.inputItemTypeName.empty=名称を入力してください。
 error.cms.ItemTypeManage.update.inputItemTypeCategory.empty=カテゴリー名を入力してください。
 error.cms.ItemTypeManage.update.inputItemTypeIconColor.empty=アイコン色を入力してください。
@@ -176,8 +183,8 @@ success.cms.CompanyManage.update=業者情報を更新しました。
 success.cms.CarManage.delete=作業車情報・立馬を削除しました。
 success.cms.CarManage.update=作業車情報・立馬を更新しました。
 
-success.cms.ItemManage.delete=仮設材情報を削除しました。
-success.cms.ItemManage.update=仮設材情報を更新しました。
+success.cms.ItemOtherManage.delete=仮設材情報を削除しました。
+success.cms.ItemOtherManage.update=仮設材情報を更新しました。
 
 success.cms.ItemTypeManage.delete=仮設材種別情報を削除しました。
 success.cms.ItemTypeManage.update=仮設材種別を更新しました
@@ -227,7 +234,7 @@ lang.sideMenu.link.name.cms=管理ページ
 lang.sideMenu.link.name.cms.placeManage=現場管理
 lang.sideMenu.link.name.cms.floorManage=フロア情報管理
 lang.sideMenu.link.name.cms.carManage=作業車管理
-lang.sideMenu.link.name.cms.itemManage=仮設材管理
+lang.sideMenu.link.name.cms.itemOtherManage=仮設材管理
 lang.sideMenu.link.name.cms.companyManage=業者管理
 lang.sideMenu.link.name.cms.txTagManage=Beaconタグ一覧
 
@@ -384,26 +391,31 @@ lang.cms.carManage.carUpdate.popup.carNote=備考
 lang.cms.carManage.carDelete.popup.title=作業車・立馬情報削除
 lang.cms.carManage.carDelete.popup.message=作業車・立馬情報を削除します。\nよろしいですか？
 
-# CMS文字列（仮設材管理）
-lang.cms.itemManage.title=仮設材管理
-lang.cms.itemManage.page.title=仮設材一覧画面
-lang.cms.itemManage.item.list.header.title=仮設材管理
-lang.cms.itemManage.item.list.header.id=ID
-lang.cms.itemManage.item.list.header.name=名称
-lang.cms.itemManage.item.list.header.biko=備考
-lang.cms.itemManage.item.list.header.count=個数
-lang.cms.itemManage.item.button.editItem=選択した仮設材を編集
-lang.cms.itemManage.item.button.addItem=新規仮設材追加
-lang.cms.itemManage.item.button.deleteItem=選択した仮設材を削除
-lang.cms.itemManage.itemUpdate.popup.title=仮設材情報更新
-lang.cms.itemManage.itemUpdate.popup.itemName=名称
-lang.cms.itemManage.itemUpdate.popup.itemName.placeholder=仮設材A
-lang.cms.itemManage.itemUpdate.popup.itemBiko=備考
-lang.cms.itemManage.itemUpdate.popup.itemNo=Txタグ設定
-lang.cms.itemManage.itemUpdate.popup.itemNo.placeholder=管理No
-lang.cms.itemManage.itemUpdate.popup.txNo.placeholder=TxタグNo
-lang.cms.itemManage.itemDelete.popup.title=仮設材情報削除
-lang.cms.itemManage.itemDelete.popup.message=仮設材情報を削除します。\nよろしいですか？
+# CMS文字列（その他仮設材管理）
+lang.cms.itemOtherManage.title=その他仮設材管理
+lang.cms.itemOtherManage.page.title=その他仮設材管理
+lang.cms.itemOtherManage.item.list.header.title=その他仮設材管理
+lang.cms.itemOtherManage.item.list.header.tagId=Tag ID
+lang.cms.itemOtherManage.item.list.header.type=種別
+lang.cms.itemOtherManage.item.list.header.name=名称
+lang.cms.itemOtherManage.item.list.header.otherId=その他仮設材ID
+lang.cms.itemOtherManage.item.list.header.otherNo=その他仮設材番号
+lang.cms.itemOtherManage.item.list.header.otherNote=備考
+lang.cms.itemOtherManage.item.list.header.count=個数
+lang.cms.itemOtherManage.item.button.editItem=選択した仮設材を編集
+lang.cms.itemOtherManage.item.button.addItem=新規仮設材追加
+lang.cms.itemOtherManage.item.button.deleteItem=選択した仮設材を削除
+lang.cms.itemOtherManage.itemUpdate.popup.title=その他仮設材情報更新
+lang.cms.itemOtherManage.itemUpdate.popup.tagId=TagID
+lang.cms.itemOtherManage.itemUpdate.popup.tagId.placeholder=TagID
+lang.cms.itemOtherManage.itemUpdate.popup.type=種別
+lang.cms.itemOtherManage.itemUpdate.popup.name=名称
+lang.cms.itemOtherManage.itemUpdate.popup.name.placeholder=名称
+lang.cms.itemOtherManage.itemUpdate.popup.No=仮設材番号
+lang.cms.itemOtherManage.itemUpdate.popup.Note=備考
+lang.cms.itemOtherManage.itemUpdate.popup.txNo.placeholder=TxタグNo
+lang.cms.itemOtherManage.itemDelete.popup.title=仮設材情報削除
+lang.cms.itemOtherManage.itemDelete.popup.message=仮設材情報を削除します。\nよろしいですか？
 
 # CMS文字列（仮設材種別管理）
 lang.cms.itemTypeManage.title=仮設材種別管理
