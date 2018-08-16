@@ -35,10 +35,9 @@ class FloorManage @Inject()(config: Configuration
     // フォームの準備
     val inputForm = Form(mapping(
       "inputFloorId" -> text
-      ,"inputDisplayOrder" -> text.verifying(Messages("error.cms.floorManage.floorUpdate.displayOrder.empty"), {!_.isEmpty})
+      ,"inputDisplayOrder" -> text.verifying(Messages("error.cms.floorManage.floorUpdate.displayOrder.empty"), {_.matches("^[-1-9]+$")})
       ,"activeFlg" -> boolean
       , "inputFloorName" -> text.verifying(Messages("error.cms.floorManage.floorUpdate.inputFloorName.empty"), {!_.isEmpty})
-      // , "inputExbDeviceNoListComma" -> text.verifying(Messages("error.cms.floorManage.floorUpdate.inputExbDeviceNoListComma.empty"), {!_.isEmpty})
     )(FloorUpdateForm.apply)(FloorUpdateForm.unapply))
     val placeId = securedRequest2User.currentPlaceId.get
     // フォームの取得
