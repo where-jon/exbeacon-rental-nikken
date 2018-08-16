@@ -47,7 +47,7 @@ floorInfoList: Seq[FloorInfoData]
                                 <tbody class="sortable">
                                     @for(floor <- floorInfoList){
                                         <tr class="rowColor rowHover" id="@floor.floor_id" data-floorId="@floor.floor_id">
-                                            <td class="itemTd text-center displayOrder">@floor.floor_id</td>
+                                            <td class="itemTd text-center">@floor.floor_id</td>
                                             <td class="itemTd text-center displayOrder">@floor.display_order</td>
                                             <td class="itemTd text-center floorName">@floor.floor_name</td>
                                             @if(floor.active_flg){
