@@ -1,5 +1,7 @@
 package controllers.site
 
+import java.text.SimpleDateFormat
+import java.util.{Date, Locale}
 import javax.inject.{Inject, Singleton}
 
 import com.mohiva.play.silhouette.api.Silhouette
@@ -163,8 +165,19 @@ class ItemCarReserve @Inject()(config: Configuration
                   + "すでに予約されてます"))
             }
           }else{  // 現在時刻から予約可能かを判定でエラーの場合
-            Redirect(routes.ItemCarReserve.index())
-              .flashing(ERROR_MSG_KEY ->vCurrentTimeCheck.mkString(HTML_BR))
+            if(vCurrentTimeCheck == "当日"){
+              val currentTime = new Date();
+              val mSimpleDateFormatHour = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.JAPAN)
+              val mCurrentTime = mSimpleDateFormatHour.format(currentTime)
+              var errMsg = Seq[String]()
+              errMsg :+= Messages("error.site.reserve.overtime", mCurrentTime,ItemCarReserveData.workTypeName)
+              errMsg :+= Messages("error.site.reserve.overtime.define")
+              Redirect(routes.ItemCarReserve.index())
+                .flashing(ERROR_MSG_KEY -> errMsg.mkString(HTML_BR))
+            } else {
+              Redirect(routes.ItemCarReserve.index())
+                .flashing(ERROR_MSG_KEY -> Messages(vCurrentTimeCheck))
+            }
           }
         }else{
           Redirect(routes.ItemCarReserve.index())
