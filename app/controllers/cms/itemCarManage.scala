@@ -3,7 +3,7 @@ package controllers.cms
 import com.mohiva.play.silhouette.api.Silhouette
 import controllers.{BaseController, site}
 import javax.inject.{Inject, Singleton}
-import models.ItemType
+import models.{ItemType, ItemTypeOrder}
 import play.api._
 import play.api.data.Form
 import play.api.data.Forms.{mapping, _}
@@ -35,16 +35,17 @@ case class CarDeleteForm(
 )
 
 @Singleton
-class ItemCarManage @Inject()(config: Configuration
-                          , val silhouette: Silhouette[MyEnv]
-                          , val messagesApi: MessagesApi
-                          , carDAO: models.itemCarDAO
-                          , exbDAO: models.ExbDAO
-                          , itemTypeDAO:models.ItemTypeDAO
-                               ) extends BaseController with I18nSupport {
+class ItemCarManage @Inject()(
+  config: Configuration
+  , val silhouette: Silhouette[MyEnv]
+  , val messagesApi: MessagesApi
+  , carDAO: models.itemCarDAO
+  , exbDAO: models.ExbDAO
+  , itemTypeDAO:models.ItemTypeDAO
+     ) extends BaseController with I18nSupport {
 
   var ITEM_TYPE_FILTER = 0;
-  var itemTypeList :Seq[ItemType] = Seq.empty; // 仮設材種別
+  var itemTypeList :Seq[ItemTypeOrder] = Seq.empty; // 仮設材種別
 
   /** 初期表示 */
   def index = SecuredAction { implicit request =>
@@ -55,19 +56,14 @@ class ItemCarManage @Inject()(config: Configuration
       val placeId = super.getCurrentPlaceId
       // 業者情報
       val carList = carDAO.selectCarMasterInfo(placeId = placeId)
-      //検索側データ取得
-      getSearchData(placeId)
+
+      /*仮設材種別取得*/
+      itemTypeList = itemTypeDAO.selectItemCarInfoOrder(placeId);
 
       Ok(views.html.cms.itemCarManage(ITEM_TYPE_FILTER, carList, itemTypeList, placeId))
     }else {
       Redirect(site.routes.WorkPlace.index)
     }
-  }
-
-  /** 　検索側データ取得 */
-  def getSearchData(_placeId:Integer): Unit = {
-    /*仮設材種別取得*/
-    itemTypeList = itemTypeDAO.selectItemCarInfo(_placeId);
   }
 
   /** 登録・更新 */
@@ -152,6 +148,12 @@ class ItemCarManage @Inject()(config: Configuration
 //        if(carList.length > 0){
 //          errMsg :+= Messages("error.cms.CarManage.update.inputCarNo.duplicate", f.inputCarNo)
 //        }
+
+        // 予約情報テーブルに作業車・立馬IDが存在していないか
+        val itemCarReserveList = carDAO.selectCarReserveCheck(super.getCurrentPlaceId, f.inputCarId.toInt)
+        if(itemCarReserveList.length > 0){
+          errMsg :+= Messages("error.cms.ItemOtherManage.update.inputItemOtherIdReserve.use.noChange", f.inputCarId)
+        }
 
         // 変更前タグ情報
         val preCarInfo = carDAO.selectCarInfo(super.getCurrentPlaceId, "", Option(f.inputCarId.toInt)).last
@@ -266,7 +268,7 @@ class ItemCarManage @Inject()(config: Configuration
       if (carList.length <= 0) {
         errMsg :+= Messages("error.cms.CarManage.delete.inputCarId.empty", f.deleteCarId)
       }
-      if(errMsg.isEmpty == false) {
+      if(errMsg.nonEmpty) {
         // エラーで遷移
         Redirect(routes.ItemCarManage.index)
           .flashing(ERROR_MSG_KEY -> errMsg.mkString(HTML_BR))

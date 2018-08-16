@@ -11,64 +11,64 @@ import play.api.db._
 
 /*作業車・立馬予約用formクラス*/
 case class ItemCarReserveData(
-  itemTypeId: Int,
-  workTypeName: String,
-  inputDate: String,
-  companyName: String,
-  floorName: String,
-  itemId: List[Int],
-  itemTypeIdList: List[Int],
-  checkVal: List[Int]
+  itemTypeId: Int
+  , workTypeName: String
+  , inputDate: String
+  , companyName: String
+  , floorName: String
+  , itemId: List[Int]
+  , itemTypeIdList: List[Int]
+  , checkVal: List[Int]
 
 )
 
 /*作業車・立馬予約取消用formクラス*/
 case class ItemCarCancelData(
-  itemTypeIdList: List[Int],
-  itemId: List[Int],
-  workTypeNameList: List[String],
-  reserveStartDateList: List[String],
-  checkVal: List[Int]
+  itemTypeIdList: List[Int]
+  , itemId: List[Int]
+  , workTypeNameList: List[String]
+  , reserveStartDateList: List[String]
+  , checkVal: List[Int]
 )
 
 
 /*作業車・立馬予約取消検索用formクラス*/
 case class ItemCarCancelSearchData(
-  itemTypeId: Int,
-  workTypeName: String,
-  companyName: String,
-  inputDate: String
+  itemTypeId: Int
+  , workTypeName: String
+  , companyName: String
+  , inputDate: String
 )
 
 /*作業車・立馬予約検索用formクラス*/
 case class ItemCarSearchData(
-   itemTypeId: Int,
-   workTypeName: String,
-   inputDate: String
+   itemTypeId: Int
+   , workTypeName: String
+   , inputDate: String
  )
 
 case class ItemCar(
-  itemCarId: Int,
-  itemTypeId: Int,
-  note: String,
-  itemCarNo: String,
-  itemCarName: String,
-  itemCarBtxId: Int,
-  itemCarKeyBtxId: Int,
-  placeId: Int
+  itemCarId: Int
+  , itemTypeId: Int
+  , note: String
+  , itemCarNo: String
+  , itemCarName: String
+  , itemCarBtxId: Int
+  , itemCarKeyBtxId: Int
+  , placeId: Int
 )
 
 /*作業車・立馬管理検索用*/
 case class ItemCarViewer(
-  itemCarId: Int,
-  itemTypeId: Int,
-  itemTypeName: String,
-  itemCarNote: String,
-  itemCarNo: String,
-  itemCarName: String,
-  itemCarBtxId: Int,
-  itemCarKeyBtxId: Int,
-  placeId: Int
+  itemCarId: Int
+  , itemTypeId: Int
+  , itemTypeName: String
+  , itemCarNote: String
+  , itemCarNo: String
+  , itemCarName: String
+  , itemCarBtxId: Int
+  , itemCarKeyBtxId: Int
+  , placeId: Int
 )
 
 /*作業車・立馬管理予約検索用*/
@@ -80,30 +80,30 @@ case class ReserveMasterCheck(
 )
 
 case class CarViewer(
-  item_car_id: Int,
-  item_car_btx_id: Int,
-  item_car_key_btx_id: Int,
-  item_type_id: Int,
-  item_type_name:String,
-  note:String,
-  item_car_no: String,
-  item_car_name:String,
-  place_id: Int,
-  reserve_start_date:String,
-  company_id: Int,
-  company_name: String,
-  work_type_id: Int,
-  work_type_name: String,
-  reserve_floor_name: String,
-  reserve_id: Int
+  item_car_id: Int
+  , item_car_btx_id: Int
+  , item_car_key_btx_id: Int
+  , item_type_id: Int
+  , item_type_name:String
+  , note:String
+  , item_car_no: String
+  , item_car_name:String
+  , place_id: Int
+  , reserve_start_date:String
+  , company_id: Int
+  , company_name: String
+  , work_type_id: Int
+  , work_type_name: String
+  , reserve_floor_name: String
+  , reserve_id: Int
 )
 
 /*作業車・立馬一覧用formクラス*/
 case class ItemCarData(
-  itemTypeId: Int,
-  companyName: String,
-  floorName: String,
-  workTypeName: String
+  itemTypeId: Int
+  , companyName: String
+  , floorName: String
+  , workTypeName: String
 )
 
 @javax.inject.Singleton
@@ -351,7 +351,7 @@ class itemCarDAO @Inject()(dbapi: DBApi) {
         """
       // 追加検索条件
       var wherePh = ""
-      wherePh += s""" and r.item_id = ${carId} """
+      wherePh += s""" and r.item_id = {carId} """
 
       // 表示順を設定
       val orderPh =
@@ -359,7 +359,7 @@ class itemCarDAO @Inject()(dbapi: DBApi) {
           order by
             r.item_id
         """
-      SQL(selectPh + wherePh + orderPh).as(reserveMasterCheck.*)
+      SQL(selectPh + wherePh + orderPh).on('placeId -> placeId, 'carId -> carId).as(reserveMasterCheck.*)
     }
   }
 

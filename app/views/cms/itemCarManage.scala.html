@@ -1,4 +1,8 @@
-@(ITEM_TYPE_FILTER: Int, carList: Seq[ItemCarViewer], itemTypeList: Seq[ItemType], placeId: Int)(implicit user: User, messages: Messages, request: RequestHeader, flash: Flash)
+@(ITEM_TYPE_FILTER: Int
+, carList: Seq[ItemCarViewer]
+, itemTypeList: Seq[ItemTypeOrder]
+, placeId: Int
+)(implicit user: User, messages: Messages, request: RequestHeader, flash: Flash)
 
 @import controllers.routes
 @import helper._
@@ -51,6 +55,12 @@
                                             <td class="itemTd text-center carKeyBtxId">@car.itemCarKeyBtxId</td>
                                             <td class="itemTd text-center carTypeName">@car.itemTypeName</td>
                                             <td hidden class="itemTd text-center carTypeId">@car.itemTypeId</td>
+                                            @for(itemTypeOrder <- itemTypeList){
+                                                @if(itemTypeOrder.item_type_id == car.itemTypeId){
+                                                    <td hidden class="itemTd text-center itemTypeOrder">@itemTypeOrder.item_type_order</td>
+                                                    <td hidden class="itemTd text-center itemTypeCategoryid">@itemTypeOrder.item_type_category_id</td>
+                                                }
+                                            }
                                             <td class="itemTd text-center carName">@car.itemCarName</td>
                                             <td class="itemTd text-center carId">@car.itemCarId</td>
                                             <td class="itemTd text-center carNo">@car.itemCarNo</td>
@@ -89,16 +99,14 @@
                     <input type="hidden" name="inputPlaceId" value="@placeId">
                     <input type="hidden" id="inputCarId" name="inputCarId">
                     <input type="hidden" id="inputCarTypeId" name="inputCarTypeId">
-                    <!--<input type="hidden" id="inputCarNo" name="inputCarNo">-->
                     <div class="modal-header" style="">@Messages("lang.cms.itemCarManage.carUpdate.popup.name")</div>
                     <div class="modal-body">
                         <div class="form-group">
                             <label class="control-label col-xs-5">@Messages("lang.cms.itemCarManage.carUpdate.popup.carTypeName")</label>
-                            <select id="car_type" style="height: 30px; width: 100px;">
+                            <select id="car_type" style="height: 30px; width: 120px;">
                                 <!--仮設材種別テーブルから検索フィルタを設置-->
-                                <option value="0"></option>
                                 @itemTypeList.zipWithIndex.map { case(itemType, i) =>
-                                    <option value="@itemType.item_type_id">@itemType.item_type_name</option>
+                                    <option data-categoryId="@itemType.item_type_category_id" value="@itemType.item_type_id">@itemType.item_type_name</option>
                                 }
                             </select>
                             <input class="hidden form-control input-sm" type="text" id="inputCarTypeName" name="inputCarTypeName" value="@ITEM_TYPE_FILTER">
