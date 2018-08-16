@@ -56,8 +56,7 @@ class AccountManage @Inject()(
     * 初期表示
     */
   def index = SecuredAction { implicit request =>
-    val reqIdentity = request.identity
-    if (reqIdentity.level >= 2){
+    if (request.identity.level >= 2){
       Ok(views.html.cms.accountManage(
         userService.selectAccountByPlaceId(placeId = super.getCurrentPlaceId),
         UserLevelEnum().map)

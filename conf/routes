@@ -138,10 +138,6 @@ GET     /cms/txTagManage                controllers.cms.TxTagManage.index
 GET     /signin                         controllers.Auth.signIn
 POST    /authenticate                   controllers.Auth.authenticate
 GET     /signout                        controllers.Auth.signOut
-GET     /reset-password                 controllers.Auth.forgotPassword
-POST    /reset-password                 controllers.Auth.handleForgotPassword
-GET     /reset-password/:token          controllers.Auth.resetPassword(token: String)
-POST    /reset-password/:token          controllers.Auth.handleResetPassword(token: String)
 GET     /change-password                controllers.Auth.changePassword
 POST    /change-password                controllers.Auth.handleChangePassword
 GET     /myaccount                      controllers.Application.myAccount

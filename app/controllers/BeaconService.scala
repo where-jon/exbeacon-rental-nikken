@@ -1,4 +1,5 @@
 package controllers
+
 import java.text.SimpleDateFormat
 import java.util.{Calendar, Date, Locale}
 import java.time.format.DateTimeFormatter
@@ -33,23 +34,30 @@ class BeaconService @Inject() (config: Configuration,
   var TELEMETRY_API_URL =""
 
  /** 予約の際現在時刻から予約に正しいかを判定する*/
-  def currentTimeReserveCheck (vStartDate:String,vWorkType:String): String = {
+  def currentTimeReserveCheck (vStartDate:String,vWorkType:String): Seq[String] = {
      // 現在時刻設定
     val mSimpleDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.JAPAN)
     val currentTime = new Date();
     val mTime = mSimpleDateFormat.format(currentTime)
     val mHour = new SimpleDateFormat("HH").format(Calendar.getInstance().getTime()).toInt
-
+    var errMsg = Seq[String]()
     if(mTime == vStartDate) { // 現在時刻と同じ日に予約
-      if(mHour < 8 ) "OK"  // 現在時間が8時（作業まえの場合はなんでも予約OK）
-      else if(mHour < 13 && vWorkType =="午後" ) "OK" // 現在時間が13時以前（午後はOK）
-      else Messages("error.site.reserve.overtime")
+      if(mHour < 8 ) errMsg :+= "OK"  // 現在時間が8時（作業まえの場合はなんでも予約OK）
+      else if(mHour < 13 && vWorkType =="午後" ) errMsg :+= "OK" // 現在時間が13時以前（午後はOK）
+      else {
+        val mSimpleDateFormatHour = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.JAPAN)
+        val mCurrentTime = mSimpleDateFormatHour.format(currentTime)
+        errMsg :+= Messages("error.site.reserve.overtime", mCurrentTime,vWorkType)
+        errMsg :+= Messages("error.site.reserve.overtime.define")
+      }
     }else if (mTime > vStartDate){  // 現在時間より過去の方予約はNG
-      Messages("error.site.reserve.pretime")
+      errMsg :+=Messages("error.site.reserve.pretime")
     }else if (mTime < vStartDate) {  // 現在時間より未来の方+1day OK
-      "OK"
+      errMsg:+= "OK"
     }else // 変な場合
-      Messages("error.site.reserve.other")
+      errMsg :+= Messages("error.site.reserve.other")
+
+    return errMsg
   }
 
   /** 予約取消の際現在時刻から予約取消に正しいかを判定する*/
