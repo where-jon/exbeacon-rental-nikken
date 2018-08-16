@@ -4,6 +4,7 @@ function showFloorModal(floorId){
     if(!floorId){
         // 新規
         $('#inputFloorId').val('');
+         $('#inputPreDisplayOrder').val('');
         $('#activeFlgDialog').val(false);
         $("#FLG_FILTER").val("1").prop("selected", true);
         $('#inputExbDeviceNoListComma').val('');
@@ -16,6 +17,7 @@ function showFloorModal(floorId){
     }else{
         $('.cloned').remove();
         $('#inputFloorId').val(floorId);
+        $('#inputPreDisplayOrder').val($('#'+floorId).find('.displayOrder').text());
         $('#inputExbDeviceNoListComma').val('');
 
         var vShow = $('#'+floorId).find('.activeFlg').text()

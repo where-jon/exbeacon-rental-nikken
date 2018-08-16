@@ -339,6 +339,37 @@ Logger.debug(s"""EXBマスタを更新""")
       }
   }
 
+
+  /**
+    * フロアの表示順重複チェック
+    * @return
+    */
+  def floorDisplayOrderCheck(displayOrder:Int, placeId: Int) = {
+
+    db.withConnection { implicit connection =>
+      val sql = SQL("""
+        select
+          floor_id,
+          floor_name ,
+          display_order,
+          place_id ,
+          active_flg,
+          floor_map_width,
+          floor_map_height,
+          floor_map_image
+          from floor_master as floor
+          where floor.place_id = {placeId}
+          and display_order ={displayOrder}
+       """).on(
+        "displayOrder" -> displayOrder,
+        "placeId" -> placeId
+      )
+
+      sql.as(simpleFloorAll.*)
+    }
+  }
+
+
   /**
     * フロア情報の取得
     * @return
