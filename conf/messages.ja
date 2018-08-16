@@ -308,6 +308,7 @@ lang.cms.floorManage.floorDelete.popup.message=フロアを削除します。\n�
 error.cms.floorManage.delete.exb=EXBがフロアに設置されてるため、削除できません。
 error.cms.floorManage.floorUpdate.inputFloorName.empty=フロア名を入力してください。
 error.cms.floorManage.floorUpdate.displayOrder.empty=表示順を数字で入力して下さい。
+error.cms.floorManage.floorUpdate.inputDisplayOrder.duplicate=表示順「{0}」はすでに登録されてます。
 
 # CMS文字列（EXB管理）
 lang.cms.exbManage.title=EXB管理
