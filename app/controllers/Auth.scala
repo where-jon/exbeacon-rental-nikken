@@ -27,9 +27,8 @@ import net.ceedubs.ficus.Ficus._
 import javax.inject.{ Inject, Singleton }
 import views.html.{ auth => viewsAuth }
 
-
 /**
-  * パスワード変更画面で使うCase Class
+  * パスワード変更画面で使うFORM
   */
 case class ChangePasswordForm(
   email: String = "", // ユーザID
@@ -38,6 +37,9 @@ case class ChangePasswordForm(
   newPassword2: String = "" // 入力された確認用パスワード
 )
 
+/**
+  * 認証関係
+  */
 @Singleton
 class Auth @Inject() (
     val silhouette: Silhouette[MyEnv],
@@ -174,8 +176,13 @@ class Auth @Inject() (
    * Starts the change password mechanism. It shows a form to insert his current password and the new one.
    */
   def changePassword = SecuredAction { implicit request =>
-    // Viewを表示
-    Ok(viewsAuth.changePassword(changePasswordForm, userService.selectSuperUserList()))
+    if (request.identity.level >= 4) {
+      // Viewを表示
+      Ok(viewsAuth.changePassword(changePasswordForm, userService.selectSuperUserList()))
+    } else {
+      // 権限無いとき退場
+      Redirect(site.routes.WorkPlace.index())
+    }
   }
 
   /**
