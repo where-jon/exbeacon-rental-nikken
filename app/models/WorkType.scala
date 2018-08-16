@@ -47,12 +47,9 @@ class WorkTypeDAO @Inject() (dbapi: DBApi) {
       val sql = SQL("""
               select work_type_id ,work_type_name ,note ,place_id ,active_flg
               from work_type
-              where place_id = {placeId}
-              and active_flg = true
+              where active_flg = true
               order by work_type_id;
-              """).on(
-        "placeId" -> placeId
-      )
+              """)
       sql.as(simple.*)
     }
   }

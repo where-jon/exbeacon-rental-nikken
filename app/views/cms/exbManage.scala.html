@@ -1,0 +1,199 @@
+@(
+ exbInfoList: Seq[ExbAll]
+,floorInfoList: Seq[FloorInfoData]
+)(implicit user: User, messages: Messages, request: RequestHeader, flash: Flash)
+@import controllers.routes
+@import helper._
+
+<!doctype html>
+<html lang="ja">
+<head>
+    @templates.htmlHead(title = Messages("lang.cms.placeManage.tabName"))
+    <link rel="stylesheet" href="@routes.MyAssets.css("cms/placeManageDetail.css")"/>
+    <script type="text/javascript" src="@routes.MyAssets.lib("jquery.tablefix_1.0.1.js")"></script>
+    <script></script>
+</head>
+<body>
+    <!-- content -->
+    <div class="container">
+        <!-- ナビバー  -->
+        @views.html.templates.navBar()
+        <div class="row" style="margin-top: 50px;">
+            <!-- メイン -->
+            <div class="col-lg-12 mainSpace">
+                <!-- メッセージ -->
+                @views.html.templates.msgDiv()
+                <!-- 画面題字 -->
+                <div class="form-group" style="font-weight:bold;font-size:19px;margin:15px 0px;">
+                    @Messages("lang.cms.exbManage.title")
+                </div>
+                <!-- テーブルのROW -->
+                <div class="row tableRow">
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="padding:0;">
+                        <div class="floorTable-responsive-body">
+                            <table class="table table-bordered table-condensed itemTable floorTable">
+                                <thead>
+                                    <tr>
+                                        <th colspan="7" class="tableTitleTh">@Messages("lang.cms.exbManage.title")</th>
+                                    </tr>
+                                    <tr>
+                                        <th class="tableTh deviceTh">@Messages("lang.cms.exbManage.exbId")</th>
+                                        <th class="tableTh floorTh">@Messages("lang.cms.exbManage.deviceId")</th>
+                                        <th class="tableTh deviceTh">@Messages("lang.cms.exbManage.deviceNo")</th>
+                                        <th class="tableTh deviceTh">@Messages("lang.cms.exbManage.deviceName")</th>
+                                        <th class="tableTh deviceTh">@Messages("lang.cms.exbManage.posName")</th>
+                                        <th class="tableTh deviceTh">@Messages("lang.cms.exbManage.setupFloorId")</th>
+                                        <th class="tableTh deviceTh">@Messages("lang.cms.exbManage.setupFloorName")</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="sortable">
+                                    @for(exb <- exbInfoList){
+                                        <tr class="rowColor rowHover" id="@exb.exb_id" data-exbId="@exb.exb_id" data-floorId="@exb.floor_id">
+                                            <td class="itemTd text-center ">@exb.exb_id</td>
+                                            <td class="itemTd text-center deviceId">@exb.exb_device_id</td>
+                                            <td class="itemTd text-center deviceNo">@exb.exb_device_no</td>
+                                            <td class="itemTd text-center deviceName">@exb.exb_device_name</td>
+                                            <td class="itemTd text-center posName">@exb.exb_pos_name</td>
+                                            @if(exb.floor_id == -1){
+                                                <td class="itemTd text-center setupFloorId">未設置</td>
+                                            }else{
+                                                <td class="itemTd text-center setupFloorId">@exb.floor_id</td>
+                                            }
+                                            <td class="itemTd text-center ">@exb.floor_name</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <!-- ボタン-->
+                <div class="row tableRow" style="margin-top: 10px;">
+                    <div class="text-right col-xs-4 col-sm-4 col-md-4" style="padding:0;">
+                        <a href="javascript:showExbUpdateModal(false);" class="btn link">@Messages("lang.cms.exbManage.exb.button.exbEdit")</a>
+                    </div>
+                    <div class="text-center col-xs-4 col-sm-4 col-md-4" style="padding:0;">
+                        <a href="javascript:showExbUpdateModal(true);" class="btn link">@Messages("lang.cms.exbManage.exb.button.addExb")</a>
+                    </div>
+                    <div class="text-left col-xs-4 col-sm-4 col-md-4" style="padding:0;">
+                        <a href="javascript:showExbDeleteModal();" class="btn link">@Messages("lang.cms.exbManage.exb.button.deleteExb")</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- EXB登録、更新モーダル画面 -->
+    <div class="modal" id="exbUpdateModal" tabindex="-1" role="dialog" aria-labelledby="exbUpdateModalLabel" aria-hidden="true" data-show="true" data-keyboard="false" data-backdrop="static">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form id="exbForm" name="exbForm" enctype="multipart/form-data" class="form-horizontal" enctype="multipart/form-data" class="form-horizontal" method="post" action="@controllers.cms.routes.ExbManage.exbUpdate.path">
+                    @CSRF.formField
+                    <input type="hidden" id="inputExbId" name="inputExbId">
+                    <div class="modal-header">@Messages("lang.cms.exbManage.exbUpdate.popup.title")</div>
+                    <div class="modal-body">
+                        <!--デバイスID-->
+                        <div class="form-group">
+                            <label class="control-label col-xs-5">@Messages("lang.cms.exbManage.deviceId")</label>
+                            <div class="col-xs-2" style="padding-left: 0px;padding-right: 0px;">
+                                <input type="number" value = null name="inputDeviceId" id="inputDeviceId" class="form-control" placeholder="@Messages("lang.cms.exbManage.deviceId.popup.placeholder")">
+                            </div>
+                        </div>
+                        <!--デバイス番号-->
+                        <div class="form-group">
+                            <label class="control-label col-xs-5">@Messages("lang.cms.exbManage.deviceNo")</label>
+                            <div class="col-xs-2" style="padding-left: 0px;padding-right: 0px;">
+                                <input type="number" value = null name="inputDeviceNo" id="inputDeviceNo" class="form-control" placeholder="@Messages("lang.cms.exbManage.deviceNo.popup.placeholder")">
+                            </div>
+                        </div>
+                        <!--デバイス名-->
+                        <div class="form-group">
+                            <label class="control-label col-xs-5">@Messages("lang.cms.exbManage.deviceName")</label>
+                            <div class="col-xs-2" style="padding-left: 0px;padding-right: 0px;">
+                                <input type="text" name="inputDeviceName" id="inputDeviceName" class="form-control" placeholder="@Messages("lang.cms.exbManage.deviceName.popup.placeholder")">
+                            </div>
+                        </div>
+                        <!--場所名-->
+                        <div class="form-group">
+                            <label class="control-label col-xs-5">@Messages("lang.cms.exbManage.posName")</label>
+                            <div class="col-xs-2" style="padding-left: 0px;padding-right: 0px;">
+                                <input type="text" name="inputPosName" id="inputPosName" class="form-control" placeholder="@Messages("lang.cms.exbManage.posName.popup.placeholder")">
+                            </div>
+                        </div>
+                        <!--連動フロアID-->
+                        <div class="form-group">
+                            <label class="control-label col-xs-5">@Messages("lang.cms.exbManage.setupFloorName")</label>
+                            <select id="PD_FLOOR" style="height: 30px; width: 100px;">
+                                <option value="-1">未選択</option>
+                                @floorInfoList.zipWithIndex.map { case(floor, i) =>
+                                     <option value="@floor.floor_id">@floor.floor_name</option>
+                                }
+                            </select>
+                            <input class="hidden form-control" type="number" name="setupFloorId" id="setupFloorId" value ="-1" >
+                        </div>
+
+                        <div class="form-group hidden" style="margin-bottom: 5px;">
+                            <label class="control-label col-xs-5">@Messages("lang.cms.floorManage.floorUpdate.popup.deviceNo")</label>
+                            <div class="col-xs-2" style="padding-left: 0px;padding-right: 0px;margin-right:10px;">
+                                <input type="text" name="inputDeviceNo" id="inputDeviceNo" class="form-control" placeholder="@Messages("lang.cms.floorManage.floorUpdate.popup.deviceNo.placeholder")">
+                            </div>
+                            <div class="col-xs-1" style="padding-left: 0px;padding-right: 0px;">
+                                <a href="javascript:addTagRow();"class="btn btn-default"><i class="fa fa-plus" aria-hidden="true"></i></a>
+                            </div>
+                        </div>
+                        <div class="form-group template hidden" style="margin-bottom: 5px;">
+                            <label class="control-label col-xs-5"></label>
+                            <div class="col-xs-2 inputDeviceNoDiv text-center">
+                                <span class="inputDeviceNoSpan"></span>
+                            </div>
+                            <div class="col-xs-1" style="padding-left: 0px;padding-right: 0px;">
+                                <a onclick="removeTagRow(this);" class="btn btn-default removeRowBtn">
+                                    <i class="fa fa-close fa-1x" aria-hidden="true"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="floorFooter" class="modal-footer">
+                        <div class="col-xs-6 text-center">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">@Messages("cancel")</button>
+                        </div>
+                        <div class="col-xs-6 text-center">
+                            <button id="floorUpdateFooter" type="submit" class="text-center btn btn-primary hidden">@Messages("update")</button>
+                            <button id="floorRegisterFooter" type="submit" class="text-center btn btn-primary hidden">@Messages("registration")</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- フロア削除モーダル画面 -->
+    <div class="modal" id="exbDeleteModal" tabindex="-1" role="dialog" aria-labelledby="exbDeleteModalLabel" aria-hidden="true" data-show="true" data-keyboard="false" data-backdrop="static">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form id="deleteForm" name="deleteForm" class="form-horizontal" enctype="multipart/form-data" class="form-horizontal" method="post" action="@controllers.cms.routes.ExbManage.exbDelete.path">
+                    @CSRF.formField
+                    <input type="hidden" id="deleteExbId" name="deleteExbId">
+                    <input type="hidden" id="deleteFloorId" name="floorId">
+                    <div class="modal-header">@Messages("lang.cms.exbManage.exbDelete.popup.title")</div>
+                    <div class="modal-body">
+                        <div class="text-center">
+                            @Html(Messages("lang.cms.exbManage.exbDelete.popup.message").replaceAll("(\r\n|\r|\n)","<br>"))
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <div class="col-xs-6 text-center">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">@Messages("cancel")</button>
+                        </div>
+                        <div class="col-xs-6 text-center">
+                            <button type="submit" class="text-center btn btn-danger">@Messages("delete")</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript" src="@routes.MyAssets.js("cms/exbManage.js")"></script>
+    <script></script>
+</body>
+</html>
