@@ -30,7 +30,7 @@ viewType: Seq[ViewType]
 
 			<select id="floor-category" class=" manager__data--floor">
 				@mapViewer.zipWithIndex.map { case(map, i) =>
-					<option value="@map.display_order" @{if(map.display_order == 1) "selected" else ""}>@map.floor_name</option>
+					<option value="@map.display_order" @{if(i==0) "selected" else ""}>@map.floor_name</option>
 				}
 			</select>
 		</div>
