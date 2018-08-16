@@ -122,7 +122,7 @@ viewType: Seq[ViewType]
 
 							<select id="input-floor-category-@viewer.exb_id" class="exb__select--category inputFloor">
 								@mapViewer.zipWithIndex.map { case(map, i) =>
-								<option class="dataFloorId-@(i+1)" data-floorId="@map.floor_id" value="@map.display_order"  @{if(map.display_order == viewer.floor_id.toInt) "selected" else ""}>@map.floor_name</option>
+								<option class="dataFloorId-@map.display_order" data-floorId="@map.floor_id" value="@map.display_order"  @{if(map.display_order == viewer.floor_id.toInt) "selected" else ""}>@map.floor_name</option>
 								}
 							</select>
 						</td>
