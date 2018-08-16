@@ -164,7 +164,7 @@ class ItemOtherReserve @Inject()(config: Configuration
               }
             }else{ // 現在時刻から予約可能かを判定でエラーの場合
               Redirect(routes.ItemOtherReserve.index())
-                .flashing(ERROR_MSG_KEY -> Messages(vCurrentTimeCheck))
+                .flashing(ERROR_MSG_KEY ->vCurrentTimeCheck.mkString(HTML_BR))
             }
           }else{
             Redirect(routes.ItemOtherReserve.index())

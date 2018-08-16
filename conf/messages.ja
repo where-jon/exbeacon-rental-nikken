@@ -622,7 +622,8 @@ error.site.carReserve.update=作業車・立馬予約に問題が発生しまし
 error.site.carReserve.noselect=予約対象未選択
 
 # 予約画面共通
-error.site.reserve.overtime=現在時刻13時過ぎてるので本日内予約はできません。
+error.site.reserve.overtime=現在時刻「{0}」は「{1}」予約可能時間を過ぎてるので本日内予約はできません。
+error.site.reserve.overtime.define=「午前」「終日」は 当日「8時」まで「午後」は 当日「13時」まで予約可能
 error.site.reserve.pretime=現在時刻より過去の方は予約できません。
 error.site.reserve.other=例外NGで予約できません。
 error.site.cancel.overtime=選択されたもの中、現在時刻13時過ぎてるので本日内予約取消はできません。
