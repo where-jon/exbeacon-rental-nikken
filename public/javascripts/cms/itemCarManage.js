@@ -108,6 +108,9 @@ function showInputModal(isRegister){
                $('#inputCarKeyBtxId').val("無");
                 ele.readOnly = true;
             }else{
+                if($('#inputCarKeyBtxId').val() == "無"){
+                    $('#inputCarKeyBtxId').val("");
+                }
                 ele.readOnly = false;
             }
             $('#inputCarName').val($('#'+carId).find('.carName').text());
@@ -156,6 +159,7 @@ var floorFrame = $('#car_type');
                $('#inputCarKeyBtxId').val("無");
                 ele.readOnly = true;
             }else{
+                $('#inputCarKeyBtxId').val("");
                 ele.readOnly = false;
             }
         });
