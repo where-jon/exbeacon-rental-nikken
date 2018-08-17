@@ -2,15 +2,15 @@
 
 @import controllers.routes
 
-<div id="pcTabletNav">
-    <div class="navbarCorner navbar navbar-default navbar-fixed-top col-xs-3 col-sm-3 col-md-3 col-lg-3">
+<div id="pcTabletNav" class="row" style="margin-bottom:0px">
+    <div class="navbarCorner col-xs-2 col-sm-2 col-md-2 col-lg-2">
         <div class="navbar-brand">
             <div>
                 <span>@Messages("system.name")</span>
             </div>
         </div>
     </div>
-    <div class="navbar-top navbar-fixed-top">
+    <div class="navbar col-xs-10 col-sm-10 col-md-10 col-lg-10">
         <ul class="nav navbar-nav" style="padding-left:30px">
             <li class="pull-left">
                 @if(request.path contains "/site/") {
@@ -29,7 +29,7 @@
                 </li>
                 <li class="pull-left">
                     @if(
-                        (request.path contains "/cms/carManage") ||
+                        (request.path contains "/cms/itemCarManage") ||
                         (request.path contains "/cms/itemOtherManage") ||
                         (request.path contains "/cms/itemTypeManage") ||
                         (request.path contains "/cms/companyManage") ||
@@ -37,7 +37,7 @@
                     ) {
                         <a class="text-center tabSelected"><i class="fa fa-gear"></i>@Messages("lang.navbar.tab.maintenance")</a>
                     }else{
-                        <a href="/cms/carManage" class="text-center tab"><i class="fa fa-gear"></i>@Messages("lang.navbar.tab.maintenance")</a>
+                        <a href="/cms/itemCarManage" class="text-center tab"><i class="fa fa-gear"></i>@Messages("lang.navbar.tab.maintenance")</a>
                     }
                 </li>
             }
@@ -75,5 +75,5 @@
             <a class="btn btn-navbar btn-signout" href="/signout">@Messages("lang.navbar.link.name.signout")</a>
         </div>
     </div>
+    @views.html.templates.sideBar()
 </div>
-@views.html.templates.sideBar()
