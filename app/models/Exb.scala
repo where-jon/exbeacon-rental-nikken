@@ -195,7 +195,46 @@ class ExbDAO @Inject() (dbapi: DBApi) {
     }
   }
 
+  /**
+    * EXB設置場所番号重複チェック
+    * @return
+    */
+  def exbSetupNumCheck(exbDeviceId:Int, placeId: Int) = {
 
+    db.withConnection { implicit connection =>
+      val sql = SQL("""
+                      select
+                      exb_id,
+                      exb_device_id,
+                      exb_device_no,
+                      exb_device_name,
+                      exb_pos_name,
+                      exb_pos_x,
+                      exb_pos_y,
+                      exb_view_flag,
+                      exb.view_type_id,
+                      v.view_type_name,
+                      view_tx_size,
+                      view_tx_margin,
+                      view_tx_count,
+                      exb.place_id,
+                      coalesce(exb.floor_id, -1) as floor_id,
+                      coalesce(floor.floor_name, '無') as floor_name,
+                      coalesce(floor.display_order, -1) as display_order
+                    from exb_master as exb
+                      left JOIN view_type as v on v.view_type_id = exb.view_type_id and v.active_flg = true
+                      left JOIN floor_master as floor on floor.floor_id = exb.floor_id
+                    where exb.place_id = {placeId}
+                    and exb.exb_device_id ={exbDeviceId}
+                    order by exb_id;
+       """).on(
+        "exbDeviceId" -> exbDeviceId,
+        "placeId" -> placeId
+      )
+
+      sql.as(simpleExbAll.*)
+    }
+  }
 
   /**
     * EXBの更新
