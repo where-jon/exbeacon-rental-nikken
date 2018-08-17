@@ -170,6 +170,8 @@ $(function () {
                 vElement.value =  $('.dataFloorId-' + result).attr('data-floorId');
                 vExbViewerData[pos].displayOrder = result;
                 document.getElementsByClassName("item-" + gClickPos)[0].textContent = result
+                //　フロア マップ位置変更
+                $('#floor-category').val(result).prop("selected", true);
                 reloadManager();
 
             });
@@ -180,13 +182,14 @@ $(function () {
           vInputPosType.forEach(function(vPosType, pos) {
             vPosType.addEventListener('change', function() {
                  var result = $(vPosType).val();
+                 var vId = "#" + $(vPosType)[0].id +" option:selected"
+                 var vPosName =$(vId).data("typename");
                  console.dir("result::" + result);
                  var vElement = document.getElementById("input_viewer_pos_type-" + gClickPos)
                  vElement.value = result;
-//                 var vElementTypeName = document.getElementById("input_viewer_pos_type_name-" + gClickPos)
-//                 vElementTypeName.value = result;
-
-                 vExbViewerData[pos].viewType = result;
+                 var vElementTypeName = document.getElementById("input_viewer_pos_type_name-" + gClickPos)
+                 vElementTypeName.value = vPosName;
+                 vExbViewerData[pos].viewType = vPosName;
                  reloadManager();
             });
           });

@@ -118,7 +118,7 @@ viewType: Seq[ViewType]
 
 						<!-- viewer_pos_floor  -->
 						<td class="item viewer__posFloor--frame" style="width: 10%;text-align:  center;">
-							<input class=" form-control input-sm" type="text" data-type = "floor-form" id="input_viewer_pos_floor-@viewer.exb_id" value="@viewer.floor_id" name="viewerPosFloor[@i]">
+							<input class="hidden form-control input-sm" type="text" data-type = "floor-form" id="input_viewer_pos_floor-@viewer.exb_id" value="@viewer.floor_id" name="viewerPosFloor[@i]">
 
 							<select id="input-floor-category-@viewer.exb_id" class="exb__select--category inputFloor">
 								@mapViewer.zipWithIndex.map { case(map, i) =>
@@ -129,11 +129,11 @@ viewType: Seq[ViewType]
 
 						<!-- viewer_pos_type  -->
 						<td class="item viewer__posType--frame" style="width: 10%;text-align:  center;">
-							<input class="form-control input-sm" type="text" data-type = "type-form" id="input_viewer_pos_type-@viewer.exb_id" value="@viewer.view_type_id" name="viewerPosType[@i]">
-							<input class="form-control input-sm " type="text" data-type = "type-form" id="input_viewer_pos_type_name-@viewer.exb_id" value="@viewer.view_type_name">
+							<input class="hidden form-control input-sm" type="text" data-type = "type-form" id="input_viewer_pos_type-@viewer.exb_id" value="@viewer.view_type_id" name="viewerPosType[@i]">
+							<input class="hidden form-control input-sm " type="text" data-type = "type-form" id="input_viewer_pos_type_name-@viewer.exb_id" value="@viewer.view_type_name">
 							<select id="input-view-category-@i" class="exb__select--category inputPosType">
 								@viewType.zipWithIndex.map { case(view, i) =>
-								<option value="@view.view_type_id"  @{if(view.view_type_name == viewer.view_type_name) "selected" else ""}>@view.view_type_name</option>
+								<option value="@view.view_type_id" data-typename="@view.view_type_name"  @{if(view.view_type_name == viewer.view_type_name) "selected" else ""}>@view.view_type_name</option>
 								}
 							</select>
 						</td>
