@@ -6,7 +6,9 @@ function showExbModal(exbId){
         $('#inputExbId').val('');
         $('#inputDeviceId').val('');
         $('#inputPreDeviceId').val('');
+        $('#inputPosName').val('');
         $('#inputDeviceNo').val('');
+        $('#inputDeviceName').val('');
         $("#PD_FLOOR").val(-1).prop("selected", true);
         $('#setupFloorId').val(-1);
 

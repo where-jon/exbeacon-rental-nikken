@@ -90,7 +90,7 @@
                 <form id="exbForm" name="exbForm" enctype="multipart/form-data" class="form-horizontal" enctype="multipart/form-data" class="form-horizontal" method="post" action="@controllers.cms.routes.ExbManage.exbUpdate.path">
                     @CSRF.formField
                     <input type="hidden" id="inputExbId" name="inputExbId">
-                    <input type="" id="inputPreDeviceId" name="inputPreDeviceId">
+                    <input type="hidden" id="inputPreDeviceId" name="inputPreDeviceId">
                     <div class="modal-header">@Messages("lang.cms.exbManage.exbUpdate.popup.title")</div>
                     <div class="modal-body">
                         <!--デバイスID-->
