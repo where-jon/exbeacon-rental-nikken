@@ -74,7 +74,7 @@ class ItemCarManage @Inject()(
       , "inputCarId" -> text
       , "inputCarNo" -> text.verifying(Messages("error.cms.CarManage.update.inputCarNo.empty"), {!_.isEmpty})
       , "inputCarBtxId" -> text.verifying(Messages("error.cms.CarManage.update.inputCarBtxId.empty"), {_.matches("^[0-9]+$")})
-      , "inputCarKeyBtxId" -> text.verifying(Messages("error.cms.CarManage.update.inputCarBtxId.empty"), {!_.isEmpty})
+      , "inputCarKeyBtxId" -> text
       , "inputCarTypeName" -> text
       , "inputCarTypeId" -> text.verifying(Messages("error.cms.CarManage.update.inputCarTypeId.empty"), {_.matches("^[0-9]+$")})
       , "inputCarName" -> text.verifying(Messages("error.cms.CarManage.update.inputCarName.empty"), {!_.isEmpty})
@@ -93,7 +93,7 @@ class ItemCarManage @Inject()(
 
       // 鍵Tag IDが「無」の場合の対処
       var carKeyBtxId = f.inputCarKeyBtxId
-      if (carKeyBtxId == "無") {
+      if (carKeyBtxId == "無" || carKeyBtxId.isEmpty) {
         carKeyBtxId = "-1"
       } else {
         if (!carKeyBtxId.matches("^[-0-9]+$")) {

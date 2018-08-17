@@ -156,6 +156,7 @@ var floorFrame = $('#car_type');
                $('#inputCarKeyBtxId').val("無");
                 ele.readOnly = true;
             }else{
+                $('#inputCarKeyBtxId').val("");
                 ele.readOnly = false;
             }
         });
