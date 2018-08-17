@@ -5,7 +5,10 @@ function showExbModal(exbId){
         // 新規
         $('#inputExbId').val('');
         $('#inputDeviceId').val('');
+        $('#inputPreDeviceId').val('');
+        $('#inputPosName').val('');
         $('#inputDeviceNo').val('');
+        $('#inputDeviceName').val('');
         $("#PD_FLOOR").val(-1).prop("selected", true);
         $('#setupFloorId').val(-1);
 
@@ -17,6 +20,7 @@ function showExbModal(exbId){
         $('.cloned').remove();
         $('#inputExbId').val(exbId);
         $('#inputDeviceId').val($('#'+exbId).find('.deviceId').text());
+        $('#inputPreDeviceId').val($('#'+exbId).find('.deviceId').text());
         $('#inputDeviceNo').val($('#'+exbId).find('.deviceNo').text());
         $('#inputDeviceName').val($('#'+exbId).find('.deviceName').text());
         $('#inputPosName').val($('#'+exbId).find('.posName').text());

@@ -314,13 +314,13 @@ error.cms.floorManage.floorUpdate.inputDisplayOrder.duplicate=表示順「{0}」
 lang.cms.exbManage.title=EXB管理
 
 lang.cms.exbManage.exbId =EXB_ID
-lang.cms.exbManage.deviceId=デバイスID
+lang.cms.exbManage.deviceId=設置場所番号（連番）
 lang.cms.exbManage.deviceId.popup.placeholder=1
 lang.cms.exbManage.deviceNo=デバイス番号
 lang.cms.exbManage.deviceNo.popup.placeholder=1
 lang.cms.exbManage.deviceName=デバイス名
 lang.cms.exbManage.deviceName.popup.placeholder=Beacon名
-lang.cms.exbManage.posName=場所名
+lang.cms.exbManage.posName=設置場所名
 lang.cms.exbManage.posName.popup.placeholder=1F 会議室
 lang.cms.exbManage.setupFloorId=設置フロアID
 lang.cms.exbManage.setupFloorName=設置フロア名
@@ -338,18 +338,8 @@ error.cms.exbManage.exbUpdate.inputDeviceNo.empty=デバイスNOは半角数字�
 error.cms.exbManage.exbUpdate.inputDeviceName.empty=デバイス名を入力してください。
 error.cms.exbManage.exbUpdate.inputPosName.empty=場所名を入力してください。
 error.cms.exbManage.exbUpdate.setupFloorId.empty=設置フロアIDは半角数字で入力してください。
-
+error.cms.exbManage.exbUpdate.setupNumCheck.duplicate=設置場所番号「{0}」はすでに登録されてます。
 success.cms.exbManage.exbUpdate=EXB情報を更新しました。
-
-#error.cms.exbManage.delete.exb=EXBが設置されてるため、削除できません。
-#error.cms.exbManage.exbUpdate.inputFloorName.empty=EXB名を入力してください。
-#error.cms.exbManage.exbUpdate.displayOrder.empty=表示順を数字で入力して下さい。
-
-
-#lang.cms.floorManage.floor.list.header.title=フロア
-#lang.cms.floorManage.floor.list.header.deviceNo=EXBeaconデバイスNo
-#lang.cms.floorManage.floorUpdate.popup.deviceNo=EXBeaconデバイスNo
-#lang.cms.floorManage.floorUpdate.popup.deviceNo.placeholder=半角数字のみ
 
 # CMS文字列（作業車・立馬管理）
 lang.cms.itemCarManage.title=作業車・立馬管理
