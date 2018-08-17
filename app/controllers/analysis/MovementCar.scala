@@ -351,7 +351,8 @@ class MovementCar @Inject()(config: Configuration
     movementCarSearchForm.bindFromRequest.fold(
       formWithErrors =>
         Redirect(routes.MovementCar.index())
-          .flashing(ERROR_MSG_KEY -> Messages(formWithErrors.errors.map(_.message +"<br>").mkString("\n"))),
+          //.flashing(ERROR_MSG_KEY -> Messages(formWithErrors.errors.map(_.message +"<br>").mkString("\n"))),  //herokuで動かない
+            .flashing(ERROR_MSG_KEY -> Messages("error.analysis.movementCar.search.date.empty")),
       searchForm => {
         val placeId = super.getCurrentPlaceId
         //検索側データ取得
