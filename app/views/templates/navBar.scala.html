@@ -12,24 +12,21 @@
     </div>
     <div class="navbar-top navbar-fixed-top">
         <ul class="nav navbar-nav" style="padding-left:30px">
-            <!-- Temporary material management -->
             <li class="pull-left">
                 @if(request.path contains "/site/") {
-                    <a class="text-center tabSelected menu-title"><i class="fa fa-eye"></i>仮設材管理</a>
+                    <a class="text-center tabSelected menu-title"><i class="fa fa-eye"></i>@Messages("lang.navbar.tab.temporaryMaterialManagement")</a>
                 }else{
-                    <a href="/site/workPlace" class="text-center tab menu-title"><i class="fa fa-eye"></i>@Messages("仮設材管理")</a>
+                    <a href="/site/workPlace" class="text-center tab menu-title"><i class="fa fa-eye"></i>@Messages("lang.navbar.tab.temporaryMaterialManagement")</a>
                 }
             </li>
             @if(user.services.contains("level2") || user.services.contains("level3") || user.services.contains("master") ) {
-                <!-- analysis -->
                 <li class="pull-left">
                     @if(request.path contains "/analysis/") {
-                        <a class="text-center tabSelected"><i class="fa fa-bar-chart"></i>@Messages("分析")</a>
+                        <a class="text-center tabSelected"><i class="fa fa-bar-chart"></i>@Messages("lang.navbar.tab.analysis")</a>
                     }else{
-                        <a href="/analysis/movementCar" class="text-center tab"><i class="fa fa-bar-chart"></i>@Messages("分析")</a>
+                        <a href="/analysis/movementCar" class="text-center tab"><i class="fa fa-bar-chart"></i>@Messages("lang.navbar.tab.analysis")</a>
                     }
                 </li>
-                <!-- maintenance -->
                 <li class="pull-left">
                     @if(
                         (request.path contains "/cms/carManage") ||
@@ -38,14 +35,13 @@
                         (request.path contains "/cms/companyManage") ||
                         (request.path contains "/cms/accountManage")
                     ) {
-                        <a class="text-center tabSelected"><i class="fa fa-gear"></i>@Messages("メンテナンス")</a>
+                        <a class="text-center tabSelected"><i class="fa fa-gear"></i>@Messages("lang.navbar.tab.maintenance")</a>
                     }else{
-                        <a href="/cms/carManage" class="text-center tab"><i class="fa fa-gear"></i>@Messages("メンテナンス")</a>
+                        <a href="/cms/carManage" class="text-center tab"><i class="fa fa-gear"></i>@Messages("lang.navbar.tab.maintenance")</a>
                     }
                 </li>
             }
             @if(user.services.contains("level3") || user.services.contains("master") ) {
-                <!-- system management -->
                 <li class="pull-left">
                     @if(
                         (request.path contains "/cms/floorManage") ||
@@ -53,23 +49,22 @@
                         (request.path contains "/cms/exbManage") ||
                         (request.path contains "/manage/exbViewerManager")
                     ) {
-                        <a class="text-center tabSelected"><i class="fa fa-wrench"></i>@Messages("システム管理")</a>
+                        <a class="text-center tabSelected"><i class="fa fa-wrench"></i>@Messages("lang.navbar.tab.systemManagement")</a>
                     }else{
-                        <a href="/cms/floorManage" class="text-center tab"><i class="fa fa-wrench"></i>@Messages("システム管理")</a>
+                        <a href="/cms/floorManage" class="text-center tab"><i class="fa fa-wrench"></i>@Messages("lang.navbar.tab.systemManagement")</a>
                     }
                 </li>
             }
             @if(user.services.contains("master")) {
-                <!-- Tenant management -->
                 <li class="pull-left">
                     @if(
                         (request.path contains "/cms/placeManage") ||
                         (request.path contains "/cms/sortPlaceListWith/") ||
                         (request.path contains "/change-password")
                     ) {
-                        <a class="text-center tabSelected"><i class="fa fa-building"></i>@Messages("lang.cms.placeManage.title")</a>
+                        <a class="text-center tabSelected"><i class="fa fa-building"></i>@Messages("lang.navbar.tab.tenantManagement")</a>
                     }else{
-                        <a href="/cms/placeManage" class="text-center tab"><i class="fa fa-building"></i>@Messages("lang.cms.placeManage.title")</a>
+                        <a href="/cms/placeManage" class="text-center tab"><i class="fa fa-building"></i>@Messages("lang.navbar.tab.tenantManagement")</a>
                     }
                 </li>
             }
