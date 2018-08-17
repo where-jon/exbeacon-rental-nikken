@@ -2,14 +2,29 @@
 @import controllers.routes
 
 <meta charset="utf-8"/>
-<title>仮設材管理システム</title>
+<title>仮設材管理システム - @title</title>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<script src="@routes.MyAssets.lib("jquery/jquery.min.js")" type="text/javascript"></script>
-<script src="@routes.MyAssets.lib("bootstrap/js/bootstrap.min.js")" type="text/javascript"></script>
-<link rel="shortcut icon" type="image/png" href="@routes.MyAssets.img("favicon.png")">
-<link rel="stylesheet" media="screen" href="@routes.MyAssets.lib("bootstrap/css/bootstrap.min.css")">
-<link rel="stylesheet" media="screen" href="@routes.MyAssets.lib("fontawesome/css/font-awesome.min.css")">
-<link rel="stylesheet" href="@routes.MyAssets.css("org.css")"/>
-<link rel="stylesheet" href="@routes.MyAssets.css("mainMenu.css")"/>
-<script src="@routes.MyAssets.js("common.js")"/></script>
+<link rel="shortcut icon" type="image/png" href='@routes.MyAssets.img("favicon.png")'>
+<link rel="stylesheet" media="screen" href='@routes.MyAssets.lib("bootstrap/css/bootstrap.min.css")'>
+<link rel="stylesheet" media="screen" href='@routes.MyAssets.lib("fontawesome/css/font-awesome.min.css")'>
+<link rel="stylesheet" href='@routes.MyAssets.css("org.css")'>
+<link rel="stylesheet" href='@routes.MyAssets.css("mainMenu.css")'>
+<link rel="stylesheet" href='@routes.MyAssets.css("sidebar/sidebar.css")'>
+<link rel="stylesheet" href='@routes.MyAssets.css("sidebar/drawer.css")'>
+<link rel="stylesheet" href='@routes.MyAssets.css("datepicker/bootstrap-datetimepicker.css")'>
+<link rel="stylesheet" href='@routes.MyAssets.css("common/main.css")'/>
+<script type="text/javascript" src='@routes.MyAssets.lib("jquery/jquery.min.js")'></script>
+<script type="text/javascript" src='@routes.MyAssets.lib("bootstrap/js/bootstrap.min.js")'></script>
+<script type="text/javascript" src='@routes.MyAssets.js("common.js")'/></script>
+<script type="text/javascript" src='@routes.MyAssets.js("common/g.common.js")'></script>
+<script type="text/javascript" src='@routes.MyAssets.js("common/g.postion.js")'></script>
+<script type="text/javascript" src='@routes.MyAssets.js("common/string-ja.js")'></script>
+<script type="text/javascript" src='@routes.MyAssets.js("common/bootbox.min.js")'></script>
+<script type="text/javascript" src='@routes.MyAssets.js("common/classie.js")'></script>
+<script type="text/javascript" src='@routes.MyAssets.js("sidebar/iscroll.min.js")'></script>
+<script type="text/javascript" src='@routes.MyAssets.js("sidebar/drawer.min.js")'></script>
+<script type="text/javascript" src='@routes.MyAssets.js("sidebar/drawer-setting.js")'></script>
+<script type="text/javascript" src='@routes.MyAssets.js("datepicker/moment.min.js")'></script>
+<script type="text/javascript" src='@routes.MyAssets.js("datepicker/moment-with-locales.js")'></script>
+<script type="text/javascript" src='@routes.MyAssets.js("datepicker/bootstrap-datetimepicker.js")'></script>
