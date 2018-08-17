@@ -39,11 +39,11 @@
                                     <tr>
                                         <th class="tableTh deviceTh">@Messages("lang.cms.exbManage.exbId")</th>
                                         <th class="tableTh floorTh">@Messages("lang.cms.exbManage.deviceId")</th>
+                                        <th class="tableTh deviceTh">@Messages("lang.cms.exbManage.posName")</th>
+                                        <th class="tableTh deviceTh">@Messages("lang.cms.exbManage.setupFloorName")</th>
+                                        <th class="tableTh deviceTh">@Messages("lang.cms.exbManage.setupFloorId")</th>
                                         <th class="tableTh deviceTh">@Messages("lang.cms.exbManage.deviceNo")</th>
                                         <th class="tableTh deviceTh">@Messages("lang.cms.exbManage.deviceName")</th>
-                                        <th class="tableTh deviceTh">@Messages("lang.cms.exbManage.posName")</th>
-                                        <th class="tableTh deviceTh">@Messages("lang.cms.exbManage.setupFloorId")</th>
-                                        <th class="tableTh deviceTh">@Messages("lang.cms.exbManage.setupFloorName")</th>
                                     </tr>
                                 </thead>
                                 <tbody class="sortable">
@@ -51,15 +51,15 @@
                                         <tr class="rowColor rowHover" id="@exb.exb_id" data-exbId="@exb.exb_id" data-floorId="@exb.floor_id">
                                             <td class="itemTd text-center ">@exb.exb_id</td>
                                             <td class="itemTd text-center deviceId">@exb.exb_device_id</td>
-                                            <td class="itemTd text-center deviceNo">@exb.exb_device_no</td>
-                                            <td class="itemTd text-center deviceName">@exb.exb_device_name</td>
                                             <td class="itemTd text-center posName">@exb.exb_pos_name</td>
                                             @if(exb.floor_id == -1){
-                                                <td class="itemTd text-center setupFloorId">未設置</td>
+                                            <td class="itemTd text-center setupFloorId">未設置</td>
                                             }else{
-                                                <td class="itemTd text-center setupFloorId">@exb.floor_id</td>
+                                            <td class="itemTd text-center setupFloorId">@exb.floor_id</td>
                                             }
                                             <td class="itemTd text-center ">@exb.floor_name</td>
+                                            <td class="itemTd text-center deviceNo">@exb.exb_device_no</td>
+                                            <td class="itemTd text-center deviceName">@exb.exb_device_name</td>
                                         </tr>
                                     }
                                 </tbody>
@@ -90,6 +90,7 @@
                 <form id="exbForm" name="exbForm" enctype="multipart/form-data" class="form-horizontal" enctype="multipart/form-data" class="form-horizontal" method="post" action="@controllers.cms.routes.ExbManage.exbUpdate.path">
                     @CSRF.formField
                     <input type="hidden" id="inputExbId" name="inputExbId">
+                    <input type="" id="inputPreDeviceId" name="inputPreDeviceId">
                     <div class="modal-header">@Messages("lang.cms.exbManage.exbUpdate.popup.title")</div>
                     <div class="modal-body">
                         <!--デバイスID-->
@@ -97,20 +98,6 @@
                             <label class="control-label col-xs-5">@Messages("lang.cms.exbManage.deviceId")</label>
                             <div class="col-xs-2" style="padding-left: 0px;padding-right: 0px;">
                                 <input type="number" value = null name="inputDeviceId" id="inputDeviceId" class="form-control" placeholder="@Messages("lang.cms.exbManage.deviceId.popup.placeholder")">
-                            </div>
-                        </div>
-                        <!--デバイス番号-->
-                        <div class="form-group">
-                            <label class="control-label col-xs-5">@Messages("lang.cms.exbManage.deviceNo")</label>
-                            <div class="col-xs-2" style="padding-left: 0px;padding-right: 0px;">
-                                <input type="number" value = null name="inputDeviceNo" id="inputDeviceNo" class="form-control" placeholder="@Messages("lang.cms.exbManage.deviceNo.popup.placeholder")">
-                            </div>
-                        </div>
-                        <!--デバイス名-->
-                        <div class="form-group">
-                            <label class="control-label col-xs-5">@Messages("lang.cms.exbManage.deviceName")</label>
-                            <div class="col-xs-2" style="padding-left: 0px;padding-right: 0px;">
-                                <input type="text" name="inputDeviceName" id="inputDeviceName" class="form-control" placeholder="@Messages("lang.cms.exbManage.deviceName.popup.placeholder")">
                             </div>
                         </div>
                         <!--場所名-->
@@ -126,10 +113,25 @@
                             <select id="PD_FLOOR" style="height: 30px; width: 100px;">
                                 <option value="-1">未選択</option>
                                 @floorInfoList.zipWithIndex.map { case(floor, i) =>
-                                     <option value="@floor.floor_id">@floor.floor_name</option>
+                                <option value="@floor.floor_id">@floor.floor_name</option>
                                 }
                             </select>
                             <input class="hidden form-control" type="number" name="setupFloorId" id="setupFloorId" value ="-1" >
+                        </div>
+
+                        <!--デバイス番号-->
+                        <div class="form-group">
+                            <label class="control-label col-xs-5">@Messages("lang.cms.exbManage.deviceNo")</label>
+                            <div class="col-xs-2" style="padding-left: 0px;padding-right: 0px;">
+                                <input type="number" value = null name="inputDeviceNo" id="inputDeviceNo" class="form-control" placeholder="@Messages("lang.cms.exbManage.deviceNo.popup.placeholder")">
+                            </div>
+                        </div>
+                        <!--デバイス名-->
+                        <div class="form-group">
+                            <label class="control-label col-xs-5">@Messages("lang.cms.exbManage.deviceName")</label>
+                            <div class="col-xs-2" style="padding-left: 0px;padding-right: 0px;">
+                                <input type="text" name="inputDeviceName" id="inputDeviceName" class="form-control" placeholder="@Messages("lang.cms.exbManage.deviceName.popup.placeholder")">
+                            </div>
                         </div>
 
                         <div class="form-group hidden" style="margin-bottom: 5px;">
