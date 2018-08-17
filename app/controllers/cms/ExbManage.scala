@@ -45,7 +45,7 @@ class ExbManage @Inject()(config: Configuration
       , "inputDeviceNo" -> text.verifying(Messages("error.cms.exbManage.exbUpdate.inputDeviceNo.empty"), {_.matches("^[0-9]+$")})
       , "inputDeviceName" -> text.verifying(Messages("error.cms.exbManage.exbUpdate.inputDeviceName.empty"), {!_.isEmpty})
       , "inputPosName" -> text.verifying(Messages("error.cms.exbManage.exbUpdate.inputPosName.empty"), {!_.isEmpty})
-      , "setupFloorId" -> text.verifying(Messages("error.cms.exbManage.exbUpdate.setupFloorId.empty"), {_.matches("^[-1-9]+$")})
+      , "setupFloorId" -> text
     )(ExbUpdateForm.apply)(ExbUpdateForm.unapply))
 
     // フォームの取得

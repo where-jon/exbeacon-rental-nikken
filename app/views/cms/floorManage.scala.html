@@ -89,6 +89,7 @@ floorInfoList: Seq[FloorInfoData]
                 <form id="floorForm" name="floorForm" enctype="multipart/form-data" class="form-horizontal" enctype="multipart/form-data" class="form-horizontal" method="post" action="@controllers.cms.routes.FloorManage.floorUpdate.path">
                     @CSRF.formField
                     <input type="hidden" id="inputFloorId" name="inputFloorId">
+                    <input type="hidden" id="inputPreDisplayOrder" name="inputPreDisplayOrder">
                     <input type="hidden" id="inputExbDeviceNoListComma" name="inputExbDeviceNoListComma">
                     <div class="modal-header">@Messages("lang.cms.floorManage.floorUpdate.popup.title")</div>
                     <div class="modal-body">
@@ -96,7 +97,7 @@ floorInfoList: Seq[FloorInfoData]
                         <div class="form-group">
                             <label class="control-label col-xs-5">@Messages("lang.cms.floorManage.floorUpdate.popup.displayOrder")</label>
                             <div class="col-xs-2" style="padding-left: 0px;padding-right: 0px;">
-                                <input type="text" name="inputDisplayOrder" id="inputDisplayOrder" class="form-control" placeholder="@Messages("lang.cms.floorManage.floorUpdate.popup.displayOrder.placeholder")">
+                                <input type="number" name="inputDisplayOrder" id="inputDisplayOrder" class="form-control" placeholder="@Messages("lang.cms.floorManage.floorUpdate.popup.displayOrder.placeholder")">
                             </div>
                         </div>
 

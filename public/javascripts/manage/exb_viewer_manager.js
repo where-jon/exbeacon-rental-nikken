@@ -48,9 +48,11 @@ $(function () {
         var vMapElement = document.getElementsByClassName("level")
             for (var i = 0;i< vMapElement.length; ++i){
                 vMapElement[i].addEventListener('click', function(event) {
-                        // 設定pullDown位置を表示
-                       var getDisplayOrder =  document.getElementsByClassName("item-" + gClickPos)[0].textContent
-                        $('#input-floor-category-' + gClickPos ).val(getDisplayOrder);
+                        if(gClickPos!=null){
+                            // 設定pullDown位置を表示
+                           var getDisplayOrder =  document.getElementsByClassName("item-" + gClickPos)[0].textContent
+                            $('#input-floor-category-' + gClickPos ).val(getDisplayOrder);
+                        }
                        if(preClickPos == gClickPos){
                             //alert("同じところ")
                             var vTempElement = document.getElementById("viewer-list-" + gClickPos)

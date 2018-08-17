@@ -3,7 +3,7 @@ package controllers.cms
 import com.mohiva.play.silhouette.api.Silhouette
 import controllers.{BaseController, site}
 import javax.inject.{Inject, Singleton}
-import models.ItemType
+import models.{ItemType, ItemTypeOrder}
 import play.api._
 import play.api.data.Form
 import play.api.data.Forms.{mapping, _}
@@ -35,16 +35,17 @@ case class CarDeleteForm(
 )
 
 @Singleton
-class CarManage @Inject()(config: Configuration
-                          , val silhouette: Silhouette[MyEnv]
-                          , val messagesApi: MessagesApi
-                          , carDAO: models.itemCarDAO
-                          , exbDAO: models.ExbDAO
-                          , itemTypeDAO:models.ItemTypeDAO
-                               ) extends BaseController with I18nSupport {
+class ItemCarManage @Inject()(
+  config: Configuration
+  , val silhouette: Silhouette[MyEnv]
+  , val messagesApi: MessagesApi
+  , carDAO: models.itemCarDAO
+  , exbDAO: models.ExbDAO
+  , itemTypeDAO:models.ItemTypeDAO
+     ) extends BaseController with I18nSupport {
 
   var ITEM_TYPE_FILTER = 0;
-  var itemTypeList :Seq[ItemType] = Seq.empty; // 仮設材種別
+  var itemTypeList :Seq[ItemTypeOrder] = Seq.empty; // 仮設材種別
 
   /** 初期表示 */
   def index = SecuredAction { implicit request =>
@@ -55,19 +56,14 @@ class CarManage @Inject()(config: Configuration
       val placeId = super.getCurrentPlaceId
       // 業者情報
       val carList = carDAO.selectCarMasterInfo(placeId = placeId)
-      //検索側データ取得
-      getSearchData(placeId)
 
-      Ok(views.html.cms.carManage(ITEM_TYPE_FILTER, carList, itemTypeList, placeId))
+      /*仮設材種別取得*/
+      itemTypeList = itemTypeDAO.selectItemCarInfoOrder(placeId);
+
+      Ok(views.html.cms.itemCarManage(ITEM_TYPE_FILTER, carList, itemTypeList, placeId))
     }else {
       Redirect(site.routes.WorkPlace.index)
     }
-  }
-
-  /** 　検索側データ取得 */
-  def getSearchData(_placeId:Integer): Unit = {
-    /*仮設材種別取得*/
-    itemTypeList = itemTypeDAO.selectItemCarInfo(_placeId);
   }
 
   /** 登録・更新 */
@@ -89,7 +85,7 @@ class CarManage @Inject()(config: Configuration
     val form = inputForm.bindFromRequest
     if (form.hasErrors){
       // エラーでリダイレクト遷移
-      Redirect(routes.CarManage.index()).flashing(ERROR_MSG_KEY -> form.errors.map(_.message).mkString(HTML_BR))
+      Redirect(routes.ItemCarManage.index()).flashing(ERROR_MSG_KEY -> form.errors.map(_.message).mkString(HTML_BR))
     }else{
 
       var errMsg = Seq[String]()
@@ -128,7 +124,7 @@ class CarManage @Inject()(config: Configuration
 
         if(errMsg.isEmpty == false){
           // エラーで遷移
-          Redirect(routes.CarManage.index).flashing(ERROR_MSG_KEY -> errMsg.mkString(HTML_BR))
+          Redirect(routes.ItemCarManage.index).flashing(ERROR_MSG_KEY -> errMsg.mkString(HTML_BR))
         }else{
           // DB処理
           carDAO.insert(
@@ -140,7 +136,7 @@ class CarManage @Inject()(config: Configuration
             , f.inputCarNote
             , f.inputPlaceId.toInt)
 
-          Redirect(routes.CarManage.index)
+          Redirect(routes.ItemCarManage.index)
             .flashing(SUCCESS_MSG_KEY -> Messages("success.cms.CarManage.update"))
         }
 
@@ -152,6 +148,12 @@ class CarManage @Inject()(config: Configuration
 //        if(carList.length > 0){
 //          errMsg :+= Messages("error.cms.CarManage.update.inputCarNo.duplicate", f.inputCarNo)
 //        }
+
+        // 予約情報テーブルに作業車・立馬IDが存在していないか
+        val itemCarReserveList = carDAO.selectCarReserveCheck(super.getCurrentPlaceId, f.inputCarId.toInt)
+        if(itemCarReserveList.length > 0){
+          errMsg :+= Messages("error.cms.ItemOtherManage.update.inputItemOtherIdReserve.use.noChange", f.inputCarId)
+        }
 
         // 変更前タグ情報
         val preCarInfo = carDAO.selectCarInfo(super.getCurrentPlaceId, "", Option(f.inputCarId.toInt)).last
@@ -210,7 +212,7 @@ class CarManage @Inject()(config: Configuration
 
         if(errMsg.isEmpty == false){
           // エラーで遷移
-          Redirect(routes.CarManage.index)
+          Redirect(routes.ItemCarManage.index)
             .flashing(ERROR_MSG_KEY -> errMsg.mkString(HTML_BR))
         }else{
           // DB処理
@@ -227,7 +229,7 @@ class CarManage @Inject()(config: Configuration
             , preCarInfo.itemCarKeyBtxId
           )
 
-          Redirect(routes.CarManage.index)
+          Redirect(routes.ItemCarManage.index)
             .flashing(SUCCESS_MSG_KEY -> Messages("success.cms.CarManage.update"))
         }
       }
@@ -250,7 +252,7 @@ class CarManage @Inject()(config: Configuration
       // エラーメッセージ
       val errMsg = form.errors.map(_.message).mkString(HTML_BR)
       // リダイレクトで画面遷移
-      Redirect(routes.CarManage.index).flashing(ERROR_MSG_KEY -> errMsg)
+      Redirect(routes.ItemCarManage.index).flashing(ERROR_MSG_KEY -> errMsg)
     } else {
       val f = form.get
 
@@ -266,15 +268,15 @@ class CarManage @Inject()(config: Configuration
       if (carList.length <= 0) {
         errMsg :+= Messages("error.cms.CarManage.delete.inputCarId.empty", f.deleteCarId)
       }
-      if(errMsg.isEmpty == false) {
+      if(errMsg.nonEmpty) {
         // エラーで遷移
-        Redirect(routes.CarManage.index)
+        Redirect(routes.ItemCarManage.index)
           .flashing(ERROR_MSG_KEY -> errMsg.mkString(HTML_BR))
       }else{
         // 削除
         carDAO.delete(f.deleteCarId.toInt, super.getCurrentPlaceId)
         // リダイレクト
-        Redirect(routes.CarManage.index)
+        Redirect(routes.ItemCarManage.index)
           .flashing(SUCCESS_MSG_KEY -> Messages("success.cms.CarManage.delete"))
       }
     }

@@ -19,7 +19,7 @@ import utils.silhouette.MyEnv
 
 // フォーム定義
 case class FloorDeleteForm(deleteFloorId: String)
-case class FloorUpdateForm(inputFloorId: String,inputDisplayOrder:String,activeFlg:Boolean,inputFloorName: String)
+case class FloorUpdateForm(inputFloorId: String,inputPreDisplayOrder:String,inputDisplayOrder:String,activeFlg:Boolean,inputFloorName: String)
 
 @Singleton
 class FloorManage @Inject()(config: Configuration
@@ -35,10 +35,10 @@ class FloorManage @Inject()(config: Configuration
     // フォームの準備
     val inputForm = Form(mapping(
       "inputFloorId" -> text
-      ,"inputDisplayOrder" -> text.verifying(Messages("error.cms.floorManage.floorUpdate.displayOrder.empty"), {!_.isEmpty})
+      ,"inputPreDisplayOrder" -> text
+      ,"inputDisplayOrder" -> text.verifying(Messages("error.cms.floorManage.floorUpdate.displayOrder.empty"), {_.matches("^[0-9]+$")})
       ,"activeFlg" -> boolean
       , "inputFloorName" -> text.verifying(Messages("error.cms.floorManage.floorUpdate.inputFloorName.empty"), {!_.isEmpty})
-      // , "inputExbDeviceNoListComma" -> text.verifying(Messages("error.cms.floorManage.floorUpdate.inputExbDeviceNoListComma.empty"), {!_.isEmpty})
     )(FloorUpdateForm.apply)(FloorUpdateForm.unapply))
     val placeId = securedRequest2User.currentPlaceId.get
     // フォームの取得
@@ -50,18 +50,31 @@ class FloorManage @Inject()(config: Configuration
       Redirect(routes.FloorManage.index()).flashing(ERROR_MSG_KEY -> errMsg)
     }else{
       val f = form.get
-      if(f.inputFloorId.isEmpty){// 新規フロア登録の場合
-        // DB処理
-        floorDAO.insert(f.inputFloorName,f.inputDisplayOrder.toInt,f.activeFlg,placeId)
-        // 成功で遷移
-        Redirect(routes.FloorManage.index)
-          .flashing(SUCCESS_MSG_KEY -> Messages("success.cms.FloorManage.floorUpdate"))
+      val vDisplayOrderDuplicateCheck =
+      if(f.inputFloorId.isEmpty) {   // 新規の場合チェック必ずチェック
+        floorDAO.floorDisplayOrderCheck(f.inputDisplayOrder.toInt,placeId).length
+      }else if (f.inputPreDisplayOrder!= f.inputDisplayOrder){
+        floorDAO.floorDisplayOrderCheck(f.inputDisplayOrder.toInt,placeId).length
+      }else {
+        0
+      }
+      // 編集の場合前回表示順と現在表示順が違う場合チェックを行う
+      if(vDisplayOrderDuplicateCheck > 0){   //display_order重複判断
+        Redirect(routes.FloorManage.index()).flashing(ERROR_MSG_KEY -> Messages("error.cms.floorManage.floorUpdate.inputDisplayOrder.duplicate",f.inputDisplayOrder.toInt))
+      }else {
+        if(f.inputFloorId.isEmpty){// 新規フロア登録の場合
+          // DB処理
+          floorDAO.insert(f.inputFloorName,f.inputDisplayOrder.toInt,f.activeFlg,placeId)
+          // 成功で遷移
+          Redirect(routes.FloorManage.index)
+            .flashing(SUCCESS_MSG_KEY -> Messages("success.cms.FloorManage.floorUpdate"))
 
-      }else{  // フロア更新の場合 --------------------------
-        // DB処理
-        floorDAO.update(f.inputFloorId.toInt,f.inputFloorName,f.inputDisplayOrder.toInt,f.activeFlg,placeId)
-        Redirect(routes.FloorManage.index)
-          .flashing(SUCCESS_MSG_KEY -> Messages("success.cms.FloorManage.floorUpdate"))
+        }else{  // フロア更新の場合 --------------------------
+          // DB処理
+          floorDAO.update(f.inputFloorId.toInt,f.inputFloorName,f.inputDisplayOrder.toInt,f.activeFlg,placeId)
+          Redirect(routes.FloorManage.index)
+            .flashing(SUCCESS_MSG_KEY -> Messages("success.cms.FloorManage.floorUpdate"))
+        }
       }
     }
   }

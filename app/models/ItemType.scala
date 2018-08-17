@@ -277,11 +277,48 @@ class ItemTypeDAO @Inject() (dbapi: DBApi) {
     }
   }
 
+  /*カテゴリー名が作業車・立馬だけ検索する 順番有り*/
+  def selectItemCarInfoOrder(placeId: Int): Seq[ItemTypeOrder] = {
+    db.withConnection { implicit connection =>
+      val sql = SQL("""
+              select
+                item_type_id
+               , item_type_name
+               , item_type_category_id
+               , item_type_icon_color
+               , item_type_text_color
+               , item_type_row_color
+               , note
+               , cast(dense_rank() over(order by(item_type_id)) as Int) as item_type_order
+               , place_id
+               , active_flg
+              from item_type
+              where place_id = {placeId}
+              and active_flg = true
+              and (item_type_category_id = 0 or item_type_category_id = 1)
+              order by item_type_id;
+              """).on(
+        "placeId" -> placeId
+      )
+      sql.as(simpleOrder.*)
+    }
+  }
+
   /*カテゴリー名がその他だけ検索する 順番有り*/
   def selectItemOtherInfoOrder(placeId: Int): Seq[ItemTypeOrder] = {
     db.withConnection { implicit connection =>
       val sql = SQL("""
-              select item_type_id ,item_type_name ,item_type_category_id ,item_type_icon_color ,item_type_text_color ,item_type_row_color, note , cast(dense_rank() over(order by(item_type_id)) as Int) as item_type_order, place_id , active_flg
+              select
+                item_type_id
+                , item_type_name
+                , item_type_category_id
+                , item_type_icon_color
+                , item_type_text_color
+                , item_type_row_color
+                , note
+                , cast(dense_rank() over(order by(item_type_id)) as Int) as item_type_order
+                , place_id
+                , active_flg
               from item_type
               where place_id = {placeId}
               and active_flg = true
