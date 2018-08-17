@@ -84,7 +84,7 @@ error.cms.floorManage.floorUpdate.delete.empty=削除対象フロアを選択し
 error.cms.CompanyManage.update.inputCompanyName.empty=業者名を入力してください。
 error.cms.CompanyManage.update.inputCompanyName.duplicate=業者名が重複しています。(業者名：{0})
 
-error.cms.CarManage.update.inputCarNo.empty=作業車番号を半角数字で入力してください。
+error.cms.CarManage.update.inputCarNo.empty=作業車・立馬番号を入力してください。
 error.cms.CarManage.update.inputCarBtxId.empty=作業車TxタグNoを半角数字で入力してください。
 error.cms.CarManage.update.inputCarKeyBtxId.empty=鍵TxタグNoを半角数字で入力してください。
 error.cms.CarManage.update.inputCarTypeName.empty=種別を入力してください。
@@ -96,7 +96,7 @@ error.cms.CarManage.update.inputCarKeyBtxId.use=鍵TagIDは既に使用されて
 error.cms.CarManage.update.inputCarIdReserve.use=作業車・立馬IDは既に予約されています。(作業車・立馬ID：{0})
 error.cms.CarManage.update.inputCarBtxId.duplicate=作業車TagIDが重複しています。(作業車:{0})
 error.cms.CarManage.update.inputCarKeyBtxId.duplicate=鍵TagIDが重複しています。(鍵TagID:{0})
-error.cms.CarManage.update.inputBtxId.duplicate=作業車番号が重複しています。(作業車番号：{0})
+error.cms.CarManage.update.inputBtxId.duplicate=作業車・立馬番号が重複しています。(作業車番号：{0})
 error.cms.CarManage.delete.empty=削除対象作業車を選択してください。
 error.cms.CarManage.delete.inputCarIdReserve.use=作業車・立馬IDは既に予約されています。(作業車・立馬ID：{0})
 error.cms.CarManage.delete.inputCarId.empty=作業車・立馬IDは登録されていません。(作業車・立馬ID：{0})
