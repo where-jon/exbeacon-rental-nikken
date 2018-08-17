@@ -11,7 +11,7 @@
 <html lang="ja">
 <head>
     @templates.htmlHead(title = Messages("lang.cms.itemCarManage.title"))
-    <link rel="stylesheet" href="@routes.MyAssets.css("cms/carManage.css")"/>
+    <link rel="stylesheet" href="@routes.MyAssets.css("cms/itemCarManage.css")"/>
     <script type="text/javascript" src="@routes.MyAssets.lib("jquery.tablefix_1.0.1.js")"></script>
     <script></script>
 </head>
@@ -52,7 +52,11 @@
                                     @for(car <- carList){
                                         <tr class="rowColor rowHover" data-carId="@car.itemCarId" id="@car.itemCarId">
                                             <td class="itemTd text-center carBtxId">@car.itemCarBtxId</td>
-                                            <td class="itemTd text-center carKeyBtxId">@car.itemCarKeyBtxId</td>
+                                            @if(car.itemCarKeyBtxId == -1){
+                                                <td class="itemTd text-center carKeyBtxId">無</td>
+                                            }else{
+                                                <td class="itemTd text-center carKeyBtxId">@car.itemCarKeyBtxId</td>
+                                            }
                                             <td class="itemTd text-center carTypeName">@car.itemTypeName</td>
                                             <td hidden class="itemTd text-center carTypeId">@car.itemTypeId</td>
                                             @for(itemTypeOrder <- itemTypeList){

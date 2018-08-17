@@ -84,7 +84,7 @@ error.cms.floorManage.floorUpdate.delete.empty=削除対象フロアを選択し
 error.cms.CompanyManage.update.inputCompanyName.empty=業者名を入力してください。
 error.cms.CompanyManage.update.inputCompanyName.duplicate=業者名が重複しています。(業者名：{0})
 
-error.cms.CarManage.update.inputCarNo.empty=作業車番号を半角数字で入力してください。
+error.cms.CarManage.update.inputCarNo.empty=作業車・立馬番号を入力してください。
 error.cms.CarManage.update.inputCarBtxId.empty=作業車TxタグNoを半角数字で入力してください。
 error.cms.CarManage.update.inputCarKeyBtxId.empty=鍵TxタグNoを半角数字で入力してください。
 error.cms.CarManage.update.inputCarTypeName.empty=種別を入力してください。
@@ -96,7 +96,7 @@ error.cms.CarManage.update.inputCarKeyBtxId.use=鍵TagIDは既に使用されて
 error.cms.CarManage.update.inputCarIdReserve.use=作業車・立馬IDは既に予約されています。(作業車・立馬ID：{0})
 error.cms.CarManage.update.inputCarBtxId.duplicate=作業車TagIDが重複しています。(作業車:{0})
 error.cms.CarManage.update.inputCarKeyBtxId.duplicate=鍵TagIDが重複しています。(鍵TagID:{0})
-error.cms.CarManage.update.inputBtxId.duplicate=作業車番号が重複しています。(作業車番号：{0})
+error.cms.CarManage.update.inputBtxId.duplicate=作業車・立馬番号が重複しています。(作業車番号：{0})
 error.cms.CarManage.delete.empty=削除対象作業車を選択してください。
 error.cms.CarManage.delete.inputCarIdReserve.use=作業車・立馬IDは既に予約されています。(作業車・立馬ID：{0})
 error.cms.CarManage.delete.inputCarId.empty=作業車・立馬IDは登録されていません。(作業車・立馬ID：{0})
@@ -314,13 +314,13 @@ error.cms.floorManage.floorUpdate.inputDisplayOrder.duplicate=表示順「{0}」
 lang.cms.exbManage.title=EXB管理
 
 lang.cms.exbManage.exbId =EXB_ID
-lang.cms.exbManage.deviceId=デバイスID
+lang.cms.exbManage.deviceId=設置場所番号（連番）
 lang.cms.exbManage.deviceId.popup.placeholder=1
 lang.cms.exbManage.deviceNo=デバイス番号
 lang.cms.exbManage.deviceNo.popup.placeholder=1
 lang.cms.exbManage.deviceName=デバイス名
 lang.cms.exbManage.deviceName.popup.placeholder=Beacon名
-lang.cms.exbManage.posName=場所名
+lang.cms.exbManage.posName=設置場所名
 lang.cms.exbManage.posName.popup.placeholder=1F 会議室
 lang.cms.exbManage.setupFloorId=設置フロアID
 lang.cms.exbManage.setupFloorName=設置フロア名
@@ -338,18 +338,8 @@ error.cms.exbManage.exbUpdate.inputDeviceNo.empty=デバイスNOは半角数字�
 error.cms.exbManage.exbUpdate.inputDeviceName.empty=デバイス名を入力してください。
 error.cms.exbManage.exbUpdate.inputPosName.empty=場所名を入力してください。
 error.cms.exbManage.exbUpdate.setupFloorId.empty=設置フロアIDは半角数字で入力してください。
-
+error.cms.exbManage.exbUpdate.setupNumCheck.duplicate=設置場所番号「{0}」はすでに登録されてます。
 success.cms.exbManage.exbUpdate=EXB情報を更新しました。
-
-#error.cms.exbManage.delete.exb=EXBが設置されてるため、削除できません。
-#error.cms.exbManage.exbUpdate.inputFloorName.empty=EXB名を入力してください。
-#error.cms.exbManage.exbUpdate.displayOrder.empty=表示順を数字で入力して下さい。
-
-
-#lang.cms.floorManage.floor.list.header.title=フロア
-#lang.cms.floorManage.floor.list.header.deviceNo=EXBeaconデバイスNo
-#lang.cms.floorManage.floorUpdate.popup.deviceNo=EXBeaconデバイスNo
-#lang.cms.floorManage.floorUpdate.popup.deviceNo.placeholder=半角数字のみ
 
 # CMS文字列（作業車・立馬管理）
 lang.cms.itemCarManage.title=作業車・立馬管理

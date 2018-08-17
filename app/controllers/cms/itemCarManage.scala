@@ -72,9 +72,9 @@ class ItemCarManage @Inject()(
     val inputForm = Form(mapping(
         "inputPlaceId" -> text
       , "inputCarId" -> text
-      , "inputCarNo" -> text.verifying(Messages("error.cms.CarManage.update.inputCarName.empty"), {!_.isEmpty})
+      , "inputCarNo" -> text.verifying(Messages("error.cms.CarManage.update.inputCarNo.empty"), {!_.isEmpty})
       , "inputCarBtxId" -> text.verifying(Messages("error.cms.CarManage.update.inputCarBtxId.empty"), {_.matches("^[0-9]+$")})
-      , "inputCarKeyBtxId" -> text.verifying(Messages("error.cms.CarManage.update.inputCarKeyBtxId.empty"), {_.matches("^[-0-9]+$")})
+      , "inputCarKeyBtxId" -> text.verifying(Messages("error.cms.CarManage.update.inputCarBtxId.empty"), {!_.isEmpty})
       , "inputCarTypeName" -> text
       , "inputCarTypeId" -> text.verifying(Messages("error.cms.CarManage.update.inputCarTypeId.empty"), {_.matches("^[0-9]+$")})
       , "inputCarName" -> text.verifying(Messages("error.cms.CarManage.update.inputCarName.empty"), {!_.isEmpty})
@@ -86,151 +86,166 @@ class ItemCarManage @Inject()(
     if (form.hasErrors){
       // エラーでリダイレクト遷移
       Redirect(routes.ItemCarManage.index()).flashing(ERROR_MSG_KEY -> form.errors.map(_.message).mkString(HTML_BR))
-    }else{
+    }else {
 
       var errMsg = Seq[String]()
       val f = form.get
 
-      if(f.inputCarBtxId == f.inputCarKeyBtxId){
-        errMsg :+= Messages("error.cms.CarManage.update.inputCarBtxId.inputCarKeyBtxId.duplicate", f.inputCarNo)
+      // 鍵Tag IDが「無」の場合の対処
+      var carKeyBtxId = f.inputCarKeyBtxId
+      if (carKeyBtxId == "無") {
+        carKeyBtxId = "-1"
+      } else {
+        if (!carKeyBtxId.matches("^[-0-9]+$")) {
+          errMsg :+= Messages("error.cms.CarManage.update.inputCarKeyBtxId.empty")
+        } else {
+          if (f.inputCarBtxId == carKeyBtxId) {
+            errMsg :+= Messages("error.cms.CarManage.update.inputCarBtxId.inputCarKeyBtxId.duplicate", f.inputCarNo)
+          }
+        }
       }
 
       // 種別存在チェック
       val itemTypeList = itemTypeDAO.selectItemTypeCheck(f.inputCarTypeName, f.inputPlaceId.toInt)
-      if(itemTypeList.isEmpty){
+      if (itemTypeList.isEmpty) {
         errMsg :+= Messages("error.cms.CarManage.update.NotTypeName", f.inputCarNo)
       }
+      if (errMsg.isEmpty == false) {
+        // エラーで遷移
+        Redirect(routes.ItemCarManage.index).flashing(ERROR_MSG_KEY -> errMsg.mkString(HTML_BR))
+      } else {
 
-      if(f.inputCarId.isEmpty){
-        // 新規登録の場合 --------------------------
-        // 作業車番号重複チェック
-        val carList = carDAO.selectCarInfo(super.getCurrentPlaceId, f.inputCarNo)
-//        if(carList.length > 0){
-//          errMsg :+= Messages("error.cms.CarManage.update.inputCarNo.duplicate", f.inputCarNo)
-//        }
+        if (f.inputCarId.isEmpty) {
+          // 新規登録の場合 --------------------------
+          // 作業車番号重複チェック
+          val carList = carDAO.selectCarInfo(super.getCurrentPlaceId, f.inputCarNo)
+          //        if(carList.length > 0){
+          //          errMsg :+= Messages("error.cms.CarManage.update.inputCarNo.duplicate", f.inputCarNo)
+          //        }
 
-        // 作業車・立馬TxビーコンIDが存在しないか
-        val chkCarTagIdInf = carDAO.selectCarTagCheck(super.getCurrentPlaceId, None, f.inputCarBtxId.toInt)
-        if(chkCarTagIdInf.length > 0) {
-          errMsg :+= Messages("error.cms.CarManage.update.inputCarBtxId.use", f.inputCarBtxId)
-        }
-        // 作業車・立馬鍵TxビーコンIDが存在しないか
-        if(f.inputCarKeyBtxId.toInt > 0) {
-          val chkCarTagIdInf = carDAO.selectCarTagCheck(super.getCurrentPlaceId, None, f.inputCarKeyBtxId.toInt)
-          if(chkCarTagIdInf.length > 0) {
-            errMsg :+= Messages("error.cms.CarManage.update.inputCarKeyBtxId.use", f.inputCarKeyBtxId)
+          // 作業車・立馬TxビーコンIDが存在しないか
+          val chkCarTagIdInf = carDAO.selectCarTagCheck(super.getCurrentPlaceId, None, f.inputCarBtxId.toInt)
+          if (chkCarTagIdInf.length > 0) {
+            errMsg :+= Messages("error.cms.CarManage.update.inputCarBtxId.use", f.inputCarBtxId)
           }
-        }
+          // 作業車・立馬鍵TxビーコンIDが存在しないか
+          if (carKeyBtxId.toInt > 0) {
+            val chkCarTagIdInf = carDAO.selectCarTagCheck(super.getCurrentPlaceId, None, carKeyBtxId.toInt)
+            if (chkCarTagIdInf.length > 0) {
+              errMsg :+= Messages("error.cms.CarManage.update.inputCarKeyBtxId.use", carKeyBtxId)
+            }
+          }
 
-        if(errMsg.isEmpty == false){
-          // エラーで遷移
-          Redirect(routes.ItemCarManage.index).flashing(ERROR_MSG_KEY -> errMsg.mkString(HTML_BR))
-        }else{
-          // DB処理
-          carDAO.insert(
+          if (errMsg.isEmpty == false) {
+            // エラーで遷移
+            Redirect(routes.ItemCarManage.index).flashing(ERROR_MSG_KEY -> errMsg.mkString(HTML_BR))
+          } else {
+            // DB処理
+            carDAO.insert(
               f.inputCarNo
-            , f.inputCarName
-            , f.inputCarBtxId.toInt
-            , f.inputCarKeyBtxId.toInt
-            , f.inputCarTypeId.toInt
-            , f.inputCarNote
-            , f.inputPlaceId.toInt)
+              , f.inputCarName
+              , f.inputCarBtxId.toInt
+              , carKeyBtxId.toInt
+              , f.inputCarTypeId.toInt
+              , f.inputCarNote
+              , f.inputPlaceId.toInt)
 
-          Redirect(routes.ItemCarManage.index)
-            .flashing(SUCCESS_MSG_KEY -> Messages("success.cms.CarManage.update"))
-        }
+            Redirect(routes.ItemCarManage.index)
+              .flashing(SUCCESS_MSG_KEY -> Messages("success.cms.CarManage.update"))
+          }
 
-      }else{
-        // 更新の場合 --------------------------
-        // 作業車・立馬番号重複チェック
-        var carList = carDAO.selectCarInfo(super.getCurrentPlaceId, f.inputCarNo)
-        carList = carList.filter(_.itemCarId != f.inputCarId.toInt).filter(_.itemCarNo == f.inputCarNo)
-//        if(carList.length > 0){
-//          errMsg :+= Messages("error.cms.CarManage.update.inputCarNo.duplicate", f.inputCarNo)
-//        }
-
-        // 予約情報テーブルに作業車・立馬IDが存在していないか
-        val itemCarReserveList = carDAO.selectCarReserveCheck(super.getCurrentPlaceId, f.inputCarId.toInt)
-        if(itemCarReserveList.length > 0){
-          errMsg :+= Messages("error.cms.ItemOtherManage.update.inputItemOtherIdReserve.use.noChange", f.inputCarId)
-        }
-
-        // 変更前タグ情報
-        val preCarInfo = carDAO.selectCarInfo(super.getCurrentPlaceId, "", Option(f.inputCarId.toInt)).last
-
-        if(f.inputCarKeyBtxId.toInt == preCarInfo.itemCarBtxId && f.inputCarBtxId.toInt == preCarInfo.itemCarKeyBtxId) {
-          // 入力を逆転している場合は何もしない
         } else {
-          // タグチェック
-          val checkList = Seq[(Int,Int)](
-            (preCarInfo.itemCarBtxId, f.inputCarBtxId.toInt)
-            , (preCarInfo.itemCarKeyBtxId, f.inputCarKeyBtxId.toInt)
-          )
-          checkList.zipWithIndex.foreach { case (btxId, i) =>
-            if (btxId._1 == btxId._2) {
-              // 変更前と同じの場合何もしない
-            } else {
-              // 登録が重複する場合
-              if(f.inputCarKeyBtxId.toInt > 0) {
-                if (i == 0) {
-                  // TagID
-                  if (f.inputCarBtxId.toInt == preCarInfo.itemCarKeyBtxId) {
-                    // 作業車Txに変更前の鍵Txを登録する、且つ鍵Txが変更されている場合は何もしない
+          // 更新の場合 --------------------------
+          // 作業車・立馬番号重複チェック
+          var carList = carDAO.selectCarInfo(super.getCurrentPlaceId, f.inputCarNo)
+          carList = carList.filter(_.itemCarId != f.inputCarId.toInt).filter(_.itemCarNo == f.inputCarNo)
+          //        if(carList.length > 0){
+          //          errMsg :+= Messages("error.cms.CarManage.update.inputCarNo.duplicate", f.inputCarNo)
+          //        }
+
+          // 予約情報テーブルに作業車・立馬IDが存在していないか
+          val itemCarReserveList = carDAO.selectCarReserveCheck(super.getCurrentPlaceId, f.inputCarId.toInt)
+          if (itemCarReserveList.length > 0) {
+            errMsg :+= Messages("error.cms.ItemOtherManage.update.inputItemOtherIdReserve.use.noChange", f.inputCarId)
+          }
+
+          // 変更前タグ情報
+          val preCarInfo = carDAO.selectCarInfo(super.getCurrentPlaceId, "", Option(f.inputCarId.toInt)).last
+
+          if (carKeyBtxId.toInt == preCarInfo.itemCarBtxId && f.inputCarBtxId.toInt == preCarInfo.itemCarKeyBtxId) {
+            // 入力を逆転している場合は何もしない
+          } else {
+            // タグチェック
+            val checkList = Seq[(Int, Int)](
+              (preCarInfo.itemCarBtxId, f.inputCarBtxId.toInt)
+              , (preCarInfo.itemCarKeyBtxId, carKeyBtxId.toInt)
+            )
+            checkList.zipWithIndex.foreach { case (btxId, i) =>
+              if (btxId._1 == btxId._2) {
+                // 変更前と同じの場合何もしない
+              } else {
+                // 登録が重複する場合
+                if (carKeyBtxId.toInt > 0) {
+                  if (i == 0) {
+                    // TagID
+                    if (f.inputCarBtxId.toInt == preCarInfo.itemCarKeyBtxId) {
+                      // 作業車Txに変更前の鍵Txを登録する、且つ鍵Txが変更されている場合は何もしない
+                    } else {
+                      val chkCarTagIdInf = carDAO.selectCarTagCheck(super.getCurrentPlaceId, carId = Option(f.inputCarId.toInt), f.inputCarBtxId.toInt)
+                      if (chkCarTagIdInf.length > 0) {
+                        errMsg :+= Messages("error.cms.CarManage.update.inputCarBtxId.duplicate", btxId._2)
+                      }
+                    }
                   } else {
-                    val chkCarTagIdInf = carDAO.selectCarTagCheck(super.getCurrentPlaceId, carId = Option(f.inputCarId.toInt), f.inputCarBtxId.toInt)
-                    if(chkCarTagIdInf.length > 0) {
-                      errMsg :+= Messages("error.cms.CarManage.update.inputCarBtxId.duplicate", btxId._2)
+                    // 鍵TagID
+                    if (carKeyBtxId.toInt == preCarInfo.itemCarBtxId) {
+                      // 鍵Txに変更前の作業車Txを登録する場合は何もしない
+                    } else {
+                      val chkCarTagIdInf = carDAO.selectCarTagCheck(super.getCurrentPlaceId, carId = Option(f.inputCarId.toInt), carKeyBtxId.toInt)
+                      if (chkCarTagIdInf.length > 0) {
+                        errMsg :+= Messages("error.cms.CarManage.update.inputCarKeyBtxId.duplicate", btxId._2)
+                      }
                     }
                   }
                 } else {
-                  // 鍵TagID
-                  if (f.inputCarKeyBtxId.toInt == preCarInfo.itemCarBtxId) {
-                    // 鍵Txに変更前の作業車Txを登録する場合は何もしない
-                  } else {
-                    val chkCarTagIdInf = carDAO.selectCarTagCheck(super.getCurrentPlaceId, carId = Option(f.inputCarId.toInt), f.inputCarKeyBtxId.toInt)
-                    if(chkCarTagIdInf.length > 0) {
-                      errMsg :+= Messages("error.cms.CarManage.update.inputCarKeyBtxId.duplicate", btxId._2)
-                    }
-                  }
-                }
-              }else{
-                if (i == 0) {
-                  // TagID
-                  if (f.inputCarBtxId.toInt == preCarInfo.itemCarKeyBtxId) {
-                    // 作業車Txに変更前の鍵Txを登録する、且つ鍵Txが変更されている場合は何もしない
-                  } else {
-                    val chkCarTagIdInf = carDAO.selectCarTagCheck(super.getCurrentPlaceId, carId = Option(f.inputCarId.toInt), f.inputCarBtxId.toInt)
-                    if(chkCarTagIdInf.length > 0) {
-                      errMsg :+= Messages("error.cms.CarManage.update.inputCarBtxId.duplicate", btxId._2)
+                  if (i == 0) {
+                    // TagID
+                    if (f.inputCarBtxId.toInt == preCarInfo.itemCarKeyBtxId) {
+                      // 作業車Txに変更前の鍵Txを登録する、且つ鍵Txが変更されている場合は何もしない
+                    } else {
+                      val chkCarTagIdInf = carDAO.selectCarTagCheck(super.getCurrentPlaceId, carId = Option(f.inputCarId.toInt), f.inputCarBtxId.toInt)
+                      if (chkCarTagIdInf.length > 0) {
+                        errMsg :+= Messages("error.cms.CarManage.update.inputCarBtxId.duplicate", btxId._2)
+                      }
                     }
                   }
                 }
               }
             }
           }
-        }
 
-        if(errMsg.isEmpty == false){
-          // エラーで遷移
-          Redirect(routes.ItemCarManage.index)
-            .flashing(ERROR_MSG_KEY -> errMsg.mkString(HTML_BR))
-        }else{
-          // DB処理
-          carDAO.update(
+          if (errMsg.isEmpty == false) {
+            // エラーで遷移
+            Redirect(routes.ItemCarManage.index)
+              .flashing(ERROR_MSG_KEY -> errMsg.mkString(HTML_BR))
+          } else {
+            // DB処理
+            carDAO.update(
               f.inputCarId.toInt
-            , f.inputCarNo
-            , f.inputCarName
-            , f.inputCarBtxId.toInt
-            , f.inputCarKeyBtxId.toInt
-            , f.inputCarTypeId.toInt
-            , f.inputCarNote
-            , super.getCurrentPlaceId
-            , preCarInfo.itemCarBtxId
-            , preCarInfo.itemCarKeyBtxId
-          )
+              , f.inputCarNo
+              , f.inputCarName
+              , f.inputCarBtxId.toInt
+              , carKeyBtxId.toInt
+              , f.inputCarTypeId.toInt
+              , f.inputCarNote
+              , super.getCurrentPlaceId
+              , preCarInfo.itemCarBtxId
+              , preCarInfo.itemCarKeyBtxId
+            )
 
-          Redirect(routes.ItemCarManage.index)
-            .flashing(SUCCESS_MSG_KEY -> Messages("success.cms.CarManage.update"))
+            Redirect(routes.ItemCarManage.index)
+              .flashing(SUCCESS_MSG_KEY -> Messages("success.cms.CarManage.update"))
+          }
         }
       }
     }

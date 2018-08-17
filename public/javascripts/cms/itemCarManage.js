@@ -105,7 +105,7 @@ function showInputModal(isRegister){
             // 立馬の場合は鍵TagIDは入力不可
             var categoryid = parseInt($('#'+carId).find('.itemTypeCategoryid').text());
             if(categoryid == 1){
-               $('#inputCarKeyBtxId').val("-1");
+               $('#inputCarKeyBtxId').val("無");
                 ele.readOnly = true;
             }else{
                 ele.readOnly = false;
@@ -153,7 +153,7 @@ var floorFrame = $('#car_type');
             var ele = document.getElementById("inputCarKeyBtxId");
             // 立馬の場合は鍵TagIDは入力不可
             if(itemType.categoryid == 1){
-               $('#inputCarKeyBtxId').val("-1");
+               $('#inputCarKeyBtxId').val("無");
                 ele.readOnly = true;
             }else{
                 ele.readOnly = false;
