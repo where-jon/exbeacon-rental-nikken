@@ -22,6 +22,7 @@ case class ExbDeleteForm(deleteExbId: String, floorId: String)
 case class ExbUpdateForm(
   inputExbId: String
   ,inputDeviceId:String
+  ,inputPreDeviceId:String
   ,inputDeviceNo:String
   ,inputDeviceName: String
   ,inputPosName: String
@@ -42,6 +43,7 @@ class ExbManage @Inject()(config: Configuration
     val inputForm = Form(mapping(
       "inputExbId" -> text
       , "inputDeviceId" -> text.verifying(Messages("error.cms.exbManage.exbUpdate.inputDeviceId.empty"), {_.matches("^[0-9]+$")})
+      , "inputPreDeviceId" -> text
       , "inputDeviceNo" -> text.verifying(Messages("error.cms.exbManage.exbUpdate.inputDeviceNo.empty"), {_.matches("^[0-9]+$")})
       , "inputDeviceName" -> text.verifying(Messages("error.cms.exbManage.exbUpdate.inputDeviceName.empty"), {!_.isEmpty})
       , "inputPosName" -> text.verifying(Messages("error.cms.exbManage.exbUpdate.inputPosName.empty"), {!_.isEmpty})
@@ -58,19 +60,30 @@ class ExbManage @Inject()(config: Configuration
     }else{
       val placeId = securedRequest2User.currentPlaceId.get
       val f = form.get
-      if(f.inputExbId.isEmpty) {  // 新規EXB登録の場合
-        // DB処理
-        exbDAO.insertData(f.inputDeviceId.toInt,f.inputDeviceNo.toInt,f.inputDeviceName,f.inputPosName,f.setupFloorId.toInt,placeId)
-        Redirect(routes.ExbManage.index)
-          .flashing(SUCCESS_MSG_KEY -> Messages("success.cms.exbManage.exbUpdate"))
-      }else{ // EXB更新の場合
-        exbDAO.update(f.inputDeviceId.toInt,f.inputDeviceNo.toInt,f.inputDeviceName,f.inputPosName,f.setupFloorId.toInt,f.inputExbId.toInt,placeId)
-        Redirect(routes.ExbManage.index)
-          .flashing(SUCCESS_MSG_KEY -> Messages("success.cms.exbManage.exbUpdate"))
+      val vExbSetupNumCheck =
+        if(f.inputDeviceId.isEmpty) {   // 新規の場合チェック必ずチェック
+          exbDAO.exbSetupNumCheck(f.inputDeviceId.toInt,placeId).length
+        }else if (f.inputPreDeviceId!= f.inputDeviceId){
+          exbDAO.exbSetupNumCheck(f.inputDeviceId.toInt,placeId).length
+        }else {
+          0
+        }
+      // 編集の場合前回設置場所番号と現在設置場所番号が違う場合チェックを行う
+      if(vExbSetupNumCheck > 0) { //inputPreDeviceId重複判断
+        Redirect(routes.ExbManage.index()).flashing(ERROR_MSG_KEY -> Messages("error.cms.exbManage.exbUpdate.setupNumCheck.duplicate",f.inputDeviceId.toInt))
+      }else{
+        if(f.inputExbId.isEmpty) {  // 新規EXB登録の場合
+          // DB処理
+          exbDAO.insertData(f.inputDeviceId.toInt,f.inputDeviceNo.toInt,f.inputDeviceName,f.inputPosName,f.setupFloorId.toInt,placeId)
+          Redirect(routes.ExbManage.index)
+            .flashing(SUCCESS_MSG_KEY -> Messages("success.cms.exbManage.exbUpdate"))
+        }else{ // EXB更新の場合
+          exbDAO.update(f.inputDeviceId.toInt,f.inputDeviceNo.toInt,f.inputDeviceName,f.inputPosName,f.setupFloorId.toInt,f.inputExbId.toInt,placeId)
+          Redirect(routes.ExbManage.index)
+            .flashing(SUCCESS_MSG_KEY -> Messages("success.cms.exbManage.exbUpdate"))
+        }
       }
-
     }
-
   }
   /** フロア削除 */
   def exbDelete = SecuredAction { implicit request =>
