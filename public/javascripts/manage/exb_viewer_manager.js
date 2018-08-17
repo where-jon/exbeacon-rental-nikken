@@ -136,8 +136,9 @@ $(function () {
 
                     viewHidden();
                     var vFloor = document.getElementById("input_viewer_pos_floor-" + gClickPos ).value
-                    gMapPos = Number(vFloor)
-                    document.getElementById("beaconMap-" + vFloor).classList.remove("hidden");
+                    var vMapIndex = Number(document.getElementsByClassName("item-" + gClickPos)[0].textContent)
+                    gMapPos = vMapIndex
+                   document.getElementById("beaconMap-" + vMapIndex).classList.remove("hidden");
 
              });
            });
