@@ -183,6 +183,9 @@ $(function () {
                  console.dir("result::" + result);
                  var vElement = document.getElementById("input_viewer_pos_type-" + gClickPos)
                  vElement.value = result;
+//                 var vElementTypeName = document.getElementById("input_viewer_pos_type_name-" + gClickPos)
+//                 vElementTypeName.value = result;
+
                  vExbViewerData[pos].viewType = result;
                  reloadManager();
             });
