@@ -18,6 +18,8 @@ var INSERT_MAX = 10;
 var TAG_MARGIN_TOP = 40
 var TAG_MARGIN_BOTTOM = -132
 
+var TEXT_SIZE_BASE = 10;
+var TEXT_LINE_BASE = 2;
 
 var MAP_WIDTH = 1366;
 var MAP_HEIGHT = 574;
@@ -36,6 +38,14 @@ var VIEW_COUNT = 3
 
 var gResizeCheck = false;
 var gResize = {
+    /* 文字サイズを再調整するロジック*/
+    textResize : function(vElement,motoSize) {
+        var vSize = (motoSize) * (MARGIN_BASE)
+        $(vElement).css('font-size', vSize - TEXT_SIZE_BASE +"px");
+        $(vElement).css('line-height', vSize - TEXT_LINE_BASE +"px");
+
+    },
+
     mapCenterMove : function() {
         var vMainFrame= document.getElementById("map__main--frame")
         var vAspectHeight =  Math.round((vMainFrame.clientWidth/BASE_ASPECT)*1)/1
@@ -2142,6 +2152,9 @@ var gViewerManage = {
                 pinFrame.style.width = (beaconData.size) * (MARGIN_BASE) + "px";
                 pinFrame.style.height =(beaconData.size) * (MARGIN_BASE)+ "px";
 
+                 // 文字サイズ再調整
+                gResize.textResize(pinFrame,beaconData.size)
+
                 pinFrame.id = "exb_id_" + beaconData.posNum;
                 pinFrame.className = "exb__viewer--frame";
                 pinFrame.textContent = beaconData.posNum;
@@ -2221,6 +2234,9 @@ var gViewerManage = {
                 pinFrame.style.left = beaconData.pos.x + "px";
                 pinFrame.style.width = (beaconData.size) * (MARGIN_BASE) + "px";
                 pinFrame.style.height =(beaconData.size) * (MARGIN_BASE)+ "px";
+
+                // 文字サイズ再調整
+                gResize.textResize(pinFrame,beaconData.size)
 
                 pinFrame.id = "exb_id_" + beaconData.posNum;
                 pinFrame.className = "exb__viewer--frame";
