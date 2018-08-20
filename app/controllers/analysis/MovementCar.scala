@@ -43,7 +43,7 @@ class MovementCar @Inject()(config: Configuration
   val REAL_WORK_DAY = 5;
   val DAY_WORK_TIME = 6;
   val HOUR_MINUTE = 60;
-  val BATCH_INTERVAL_MINUTE = 1;
+  var BATCH_INTERVAL_MINUTE = 60; //ログ検知インタバル初期値60分 daidan30分
 
   val CALENDAR_TYPE = "今月のみ";
   //val CALENDAR_TYPE = "今月以外";
@@ -53,7 +53,7 @@ class MovementCar @Inject()(config: Configuration
   var TOTAL_LENGTH = 0;
 
   val movementCarSearchForm = Form(mapping(
-    "inputDate" -> text
+    "inputDate" -> text.verifying(Messages("error.analysis.movementCar.search.date.empty"), {!_.isEmpty})
   )(MovementCarSearchData.apply)(MovementCarSearchData.unapply))
 
   /*登録用*/
@@ -74,6 +74,7 @@ class MovementCar @Inject()(config: Configuration
     DETECT_MONTH = mTime
     DETECT_MONTH_DAY += "-01"
     NOW_DATE = mSimpleDateFormat2.format(currentTime)
+    BATCH_INTERVAL_MINUTE = config.getInt("web.positioning.countMinute").get
   }
 
   /** 　検索側データ取得 */
@@ -348,19 +349,23 @@ class MovementCar @Inject()(config: Configuration
 
   /** 　検索ロジック */
   def search = SecuredAction { implicit request =>
-    System.out.println("start search:")
-    val placeId = super.getCurrentPlaceId
-    //検索側データ取得
-    getSearchData(placeId)
+    movementCarSearchForm.bindFromRequest.fold(
+      formWithErrors =>
+        Redirect(routes.MovementCar.index())
+          //.flashing(ERROR_MSG_KEY -> Messages(formWithErrors.errors.map(_.message +"<br>").mkString("\n"))),  //herokuで動かない
+            .flashing(ERROR_MSG_KEY -> Messages("error.analysis.movementCar.search.date.empty")),
+      searchForm => {
+        val placeId = super.getCurrentPlaceId
+        //検索側データ取得
+        getSearchData(placeId)
+        // 検索情報
+        DETECT_MONTH = searchForm.inputDate
+        val calendarList =  this.getCalendarData()
+        val logItemAllList =  getAllItemLogData(placeId,itemIdList,calendarList)
 
-    // 検索情報
-    val searchForm = movementCarSearchForm.bindFromRequest.get
-    DETECT_MONTH = searchForm.inputDate
-
-    val calendarList =  this.getCalendarData()
-    val logItemAllList =  getAllItemLogData(placeId,itemIdList,calendarList)
-
-    Ok(views.html.analysis.movementCar(logItemAllList,calendarList,DETECT_MONTH,TOTAL_LENGTH))
+        Ok(views.html.analysis.movementCar(logItemAllList,calendarList,DETECT_MONTH,TOTAL_LENGTH))
+      }
+    )
   }
 
   /** 初期表示 */

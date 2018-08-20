@@ -38,6 +38,9 @@ drawBeacon : function(beaconData,targetMap,eqaulCheck) {
      vElement.style.width = (beaconData.pos.size) * (MARGIN_BASE) + "px";
      vElement.style.height =(beaconData.pos.size) * (MARGIN_BASE)+ "px";
 
+     // 文字サイズ再調整
+     gResize.textResize(vElement,beaconData.pos.size)
+
     if(!eqaulCheck){
         var vFloor = "test"
         if(beaconData.pos.floor == 3){
@@ -290,6 +293,9 @@ function setFrame() {
         // アイコンサイズ
         pinFrame.style.width = (beaconData.pos.size) * (MARGIN_BASE) + "px";
         pinFrame.style.height =(beaconData.pos.size) * (MARGIN_BASE)+ "px";
+
+         // 文字サイズ再調整
+         gResize.textResize(pinFrame,beaconData.pos.size)
 
         // myNum = getCookie('pos-num');
         if (beaconData.id == myNum ) {
@@ -626,9 +632,13 @@ $(function () {
         gDrawer[i] =  new Drawer(gMapFrame[i].id)
     }
 
-    // test10分
-	var secUpdateUnit = 600000;
-
+	var secUpdateUnit
+    try {
+        secUpdateUnit = Number(document.getElementById("updateSec").textContent　+ "000");
+    }
+    catch(exception){
+        secUpdateUnit = 300000; // 5分
+    }
 
 	// 定期更新
 	setInterval(function() {
