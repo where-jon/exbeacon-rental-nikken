@@ -1236,12 +1236,7 @@ margin-top: 135px;
 
 
 .navbar-brand {
-	position: relative !important;
-	width: inherit !important;
-    color: black !important;
-    font-size: 24px !important;
-	text-align: center !important;
-	height: 10px !important;
+    padding-left: 26px;
 }
 .update__sec__frame {
 	visibility: hidden;
@@ -1296,3 +1291,6 @@ color:#a94442
 		width: 100%;
 	}
 }
+
+
+/*****************************/

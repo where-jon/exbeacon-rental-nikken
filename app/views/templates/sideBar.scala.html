@@ -8,74 +8,218 @@
         <span class="sr-only">toggle navigation</span>
     </button>
     <nav class="drawer-nav" role="navigation">
-        <ul class="drawer-menu">
-            <li class="acc">
-                <a class="menu-title"><i class="fa fa-eye"></i>&nbsp;&nbsp;仮設材管理<span class="open-state"><i class="open-state fa fa-angle-down" style="margin-left:10px;"></i></span></a>
-                <ul class="menu-items" style="display: block;">
-                    <li><a href="/site/workPlace"><i class="fa fa-circle-o"></i>&nbsp;@Messages("lang.site.workPlace.page.title")</a></li>
-                    <li><a href="/site/itemCarMaster"><i class="fa fa-circle-o"></i>&nbsp;@Messages("lang.site.carMaster.page.title")</a></li>
-                    <li><a href="/site/itemCarReserve"><i class="fa fa-circle-o"></i>&nbsp;@Messages("lang.site.carReserve.page.title")</a></li>
-                    <li><a href="/site/itemCarCancel"><i class="fa fa-circle-o"></i>&nbsp;@Messages("lang.site.carCancel.page.title")</a></li>
-                    <li><a href="/site/itemOtherMaster"><i class="fa fa-circle-o"></i>&nbsp;@Messages("lang.site.otherMaster.page.title")</a></li>
-                    <li><a href="/site/itemOtherReserve"><i class="fa fa-circle-o"></i>&nbsp;@Messages("lang.site.otherReserve.page.title")</a></li>
-                    <li><a href="/site/itemOtherCancel"><i class="fa fa-circle-o"></i>&nbsp;@Messages("lang.site.otherCancel.page.title")</a></li>
-                    <li><a href="/site/unDetected"><i class="fa fa-circle-o"></i>&nbsp;@Messages("lang.site.unDetected.page.title")</a></li>
-                    <li style = "text-decoration:line-through;"><a href="/"><i class="fa fa-circle-o"></i>&nbsp;ビーコンタグ電池残量確認</a></li>
-                </ul>
-            </li>
+        <div class="drawer-menu">
+            @if(request.path contains "/site/") {
+                <div style="margin: 20px 0px 30px 0px;">
+                    <div class="row text-center">
+                        <span class="currentTitle"><i class="fa fa-eye"></i>&nbsp;@Messages("lang.sideMenu.title.temporaryMaterialManagement")</span>
+                    </div>
+                </div>
+                <div class="menuBtnsDiv">
+                    <div class="menuBtnWrapper">
+                        <div class="row" style="margin: 3px 0px 0px 0px;">
+                            <div class="text-center col-xs-12 col-sm-12 col-md-12" style="padding:0;">
+                                <div class="row" style="margin: 0px 3px 10px 3px;">
+                                    <div class="text-center col-xs-12 col-sm-12 col-md-12" style="padding:0px 3px;">
+                                        <a href="/site/workPlace" class="btn menuBtn">@Messages("lang.site.workPlace.page.title")</a>
+                                    </div>
+                                </div>
+                                <div class="row" style="margin: 0px 3px 10px 3px;">
+                                    <div class="text-center col-xs-12 col-sm-12 col-md-12" style="padding:0px 3px;">
+                                        <a href="/site/itemCarMaster" class="btn menuBtn">@Messages("lang.site.carMaster.page.title")</a>
+                                    </div>
+                                </div>
+                                <div class="row" style="margin: 0px 3px 10px 3px;">
+                                    <div class="text-center col-xs-12 col-sm-12 col-md-12" style="padding:0px 3px;">
+                                        <a href="/site/itemCarReserve" class="btn menuBtn">@Messages("lang.site.carReserve.page.title")</a>
+                                    </div>
+                                </div>
+                                <div class="row" style="margin: 0px 3px 10px 3px;">
+                                    <div class="text-center col-xs-12 col-sm-12 col-md-12" style="padding:0px 3px;">
+                                        <a href="/site/itemCarCancel" class="btn menuBtn">@Messages("lang.site.carCancel.page.title")</a>
+                                    </div>
+                                </div>
+                                <div class="row" style="margin: 0px 3px 10px 3px;">
+                                    <div class="text-center col-xs-12 col-sm-12 col-md-12" style="padding:0px 3px;">
+                                        <a href="/site/itemOtherMaster" class="btn menuBtn">@Messages("lang.site.otherMaster.page.title")</a>
+                                    </div>
+                                </div>
+                                <div class="row" style="margin: 0px 3px 10px 3px;">
+                                    <div class="text-center col-xs-12 col-sm-12 col-md-12" style="padding:0px 3px;">
+                                        <a href="/site/itemOtherReserve" class="btn menuBtn">@Messages("lang.site.otherMaster.page.title")</a>
+                                    </div>
+                                </div>
+                                <div class="row" style="margin: 0px 3px 10px 3px;">
+                                    <div class="text-center col-xs-12 col-sm-12 col-md-12" style="padding:0px 3px;">
+                                        <a href="/site/itemOtherCancel" class="btn menuBtn">@Messages("lang.site.otherCancel.page.title")</a>
+                                    </div>
+                                </div>
+                                <div class="row" style="margin: 0px 3px 10px 3px;">
+                                    <div class="text-center col-xs-12 col-sm-12 col-md-12" style="padding:0px 3px;">
+                                        <a href="/site/unDetected" class="btn menuBtn">@Messages("lang.site.unDetected.page.title")</a>
+                                    </div>
+                                </div>
+                                <div class="row" style="margin: 0px 3px 0px 3px;">
+                                    <div class="text-center col-xs-12 col-sm-12 col-md-12" style="padding:0px 3px;">
+                                        <a href="/site/unDetected" class="btn menuBtn">@Messages("ビーコンタグ電池残量確認")</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
             @if(user.services.contains("level2") || user.services.contains("level3") || user.services.contains("master") ) {
-                <li class="acc">
-                    <a class="menu-title"><i class="fa fa-bar-chart"></i>&nbsp;&nbsp;分析
-                        <span class="open-state"><i class="open-state fa fa-angle-left" style="margin-left:10px;"></i></span></a>
-                    <ul class="menu-items">
-                        <li><a href="/analysis/movementCar"><i class="fa fa-circle-o"></i>&nbsp;作業車稼働状況</a></li>
-                        <li style = "text-decoration:line-through;"><a href="/"><i class="fa fa-circle-o"></i>&nbsp;EXB状態監視</a></li>
-                        <li><a href="/analysis/gateway"><i class="fa fa-circle-o"></i>&nbsp;@Messages("lang.analysis.gateway.page.title")</a></li>
-                    </ul>
-                </li>
-                <li class="acc">
-                    <a class="menu-title"><i class="fa fa-gear"></i>&nbsp;&nbsp;メンテナンス<span class="open-state"><i class="open-state fa fa-angle-left" style="margin-left:10px;"></i></span></a>
-                    <ul class="menu-items">
-                        <li><a href="/cms/itemCarManage"><i class="fa fa-circle-o"></i>&nbsp;作業車・立馬管理</a></li>
-                        <li><a href="/cms/itemOtherManage"><i class="fa fa-circle-o"></i>&nbsp;その他仮設材管理</a></li>
-                        <li><a href="/cms/itemTypeManage"><i class="fa fa-circle-o"></i>&nbsp;仮設材種別管理</a></li>
-                        <li><a href="/cms/companyManage"><i class="fa fa-circle-o"></i>&nbsp;業者管理</a></li>
-                        <li><a href="/cms/accountManage"><i class="fa fa-circle-o"></i>&nbsp;現場アカウント管理</a></li>
-                    </ul>
-                </li>
-
+                @if(request.path contains "/analysis/") {
+                    <div style="margin: 20px 0px 30px 0px;">
+                        <div class="row text-center">
+                            <span class="currentTitle"><i class="fa fa-bar-chart"></i>&nbsp;@Messages("lang.sideMenu.title.analysis")</span>
+                        </div>
+                    </div>
+                    <div class="menuBtnsDiv">
+                        <div class="menuBtnWrapper">
+                            <div class="row" style="margin: 3px 0px 0px 0px;">
+                                <div class="text-center col-xs-12 col-sm-12 col-md-12" style="padding:0;">
+                                    <div class="row" style="margin: 0px 3px 10px 3px;">
+                                        <div class="text-center col-xs-12 col-sm-12 col-md-12" style="padding:0px 3px;">
+                                            <a href="/analysis/movementCar" class="btn menuBtn">@Messages("lang.analysis.movementCar.page.title")</a>
+                                        </div>
+                                    </div>
+                                    <div class="row" style="margin: 0px 3px 10px 3px;">
+                                        <div class="text-center col-xs-12 col-sm-12 col-md-12" style="padding:0px 3px;">
+                                            <a href="/analysis/movementCar" class="btn menuBtn">@Messages("EXB状態監視")</a>
+                                        </div>
+                                    </div>
+                                    <div class="row" style="margin: 0px 3px 0px 3px;">
+                                        <div class="text-center col-xs-12 col-sm-12 col-md-12" style="padding:0px 3px;">
+                                            <a href="/analysis/gateway" class="btn menuBtn">@Messages("lang.analysis.gateway.page.title")</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+                @if(
+                    (request.path contains "/cms/itemCarManage") ||
+                    (request.path contains "/cms/itemOtherManage") ||
+                    (request.path contains "/cms/itemTypeManage") ||
+                    (request.path contains "/cms/companyManage") ||
+                    (request.path contains "/cms/accountManage")
+                ) {
+                    <div style="margin: 20px 0px 30px 0px;">
+                        <div class="row text-center">
+                            <span class="currentTitle"><i class="fa fa-gear"></i>&nbsp;@Messages("lang.sideMenu.title.maintenance")</span>
+                        </div>
+                    </div>
+                    <div class="menuBtnsDiv">
+                        <div class="menuBtnWrapper">
+                            <div class="row" style="margin: 3px 0px 0px 0px;">
+                                <div class="text-center col-xs-12 col-sm-12 col-md-12" style="padding:0;">
+                                    <div class="row" style="margin: 0px 3px 10px 3px;">
+                                        <div class="text-center col-xs-12 col-sm-12 col-md-12" style="padding:0px 3px;">
+                                            <a href="/cms/itemCarManage" class="btn menuBtn">@Messages("lang.cms.itemCarManage.title")</a>
+                                        </div>
+                                    </div>
+                                    <div class="row" style="margin: 0px 3px 10px 3px;">
+                                        <div class="text-center col-xs-12 col-sm-12 col-md-12" style="padding:0px 3px;">
+                                            <a href="/cms/itemOtherManage" class="btn menuBtn">@Messages("lang.cms.itemOtherManage.title")</a>
+                                        </div>
+                                    </div>
+                                    <div class="row" style="margin: 0px 3px 10px 3px;">
+                                        <div class="text-center col-xs-12 col-sm-12 col-md-12" style="padding:0px 3px;">
+                                            <a href="/cms/itemTypeManage" class="btn menuBtn">@Messages("lang.cms.itemTypeManage.title")</a>
+                                        </div>
+                                    </div>
+                                    <div class="row" style="margin: 0px 3px 10px 3px;">
+                                        <div class="text-center col-xs-12 col-sm-12 col-md-12" style="padding:0px 3px;">
+                                            <a href="/cms/companyManage" class="btn menuBtn">@Messages("lang.cms.companyManage.title")</a>
+                                        </div>
+                                    </div>
+                                    <div class="row" style="margin: 0px 3px 0px 3px;">
+                                        <div class="text-center col-xs-12 col-sm-12 col-md-12" style="padding:0px 3px;">
+                                            <a href="/cms/accountManage" class="btn menuBtn">@Messages("lang.cms.accountManage.title")</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
             }
             @if(user.services.contains("level3") || user.services.contains("master") ) {
-                <li class="acc">
-                    <a class="menu-title"><i class="fa fa-wrench"></i>&nbsp;&nbsp;システム管理<span class="open-state"><i class="open-state fa fa-angle-left" style="margin-left:10px;"></i></span></a>
-                    <ul class="menu-items">
-                        <li><a href="/cms/floorManage"><i class="fa fa-circle-o"></i>&nbsp;@Messages("lang.manage.floorManager")</a></li>
-                        <li><a href="/manage/mapManager"><i class="fa fa-circle-o"></i>&nbsp;@Messages("lang.manage.mapManager")</a></li>
-                        <li><a href="/cms/exbManage"><i class="fa fa-circle-o"></i>&nbsp;@Messages("lang.manage.exbManager")</a></li>
-                        <li><a href="/manage/exbViewerManager"><i class="fa fa-circle-o"></i>&nbsp;@Messages("lang.manage.exbViewerManager")</a></li>
-                    </ul>
-                </li>
+                @if(
+                    (request.path contains "/cms/floorManage") ||
+                    (request.path contains "/manage/mapManager") ||
+                    (request.path contains "/cms/exbManage") ||
+                    (request.path contains "/manage/exbViewerManager")
+                ) {
+                    <div style="margin: 20px 0px 30px 0px;">
+                        <div class="row text-center">
+                            <span class="currentTitle"><i class="fa fa-wrench"></i>&nbsp;@Messages("lang.sideMenu.title.systemManagement")</span>
+                        </div>
+                    </div>
+                    <div class="menuBtnsDiv">
+                        <div class="menuBtnWrapper">
+                            <div class="row" style="margin: 3px 0px 0px 0px;">
+                                <div class="text-center col-xs-12 col-sm-12 col-md-12" style="padding:0;">
+                                    <div class="row" style="margin: 0px 3px 10px 3px;">
+                                        <div class="text-center col-xs-12 col-sm-12 col-md-12" style="padding:0px 3px;">
+                                            <a href="/cms/floorManage" class="btn menuBtn">@Messages("lang.manage.floorManager")</a>
+                                        </div>
+                                    </div>
+                                    <div class="row" style="margin: 0px 3px 10px 3px;">
+                                        <div class="text-center col-xs-12 col-sm-12 col-md-12" style="padding:0px 3px;">
+                                            <a href="/manage/mapManager" class="btn menuBtn">@Messages("lang.manage.mapManager")</a>
+                                        </div>
+                                    </div>
+                                    <div class="row" style="margin: 0px 3px 10px 3px;">
+                                        <div class="text-center col-xs-12 col-sm-12 col-md-12" style="padding:0px 3px;">
+                                            <a href="/cms/exbManage" class="btn menuBtn">@Messages("lang.manage.exbManager")</a>
+                                        </div>
+                                    </div>
+                                    <div class="row" style="margin: 0px 3px 0px 3px;">
+                                        <div class="text-center col-xs-12 col-sm-12 col-md-12" style="padding:0px 3px;">
+                                            <a href="/manage/exbViewerManager" class="btn menuBtn">@Messages("lang.manage.exbViewerManager")</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
             }
             @if(user.services.contains("master")) {
-                <li class="acc">
-                    <a class="menu-title"><i class="fa fa-building"></i>&nbsp;&nbsp;@Messages("lang.cms.placeManage.title")<span class="open-state"><i class="open-state fa fa-angle-left" style="margin-left:10px;"></i></span></a>
-                    <ul class="menu-items">
-                        <li><a href="/cms/placeManage"><i class="fa fa-circle-o"></i>&nbsp;@Messages("lang.cms.placeManage.tabName")</a></li>
-                        <li><a href="/change-password"><i class="fa fa-circle-o"></i>&nbsp;@Messages("lang.cms.placeManage.changePassword.page.title")</a></li>
-                    </ul>
-                </li>
-
-                <li class="acc">
-                    <a class="menu-title"><i class="fa fa-key"></i>&nbsp;&nbsp;TESTページ(既存)<span class="open-state"><i class="open-state fa fa-angle-left" style="margin-left:10px;"></i></span></a>
-                    <ul class="menu-items">
-                        <li><a href="/cms/txTagManage"><i class="fa fa-circle-o"></i>&nbsp;EXBeacon一覧</a></li>
-                        <li ><a href="/carReserve"><i class="fa fa-circle-o"></i>&nbsp;作業車・立馬予約</a></li>
-                        <li><a href="/cms/itemCarManage"><i class="fa fa-circle-o"></i>&nbsp;作業車・立馬管理</a></li>
-                        <li><a href="/cms/itemManage"><i class="fa fa-circle-o"></i>&nbsp;その他仮設材管理</a></li>
-                        <li><a href="/manage/exbManager"><i class="fa fa-circle-o"></i>&nbsp;(旧)@Messages("lang.manage.exbManager")</a></li>
-                    </ul>
-                </li>
+                @if(
+                    (request.path contains "/cms/placeManage") ||
+                    (request.path contains "/cms/sortPlaceListWith/") ||
+                    (request.path contains "/change-password")
+                ) {
+                    <div style="margin: 20px 0px 30px 0px;">
+                        <div class="row text-center">
+                            <span class="currentTitle"><i class="fa fa-building"></i>&nbsp;@Messages("lang.sideMenu.title.tenantManagement")</span>
+                        </div>
+                    </div>
+                    <div class="menuBtnsDiv">
+                        <div class="menuBtnWrapper">
+                            <div class="row" style="margin: 3px 0px 0px 0px;">
+                                <div class="text-center col-xs-12 col-sm-12 col-md-12" style="padding:0;">
+                                    <div class="row" style="margin: 0px 3px 10px 3px;">
+                                        <div class="text-center col-xs-12 col-sm-12 col-md-12" style="padding:0px 3px;">
+                                            <a href="/cms/placeManage" class="btn menuBtn">@Messages("lang.cms.placeManage.tabName")</a>
+                                        </div>
+                                    </div>
+                                    <div class="row" style="margin: 0px 3px 0px 3px;">
+                                        <div class="text-center col-xs-12 col-sm-12 col-md-12" style="padding:0px 3px;">
+                                            <a href="/change-password" class="btn menuBtn">@Messages("lang.cms.placeManage.changePassword.page.title")</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
             }
-        </ul>
+        </div>
     </nav>
 </header>

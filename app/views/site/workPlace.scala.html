@@ -13,15 +13,15 @@ exbViewer: Seq[ExbAll]
     @templates.htmlHead(title = Messages("lang.cms.carManage.title"))
     <link rel="stylesheet" href="@routes.MyAssets.css("workplace/building-main.css")"/>
     <script type="text/javascript" src="@routes.MyAssets.js("site/workPlace.js")"></script>
+    <link rel="stylesheet" href="@routes.MyAssets.css("cms/placeManage.css")"/>
     <script></script>
 </head>
 
 <body>
+    @views.html.templates.navBar()
 
     <div class="top-area">
-        @views.html.templates.navBar()
         <div class="top__btn--area ">
-            @views.html.templates.sideMenu()
             <div id="top-title" class="top__btn--text">@Messages("lang.site.workPlace.page.title")
                 <div class="line__view--text" style="margin-top: 30px;font-size: 15px;margin-left: 18px;">&nbsp;凡例&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;</div>
             </div>
@@ -135,7 +135,7 @@ exbViewer: Seq[ExbAll]
             </table>
         </div>
     </div>
-
+</div>
 </body>
 
 </html>
