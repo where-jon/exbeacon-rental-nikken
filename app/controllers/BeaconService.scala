@@ -309,11 +309,13 @@ class BeaconService @Inject() (config: Configuration,
           vFloorName = index.cur_floor_name
         }
         val vUpdateTime = this.setUpdateTime(bpd.get.updatetime)
+        val vPosId =
+          if (vExbName != "不在" ) bpd.get.pos_id else -1
         itemBeaconPositionData(
           vExbName,
           vFloorName,
           bpd.get.btx_id,
-          bpd.get.pos_id,
+          vPosId,
           bpd.get.power_level,
           vUpdateTime,
           v.item_id,
