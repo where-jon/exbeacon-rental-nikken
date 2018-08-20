@@ -632,9 +632,13 @@ $(function () {
         gDrawer[i] =  new Drawer(gMapFrame[i].id)
     }
 
-    // test10分
-	var secUpdateUnit = 600000;
-
+	var secUpdateUnit
+    try {
+        secUpdateUnit = Number(document.getElementById("updateSec").textContent　+ "000");
+    }
+    catch(exception){
+        secUpdateUnit = 300000; // 5分
+    }
 
 	// 定期更新
 	setInterval(function() {

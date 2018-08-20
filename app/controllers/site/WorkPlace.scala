@@ -44,13 +44,14 @@ class WorkPlace @Inject()(config: Configuration
 
   /** 初期表示 */
   def index = SecuredAction { implicit request =>
+    val UPDATE_SEC = config.getInt("web.positioning.updateSec").get
     val placeId = super.getCurrentPlaceId
     /*仮設材種別取得*/
     val itemTypeList = itemTypeDAO.selectItemTypeInfo(placeId);
     // map情報
     val mapViewer = floorDAO.selectFloorAll(placeId)
     val exbData = exbDAO.selectExbAll(placeId)
-    Ok(views.html.site.workPlace(itemTypeList,mapViewer,exbData))
+    Ok(views.html.site.workPlace(itemTypeList,mapViewer,exbData,UPDATE_SEC))
   }
 
 }
