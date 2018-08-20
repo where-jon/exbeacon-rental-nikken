@@ -348,20 +348,23 @@ class MovementCar @Inject()(config: Configuration
 
   /** 　検索ロジック */
   def search = SecuredAction { implicit request =>
-    val form = movementCarSearchForm.bindFromRequest
-    if (form.hasErrors) {
-      val errMsg = form.errors.map(_.message).mkString(HTML_BR)
-      Redirect(routes.MovementCar.index()).flashing(ERROR_MSG_KEY -> errMsg)
-    }else{
+    movementCarSearchForm.bindFromRequest.fold(
+      formWithErrors =>
+        Redirect(routes.MovementCar.index())
+          //.flashing(ERROR_MSG_KEY -> Messages(formWithErrors.errors.map(_.message +"<br>").mkString("\n"))),  //herokuで動かない
+            .flashing(ERROR_MSG_KEY -> Messages("error.analysis.movementCar.search.date.empty")),
+      searchForm => {
         val placeId = super.getCurrentPlaceId
         //検索側データ取得
         getSearchData(placeId)
         // 検索情報
-        DETECT_MONTH = form.get.inputDate
+        DETECT_MONTH = searchForm.inputDate
         val calendarList =  this.getCalendarData()
         val logItemAllList =  getAllItemLogData(placeId,itemIdList,calendarList)
-      Ok(views.html.analysis.movementCar(logItemAllList,calendarList,DETECT_MONTH,TOTAL_LENGTH))
-    }
+
+        Ok(views.html.analysis.movementCar(logItemAllList,calendarList,DETECT_MONTH,TOTAL_LENGTH))
+      }
+    )
   }
 
   /** 初期表示 */
