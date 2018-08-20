@@ -43,7 +43,7 @@ class MovementCar @Inject()(config: Configuration
   val REAL_WORK_DAY = 5;
   val DAY_WORK_TIME = 6;
   val HOUR_MINUTE = 60;
-  val BATCH_INTERVAL_MINUTE = 30; //ログ検知インタバル30分
+  var BATCH_INTERVAL_MINUTE = 60; //ログ検知インタバル初期値60分 daidan30分
 
   val CALENDAR_TYPE = "今月のみ";
   //val CALENDAR_TYPE = "今月以外";
@@ -74,6 +74,7 @@ class MovementCar @Inject()(config: Configuration
     DETECT_MONTH = mTime
     DETECT_MONTH_DAY += "-01"
     NOW_DATE = mSimpleDateFormat2.format(currentTime)
+    BATCH_INTERVAL_MINUTE = config.getInt("web.positioning.countMinute").get
   }
 
   /** 　検索側データ取得 */

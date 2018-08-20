@@ -1,7 +1,8 @@
 @(
-itemTypeList: Seq[ItemType],
-mapViewer: Seq[FloorAll],
-exbViewer: Seq[ExbAll]
+itemTypeList: Seq[ItemType]
+,mapViewer: Seq[FloorAll]
+,exbViewer: Seq[ExbAll]
+,updateSec: Int
 )(implicit user: User, messages: Messages, request: RequestHeader, flash: Flash)
 
 @import controllers.routes
@@ -53,8 +54,7 @@ exbViewer: Seq[ExbAll]
     </div>
 
     <div class="manager__main--frame" id ="map__main--frame">
-
-
+        <div id="updateSec" class="update__sec__frame">@updateSec</div>
         <div class = "alert__result--frame">
             @tags.alertFromRequestDbResult(request, "resultOK")
             @tags.alertFromRequestDbResult(request, "resultNG")
