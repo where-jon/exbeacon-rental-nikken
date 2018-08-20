@@ -9,6 +9,7 @@
     @templates.htmlHead(title = Messages("lang.cms.itemTypeManage.title"))
     <link rel="stylesheet" href="@routes.MyAssets.css("cms/itemTypeManage.css")"/>
     <link rel="stylesheet" href="@routes.MyAssets.css("color/colorpicker.css")"/>
+    <script type="text/javascript" src="@routes.MyAssets.lib("jquery.tablefix_1.0.1.js")"></script>
     <script type="text/javascript" src="@routes.MyAssets.js("color/colorpicker.js")"></script>
     <script></script>
 </head>
@@ -17,11 +18,9 @@
 <div class="container">
     <!-- ナビバー  -->
     @views.html.templates.navBar()
-    <div class="row">
-        <!-- 左サイドバー -->
-        @views.html.templates.sideMenu()
+    <div class="row" style="margin-top: 50px;">
         <!-- メイン -->
-        <div class="col-xs-7 col-sm-7 col-md-10 col-lg-10 mainSpace">
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mainSpace">
             <!-- メッセージ -->
             @views.html.templates.msgDiv()
             <!-- 画面題字 -->
