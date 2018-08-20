@@ -304,13 +304,13 @@ class BeaconService @Inject() (config: Configuration,
       val blankTargetMode =
           if (blankInclude && bpd.get.pos_id != -1) true else false
       if (bpd.isDefined && blankTargetMode) {
+        val vPosId =
+          if (vExbName != "不在" ) bpd.get.pos_id else -1
         exbDatas.map { index =>
           vExbName = index.exb_pos_name
           vFloorName = index.cur_floor_name
         }
         val vUpdateTime = this.setUpdateTime(bpd.get.updatetime)
-        val vPosId =
-          if (vExbName != "不在" ) bpd.get.pos_id else -1
         itemBeaconPositionData(
           vExbName,
           vFloorName,
