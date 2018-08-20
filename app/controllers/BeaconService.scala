@@ -21,13 +21,14 @@ import scala.concurrent.Await
 import scala.concurrent.duration.Duration
 
 class BeaconService @Inject() (config: Configuration,
-                               ws: WSClient
-                               , val messagesApi: MessagesApi
-                               , carDAO: models.itemCarDAO
-                               ,exbDao:models.ExbDAO
-                               ,otherDAO: models.itemOtherDAO
-                               ,placeDAO: models.placeDAO
-                              ) extends Controller with I18nSupport{
+  ws: WSClient
+  , val messagesApi: MessagesApi
+  , carDAO: models.itemCarDAO
+  ,exbDao:models.ExbDAO
+  ,otherDAO: models.itemOtherDAO
+  ,placeDAO: models.placeDAO
+  ,txHelper: models.TxStatusHelper
+  ) extends Controller with I18nSupport{
   private[this] implicit val timeout = Timeout(300, TimeUnit.SECONDS)
   var POS_API_URL =""
   var GATEWAY_API_URL =""
@@ -73,6 +74,19 @@ class BeaconService @Inject() (config: Configuration,
       Messages("error.site.cancel.other")
   }
 
+  /** 現在位置状態を判定*/
+  def getCurrentPositionStatus (vPosId:Int,vUpdateTime:String): String = {
+    val txStatusTemp = txHelper.getTxStatus(vPosId, vUpdateTime)
+    val vExbName = if (txStatusTemp.getTxStatus() == 1) {
+      "不在"
+    } else if (txStatusTemp.getTxStatus() == 0) {
+      "未検知"
+    } else{
+      "在席"
+    }
+    return vExbName
+  }
+
   def getCloudUrl(placeId:Int): Unit = {
     var vPlaceDao = placeDAO.selectPlaceList(Seq[Int](placeId)).last
     POS_API_URL = vPlaceDao.btxApiUrl
@@ -114,14 +128,13 @@ class BeaconService @Inject() (config: Configuration,
 
     val bplist = dbDatas.map { v =>
       val bpd = posList.find(_.btx_id == v.item_car_btx_id)
-      val floor = bpd.find(_.btx_id == bpd.get.pos_id)
-      //!bpd.get.btx_name.isEmpty
-      val blankTargetMode = if (blankInclude) true else true
-      var vExbName = "検知位置無"
+      val exbDatas =exbDao.selectExbApiInfo(placeId,bpd.get.pos_id)
+      val blankTargetMode =
+          if (blankInclude && bpd.get.pos_id != -1) true else false
+      var vExbName = this.getCurrentPositionStatus(bpd.get.pos_id,bpd.get.updatetime)
       var vFloorName = "検知フロア無"
 
       if (bpd.isDefined && blankTargetMode) {
-        val exbDatas = exbDao.selectExbApiInfo(placeId,bpd.get.pos_id)
           exbDatas.map { index =>
             vExbName = index.exb_pos_name
             vFloorName = index.cur_floor_name
@@ -202,13 +215,12 @@ class BeaconService @Inject() (config: Configuration,
 
     val bplist = dbDatas.map { v =>
       val bpd = posList.find(_.btx_id == v.item_other_btx_id)
-      val floor = bpd.find(_.btx_id == bpd.get.pos_id)
-      //!bpd.get.btx_name.isEmpty
-      val blankTargetMode = if (blankInclude) true else true
-      var vExbName = "検知位置無"
+      val exbDatas =exbDao.selectExbApiInfo(placeId,bpd.get.pos_id)
+      val blankTargetMode =
+          if (blankInclude && bpd.get.pos_id != -1) true else false
+      var vExbName = this.getCurrentPositionStatus(bpd.get.pos_id,bpd.get.updatetime)
       var vFloorName = "検知フロア無"
       if (bpd.isDefined && blankTargetMode) {
-        val exbDatas =exbDao.selectExbApiInfo(placeId,bpd.get.pos_id)
         exbDatas.map { index =>
           vExbName = index.exb_pos_name
           vFloorName = index.cur_floor_name
@@ -286,13 +298,12 @@ class BeaconService @Inject() (config: Configuration,
 
     val bplist = dbDatas.map { v =>
       val bpd = posList.find(_.btx_id == v.item_btx_id)
-      val floor = bpd.find(_.btx_id == bpd.get.pos_id)
-      //!bpd.get.btx_name.isEmpty
-      var vExbName = "検知位置無"
+      val exbDatas =exbDao.selectExbApiInfo(placeId,bpd.get.pos_id)
+      var vExbName = this.getCurrentPositionStatus(bpd.get.pos_id,bpd.get.updatetime)
       var vFloorName = "検知フロア無"
-      val blankTargetMode = if (blankInclude) true else true
+      val blankTargetMode =
+          if (blankInclude && bpd.get.pos_id != -1) true else false
       if (bpd.isDefined && blankTargetMode) {
-        val exbDatas =exbDao.selectExbApiInfo(placeId,bpd.get.pos_id)
         exbDatas.map { index =>
           vExbName = index.exb_pos_name
           vFloorName = index.cur_floor_name
@@ -371,16 +382,14 @@ class BeaconService @Inject() (config: Configuration,
 
     val bplist = dbDatas.map { v =>
       val bpd = posList.find(_.btx_id == v.item_btx_id)
-
-      val floor = bpd.find(_.btx_id == bpd.get.pos_id)
-      //!bpd.get.btx_name.isEmpty
-      var vExbName = "検知位置無"
+      val exbDatas =exbDao.selectExbApiInfo(placeId,bpd.get.pos_id)
+      var vExbName = this.getCurrentPositionStatus(bpd.get.pos_id,bpd.get.updatetime)
       var vFloorName = "検知フロア無"
       var vKeyFloorName = ""
       var vWorkFlg = false
-      val blankTargetMode = if (blankInclude) true else true
+      val blankTargetMode =
+          if (blankInclude && bpd.get.pos_id != -1) true else false
       if (bpd.isDefined && blankTargetMode) {
-        val exbDatas =exbDao.selectExbApiInfo(placeId,bpd.get.pos_id)
         exbDatas.map { index =>
           vExbName = index.exb_pos_name
           vFloorName = index.cur_floor_name
