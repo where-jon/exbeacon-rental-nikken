@@ -167,6 +167,9 @@ function setTagNamePosition(pinFrame ,vFloor, beaconData,infoTag) {
         afterFrame.className = "user__tag--5zi--after";
         $(afterFrame).css('border-top', getColor);
     }
+     if(beaconData.totalCount >= VIEW_COUNT){
+        afterFrame.className = "all"
+     }
 
     $(infoTag).append(afterFrame);
 }
@@ -200,11 +203,6 @@ function setFrame() {
         pinFrame.style.left = beaconData.pos.x + "px";
 
         var spanFrame = document.createElement('span');
-        //spanFrame = gBeaconPosition.setColorUi(spanFrame,"textStyle",beaconData.depName)
-
-        // 仮 id表示
-        //spanFrame.textContent = beaconData.id;
-        spanFrame.textContent = beaconData.btxId;
 
         var infoTag = document.createElement('div');
         var contentTag = document.createElement('div');
@@ -259,6 +257,7 @@ function setFrame() {
             vTr.appendChild(vTd3);
             //vTr.appendChild(vTd4);
             vTbody.appendChild(vTr);
+            spanFrame.textContent = "A";
         }else{
              infoTag.id = "infoTag-" + beaconData.id;
              infoTag.className = "user__tag--info";
@@ -271,7 +270,7 @@ function setFrame() {
              contentTag.appendChild(picTextHuri);
              contentTag.appendChild(picText2);
              contentTag.appendChild(picText3);
-
+             spanFrame.textContent = beaconData.btxId;
         }
         userTag.push(infoTag);
         setTagNamePosition(pinFrame,vFloor,beaconData,infoTag);
@@ -440,11 +439,9 @@ function getJson() {
                         textColor : beaconPosition.item_type_text_color,
                         companyName : beaconPosition.company_name,
                         // new .End
-
-                        //pos : clonePosNew(5),
+                        //pos : clonePosNew(1),
                         pos : clonePosNew(beaconPosition.pos_id),
-
-                        finishPos:"無",
+                        finishPos:beaconPosition.cur_pos_name,
                         updateTime : beaconPosition.updatetime,
                         show:"hidden"
                     };
