@@ -400,12 +400,16 @@ function personBtnEvent() {
                 vInfoAllTagElement.appendChild(vInfoAllFrame)
                 classie.add(level, 'pin--active');
                 myNum = TotalBeaconsData[pos].id;
-                var ua = navigator.userAgent;
-                if (ua.indexOf('iPad') > 0 || ua.indexOf('Android') > 0 || ua.indexOf('iPhone') > 0 || ua.indexOf('iPod') > 0){
-                    vInfoAllFrame.children[0].width = "100%"
-                }else{
-                    vInfoAllFrame.children[0].width = "97%"
-                }
+//                var ua = navigator.userAgent;
+//                if (ua.indexOf('iPad') > 0 || ua.indexOf('Android') > 0 || ua.indexOf('iPhone') > 0 || ua.indexOf('iPod') > 0){
+//                    vInfoAllFrame.children[0].width = "100%"
+//                }else{
+//                    vInfoAllFrame.children[0].width = "97%"
+//                }
+                  var vElementHeight = document.getElementById("cloneInfoAllFrame").offsetHeight
+                  var vAllInfoElement = document.getElementById("allInfo")
+                  vAllInfoElement.style.height = vElementHeight-20 + "px"
+
             }
         }
 
