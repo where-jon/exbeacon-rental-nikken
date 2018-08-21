@@ -1,62 +1,85 @@
 @()(implicit user: User, messages: Messages, request: RequestHeader)
 
 @import controllers.routes
-<!--タイトル-->
-<div class="navbarCorner navbar navbar-default navbar-fixed-top">
-    <div class="navbar-brand">
-        <div>
-            <span>@Messages("system.name")</span>
+
+<div id="pcTabletNav" class="row">
+    <div class="navbarCorner col-xs-2 col-sm-2 col-md-2 col-lg-2">
+        <div class="navbar-brand">
+            <div>
+                <span>@Messages("system.name")</span>
+            </div>
+        </div>
+    </div>
+    <div class="navbar col-xs-10 col-sm-10 col-md-10 col-lg-10" style="padding:0px;">
+        <ul class="nav navbar-nav">
+            <li class="pull-left" style="margin-left:2px">
+                @if(request.path contains "/site/") {
+                    <a class="text-center tabSelected menu-title"><i class="fa fa-eye"></i>&nbsp;@Messages("lang.navbar.tab.temporaryMaterialManagement")</a>
+                }else{
+                    <a href="/site/workPlace" class="text-center tab menu-title"><i class="fa fa-eye"></i>&nbsp;@Messages("lang.navbar.tab.temporaryMaterialManagement")</a>
+                }
+            </li>
+            @if(user.services.contains("level2") || user.services.contains("level3") || user.services.contains("master") ) {
+                <li class="pull-left" style="margin-left:2px">
+                    @if(request.path contains "/analysis/") {
+                        <a class="text-center tabSelected"><i class="fa fa-bar-chart"></i>&nbsp;@Messages("lang.navbar.tab.analysis")</a>
+                    }else{
+                        <a href="/analysis/movementCar" class="text-center tab"><i class="fa fa-bar-chart"></i>&nbsp;@Messages("lang.navbar.tab.analysis")</a>
+                    }
+                </li>
+                <li class="pull-left" style="margin-left:2px">
+                    @if(
+                        (request.path contains "/cms/itemCarManage") ||
+                        (request.path contains "/cms/itemOtherManage") ||
+                        (request.path contains "/cms/itemTypeManage") ||
+                        (request.path contains "/cms/companyManage") ||
+                        (request.path contains "/cms/accountManage")
+                    ) {
+                        <a class="text-center tabSelected"><i class="fa fa-gear"></i>&nbsp;@Messages("lang.navbar.tab.maintenance")</a>
+                    }else{
+                        <a href="/cms/itemCarManage" class="text-center tab"><i class="fa fa-gear"></i>&nbsp;@Messages("lang.navbar.tab.maintenance")</a>
+                    }
+                </li>
+            }
+            @if(user.services.contains("level3") || user.services.contains("master") ) {
+                <li class="pull-left" style="margin-left:2px">
+                    @if(
+                        (request.path contains "/cms/floorManage") ||
+                        (request.path contains "/manage/mapManager") ||
+                        (request.path contains "/cms/exbManage") ||
+                        (request.path contains "/manage/exbViewerManager")
+                    ) {
+                        <a class="text-center tabSelected"><i class="fa fa-wrench"></i>&nbsp;@Messages("lang.navbar.tab.systemManagement")</a>
+                    }else{
+                        <a href="/cms/floorManage" class="text-center tab"><i class="fa fa-wrench"></i>&nbsp;@Messages("lang.navbar.tab.systemManagement")</a>
+                    }
+                </li>
+            }
+            @if(user.services.contains("master")) {
+                <li class="pull-left" style="margin-left:2px">
+                    @if(
+                        (request.path contains "/cms/placeManage") ||
+                        (request.path contains "/cms/sortPlaceListWith/") ||
+                        (request.path contains "/change-password")
+                    ) {
+                        <a class="text-center tabSelected"><i class="fa fa-building"></i>&nbsp;@Messages("lang.navbar.tab.tenantManagement")</a>
+                    }else{
+                        <a href="/cms/placeManage" class="text-center tab"><i class="fa fa-building"></i>&nbsp;@Messages("lang.navbar.tab.tenantManagement")</a>
+                    }
+                </li>
+            }
+        </ul>
+        <div class="text-right" style="margin-right:20px;word-wrap:normal;word-wrap:break-word;font-size:1vmax">
+            <span>@user.email</span>
+            <br/>
+            <a class="btn btn-navbar btn-signout" href="/signout">@Messages("lang.navbar.link.name.signout")</a>
         </div>
     </div>
 </div>
-
-<!--header-->
-<div class=" navbar-top navbar-fixed-top">
-
-    <ul class="hidden nav navbar-nav">
-        <li class="pull-left">
-            @if(request.path == routes.CarSummery.index.path){
-                <a class="text-center tabSelected">@Messages("lang.navbar.link.name.carSummery")</a>
-            }else{
-                <a href="@routes.CarSummery.index.path" class="text-center tab">@Messages("lang.navbar.link.name.carSummery")</a>
-            }
-        </li>
-        <li class="pull-left">
-            @if(request.path == routes.CarReserve.index.path){
-                <a class="text-center tabSelected" style="margin-left:1px;">@Messages("lang.navbar.link.name.carReserve")</a>
-            }else{
-                <a href="@routes.CarReserve.index.path" class="text-center tab" style="margin-left:1px;">@Messages("lang.navbar.link.name.carReserve")</a>
-            }
-        </li>
-        <li class="pull-left">
-            @if(request.path == routes.OtherItem.index.path){
-                <a class="text-center tabSelected" style="margin-left:1px;">@Messages("lang.navbar.link.name.otherItem")</a>
-            }else{
-                <a href="@routes.OtherItem.index.path" class="text-center tab" style="margin-left:1px;">@Messages("lang.navbar.link.name.otherItem")</a>
-            }
-        </li>
-        <li class="pull-left">
-            @if(request.path contains "/cms/"){
-                <a class="text-center tabSelected" style="margin-left:1px;">@Messages("lang.navbar.link.name.cms")</a>
-            }else{
-                @if(user.isSysMng){
-                    <a href="@controllers.cms.routes.PlaceManage.detail.path" class="text-center cmsTab" style="margin-left:1px;">@Messages("lang.navbar.link.name.cms")</a>
-                }else{
-                    @request.session.get("cmsLogged").map { data =>
-                        <a href="@controllers.cms.routes.PlaceManage.detail.path" class="text-center cmsTab" style="margin-left:1px;">@Messages("lang.navbar.link.name.cms")</a>
-                    }.getOrElse {
-                        <a href="javascript:showCmsLoginModal();" class="text-center cmsTab" style="margin-left:1px;">@Messages("lang.navbar.link.name.cms")</a>
-                    }
-                }
-            }
-        </li>
-    </ul>
-    <div class="text-right" style="width: 100%;position: absolute;">
-        <span>@Messages("lang.navbar.name.loginId")：@user.email</span>
-    </div>
-    <br/>
-    <a class="btn btn-navbar btn-signout" href="/signout">@Messages("lang.navbar.link.name.signout")</a>
-</div>
-
-@views.html.templates.sideBar()
-
+@if(
+    (request.path contains "/site/workPlace") ||
+    (request.path contains "/manage/mapManager") ||
+    (request.path contains "/manage/exbViewerManager")
+) {
+    @views.html.templates.sideBar()
+}

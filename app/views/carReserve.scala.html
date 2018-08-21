@@ -12,7 +12,6 @@
     <link rel="stylesheet" href="@routes.MyAssets.css("carReserve.css")"/>
     <link rel="stylesheet" media="screen" href="@routes.MyAssets.lib("bootstrap-datepicker-1.6.4-dist/css/bootstrap-datepicker.min.css")">
     <script type="text/javascript" src="@routes.MyAssets.lib("jquery-ui/jquery.ui.touch-punch.min.js")"></script>
-    <script type="text/javascript" src="@routes.MyAssets.lib("jquery.tablefix_1.0.1.js")"></script>
     <script type="text/javascript" src="@routes.MyAssets.lib("bootstrap-datepicker-1.6.4-dist/js/bootstrap-datepicker.min.js")"></script>
     <script type="text/javascript" src="@routes.MyAssets.lib("bootstrap-datepicker-1.6.4-dist/locales/bootstrap-datepicker.ja.min.js")"></script>
     <script></script>
@@ -22,7 +21,7 @@
     <div class="container">
         <!-- ナビバー  -->
         @templates.navBar()
-        <div class="row" style="margin-top: 40px;">
+        <div class="row">
             <!-- 左サイド -->
             @views.html.templates.sideMenu()
             <!-- 中央 -->

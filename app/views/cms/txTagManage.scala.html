@@ -8,7 +8,6 @@
 <head>
     @templates.htmlHead(title = Messages("lang.cms.txTagManage.title"))
     <link rel="stylesheet" href="@routes.MyAssets.css("cms/txTagManage.css")"/>
-    <script type="text/javascript" src="@routes.MyAssets.lib("jquery.tablefix_1.0.1.js")"></script>
     <script></script>
 </head>
 <body>
@@ -16,7 +15,7 @@
     <div class="container">
         <!-- ナビバー  -->
         @views.html.templates.navBar()
-        <div class="row" style="margin-top: 40px;">
+        <div class="row">
             <!-- 左サイドバー -->
             @views.html.templates.sideMenu()
             <!-- メイン -->
