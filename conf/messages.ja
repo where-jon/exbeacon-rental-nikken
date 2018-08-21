@@ -20,8 +20,8 @@ update=更新
 cancel=キャンセル
 delete=削除
 
-placeManage.title=現場管理画面
-placeManage.detail.title=現場管理画面
+placeManage.title=現場管理
+placeManage.detail.title=現場管理
 
 ################################################################################################
 # AUTH
@@ -374,9 +374,9 @@ lang.cms.itemOtherManage.item.list.header.otherId=その他仮設材ID
 lang.cms.itemOtherManage.item.list.header.otherNo=その他仮設材番号
 lang.cms.itemOtherManage.item.list.header.otherNote=備考
 lang.cms.itemOtherManage.item.list.header.count=個数
-lang.cms.itemOtherManage.item.button.editItem=仮設材編集
-lang.cms.itemOtherManage.item.button.addItem=仮設材追加
-lang.cms.itemOtherManage.item.button.deleteItem=仮設材削除
+lang.cms.itemOtherManage.item.button.editItem=その他仮設材編集
+lang.cms.itemOtherManage.item.button.addItem=その他仮設材追加
+lang.cms.itemOtherManage.item.button.deleteItem=その他仮設材削除
 lang.cms.itemOtherManage.itemUpdate.popup.title=その他仮設材情報更新
 lang.cms.itemOtherManage.itemUpdate.popup.tagId=TagID
 lang.cms.itemOtherManage.itemUpdate.popup.tagId.placeholder=TagID
