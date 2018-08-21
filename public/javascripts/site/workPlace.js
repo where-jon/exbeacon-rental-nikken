@@ -167,9 +167,6 @@ function setTagNamePosition(pinFrame ,vFloor, beaconData,infoTag) {
         afterFrame.className = "user__tag--5zi--after";
         $(afterFrame).css('border-top', getColor);
     }
-     if(beaconData.totalCount >= VIEW_COUNT){
-        afterFrame.className = "all"
-     }
 
     $(infoTag).append(afterFrame);
 }
@@ -403,6 +400,12 @@ function personBtnEvent() {
                 vInfoAllTagElement.appendChild(vInfoAllFrame)
                 classie.add(level, 'pin--active');
                 myNum = TotalBeaconsData[pos].id;
+                var ua = navigator.userAgent;
+                if (ua.indexOf('iPad') > 0 || ua.indexOf('Android') > 0 || ua.indexOf('iPhone') > 0 || ua.indexOf('iPod') > 0){
+                    vInfoAllFrame.children[0].width = "100%"
+                }else{
+                    vInfoAllFrame.children[0].width = "97%"
+                }
             }
         }
 
