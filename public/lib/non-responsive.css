@@ -30,10 +30,6 @@
   border-top: 0;
 }
 
-.navbar-brand {
-  margin-left: -15px;
-}
-
 /* ナビゲーションバーを常に左寄せに適用 */
 .navbar-nav {
   float: left;

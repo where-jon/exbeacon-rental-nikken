@@ -13,7 +13,11 @@ mapViewer: Seq[FloorAll]
     @templates.htmlHead(title = Messages("lang.cms.carManage.title"))
     <style type="text/css">
         .navbar-brand {
-            padding-left: 26px;
+            margin-left: 18px;
+            text-align: center;
+        }
+        div#pcTabletNav {
+            margin:0px;
         }
     </style>
     <script type="text/javascript" src="@routes.MyAssets.js("manage/map_manager.js")"></script>
