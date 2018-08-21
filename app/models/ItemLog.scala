@@ -17,6 +17,8 @@ itemId:Int,
 itemName:String
 ,operatingRate : Float
 ,reserveOperatingRate :Float
+,operatingCount :Int
+,reserveOperatingCount :Int
 )
 
 /*作業車稼働状況分析用クラス*/
