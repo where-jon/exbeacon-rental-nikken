@@ -617,7 +617,7 @@ class beaconDAO @Inject()(dbapi: DBApi) {
                 and floor.active_flg = true
                   where c.place_id =  """  + {placeId} + """
                   and c.active_flg = true
-                  and c.item_type_id = 1
+                  and i.item_type_category_id = 0
                   order by c.item_btx_id
 
         """
