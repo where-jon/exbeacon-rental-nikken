@@ -1,34 +1,32 @@
 package controllers.manage
 
+import java.awt.image.BufferedImage
+import java.io.{ByteArrayInputStream, ByteArrayOutputStream}
+import java.nio.file.Files
+import java.util.Base64
+import javax.imageio.ImageIO
 import javax.inject.Inject
 
 import com.mohiva.play.silhouette.api.Silhouette
 import controllers.{BaseController, site}
 import models.MapViewerData
 import play.api.Configuration
-import play.api.i18n.{I18nSupport, Messages, MessagesApi}
-import play.api.libs.ws.WSClient
-import utils.silhouette.MyEnv
 import play.api.data.Form
 import play.api.data.Forms._
-import java.io.ByteArrayInputStream
-import java.io.ByteArrayOutputStream
-import java.nio.file.Files
-import java.util.Base64
-import javax.imageio.ImageIO
-
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.libs.json.Json
-import java.awt.image.BufferedImage
+import play.api.libs.ws.WSClient
+import utils.silhouette.MyEnv
 
 /**
   * フロアマップ登録クラス.
   */
 class MapManager @Inject()(config: Configuration
-                           , val silhouette: Silhouette[MyEnv]
-                           , val messagesApi: MessagesApi
-                           , ws: WSClient
-                           , floorDAO: models.floorDAO
-                          ) extends BaseController with I18nSupport {
+  , val silhouette: Silhouette[MyEnv]
+  , val messagesApi: MessagesApi
+  , ws: WSClient
+  , floorDAO: models.floorDAO
+  ) extends BaseController with I18nSupport {
 
   val IMAGE_WIDTH = config.getInt("web.btxmaster.mapWidth").get
   val IMAGE_HEIGHT = config.getInt("web.btxmaster.mapHeight").get
@@ -45,39 +43,45 @@ class MapManager @Inject()(config: Configuration
 
 
   def uploadMap = SecuredAction(parse.multipartFormData) { implicit request =>
-    System.out.println("mapUpload");
-    val indexId = request.body.dataParts.get("index_id").map { t => t.head }
-    System.out.println(indexId.get.toInt);
-    val mapId = request.body.dataParts.get("map_id[" + indexId.get.toInt + "]").map { t =>
-      t.head
-    }
-    request.body.file("map_image[" + indexId.get.toInt + "]").map { picture =>
-      val filename = picture.filename
-      System.out.println("filename:" + filename);
-      val contentType = picture.contentType.get
-      val byteArray = Files.readAllBytes(picture.ref.file.toPath)
-      //System.out.println("IMAGE_WIDTH:" + IMAGE_WIDTH);
-      //System.out.println("IMAGE_HEIGHT:" + IMAGE_HEIGHT);
+        System.out.println("mapUpload");
+        val indexId = request.body.dataParts.get("index_id").map { t => t.head }
+        System.out.println(indexId.get.toInt);
+        val mapId = request.body.dataParts.get("map_id[" + indexId.get.toInt + "]").map { t =>
+          t.head
+        }
+        request.body.file("map_image[" + indexId.get.toInt + "]").map { picture =>
+          val filename = picture.filename
+          System.out.println("filename:" + filename);
+          val contentType = picture.contentType.get
+          val byteArray = Files.readAllBytes(picture.ref.file.toPath)
+          //System.out.println("IMAGE_WIDTH:" + IMAGE_WIDTH);
+          //System.out.println("IMAGE_HEIGHT:" + IMAGE_HEIGHT);
 
-      //val scaledByteArray = scaleImage2(byteArray, IMAGE_WIDTH, IMAGE_HEIGHT)
-      val scaledByteArray = scaleMoto(byteArray, IMAGE_WIDTH, IMAGE_HEIGHT)
+          //val scaledByteArray = scaleImage2(byteArray, IMAGE_WIDTH, IMAGE_HEIGHT)
+          if(byteArray.length > 0){
+            val scaledByteArray = scaleMoto(byteArray, IMAGE_WIDTH, IMAGE_HEIGHT)
 
-      val b64 = Base64.getEncoder.encodeToString(scaledByteArray)
-      val b64img = s"data:image/false;base64,${b64}"
-      val in = new ByteArrayInputStream(byteArray)
-      val org = ImageIO.read(in)
+            val b64 = Base64.getEncoder.encodeToString(scaledByteArray)
+            val b64img = s"data:image/false;base64,${b64}"
+            val in = new ByteArrayInputStream(byteArray)
+            val org = ImageIO.read(in)
 
-      System.out.println("11width:" + org.getWidth);
-      System.out.println("11height:" + org.getHeight);
+            System.out.println("11width:" + org.getWidth);
+            System.out.println("11height:" + org.getHeight);
 
-      if (1 == floorDAO.updateFloorMap(mapId.get.toInt, b64img, org.getWidth, org.getHeight)) {
-        Redirect("/manage/mapManager").flashing("resultOK" -> Messages("db.update.ok"))
-      } else {
-        Redirect("/manage/mapManager").flashing("resultNG" -> Messages("error"))
-      }
-    }.getOrElse {
-      Ok(Json.toJson(false))
-    }
+            if (1 == floorDAO.updateFloorMap(mapId.get.toInt, b64img, org.getWidth, org.getHeight)) {
+              Redirect("/manage/mapManager").flashing("resultOK" -> Messages("db.update.ok"))
+            } else {
+              Redirect("/manage/mapManager").flashing("resultNG" -> Messages("error"))
+            }
+          }else{
+            Redirect("/manage/mapManager").flashing("resultNG" -> Messages("error.manage.mapManager.image.empty"))
+          }
+
+        }.getOrElse {
+          Ok(Json.toJson(false))
+        }
+
   }
 
   private def scaleMoto(bytes: Array[Byte], width: Int, height: Int): Array[Byte] = {
