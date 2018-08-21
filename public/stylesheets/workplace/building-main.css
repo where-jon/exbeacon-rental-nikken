@@ -1223,9 +1223,9 @@ margin-top: 135px;
 	z-index: 10;
 }
 
-
 .navbar-brand {
-    margin-left: 26px;
+    margin-left:18px;
+    text-align: center;
 }
 .update__sec__frame {
 	visibility: hidden;
