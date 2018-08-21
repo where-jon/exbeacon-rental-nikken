@@ -546,6 +546,7 @@ lang.OtherItem.itemTableTitle.value=利用状況
 # Manage(旧)
 lang.manage.floorManager = フロア管理
 lang.manage.mapManager = フロアマップ登録
+error.manage.mapManager.image.empty=選択されたフロアマップがないです。
 lang.manage.exbManager = EXB管理
 lang.manage.exbViewerManager = EXB設置管理
 
