@@ -18,9 +18,11 @@
 <div class="container">
     <!-- ナビバー  -->
     @views.html.templates.navBar()
-    <div class="row" style="margin-top: 50px;">
+    <div class="row">
+        <!-- 左サイドバー -->
+        @views.html.templates.sideMenu()
         <!-- メイン -->
-        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mainSpace">
+        <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10 mainSpace">
             <!-- メッセージ -->
             @views.html.templates.msgDiv()
             <!-- 画面題字 -->
