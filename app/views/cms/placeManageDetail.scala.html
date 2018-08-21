@@ -8,7 +8,6 @@
 <head>
     @templates.htmlHead(title = Messages("lang.cms.placeManage.place.title"))
     <link rel="stylesheet" href="@routes.MyAssets.css("cms/placeManageDetail.css")"/>
-    <script type="text/javascript" src="@routes.MyAssets.lib("jquery.tablefix_1.0.1.js")"></script>
     <script></script>
 </head>
 <body>
@@ -16,10 +15,11 @@
     <div class="container">
         <!-- ナビバー  -->
         @views.html.templates.navBar()
-        <div class="row" style="margin-top: 50px;">
+        <div class="row">
             <!-- 左サイドバー -->
+            @views.html.templates.sideMenu()
             <!-- メイン -->
-            <div class="col-lg-12 mainSpace">
+            <div class="col-lg-10 mainSpace">
                 <!-- メッセージ -->
                 @views.html.templates.msgDiv()
                 <!-- 画面題字 -->

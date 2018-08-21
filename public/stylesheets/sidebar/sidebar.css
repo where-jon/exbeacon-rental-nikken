@@ -201,7 +201,7 @@ p.error {
 }
 
 nav.drawer-nav {
-  background-color: #595959;
+  background-color: #D9D9D9; /* #595959; */
 }
 
 li.drawer-brand {
