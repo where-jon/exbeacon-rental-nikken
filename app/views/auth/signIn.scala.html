@@ -10,7 +10,7 @@
 		.login-btn{
 			width: 100%!important;
 			font-size: 16px!important;
-			background-color:#95B3D7;
+			background-color: rgb(169, 209, 142);
 			color:#000000;
 		}
 		.loginTappedClass{
@@ -42,12 +42,15 @@
 <body>
 	<!-- content  -->
 	<div class="container">
-		<!-- ナビバー  -->
-		<div class="navbarCorner navbar-default navbar-fixed-top">
-			<div class="navbar-brand">
-				<div>
-					<span>@Messages("system.name")</span>
+		<div id="pcTabletNav" class="row" style="margin-bottom:0px">
+			<div class="navbarCorner col-xs-2 col-sm-2 col-md-2 col-lg-2">
+				<div class="navbar-brand">
+					<div>
+						<span>@Messages("system.name")</span>
+					</div>
 				</div>
+			</div>
+			<div class="navbar col-xs-10 col-sm-10 col-md-10 col-lg-10" style="padding:0px;">
 			</div>
 		</div>
 		@b3.formCSRF(routes.Auth.authenticate) {
@@ -64,9 +67,7 @@
 			</div>
 			<div class="row">
 				<div class="col-xs-6 col-xs-offset-3 col-xs-6 col-sm-6 col-sm-offset-3 col-md-6 col-md-offset-3">
-					<div class="form-group">
-						@b3.submit('class -> "btn login-btn text-center form-control fontMspGothic"){ ログイン }
-					</div>
+					@b3.submit('class -> "btn login-btn text-center form-control fontMspGothic"){ ログイン }
 				</div>
 			</div>
 		}
