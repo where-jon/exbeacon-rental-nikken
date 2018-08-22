@@ -87,17 +87,22 @@ class PlaceManage @Inject() (
 
   /** 指定順一覧表示 */
   def sortPlaceListWith(sortType:Int = 0) = SecuredAction { implicit request =>
-    if (securedRequest2User.isSysMng) {
-      val placeList = placeDAO.selectPlaceListWithSortTypeEx(sortType)
-      val statusList = PlaceEnum().map
-      Ok(views.html.cms.placeManage(placeList, statusList))
-    } else {
-      if (super.isCmsLogged) {
-        // シス管でなければ登録されている現場の管理画面へ遷移
-        Redirect(routes.PlaceManage.detail)
+    val reqIdentity = request.identity
+    if (reqIdentity.level >= 4) {
+      if (securedRequest2User.isSysMng) {
+        val placeList = placeDAO.selectPlaceListWithSortTypeEx(sortType)
+        val statusList = PlaceEnum().map
+        Ok(views.html.cms.placeManage(placeList, statusList))
       } else {
-        Redirect(CMS_NOT_LOGGED_RETURN_PATH).flashing(ERROR_MSG_KEY -> Messages("error.cmsLogged.invalid"))
+        if (super.isCmsLogged) {
+          // シス管でなければ登録されている現場の管理画面へ遷移
+          Redirect(routes.PlaceManage.detail)
+        } else {
+          Redirect(CMS_NOT_LOGGED_RETURN_PATH).flashing(ERROR_MSG_KEY -> Messages("error.cmsLogged.invalid"))
+        }
       }
+    }else {
+      Redirect(site.routes.WorkPlace.index)
     }
   }
 

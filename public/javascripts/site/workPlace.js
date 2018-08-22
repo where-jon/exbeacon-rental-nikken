@@ -150,22 +150,24 @@ function setTagNamePosition(pinFrame ,vFloor, beaconData,infoTag) {
         getColor = "2vmin solid " + beaconData.iconColor
     }
 
+    var typeName = ""
+    afterFrame.className = ""
     if(beaconData.pos.y >=0 && beaconData.pos.y < (CUR_MAP_HEIGHT/2) && beaconData.pos.x >=0  && beaconData.pos.x <=(CUR_MAP_WIDTH/2)){
         infoTag.className += " user__tag--11zi";
         afterFrame.className = "user__tag--11zi--after";
-        $(afterFrame).css('border-bottom', getColor);
+        typeName = 'border-bottom'
     }else if (beaconData.pos.y >=0 && beaconData.pos.y < (CUR_MAP_HEIGHT/2) && beaconData.pos.x >=(CUR_MAP_WIDTH/2)  && beaconData.pos.x <=CUR_MAP_WIDTH){
         infoTag.className += " user__tag--1zi"
         afterFrame.className = "user__tag--1zi--after";
-        $(afterFrame).css('border-bottom', getColor);
+        typeName = 'border-bottom'
     }else if (beaconData.pos.y >=(CUR_MAP_HEIGHT/2) && beaconData.pos.y <= CUR_MAP_HEIGHT && beaconData.pos.x >=0  && beaconData.pos.x <=(CUR_MAP_WIDTH/2)){
         infoTag.className += " user__tag--7zi"
         afterFrame.className = "user__tag--7zi--after";
-        $(afterFrame).css('border-top', getColor);
+        typeName = 'border-top'
     }else if (beaconData.pos.y >=(CUR_MAP_HEIGHT/2) && beaconData.pos.y <= CUR_MAP_HEIGHT && beaconData.pos.x >=(CUR_MAP_WIDTH/2)  && beaconData.pos.x <=CUR_MAP_WIDTH){
         infoTag.className += " user__tag--5zi"
         afterFrame.className = "user__tag--5zi--after";
-        $(afterFrame).css('border-top', getColor);
+        typeName = 'border-top'
     }
 
     $(infoTag).append(afterFrame);
@@ -400,12 +402,16 @@ function personBtnEvent() {
                 vInfoAllTagElement.appendChild(vInfoAllFrame)
                 classie.add(level, 'pin--active');
                 myNum = TotalBeaconsData[pos].id;
-                var ua = navigator.userAgent;
-                if (ua.indexOf('iPad') > 0 || ua.indexOf('Android') > 0 || ua.indexOf('iPhone') > 0 || ua.indexOf('iPod') > 0){
-                    vInfoAllFrame.children[0].width = "100%"
-                }else{
-                    vInfoAllFrame.children[0].width = "97%"
-                }
+//                var ua = navigator.userAgent;
+//                if (ua.indexOf('iPad') > 0 || ua.indexOf('Android') > 0 || ua.indexOf('iPhone') > 0 || ua.indexOf('iPod') > 0){
+//                    vInfoAllFrame.children[0].width = "100%"
+//                }else{
+//                    vInfoAllFrame.children[0].width = "97%"
+//                }
+                  var vElementHeight = document.getElementById("cloneInfoAllFrame").offsetHeight
+                  var vAllInfoElement = document.getElementById("allInfo")
+                  vAllInfoElement.style.height = vElementHeight-20 + "px"
+
             }
         }
 
