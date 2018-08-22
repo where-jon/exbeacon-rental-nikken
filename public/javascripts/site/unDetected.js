@@ -31,7 +31,7 @@ function dbExecuteManager(routeUrl){
 function btnEvent(){
 
     // DatePickerの設定 start---------------------------------------
-     gDatePicker.dayClickEvent();
+     gDatePicker.todayClickEvent();
      gDatePicker.htmlDayClickEvent();
     // DatePickerの設定 end-----------------------------------------
 
