@@ -4,11 +4,11 @@
 
 system.name=仮設材管理システム
 
-field.name=name
-field.email=Email
-field.password=パスワード
-field.password.repeat=パスワードの再入力
-field.services=Services
+signin.field.loginid=ログインID
+signin.field.loginid.placeholder=ログインID
+signin.field.password=パスワード
+signin.field.password.placeholder=パスワード
+signin.button.title=ログイン
 
 submit=送信
 reset=変更する
@@ -39,12 +39,7 @@ changepass.field.current=現在のパスワード
 changepass.field.new=新しいパスワード
 changepass.field.repeat=新しいパスワードを再入力
 
-auth.user.notexists=メールアドレスが登録されていません。
-auth.user.notunique=There is another user with this email
-auth.credentials.incorrect=メールアドレスまたはパスワードが違います。
-auth.passwords.notequal=新しいパスワードを正しく再入力してください。
-auth.password.changed=パスワードを変更しました。
-auth.currentpwd.incorrect=現在のパスワードが違います。
+auth.credentials.incorrect=ログインIDまたはパスワードが違います。
 
 denied.title=Access denied!
 denied.text=You have no privileges to be here.

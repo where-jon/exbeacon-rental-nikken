@@ -58,16 +58,27 @@
 				<div class="col-xs-6 col-xs-offset-3 col-xs-6 col-sm-offset-3 col-md-6 col-md-offset-3">
 					@tags.alertFromRequest(request, "error")
 					<div class="form-group">
-						@b3.email( signInForm("identifier"), '_hiddenLabel -> Messages("field.email"), 'required -> false, 'placeholder -> "your@email.com", 'autofocus -> false )
+						@b3.text(
+							signInForm("identifier"),
+							'_hiddenLabel -> Messages("signin.field.loginid"),
+							'required -> false,
+							'placeholder -> Messages("signin.field.loginid.placeholder"),
+							'autofocus -> false )
 					</div>
 					<div class="form-group">
-						@b3.password( signInForm("password"), '_hiddenLabel -> Messages("field.password"), 'required -> false, 'placeholder -> Messages("field.password") )
+						@b3.password(
+							signInForm("password"),
+							'_hiddenLabel -> Messages("signin.field.password"),
+							'required -> false,
+							'placeholder -> Messages("signin.field.password.placeholder") )
 					</div>
 				</div>
 			</div>
 			<div class="row">
 				<div class="col-xs-6 col-xs-offset-3 col-xs-6 col-sm-6 col-sm-offset-3 col-md-6 col-md-offset-3">
-					@b3.submit('class -> "btn login-btn text-center form-control fontMspGothic"){ ログイン }
+					<div class="form-group">
+						@b3.submit('class -> "btn login-btn text-center form-control fontMspGothic"){ @Messages("signin.button.title") }
+					</div>
 				</div>
 			</div>
 		}
