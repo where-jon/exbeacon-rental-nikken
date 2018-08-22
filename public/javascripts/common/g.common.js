@@ -251,6 +251,19 @@ var gDatePicker = {
         });
     },
 
+     todayClickEvent : function() {
+            var selectPinElement = [].slice.call(document.querySelectorAll(".inputClass"));
+            selectPinElement.forEach(function(pin, pos) {
+                $(pin).datetimepicker({
+                     format : 'YYYY/MM/DD',
+                     locale: 'ja',
+                     maxDate: "now"
+                 });
+                gDatePicker.dateChangeEvent(pin)
+                gDatePicker.dayDateTimeSetting();
+            });
+        },
+
     dayClickEvent2 : function() {
             var selectPinElement = [].slice.call(document.querySelectorAll(".inputClass"));
             selectPinElement.forEach(function(pin, pos) {
