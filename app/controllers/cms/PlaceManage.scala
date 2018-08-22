@@ -206,7 +206,7 @@ class PlaceManage @Inject() (
       val hs = passwordHasherRegistry.current.hash(form.get.placeUserPassword1)
       val user = User.apply(
         Option(0), form.get.placeUserId, true, hs.password, form.get.placeUserName,
-        Option(placeId), Option(placeId),
+        Option(placeId), Option(placeId), "",
         true, 3, null
       )
       userService.insert(user)
