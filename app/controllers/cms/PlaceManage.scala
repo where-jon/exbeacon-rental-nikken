@@ -54,9 +54,13 @@ class PlaceManage @Inject() (
   val messagesApi: MessagesApi,
   placeDAO: models.placeDAO,
   floorDAO: models.floorDAO,
-  exbDAO: models.exbModelDAO,
+  exbDAO: models.ExbDAO,
   passwordHasherRegistry: PasswordHasherRegistry,
-  userService: UserService
+  userService: UserService,
+  companyDAO: models.companyDAO,
+  itemTypeDAO: models.ItemTypeDAO,
+  itemOtherDAO: models.itemOtherDAO,
+  itemCarDAO: models.itemCarDAO
 ) extends BaseController with I18nSupport {
 
   /** 選択されている並び順 */
@@ -254,18 +258,55 @@ class PlaceManage @Inject() (
     }
   }
 
-  /** 削除 */
+  /**
+    * 現場の削除
+    */
   def delete = SecuredAction { implicit request =>
+    // POSTされたFORMを取得
     val inputForm = Form(mapping(
-      "deletePlaceId" -> text.verifying(Messages("error.cms.placeManage.delete.empty"), {!_.isEmpty})
-    )(PlaceDeleteForm.apply)(PlaceDeleteForm.unapply))
+      "deletePlaceId" -> text.verifying(Messages("error.cms.placeManage.delete.empty"), {
+        !_.isEmpty
+      })
+    )(PlaceDeleteForm.apply)(PlaceDeleteForm.unapply)
+      verifying(
+        Messages("error.cms.PlaceManage.noDelete.byAccount"), // この現場に紐づく現場アカウントが存在しているので削除できません。
+        inForm => (userService.selectAccountByPlaceId(inForm.deletePlaceId.toInt).length == 0)
+      )
+      verifying(
+        Messages("error.cms.PlaceManage.noDelete.byCompany"), // この現場に紐づく業者が存在しているので削除できません。
+        inForm => (companyDAO.selectCompany(inForm.deletePlaceId.toInt).length == 0)
+      )
+      verifying(
+        Messages("error.cms.PlaceManage.noDelete.byItemType"), // この現場に紐づく仮設材種別が存在しているので削除できません。
+        inForm => (itemTypeDAO.selectItemTypeInfo(inForm.deletePlaceId.toInt).length == 0)
+      )
+      verifying(
+        Messages("error.cms.PlaceManage.noDelete.byOtherMaster"), // この現場に紐づくその他仮設材が存在しているので削除できません。
+        inForm => (itemOtherDAO.selectOtherMasterInfo(inForm.deletePlaceId.toInt).length == 0)
+      )
+      verifying(
+        Messages("error.cms.PlaceManage.noDelete.byCarMaster"), // この現場に紐づく作業車・立馬が存在しているので削除できません。
+        inForm => (itemCarDAO.selectCarMasterInfo(inForm.deletePlaceId.toInt).length == 0)
+      )
+      verifying(
+        Messages("error.cms.PlaceManage.noDelete.byExb"), // この現場に紐づくEXBが存在しているので削除できません。
+        inForm => (exbDAO.selectExbAll(inForm.deletePlaceId.toInt).length == 0)
+      )
+      verifying(
+        Messages("error.cms.PlaceManage.noDelete.byFloor"), // この現場に紐づくフロアが存在しているので削除できません。
+        inForm => (floorDAO.selectFloor(inForm.deletePlaceId.toInt).length == 0)
+      )
+    )
     val form = inputForm.bindFromRequest
-    if (form.hasErrors){
+    if (form.hasErrors) { // 入力内容がエラーなら中止
       Redirect(routes.PlaceManage.sortPlaceListWith(selectedSortType))
         .flashing(ERROR_MSG_KEY -> form.errors.map(_.message).mkString(HTML_BR))
-    }else{
+    } else {
+      // 担当者アカウントを削除
       placeDAO.deleteLogicalById(form.get.deletePlaceId.toInt)
+      // 現場を削除
       userService.deleteLogicalByPlaceId(form.get.deletePlaceId.toInt)
+      // 画面遷移
       Redirect(routes.PlaceManage.sortPlaceListWith(selectedSortType))
         .flashing(SUCCESS_MSG_KEY -> Messages("success.cms.PlaceManage.delete"))
     }
