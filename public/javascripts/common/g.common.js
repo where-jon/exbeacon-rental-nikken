@@ -34,7 +34,7 @@ var PIN_MARGIN_Y = 7;
 var MARGIN_BASE = 1;
 var BASE_ASPECT = 2.67;
 
-var VIEW_COUNT = 3
+var VIEW_COUNT = -1
 
 var gResizeCheck = false;
 var gResize = {
