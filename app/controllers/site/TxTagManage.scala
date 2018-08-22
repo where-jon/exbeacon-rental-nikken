@@ -1,0 +1,107 @@
+package controllers.site
+
+import javax.inject.{Inject, Singleton}
+
+import com.mohiva.play.silhouette.api.Silhouette
+import controllers.{BaseController, BeaconService}
+import models.{ItemType, PowerEnum}
+import play.api._
+import play.api.data.Form
+import play.api.data.Forms.{mapping, _}
+import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.libs.ws._
+import utils.silhouette.MyEnv
+
+case class TxSearchForm(powerValue: String,itemTypeId:String)
+/**
+  * BeaconTxタグ管理アクションクラス
+  *
+  *
+  */
+@Singleton
+class TxTagManage @Inject()(config: Configuration
+  , val silhouette: Silhouette[MyEnv]
+  , val messagesApi: MessagesApi
+  , ws: WSClient
+  , itemTypeDAO: models.ItemTypeDAO
+  , beaconService: BeaconService
+  , beaconDAO: models.beaconDAO
+  ) extends BaseController with I18nSupport {
+
+  /*検索用*/
+  var ITEM_TYPE_FILTER = 0
+  var POWER_FILTER = -1
+
+  var itemTypeList :Seq[ItemType] = null // 仮設材種別
+  var itemIdList :Seq[Int] = null // 仮設材種別id
+
+
+  /** 　初期化 */
+  def init() {
+    ITEM_TYPE_FILTER = 0
+    POWER_FILTER = -1
+  }
+
+
+  /** 　検索側データ取得 */
+  def getSearchData(_placeId:Integer): Unit = {
+    /*仮設材種別取得*/
+    itemTypeList = itemTypeDAO.selectItemCarInfo(_placeId);
+    /*仮設材種別id取得*/
+    itemIdList = itemTypeList.map{item => item.item_type_id}
+    if(itemIdList.isEmpty){
+      itemIdList = Seq(-1)
+    }
+  }
+
+
+  /** 　検索ロジック */
+  def search = SecuredAction { implicit request =>
+    val searchForm = Form(mapping(
+      "powerValue" -> text
+      ,"itemTypeId" -> text
+    )(TxSearchForm.apply)(TxSearchForm.unapply))
+    val searchFormData = searchForm.bindFromRequest.get
+
+    ITEM_TYPE_FILTER = searchFormData.itemTypeId.toInt
+    POWER_FILTER = searchFormData.powerValue.toInt
+
+    val placeId = super.getCurrentPlaceId
+    //検索側データ取得
+    getSearchData(placeId)
+    val dbDatas = beaconDAO.selectBeaconViewer(placeId)
+    var beaconListApi = beaconService.getBeaconPosition(dbDatas,true,placeId)
+
+    if (ITEM_TYPE_FILTER != 0) {
+      beaconListApi = beaconListApi.filter(_.item_type_id == ITEM_TYPE_FILTER)
+    }
+
+    if (POWER_FILTER != -1) {
+      if(POWER_FILTER > 30){
+        beaconListApi = beaconListApi.filter(_.power_level >= POWER_FILTER)
+      }else{
+        beaconListApi = beaconListApi.filter(_.power_level <= POWER_FILTER)
+      }
+    }
+
+    val POWER_ENUM = PowerEnum().map;
+    Ok(views.html.site.txTagManage(POWER_ENUM,POWER_FILTER,ITEM_TYPE_FILTER,itemTypeList,beaconListApi))
+  }
+
+  /**
+    * 初期表示
+    * @return
+    */
+  def index = SecuredAction{ implicit request =>
+
+    val placeId = super.getCurrentPlaceId
+    //検索側データ取得
+    getSearchData(placeId)
+    // ①仮設材すべてを取得
+    val dbDatas = beaconDAO.selectBeaconViewer(placeId)
+    val beaconListApi = beaconService.getBeaconPosition(dbDatas,true,placeId)
+
+    val POWER_ENUM = PowerEnum().map;
+    Ok(views.html.site.txTagManage(POWER_ENUM,POWER_FILTER,ITEM_TYPE_FILTER,itemTypeList,beaconListApi))
+  }
+}
