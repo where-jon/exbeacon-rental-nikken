@@ -2,7 +2,7 @@ var TotalBeaconsData = [];
 var VIEWTYPE = false;    // false(アイコンがスムーズに動くバージョン)
 var gMapPos = 1;
 var gInfoAllFrame = null;
-
+var MARGIN_HEIGHT = 32
 $( window ).resize(function() {
 	location.reload();
 });
@@ -155,19 +155,19 @@ function setTagNamePosition(pinFrame ,vFloor, beaconData,infoTag) {
     if(beaconData.pos.y >=0 && beaconData.pos.y < (CUR_MAP_HEIGHT/2) && beaconData.pos.x >=0  && beaconData.pos.x <=(CUR_MAP_WIDTH/2)){
         infoTag.className += " user__tag--11zi";
         afterFrame.className = "user__tag--11zi--after";
-        typeName = 'border-bottom'
+        $(afterFrame).css('border-bottom', getColor);
     }else if (beaconData.pos.y >=0 && beaconData.pos.y < (CUR_MAP_HEIGHT/2) && beaconData.pos.x >=(CUR_MAP_WIDTH/2)  && beaconData.pos.x <=CUR_MAP_WIDTH){
         infoTag.className += " user__tag--1zi"
         afterFrame.className = "user__tag--1zi--after";
-        typeName = 'border-bottom'
+        $(afterFrame).css('border-bottom', getColor);
     }else if (beaconData.pos.y >=(CUR_MAP_HEIGHT/2) && beaconData.pos.y <= CUR_MAP_HEIGHT && beaconData.pos.x >=0  && beaconData.pos.x <=(CUR_MAP_WIDTH/2)){
         infoTag.className += " user__tag--7zi"
         afterFrame.className = "user__tag--7zi--after";
-        typeName = 'border-top'
+        $(afterFrame).css('border-top', getColor);
     }else if (beaconData.pos.y >=(CUR_MAP_HEIGHT/2) && beaconData.pos.y <= CUR_MAP_HEIGHT && beaconData.pos.x >=(CUR_MAP_WIDTH/2)  && beaconData.pos.x <=CUR_MAP_WIDTH){
         infoTag.className += " user__tag--5zi"
         afterFrame.className = "user__tag--5zi--after";
-        typeName = 'border-top'
+        $(afterFrame).css('border-top', getColor);
     }
 
     $(infoTag).append(afterFrame);
@@ -349,6 +349,9 @@ function personBtnEvent() {
             // alert("another");
             userTag.forEach(function(userTag, pos) {
                 userTag.style.visibility = "hidden";
+                if(userTag.children[2]!=null){
+                    userTag.children[2].style.visibility = "hidden";
+                }
             });
         }
         vInfoTagElement = document.getElementById("infoTag-" +  TotalBeaconsData[pos].id);
@@ -363,11 +366,6 @@ function personBtnEvent() {
                 vInfoTagElement.style.visibility = "visible";
                 classie.add(level, 'pin--active');
                 myNum = TotalBeaconsData[pos].id;
-                // 強調する。
-                if(TotalBeaconsData[pos].depName == "その他（物品）"){
-                    // classie.add(level, 'pin--active--tri');
-                    // classie.add(level.childNodes[1], 'user__tag--small--tri');
-                }
             }
         }
         if(vInfoAllTagElement!=null){
@@ -410,7 +408,7 @@ function personBtnEvent() {
 //                }
                   var vElementHeight = document.getElementById("cloneInfoAllFrame").offsetHeight
                   var vAllInfoElement = document.getElementById("allInfo")
-                  vAllInfoElement.style.height = vElementHeight-20 + "px"
+                  vAllInfoElement.style.height = vElementHeight - MARGIN_HEIGHT + "px"
 
             }
         }
@@ -588,6 +586,14 @@ var viewHidden = function() {
 
 $(function () {
     console.log("workPlace.js")
+
+    try {
+        VIEW_COUNT = Number($(document.getElementById("viewCount")).attr("data-count"));
+    }
+    catch(exception){
+        VIEW_COUNT = -1; // エラーの場合
+    }
+
     // 初期表示
     var beaconMapFrame = document.getElementById("beaconMap-" + gMapPos);
     beaconMapFrame.classList.remove("hidden");
