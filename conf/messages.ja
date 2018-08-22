@@ -68,6 +68,16 @@ error.cms.PlaceManage.passwordUpdate.inputPassword.empty=パスワードを入�
 error.cms.PlaceManage.passwordUpdate.inputRePassword.empty=確認用パスワードを入力してください。
 error.cms.PlaceManage.passwordUpdate.notEqual=パスワードと確認用パスワードが異なります。
 error.cms.PlaceManage.cmsLogin=入力されたパスワードに誤りがあります。
+error.cms.PlaceManage.noDelete.byAccount=この現場に紐づく現場アカウントが存在しているので削除できません。
+error.cms.PlaceManage.noDelete.byCompany=この現場に紐づく業者が存在しているので削除できません。
+error.cms.PlaceManage.noDelete.byItemType=この現場に紐づく仮設材種別が存在しているので削除できません。
+error.cms.PlaceManage.noDelete.byOtherMaster=この現場に紐づくその他仮設材が存在しているので削除できません。
+error.cms.PlaceManage.noDelete.byCarMaster=この現場に紐づく作業車・立馬が存在しているので削除できません。
+error.cms.PlaceManage.noDelete.byExb=この現場に紐づくEXBが存在しているので削除できません。
+error.cms.PlaceManage.noDelete.byFloor=この現場に紐づくフロアが存在しているので削除できません。
+
+
+
 
 error.cms.floorManage.floorUpdate.inputFloorName.duplicate=フロア名が重複しています。
 error.cms.floorManage.floorUpdate.inputDeviceNo.notNumeric=EXBeaconデバイスNoは半角数字で入力してください。
