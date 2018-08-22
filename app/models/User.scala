@@ -35,6 +35,7 @@ case class User(
     name: String,
     placeId: Option[Int],
     currentPlaceId: Option[Int],
+    currentPlaceName: String,
     isSysMng: Boolean,
     level: Int,
     /*
@@ -73,7 +74,10 @@ object User {
 }
 
 @javax.inject.Singleton
-class UserDAO @Inject() (dbapi: DBApi) {
+class UserDAO @Inject() (
+  dbapi: DBApi,
+  placeDAO: models.placeDAO
+) {
 
   private val db = dbapi.database("default")
 
@@ -89,24 +93,25 @@ class UserDAO @Inject() (dbapi: DBApi) {
       get[Int]("user_master.permission") map {
         case id ~ email ~ name ~ password ~ place_id ~ current_place_id  ~ level~ permission=>
           User(
-            Some(id.toString.toLong)
-            , email
-            , true
-            , password
-            , name
-            , place_id
-            , if(current_place_id == None){
-                if(place_id == None){
-                  Option(1)
-                }else{
-                  place_id
-                }
+            Some(id.toString.toLong),
+            email,
+            true,
+            password,
+            name,
+            place_id,
+            if(current_place_id == None){
+              if(place_id == None){
+                Option(1)
               }else{
-                current_place_id
+                place_id
               }
-            , (place_id == None)
-            , level
-            , List(if (permission == 4) "master" else if (permission == 3) "level3" else if (permission == 2) "level2" else if (permission == 1) "level1"  else "none")
+            }else{
+              current_place_id
+            },
+            placeDAO.selectPlaceNameByPlaceId(current_place_id.last).last.placeName,
+            (place_id == None),
+            level,
+            List(if (permission == 4) "master" else if (permission == 3) "level3" else if (permission == 2) "level2" else if (permission == 1) "level1"  else "none")
           )
       }
   }
@@ -161,6 +166,7 @@ class UserDAO @Inject() (dbapi: DBApi) {
           , user.name
           , user.placeId
           , user.currentPlaceId
+          , ""
           , (user.placeId == None)
           , user.level
           , user.services)
@@ -239,6 +245,7 @@ class UserDAO @Inject() (dbapi: DBApi) {
           , user.name
           , user.placeId
           , user.currentPlaceId
+          , ""
           , (user.placeId == None)
           , user.level
           , user.services)

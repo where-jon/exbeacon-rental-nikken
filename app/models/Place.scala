@@ -474,5 +474,42 @@ class placeDAO @Inject() (dbapi: DBApi) {
     }
   }
 
+  def selectPlaceNameByPlaceId(placeId: Int): Seq[Place] = {
+    val list = {
+      get[Int]("place_id") ~
+        get[String]("place_name") ~
+        get[Int]("floor_count") ~
+        get[Int]("status") ~
+        get[String]("btx_api_url") map {
+        case place_id ~ place_name ~ floor_count ~ status ~ btx_api_url =>
+          val statusName = PlaceEnum().map(status)
+          Place(place_id, place_name, floor_count, status, statusName, btx_api_url)
+      }
+    }
+    db.withConnection { implicit connection =>
+      var selectSQL =
+        s"""
+          SELECT
+              pm.place_id
+            , pm.place_name
+            , count(f.floor_id) as floor_count
+            , pm.status
+            , pm.btx_api_url
+            , pm.cms_password
+          from
+            place_master pm
+            left outer join floor_master f
+              on pm.place_id = f.place_id
+          where
+            pm.place_id = ${placeId} AND
+            pm.active_flg = true
+              group by
+              pm.place_id
+            , pm.place_name
+            , pm.status
+            """
+      SQL(selectSQL).as(list.*)
+    }
+  }
 }
 

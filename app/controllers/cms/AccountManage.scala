@@ -95,7 +95,7 @@ class AccountManage @Inject()(
       val hs = passwordHasherRegistry.current.hash(form.get.userPassword1)
       val user = User.apply(
         Option(0), form.get.userLoginId, true, hs.password, form.get.userName,
-        Option(placeId), Option(placeId),
+        Option(placeId), Option(placeId), "",
         true, form.get.userLevel.toInt, null
       )
       userService.insert(user)

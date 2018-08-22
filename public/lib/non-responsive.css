@@ -39,7 +39,7 @@
   float: left;
 }
 .navbar-nav > li > a {
-  padding: 15px;
+  /*padding: 15px;*/
 }
 
 /* 上記でfloatを再定義したので右寄せ用に再設定 */

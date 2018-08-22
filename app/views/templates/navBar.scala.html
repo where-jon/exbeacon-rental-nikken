@@ -11,68 +11,84 @@
         </div>
     </div>
     <div class="navbar col-xs-10 col-sm-10 col-md-10 col-lg-10" style="padding:0px;">
-        <ul class="nav navbar-nav">
-            <li class="pull-left" style="margin-left:2px">
-                @if(request.path contains "/site/") {
-                    <a class="text-center tabSelected menu-title"><i class="fa fa-eye"></i>&nbsp;@Messages("lang.navbar.tab.temporaryMaterialManagement")</a>
-                }else{
-                    <a href="/site/workPlace" class="text-center tab menu-title"><i class="fa fa-eye"></i>&nbsp;@Messages("lang.navbar.tab.temporaryMaterialManagement")</a>
-                }
-            </li>
-            @if(user.services.contains("level2") || user.services.contains("level3") || user.services.contains("master") ) {
-                <li class="pull-left" style="margin-left:2px">
-                    @if(request.path contains "/analysis/") {
+        <div class="row" style="margin:0px;height:20px;">
+            <div class="col-xs-9 col-sm-9 col-md-9 col-lg-9" style="padding:0px;height:20px;">
+                <div class="text-left" style="margin-left:10px;">
+                    @user.currentPlaceName
+                </div>
+            </div>
+            <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3" style="padding:0px;height:20px;">
+                <div class="text-right" style="margin-right:10px;">
+                    @{user.name}&nbsp;@{user.email}
+                </div>
+            </div>
+        </div>
+        <div class="row" style="margin:0px;height:34px;">
+            <div class="col-xs-9 col-sm-9 col-md-9 col-lg-9" style="padding:0px;height:34px;">
+                <ul class="nav navbar-nav">
+                    <li class="pull-left" style="margin-left:2px">
+                        @if(request.path contains "/site/") {
+                        <a class="text-center tabSelected menu-title"><i class="fa fa-eye"></i>&nbsp;@Messages("lang.navbar.tab.temporaryMaterialManagement")</a>
+                        }else{
+                        <a href="/site/workPlace" class="text-center tab menu-title"><i class="fa fa-eye"></i>&nbsp;@Messages("lang.navbar.tab.temporaryMaterialManagement")</a>
+                        }
+                    </li>
+                    @if(user.services.contains("level2") || user.services.contains("level3") || user.services.contains("master") ) {
+                    <li class="pull-left" style="margin-left:2px">
+                        @if(request.path contains "/analysis/") {
                         <a class="text-center tabSelected"><i class="fa fa-bar-chart"></i>&nbsp;@Messages("lang.navbar.tab.analysis")</a>
-                    }else{
+                        }else{
                         <a href="/analysis/movementCar" class="text-center tab"><i class="fa fa-bar-chart"></i>&nbsp;@Messages("lang.navbar.tab.analysis")</a>
-                    }
-                </li>
-                <li class="pull-left" style="margin-left:2px">
-                    @if(
+                        }
+                    </li>
+                    <li class="pull-left" style="margin-left:2px">
+                        @if(
                         (request.path contains "/cms/itemCarManage") ||
                         (request.path contains "/cms/itemOtherManage") ||
                         (request.path contains "/cms/itemTypeManage") ||
                         (request.path contains "/cms/companyManage") ||
                         (request.path contains "/cms/accountManage")
-                    ) {
+                        ) {
                         <a class="text-center tabSelected"><i class="fa fa-gear"></i>&nbsp;@Messages("lang.navbar.tab.maintenance")</a>
-                    }else{
+                        }else{
                         <a href="/cms/itemCarManage" class="text-center tab"><i class="fa fa-gear"></i>&nbsp;@Messages("lang.navbar.tab.maintenance")</a>
+                        }
+                    </li>
                     }
-                </li>
-            }
-            @if(user.services.contains("level3") || user.services.contains("master") ) {
-                <li class="pull-left" style="margin-left:2px">
-                    @if(
+                    @if(user.services.contains("level3") || user.services.contains("master") ) {
+                    <li class="pull-left" style="margin-left:2px">
+                        @if(
                         (request.path contains "/cms/floorManage") ||
                         (request.path contains "/manage/mapManager") ||
                         (request.path contains "/cms/exbManage") ||
                         (request.path contains "/manage/exbViewerManager")
-                    ) {
+                        ) {
                         <a class="text-center tabSelected"><i class="fa fa-wrench"></i>&nbsp;@Messages("lang.navbar.tab.systemManagement")</a>
-                    }else{
+                        }else{
                         <a href="/cms/floorManage" class="text-center tab"><i class="fa fa-wrench"></i>&nbsp;@Messages("lang.navbar.tab.systemManagement")</a>
+                        }
+                    </li>
                     }
-                </li>
-            }
-            @if(user.services.contains("master")) {
-                <li class="pull-left" style="margin-left:2px">
-                    @if(
+                    @if(user.services.contains("master")) {
+                    <li class="pull-left" style="margin-left:2px">
+                        @if(
                         (request.path contains "/cms/placeManage") ||
                         (request.path contains "/cms/sortPlaceListWith/") ||
                         (request.path contains "/change-password")
-                    ) {
+                        ) {
                         <a class="text-center tabSelected"><i class="fa fa-building"></i>&nbsp;@Messages("lang.navbar.tab.tenantManagement")</a>
-                    }else{
+                        }else{
                         <a href="/cms/placeManage" class="text-center tab"><i class="fa fa-building"></i>&nbsp;@Messages("lang.navbar.tab.tenantManagement")</a>
+                        }
+                    </li>
                     }
-                </li>
-            }
-        </ul>
-        <div class="text-right" style="margin-right:20px;word-wrap:normal;word-wrap:break-word;font-size:1vmax">
-            <span>@user.email</span>
-            <br/>
-            <a class="btn btn-navbar btn-signout" href="/signout">@Messages("lang.navbar.link.name.signout")</a>
+                </ul>
+            </div>
+            <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3" style="padding:0px;height:34px;">
+                <div class="text-right" style="margin-right:10px;">
+                    <a class="btn btn-navbar btn-signout" href="/signout">@Messages("lang.navbar.link.name.signout")</a>
+                </div>
+            </div>
         </div>
     </div>
 </div>
