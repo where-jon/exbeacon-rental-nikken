@@ -15,17 +15,16 @@ import utils.silhouette.MyEnv
   * 現場状況クラス.
   */
 class WorkPlace @Inject()(config: Configuration
-                          , val silhouette: Silhouette[MyEnv]
-                          , val messagesApi: MessagesApi
-                          , beaconDAO: models.beaconDAO
-                          , beaconService: BeaconService
-                          , ws: WSClient
-                          , exbDAO: models.ExbDAO
-                          , floorDAO: models.floorDAO
-                          , itemTypeDAO: models.ItemTypeDAO
-                         ) extends BaseController with I18nSupport {
+  , val silhouette: Silhouette[MyEnv]
+  , val messagesApi: MessagesApi
+  , beaconDAO: models.beaconDAO
+  , beaconService: BeaconService
+  , ws: WSClient
+  , exbDAO: models.ExbDAO
+  , floorDAO: models.floorDAO
+  , itemTypeDAO: models.ItemTypeDAO
+  ) extends BaseController with I18nSupport {
 
-  var beaconList :Seq[itemBeaconPositionData]= null;
 
   /* 仮設材テーブルと予約テーブルとapiを結合したデータを取得*/
   def getData = SecuredAction{ implicit request =>
@@ -45,13 +44,14 @@ class WorkPlace @Inject()(config: Configuration
   /** 初期表示 */
   def index = SecuredAction { implicit request =>
     val UPDATE_SEC = config.getInt("web.positioning.updateSec").get
+    val VIEW_COUNT = config.getInt("web.positioning.viewCount").get
     val placeId = super.getCurrentPlaceId
     /*仮設材種別取得*/
     val itemTypeList = itemTypeDAO.selectItemTypeInfo(placeId);
     // map情報
     val mapViewer = floorDAO.selectFloorAll(placeId)
     val exbData = exbDAO.selectExbAll(placeId)
-    Ok(views.html.site.workPlace(itemTypeList,mapViewer,exbData,UPDATE_SEC))
+    Ok(views.html.site.workPlace(itemTypeList,mapViewer,exbData,UPDATE_SEC,VIEW_COUNT))
   }
 
 }
