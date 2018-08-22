@@ -105,17 +105,20 @@ class ItemTypeManage @Inject()(config: Configuration
                 .flashing(SUCCESS_MSG_KEY -> Messages("success.cms.ItemTypeManage.update"))
             }
           }else{
-            Redirect(routes.ItemTypeManage.index)
-              .flashing(SUCCESS_MSG_KEY -> Messages("error.cms.ItemTypeManage.RowColor"))
+            Redirect(routes.ItemTypeManage.index()).flashing(ERROR_MSG_KEY -> Messages("error.cms.ItemTypeManage.RowColor"))
+//            Redirect(routes.ItemTypeManage.index)
+//              .flashing(SUCCESS_MSG_KEY -> Messages("error.cms.ItemTypeManage.RowColor"))
           }
         }else {
-          Redirect(routes.ItemTypeManage.index)
-            .flashing(SUCCESS_MSG_KEY -> Messages("error.cms.ItemTypeManage.TextColor"))
+          Redirect(routes.ItemTypeManage.index()).flashing(ERROR_MSG_KEY -> Messages("error.cms.ItemTypeManage.TextColor"))
+//          Redirect(routes.ItemTypeManage.index)
+//            .flashing(SUCCESS_MSG_KEY -> Messages("error.cms.ItemTypeManage.TextColor"))
         }
 
       }else{
-          Redirect(routes.ItemTypeManage.index)
-            .flashing(SUCCESS_MSG_KEY -> Messages("error.cms.ItemTypeManage.IconColor"))
+        Redirect(routes.ItemTypeManage.index()).flashing(ERROR_MSG_KEY -> Messages("error.cms.ItemTypeManage.IconColor"))
+//          Redirect(routes.ItemTypeManage.index)
+//            .flashing(SUCCESS_MSG_KEY -> Messages("error.cms.ItemTypeManage.IconColor"))
       }
     }
   }

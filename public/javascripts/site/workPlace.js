@@ -150,22 +150,24 @@ function setTagNamePosition(pinFrame ,vFloor, beaconData,infoTag) {
         getColor = "2vmin solid " + beaconData.iconColor
     }
 
+    var typeName = ""
+    afterFrame.className = ""
     if(beaconData.pos.y >=0 && beaconData.pos.y < (CUR_MAP_HEIGHT/2) && beaconData.pos.x >=0  && beaconData.pos.x <=(CUR_MAP_WIDTH/2)){
         infoTag.className += " user__tag--11zi";
         afterFrame.className = "user__tag--11zi--after";
-        $(afterFrame).css('border-bottom', getColor);
+        typeName = 'border-bottom'
     }else if (beaconData.pos.y >=0 && beaconData.pos.y < (CUR_MAP_HEIGHT/2) && beaconData.pos.x >=(CUR_MAP_WIDTH/2)  && beaconData.pos.x <=CUR_MAP_WIDTH){
         infoTag.className += " user__tag--1zi"
         afterFrame.className = "user__tag--1zi--after";
-        $(afterFrame).css('border-bottom', getColor);
+        typeName = 'border-bottom'
     }else if (beaconData.pos.y >=(CUR_MAP_HEIGHT/2) && beaconData.pos.y <= CUR_MAP_HEIGHT && beaconData.pos.x >=0  && beaconData.pos.x <=(CUR_MAP_WIDTH/2)){
         infoTag.className += " user__tag--7zi"
         afterFrame.className = "user__tag--7zi--after";
-        $(afterFrame).css('border-top', getColor);
+        typeName = 'border-top'
     }else if (beaconData.pos.y >=(CUR_MAP_HEIGHT/2) && beaconData.pos.y <= CUR_MAP_HEIGHT && beaconData.pos.x >=(CUR_MAP_WIDTH/2)  && beaconData.pos.x <=CUR_MAP_WIDTH){
         infoTag.className += " user__tag--5zi"
         afterFrame.className = "user__tag--5zi--after";
-        $(afterFrame).css('border-top', getColor);
+        typeName = 'border-top'
     }
 
     $(infoTag).append(afterFrame);
@@ -200,11 +202,6 @@ function setFrame() {
         pinFrame.style.left = beaconData.pos.x + "px";
 
         var spanFrame = document.createElement('span');
-        //spanFrame = gBeaconPosition.setColorUi(spanFrame,"textStyle",beaconData.depName)
-
-        // 仮 id表示
-        //spanFrame.textContent = beaconData.id;
-        spanFrame.textContent = beaconData.btxId;
 
         var infoTag = document.createElement('div');
         var contentTag = document.createElement('div');
@@ -259,6 +256,7 @@ function setFrame() {
             vTr.appendChild(vTd3);
             //vTr.appendChild(vTd4);
             vTbody.appendChild(vTr);
+            spanFrame.textContent = "A";
         }else{
              infoTag.id = "infoTag-" + beaconData.id;
              infoTag.className = "user__tag--info";
@@ -271,7 +269,7 @@ function setFrame() {
              contentTag.appendChild(picTextHuri);
              contentTag.appendChild(picText2);
              contentTag.appendChild(picText3);
-
+             spanFrame.textContent = beaconData.btxId;
         }
         userTag.push(infoTag);
         setTagNamePosition(pinFrame,vFloor,beaconData,infoTag);
@@ -404,6 +402,16 @@ function personBtnEvent() {
                 vInfoAllTagElement.appendChild(vInfoAllFrame)
                 classie.add(level, 'pin--active');
                 myNum = TotalBeaconsData[pos].id;
+//                var ua = navigator.userAgent;
+//                if (ua.indexOf('iPad') > 0 || ua.indexOf('Android') > 0 || ua.indexOf('iPhone') > 0 || ua.indexOf('iPod') > 0){
+//                    vInfoAllFrame.children[0].width = "100%"
+//                }else{
+//                    vInfoAllFrame.children[0].width = "97%"
+//                }
+                  var vElementHeight = document.getElementById("cloneInfoAllFrame").offsetHeight
+                  var vAllInfoElement = document.getElementById("allInfo")
+                  vAllInfoElement.style.height = vElementHeight-20 + "px"
+
             }
         }
 
@@ -440,11 +448,9 @@ function getJson() {
                         textColor : beaconPosition.item_type_text_color,
                         companyName : beaconPosition.company_name,
                         // new .End
-
-                        //pos : clonePosNew(5),
+                        //pos : clonePosNew(1),
                         pos : clonePosNew(beaconPosition.pos_id),
-
-                        finishPos:"無",
+                        finishPos:beaconPosition.cur_pos_name,
                         updateTime : beaconPosition.updatetime,
                         show:"hidden"
                     };
@@ -632,9 +638,13 @@ $(function () {
         gDrawer[i] =  new Drawer(gMapFrame[i].id)
     }
 
-    // test10分
-	var secUpdateUnit = 600000;
-
+	var secUpdateUnit
+    try {
+        secUpdateUnit = Number(document.getElementById("updateSec").textContent　+ "000");
+    }
+    catch(exception){
+        secUpdateUnit = 300000; // 5分
+    }
 
 	// 定期更新
 	setInterval(function() {

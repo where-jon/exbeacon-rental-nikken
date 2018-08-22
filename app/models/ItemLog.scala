@@ -17,6 +17,8 @@ itemId:Int,
 itemName:String
 ,operatingRate : Float
 ,reserveOperatingRate :Float
+,operatingCount :Int
+,reserveOperatingCount :Int
 )
 
 /*作業車稼働状況分析用クラス*/
@@ -279,6 +281,7 @@ class ItemLogDAO @Inject() (dbapi: DBApi) {
         left join item_log as itemLog on itemLog.item_btx_id = itemCar.item_car_btx_id
         and itemLog.working_flg =  """ + {workingFlg}+ """
         and itemLog.place_id = """ + {placeId}+ """
+        and itemLog.finish_floor_name != '不在'
         and itemLog.finish_updatetime
         between to_date('""" + {startDate}+ """', 'YYYY-MM-DD') and  TO_TIMESTAMP('""" + {endDate}+ """', 'YYYY-MM-DD') + '1 day'
        where itemCar.place_id = """ + {placeId}+ """
@@ -314,6 +317,7 @@ class ItemLogDAO @Inject() (dbapi: DBApi) {
         and itemLog.working_flg =  """ + {workingFlg}+ """
         and itemLog.reserve_flg = """ + {reserveFlg}+ """
         and itemLog.place_id = """ + {placeId}+ """
+        and itemLog.finish_floor_name != '不在'
         and itemLog.finish_updatetime
         between to_date('""" + {startDate}+ """', 'YYYY-MM-DD') and  TO_TIMESTAMP('""" + {endDate}+ """', 'YYYY-MM-DD') + '1 day'
        where itemCar.place_id = """ + {placeId}+ """

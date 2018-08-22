@@ -10,7 +10,17 @@ mapViewer: Seq[FloorAll]
 <!doctype html>
 <html lang="ja">
 <head>
+
     @templates.htmlHead(title = Messages("lang.cms.carManage.title"))
+    <style type="text/css">
+        .navbar-brand {
+            margin-left: 18px;
+            text-align: center;
+        }
+        div#pcTabletNav {
+            margin:0px;
+        }
+    </style>
     <script type="text/javascript" src="@routes.MyAssets.js("manage/map_manager.js")"></script>
     <script></script>
 </head>
@@ -77,7 +87,7 @@ mapViewer: Seq[FloorAll]
 
         @CSRF.formField
     </form>
-    <div class="map__main--frame" id ="map__main--frame">
+    <div class="map__main--frame" id ="map__main--frame" style="margin-top: 15px;">
         <div class = "alert__result--frame">
             @tags.alertFromRequestDbResult(request, "resultOK")
             @tags.alertFromRequestDbResult(request, "resultNG")

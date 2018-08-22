@@ -43,7 +43,7 @@ class MovementCar @Inject()(config: Configuration
   val REAL_WORK_DAY = 5;
   val DAY_WORK_TIME = 6;
   val HOUR_MINUTE = 60;
-  val BATCH_INTERVAL_MINUTE = 30; //ログ検知インタバル30分
+  var BATCH_INTERVAL_MINUTE = 60; //ログ検知インタバル初期値60分 daidan30分
 
   val CALENDAR_TYPE = "今月のみ";
   //val CALENDAR_TYPE = "今月以外";
@@ -74,6 +74,7 @@ class MovementCar @Inject()(config: Configuration
     DETECT_MONTH = mTime
     DETECT_MONTH_DAY += "-01"
     NOW_DATE = mSimpleDateFormat2.format(currentTime)
+    BATCH_INTERVAL_MINUTE = config.getInt("web.positioning.countMinute").get
   }
 
   /** 　検索側データ取得 */
@@ -123,7 +124,7 @@ class MovementCar @Inject()(config: Configuration
       calendarList.zipWithIndex.map{ case (calendar, i) =>
 
         // 検知フラグがtrue
-        val getWorkFlgSqlData =itemlogDAO.selectWorkingOn(false,car.item_car_id,placeId,calendar.iWeekStartDay,calendar.iWeekEndDay,itemIdList)
+        val getWorkFlgSqlData =itemlogDAO.selectWorkingOn(true,car.item_car_id,placeId,calendar.iWeekStartDay,calendar.iWeekEndDay,itemIdList)
         val vWofkFlgDetectCount = getWorkFlgSqlData.last.detected_count
         if(vWofkFlgDetectCount>0){
           System.out.println(vWofkFlgDetectCount)
@@ -138,11 +139,11 @@ class MovementCar @Inject()(config: Configuration
         // 週末があるため実際
         val vOperatingRate = this.getDetectedCount(vWofkFlgDetectCount,vRealWorkTime)
         // 予約ともに検知フラグがtrue
-        val getReserveWorkFlgSqlData =itemlogDAO.selectReserveAndWorkingOn(false,false,car.item_car_id,placeId,calendar.iWeekStartDay,calendar.iWeekEndDay,itemIdList)
+        val getReserveWorkFlgSqlData =itemlogDAO.selectReserveAndWorkingOn(true,true,car.item_car_id,placeId,calendar.iWeekStartDay,calendar.iWeekEndDay,itemIdList)
         val vReserveWofkFlgDetectCount = getReserveWorkFlgSqlData.last.detected_count
         val vReserveOperatingRate = this.getDetectedCount(vReserveWofkFlgDetectCount,vRealWorkTime)
 
-        WorkRate(car.item_car_id,car.item_car_name,vOperatingRate,vReserveOperatingRate)
+        WorkRate(car.item_car_id,car.item_car_name,vOperatingRate,vReserveOperatingRate,vWofkFlgDetectCount,vReserveWofkFlgDetectCount)
 
       }
     }
