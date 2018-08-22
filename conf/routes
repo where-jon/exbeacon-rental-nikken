@@ -78,6 +78,8 @@ POST   /site/itemOtherCancel/cancel         controllers.site.ItemOtherCancel.can
 GET    /site/unDetected                 controllers.site.UnDetected.index
 POST   /site/unDetected                 controllers.site.UnDetected.search
 
+# ビーコンタグ電池残量確認
+GET     /site/txTagManage                controllers.site.TxTagManage.index
 
 # 作業車移動状況分析
 GET    /analysis/movementCar                 controllers.analysis.MovementCar.index
@@ -129,9 +131,6 @@ POST    /cms/accountManage/create         controllers.cms.AccountManage.create
 POST    /cms/accountManage/update         controllers.cms.AccountManage.update
 POST    /cms/accountManage/passwordUpdate controllers.cms.AccountManage.passwordUpdate
 POST    /cms/accountManage/delete         controllers.cms.AccountManage.delete
-
-# Beaconタグ管理
-GET     /cms/txTagManage                controllers.cms.TxTagManage.index
 
 
 ## 認証周り（日立APから移植）

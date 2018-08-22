@@ -470,17 +470,14 @@ lang.cms.accountManage.delete.popup.message=アカウントを削除します。
 
 
 
-# CMS文字列（Beaconタグ一覧）
-lang.cms.txTagManage.title=Beaconタグ管理
-lang.cms.txTagManage.page.title=Beaconタグ一覧画面
-lang.cms.txTagManage.txTag.list.header.title=Beaconタグ管理
-lang.cms.txTagManage.txTag.list.header.beaconTxNo=BeaconTXタグNo
-lang.cms.txTagManage.txTag.list.header.powerLevel=電池残量
-lang.cms.txTagManage.txTag.list.header.kind=種別
-lang.cms.txTagManage.txTag.list.header.name=名称
-lang.cms.txTagManage.txTag.list.header.biko=備考
-lang.cms.txTagManage.txTag.list.body.undetected=未検知
-lang.cms.txTagManage.txTag.list.body.unused=未登録
+# CMS文字列（Beaconタグ電池残量）
+lang.site.txTagManage.title= TX電池残量確認
+lang.site.txTagManage.txTag.id= Tag ID
+lang.site.txTagManage.txTag.powerLevel=電池残量
+lang.site.txTagManage.txTag.curfloor=現在フロア
+lang.site.txTagManage.txTag.curpos=現在位置
+lang.site.txTagManage.txTag.kind=種別
+lang.site.txTagManage.txTag.name=名称
 
 # メイン機能の画面の文言
 # CarSummery
