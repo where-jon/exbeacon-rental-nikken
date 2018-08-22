@@ -1,5 +1,6 @@
 @(
 POWER_ENUM: Map[Int,String]
+,POWER_FILTER: Int
 ,ITEM_TYPE_FILTER: Int
 ,itemTypeList: Seq[ItemType]
 ,txList: Seq[itemBeaconPositionData]
@@ -34,16 +35,17 @@ POWER_ENUM: Map[Int,String]
             </div>
             <!-- ボタン-->
             <form id="viewForm" method="post" action="">
+                @CSRF.formField
                 <div class="row tableRow" style="margin-top: 10px;">
                     <div class="text-center col-xs-2 col-sm-2 col-md-2" style="padding:0;">
                         電池残量 :
                         <select id="POWER_FILTER" style="width: 100px;">
-                            <option value="0"></option>
-                            <option value="1">良好</option>
-                            <option value="2">注意</option>
-                            <option value="3">交換</option>
+                            <option value="-1"></option>
+                            @POWER_ENUM.zipWithIndex.map { case(power, i) =>
+                            <option value="@power._1">@power._2</option>
+                            }
                         </select>
-                        @* <input class="hidden form-control input-sm" type="text" id="powerValue" name="powerValue" value="@POWER_FILTER"> *@
+                         <input class="hidden form-control input-sm" type="text" id="powerValue" name="powerValue" value = "@POWER_FILTER">
                     </div>
 
 
@@ -51,16 +53,15 @@ POWER_ENUM: Map[Int,String]
                         種別 :
                         <select id="ITEM_TYPE_FILTER" style="width: 100px;">
                             <!--仮設材種別テーブルから検索フィルタを設置-->
-                            <option value="0">設定無</option>
+                            <option value="0">すべて</option>
                             @itemTypeList.zipWithIndex.map { case(itemType, i) =>
                             <option value="@itemType.item_type_id">@itemType.item_type_name</option>
                             }
                         </select>
-                        @* <input class="hidden form-control input-sm" type="text" id="itemTypeId1" name="itemTypeId" value="@ITEM_TYPE_FILTER"> *@
-                        <input class="hidden form-control input-sm" type="text" id="itemTypeId" name="itemTypeId" value="@ITEM_TYPE_FILTER">
+                        <input class="hidden form-control input-sm" type="text" id="itemTypeId" name="itemTypeId" value = "@ITEM_TYPE_FILTER">
                     </div>
                     <!--表示ボタン-->
-                    <div class="text-center btn btn__view--frame">
+                    <div id = "viewBtn" class="text-center btn btn__view--frame">
                         表示
                     </div>
                 </div>

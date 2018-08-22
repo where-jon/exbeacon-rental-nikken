@@ -7,6 +7,15 @@ import anorm._
 import play.api.db._
 
 
+/*電池残量enum*/
+case class PowerEnum(
+map: Map[Int,String] =
+  Map[Int,String](
+  31 -> "良好",
+  30 -> "注意",
+  20 -> "交換")
+)
+
 /*仮設材カテゴリID*/
 case class ItemCategoryEnum(
 map: Map[Int,String] =

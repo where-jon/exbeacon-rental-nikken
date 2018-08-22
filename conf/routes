@@ -79,7 +79,8 @@ GET    /site/unDetected                 controllers.site.UnDetected.index
 POST   /site/unDetected                 controllers.site.UnDetected.search
 
 # ビーコンタグ電池残量確認
-GET     /site/txTagManage                controllers.site.TxTagManage.index
+GET    /site/txTagManage                controllers.site.TxTagManage.index
+POST   /site/txTagManage                controllers.site.TxTagManage.search
 
 # 作業車移動状況分析
 GET    /analysis/movementCar                 controllers.analysis.MovementCar.index
