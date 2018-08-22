@@ -108,7 +108,7 @@ class UserDAO @Inject() (
             }else{
               current_place_id
             },
-            placeDAO.selectPlaceNameByPlaceId(current_place_id.last).last.placeName,
+            placeDAO.selectPlaceNameByPlaceId(current_place_id.getOrElse(0)),
             (place_id == None),
             level,
             List(if (permission == 4) "master" else if (permission == 3) "level3" else if (permission == 2) "level2" else if (permission == 1) "level1"  else "none")

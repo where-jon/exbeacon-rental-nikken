@@ -474,7 +474,7 @@ class placeDAO @Inject() (dbapi: DBApi) {
     }
   }
 
-  def selectPlaceNameByPlaceId(placeId: Int): Seq[Place] = {
+  def selectPlaceNameByPlaceId(placeId: Int): String = {
     val list = {
       get[Int]("place_id") ~
         get[String]("place_name") ~
@@ -508,7 +508,12 @@ class placeDAO @Inject() (dbapi: DBApi) {
             , pm.place_name
             , pm.status
             """
-      SQL(selectSQL).as(list.*)
+      val result = SQL(selectSQL).as(list.*)
+      if (result.length > 0) {
+        result.last.placeName
+      } else {
+        ""
+      }
     }
   }
 }
