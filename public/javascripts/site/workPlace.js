@@ -2,7 +2,7 @@ var TotalBeaconsData = [];
 var VIEWTYPE = false;    // false(アイコンがスムーズに動くバージョン)
 var gMapPos = 1;
 var gInfoAllFrame = null;
-var MARGIN_HEIGHT = 32
+var MARGIN_HEIGHT = 20
 $( window ).resize(function() {
 	location.reload();
 });
@@ -155,28 +155,23 @@ function setTagNamePosition(pinFrame ,vFloor, beaconData,infoTag) {
     if(beaconData.pos.y >=0 && beaconData.pos.y < (CUR_MAP_HEIGHT/2) && beaconData.pos.x >=0  && beaconData.pos.x <=(CUR_MAP_WIDTH/2)){
         infoTag.className += " user__tag--11zi";
         afterFrame.className = "user__tag--11zi--after";
-        typeName ='border-bottom'
-        //$(afterFrame).css('border-bottom', getColor);
+        $(afterFrame).css('border-bottom', getColor);
     }else if (beaconData.pos.y >=0 && beaconData.pos.y < (CUR_MAP_HEIGHT/2) && beaconData.pos.x >=(CUR_MAP_WIDTH/2)  && beaconData.pos.x <=CUR_MAP_WIDTH){
         infoTag.className += " user__tag--1zi"
         afterFrame.className = "user__tag--1zi--after";
-        typeName ='border-bottom'
-        //$(afterFrame).css('border-bottom', getColor);
+        $(afterFrame).css('border-bottom', getColor);
     }else if (beaconData.pos.y >=(CUR_MAP_HEIGHT/2) && beaconData.pos.y <= CUR_MAP_HEIGHT && beaconData.pos.x >=0  && beaconData.pos.x <=(CUR_MAP_WIDTH/2)){
         infoTag.className += " user__tag--7zi"
         afterFrame.className = "user__tag--7zi--after";
-        typeName ='border-top'
-        //$(afterFrame).css('border-top', getColor);
+        $(afterFrame).css('border-top', getColor);
     }else if (beaconData.pos.y >=(CUR_MAP_HEIGHT/2) && beaconData.pos.y <= CUR_MAP_HEIGHT && beaconData.pos.x >=(CUR_MAP_WIDTH/2)  && beaconData.pos.x <=CUR_MAP_WIDTH){
         infoTag.className += " user__tag--5zi"
         afterFrame.className = "user__tag--5zi--after";
-        typeName ='border-top'
-        //$(afterFrame).css('border-top', getColor);
+        $(afterFrame).css('border-top', getColor);
     }
+
     if(beaconData.totalCount >= VIEW_COUNT){
-        afterFrame.className = "";
-    }else{
-        $(afterFrame).css(typeName, getColor);
+       afterFrame.style.visibility = "hidden"
     }
     $(infoTag).append(afterFrame);
 }

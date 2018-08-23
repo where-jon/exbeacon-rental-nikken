@@ -15,13 +15,15 @@ import play.api.{Configuration, Logger}
   *
   */
 class ItemLogDataActor @Inject()(config: Configuration
-                                 , ws: WSClient
-                                 , itemlogDAO: ItemLogDAO
-                                 , beaconDAO: models.beaconDAO
-                                 , beaconService: BeaconService
-                                 , placeDAO: placeDAO
-                                ) extends Actor {
+  , ws: WSClient
+  , itemlogDAO: ItemLogDAO
+  , beaconDAO: models.beaconDAO
+  , beaconService: BeaconService
+  , placeDAO: placeDAO
+  ) extends Actor {
   val BATCH_NAME = "仮設材記録"
+  var dbDatas :Seq[BeaconViewer] = null; // 仮設材種別
+  var beaconData : itemLogPositionData = null;
   private val enableLogging = config.getBoolean("akka.quartz.schedules.ItemLogDataActor.loggingStart").getOrElse(false)
 
   def receive = {
@@ -42,16 +44,21 @@ class ItemLogDataActor @Inject()(config: Configuration
         placeData.zipWithIndex.map { case (place, i) =>
           if(place.btxApiUrl != null && place.btxApiUrl != ""){
             val placeId = place.placeId
-            val dbDatas = beaconDAO.selectBeaconViewer(placeId)
+            dbDatas = beaconDAO.selectBeaconViewer(placeId)
             val beaconListApi = beaconService.getItemLogPosition(dbDatas,true,placeId)
             beaconListApi.zipWithIndex.map { case (beacon, i) =>
-              System.out.println("-------beaconData--------" + beacon)
+              beaconData = beacon
               itemlogDAO.insert(beacon)
             }
           }
         }
       }catch{
-        case e: Exception => Logger.error(s"""${BATCH_NAME}にてエラーが発生""", e)
+        case e: Exception =>
+          System.out.println("--------------------バッチエラー検知.start--------------------------")
+          System.out.println("dbDatas:::" + dbDatas)
+          System.out.println("beaconData:::" + beaconData)
+          Logger.error(s"""${BATCH_NAME}にてエラーが発生""", e)
+          System.out.println("--------------------バッチエラー検知.end--------------------------")
       }
     }
 

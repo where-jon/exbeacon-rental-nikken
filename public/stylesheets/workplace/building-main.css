@@ -1230,7 +1230,9 @@ margin-top: 135px;
 	visibility: hidden;
 }
 
-
+.trAll {
+	height: 4vmin;
+}
 
 .error__span--frame{
 display: inline-block;
@@ -1269,6 +1271,7 @@ color:#a94442
 
 .td__title--frame{
     width: 30%;
+    height:4vmin;
 }
 .td--frame{
     width: 30%;
