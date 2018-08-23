@@ -94,7 +94,11 @@ POWER_ENUM: Map[Int,String]
                                     <!-- 色表示 -->
                                     @{
                                     if(data.power_level < 20){
-                                    <div id="batteryDanger" class="preview_icon" style="background: #c00; color: #fff;">交換</div>
+                                        if(data.power_level == -1){
+                                            <div id="batteryDanger" class="preview_icon" style="background: #c00; color: #fff;">未検知</div>
+                                        }else{
+                                            <div id="batteryDanger" class="preview_icon" style="background: #c00; color: #fff;">交換</div>
+                                        }
                                     }else if(data.power_level <= 30){
                                     <div id="batteryWarn" class="preview_icon" style="background: #ed7d31; color: #fff;">注意</div>
                                     }else{

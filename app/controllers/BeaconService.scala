@@ -366,6 +366,66 @@ class BeaconService @Inject() (config: Configuration,
 
 
   /**
+    * TX電池残量用データ取得
+    *
+    * EXCloudIfActorにて非同期で取得しているビーコン位置情報を取得する
+    * その際、item_other_masterテーブルと結合してitemOtherBeaconPositionDataのリストとして返却する
+    *
+    * @param dbDatas  予約テーブルまで含めたその他仮設材情報
+    * @param blankInclude  ブランクレコード（名前=param01が空）を含めるかどうか
+    * @param placeId  接続現場情報
+    * @return  List[itemOtherBeaconPositionData]
+    */
+  def getTxData(dbDatas:Seq[BeaconViewer], blankInclude: Boolean = false, placeId:Int): Seq[itemBeaconPositionData] = {
+
+    this.getCloudUrl(placeId)
+    val posList = Await.result(ws.url(POS_API_URL).get().map { response =>
+      Json.parse(response.body).asOpt[List[beaconPosition]].getOrElse(Nil)
+    }, Duration.Inf)
+
+    val bplist = dbDatas.map { v =>
+      val bpd = posList.find(_.btx_id == v.item_btx_id)
+      val exbDatas =exbDao.selectExbApiInfo(placeId,bpd.get.pos_id)
+      var vExbName = this.getCurrentPositionStatus(bpd.get.pos_id,bpd.get.updatetime)
+      var vFloorName = vExbName
+      val vUpdateTime = this.setUpdateTime(bpd.get.updatetime)
+        val vPosId =
+          if (vExbName != "不在" ) bpd.get.pos_id else -1
+        exbDatas.map { index =>
+          vFloorName = if (vExbName == "不在" ) "不在" else index.cur_floor_name
+          vExbName = index.exb_pos_name
+        }
+        itemBeaconPositionData(
+          vExbName,
+          vFloorName,
+          bpd.get.btx_id,
+          vPosId,
+          bpd.get.power_level,
+          vUpdateTime,
+          v.item_id,
+          v.item_btx_id,
+          v.item_key_btx,
+          v.item_type_id,
+          v.item_type_name,
+          v.item_no,
+          v.item_name,
+          v.place_id,
+          v.item_type_icon_color,
+          v.item_type_text_color,
+          v.company_name,
+          v.work_type_name,
+          v.reserve_floor_name,
+          v.reserve_id,
+          v.reserve_start_date,
+          v.reserve_end_date
+        )
+    }.sortBy(_.item_btx_id)
+
+    bplist
+  }
+
+
+  /**
     * itemLog用ビーコン位置取得
     *
     * EXCloudIfActorにて非同期で取得しているビーコン位置情報を取得する
