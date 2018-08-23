@@ -3,9 +3,7 @@ package controllers.analysis
 import javax.inject.{Inject, Singleton}
 
 import com.mohiva.play.silhouette.api.Silhouette
-import controllers.site
-import controllers.{BaseController, BeaconService}
-import org.joda.time.DateTime
+import controllers.{BaseController, BeaconService, site}
 import play.api._
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
@@ -44,9 +42,6 @@ class Gateway @Inject()(config: Configuration
   def index = SecuredAction { implicit request =>
     val reqIdentity = request.identity
     if(reqIdentity.level >= 2){
-      val placeId = super.getCurrentPlaceId
-      // 非稼働時間かどうか
-      val isNoWorkTime = (new DateTime().toString("HHmm") < config.getString("noWorkTimeEnd").get)
       Ok(views.html.analysis.gateway())
     }else{
       Redirect(site.routes.WorkPlace.index)
