@@ -99,7 +99,11 @@ class TxTagManage @Inject()(config: Configuration
     getSearchData(placeId)
     // ①仮設材すべてを取得
     val dbDatas = beaconDAO.selectBeaconViewer(placeId)
-    val beaconListApi = beaconService.getBeaconPosition(dbDatas,true,placeId)
+    // ②仮設材種別作業車の鍵をものとして取得
+    val dbDatasKeyData = beaconDAO.selectCarKeyViewer(placeId)
+    // ①、②を結合
+    val totalDbDatas = dbDatas union  dbDatasKeyData
+    val beaconListApi = beaconService.getTxData(totalDbDatas,true,placeId)
 
     val POWER_ENUM = PowerEnum().map;
     Ok(views.html.site.txTagManage(POWER_ENUM,POWER_FILTER,ITEM_TYPE_FILTER,itemTypeList,beaconListApi))
