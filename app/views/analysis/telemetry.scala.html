@@ -1,0 +1,77 @@
+@()(implicit user: User, messages: Messages, request: RequestHeader, flash: Flash)
+
+@import controllers.routes
+@import helper._
+
+<!doctype html>
+<html lang="ja">
+<head>
+    @templates.htmlHead(title = Messages("lang.analysis.gateway.page.title"))
+    <link rel="stylesheet" href="@routes.MyAssets.css("telemetry/telemetry.css")"/>
+    <script type="text/javascript" src="@routes.MyAssets.js("analysis/telemetry.js")"></script>
+    <script></script>
+</head>
+
+<body>
+<!-- content -->
+<div class="container">
+    <!-- ナビバー  -->
+    @templates.navBar()
+    <div class="row">
+        <!-- 左サイドバー -->
+        @views.html.templates.sideMenu()
+        <!-- メイン -->
+        <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10 mainSpace">
+            <!-- メッセージ -->
+            @views.html.templates.msgDiv()
+            <!-- 画面題字 -->
+            <div class="form-group" style="font-weight:bold;font-size:19px;margin:15px 0px;">
+                @Messages("lang.analysis.gateway.page.title")
+
+                <div class = "top__map__btn--area">
+                    <!-- <button class=" btn__type telemetry__Btn">全体図</button> -->
+                    <a id="btn-update" class="btn__update--style">
+                     <span class="error__span--frame" id = "errorSpan">
+                         <i id = "update-element" class="btn__icon--style btn__telemetry__icon--style fa fa-refresh fa-3x"></i>
+                     </span>
+                        <!--   <div class="date"></div>
+                         <div class="time"></div> -->
+                    </a>
+                </div>
+            </div>
+            <!-- テーブルのROW -->
+            <div class="row tableRow">
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="padding:0;">
+                    <div class="table-responsive-body">
+                        <table class="table table-bordered table-condensed itemTable">
+                            <thead>
+                            <tr>
+                                <th class="tableTh gateWayNoTh">番号</th>
+                                <th class="tableTh gateWayDevTh">端末ID</th>
+                                <th class="tableTh gateWayUpdateTh">最終取得時間</th>
+                            </tr>
+                            </thead>
+                            <tbody id="beaconTableBody">
+                            <tr class="beacon-loading">
+                                <td colspan="6">Loading...</td>
+                            </tr>
+                            <tr id="beaconRowTemplate" class="hidden template row-template">
+                                <td class="num">N/A</td>
+                                <td class="deviceid">N/A</td>
+                                <td class="updated" nowrap>N/A</td>
+                            </tr>
+                            <tr id="beaconRowTemplateNotDetected" class="hidden template row-template">
+                                <td class="num">0</td>
+                                <td class="deviceid">N/A</td>
+                                <td class="updated">1</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

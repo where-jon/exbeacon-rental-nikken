@@ -88,8 +88,12 @@ POST   /analysis/movementCar                 controllers.analysis.MovementCar.se
 GET   /analysis/movementCar/csvExport       controllers.analysis.MovementCar.csvExport
 
 # GW状態監視
-GET     /analysis/gateway                     controllers.Gateway.index
-GET     /analysis/gateway/getdata             controllers.Gateway.getData
+GET     /analysis/gateway                     controllers.analysis.Gateway.index
+GET     /analysis/gateway/getdata             controllers.analysis.Gateway.getData
+
+# GW状態監視
+GET     /analysis/telemetry                   controllers.analysis.Telemetry.index
+GET     /analysis/telemetry/getdata           controllers.analysis.Telemetry.getData
 
 # マップマネージャー
 GET    /manage/mapManager              controllers.manage.MapManager.index
