@@ -34,13 +34,15 @@ case class ItemUpdateForm(
 )
 
 @Singleton
-class ItemOtherManage @Inject()(config: Configuration
-                           , val silhouette: Silhouette[MyEnv]
-                           , val messagesApi: MessagesApi
-                           , itemOtherDAO: models.itemOtherDAO
-                           , itemDAO: models.itemDAO
-                           , itemTypeDAO:models.ItemTypeDAO
-                               ) extends BaseController with I18nSupport {
+class ItemOtherManage @Inject()(
+  config: Configuration
+  , val silhouette: Silhouette[MyEnv]
+  , val messagesApi: MessagesApi
+  , itemOtherDAO: models.itemOtherDAO
+  , itemDAO: models.itemDAO
+  , itemTypeDAO:models.ItemTypeDAO
+  , carDAO: models.itemCarDAO
+) extends BaseController with I18nSupport {
 
   /*enum形*/
   var ITEM_TYPE_FILTER = 0;
@@ -65,7 +67,6 @@ class ItemOtherManage @Inject()(config: Configuration
 
   /** 更新 */
   def update = SecuredAction { implicit request =>
-
     // フォームの準備
     val inputForm = Form(mapping(
         "inputPlaceId" -> text
@@ -77,7 +78,6 @@ class ItemOtherManage @Inject()(config: Configuration
       , "inputItemTypeName" -> text.verifying(Messages("error.cms.ItemOtherManage.update.inputItemTypeName.empty"), {!_.isEmpty})
       , "inputItemTypeId" -> text
     )(ItemUpdateForm.apply)(ItemUpdateForm.unapply))
-
     // フォームの取得
     val form = inputForm.bindFromRequest
     if (form.hasErrors){
@@ -86,25 +86,27 @@ class ItemOtherManage @Inject()(config: Configuration
     }else{
       var errMsg = Seq[String]()
       val f = form.get
-
       // 種別存在チェック
       val itemTypeList = itemTypeDAO.selectItemTypeCheck(f.inputItemTypeName, f.inputPlaceId.toInt)
       if(itemTypeList.isEmpty){
         errMsg :+= Messages("error.cms.CarManage.update.NotTypeName", f.inputItemOtherNo)
       }
-
       if(f.inputItemOtherId.isEmpty){
         // 新規登録
-        // 作業車・立馬TxビーコンIDが存在しないか
+        // TxビーコンIDが存在しないか
         val itemOtherBtxList = itemOtherDAO.selectItemOtherBtxListBtxCheck(super.getCurrentPlaceId, f.inputItemOtherBtxId.toInt)
         if(itemOtherBtxList.length > 0){
           errMsg :+= Messages("error.cms.ItemOtherManage.update.inputItemBtxId.use", f.inputItemOtherBtxId)
         }
-
+        // 同じIDが作業車・立馬に存在してはダメ
+        val chkCarTagIdInf = carDAO.selectCarTagCheck(super.getCurrentPlaceId, None, f.inputItemOtherBtxId.toInt)
+        if (chkCarTagIdInf.length > 0) {
+          errMsg :+= Messages("error.cms.ItemOtherManage.update.inputItemBtxId.useCar", f.inputItemOtherBtxId)
+        }
         if(errMsg.nonEmpty){
           // エラーで遷移
           Redirect(routes.ItemOtherManage.index).flashing(ERROR_MSG_KEY -> errMsg.mkString(HTML_BR))
-        }else{
+        } else {
           var sss: Int = 0
           sss = sss + 1
           // 登録の実行
@@ -115,30 +117,27 @@ class ItemOtherManage @Inject()(config: Configuration
                             f.inputItemNote,
                             f.inputItemTypeId.toInt,
                             super.getCurrentPlaceId)
-
           Redirect(routes.ItemOtherManage.index)
             .flashing(SUCCESS_MSG_KEY -> Messages("success.cms.ItemOtherManage.update"))
         }
-
-      }else{
+      } else {
         // 更新の場合 --------------------------
         // その他仮設材重複チェック用
         var dbItemNoList = itemOtherDAO.selectOtherInfo(super.getCurrentPlaceId, f.inputItemOtherNo)
         dbItemNoList = dbItemNoList.filter(_.itemOtherId != f.inputItemOtherId.toInt)
                                    .filter(_.itemOtherNo == f.inputItemOtherNo)
-//        if(dbItemNoList.length > 0){
-//          errMsg :+= Messages("error.cms.ItemOtherManage.update.inputItemNo.duplicate", f.inputItemOtherNo)
-//        }
-
         // 予約情報テーブルに作業車・立馬IDが存在していないか
         val itemOtherReserveList = itemOtherDAO.selectCarReserveCheck(super.getCurrentPlaceId, f.inputItemOtherId.toInt)
         if(itemOtherReserveList.length > 0){
           errMsg :+= Messages("error.cms.ItemOtherManage.update.inputItemOtherIdReserve.use.noChange", f.inputItemOtherId)
         }
-
+        // 同じIDが作業車・立馬に存在してはダメ
+        val chkCarTagIdInf = carDAO.selectCarTagCheck(super.getCurrentPlaceId, None, f.inputItemOtherBtxId.toInt)
+        if (chkCarTagIdInf.length > 0) {
+          errMsg :+= Messages("error.cms.ItemOtherManage.update.inputItemBtxId.useCar", f.inputItemOtherBtxId)
+        }
         // 変更前タグ情報
         val preItemInfo = itemOtherDAO.selectOtherInfo(super.getCurrentPlaceId, "", Option(f.inputItemOtherId.toInt)).last
-
         // タグチェック
         val checkList = Seq[(Int,Int)](
           (preItemInfo.itemOtherBtxId, f.inputItemOtherBtxId.toInt)
@@ -155,7 +154,6 @@ class ItemOtherManage @Inject()(config: Configuration
             }
           }
         }
-
         if(errMsg.nonEmpty){
           // エラーで遷移
           Redirect(routes.ItemOtherManage.index)
