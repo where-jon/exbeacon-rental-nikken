@@ -47,7 +47,7 @@ class ItemLogDataActor @Inject()(config: Configuration
             dbDatas = beaconDAO.selectBeaconViewer(placeId)
             val beaconListApi = beaconService.getItemLogPosition(dbDatas,true,placeId)
             beaconListApi.zipWithIndex.map { case (beacon, i) =>
-              beaconData = beacon
+              //beaconData = beacon
               itemlogDAO.insert(beacon)
             }
           }
@@ -56,7 +56,7 @@ class ItemLogDataActor @Inject()(config: Configuration
         case e: Exception =>
           System.out.println("--------------------バッチエラー検知.start--------------------------")
           System.out.println("dbDatas:::" + dbDatas)
-          System.out.println("beaconData:::" + beaconData)
+          //System.out.println("beaconData:::" + beaconData)
           Logger.error(s"""${BATCH_NAME}にてエラーが発生""", e)
           System.out.println("--------------------バッチエラー検知.end--------------------------")
       }
