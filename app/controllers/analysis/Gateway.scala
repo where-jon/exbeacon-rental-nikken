@@ -1,15 +1,16 @@
-package controllers
+package controllers.analysis
+
+import javax.inject.{Inject, Singleton}
 
 import com.mohiva.play.silhouette.api.Silhouette
-import javax.inject.{Inject, Singleton}
+import controllers.site
+import controllers.{BaseController, BeaconService}
 import org.joda.time.DateTime
 import play.api._
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.libs.ws._
-import play.api.mvc.Action
 import utils.silhouette.MyEnv
-import scala.concurrent.ExecutionContext.Implicits._
 
 /**
   * GW状態監視
@@ -46,7 +47,7 @@ class Gateway @Inject()(config: Configuration
       val placeId = super.getCurrentPlaceId
       // 非稼働時間かどうか
       val isNoWorkTime = (new DateTime().toString("HHmm") < config.getString("noWorkTimeEnd").get)
-      Ok(views.html.analysis.gateway(isNoWorkTime))
+      Ok(views.html.analysis.gateway())
     }else{
       Redirect(site.routes.WorkPlace.index)
     }
