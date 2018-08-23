@@ -46,6 +46,7 @@ case class PlaceEx(
   exbTelemetryUrl: String = "",
   gatewayTelemetryUrl: String = "",
   cmsPassword: String = "",
+  userId: Int = 0,
   userEmail: String = "",
   userName: String = ""
 )
@@ -118,12 +119,13 @@ class placeDAO @Inject() (dbapi: DBApi) {
         get[Int]("status") ~
         get[String]("btx_api_url") ~
         get[String]("cms_password") ~
+        get[Int]("user_id") ~
         get[String]("user_email") ~
         get[String]("user_name") map {
-        case place_id ~ place_name ~ floor_count ~ status ~ btx_api_url ~ cms_password ~ user_email ~ user_name =>
+        case place_id ~ place_name ~ floor_count ~ status ~ btx_api_url ~ cms_password ~ user_id ~ user_email ~ user_name =>
           val statusName = PlaceEnum().map(status)
           PlaceEx(place_id, place_name, floor_count, status, statusName,
-            btx_api_url, btx_api_url, btx_api_url, cms_password, user_email, user_name)
+            btx_api_url, btx_api_url, btx_api_url, cms_password, user_id, user_email, user_name)
       }
     }
     db.withConnection { implicit connection =>
@@ -136,6 +138,7 @@ class placeDAO @Inject() (dbapi: DBApi) {
             pm.status AS status,
             pm.btx_api_url AS btx_api_url,
             pm.cms_password AS cms_password,
+            COALESCE(u.user_id, -1) AS user_id,
             COALESCE(u.email, '-') AS user_email,
             COALESCE(u.name, '-') AS user_name
           FROM place_master pm
@@ -152,6 +155,7 @@ class placeDAO @Inject() (dbapi: DBApi) {
             pm.place_id,
             pm.place_name,
             pm.status,
+            u.user_id,
             u.email,
             u.name
           ORDER BY pm.place_id
@@ -256,12 +260,13 @@ class placeDAO @Inject() (dbapi: DBApi) {
         get[Int]("status") ~
         get[String]("btx_api_url") ~
         get[String]("cms_password") ~
+        get[Int]("user_id") ~
         get[String]("user_email") ~
         get[String]("user_name") map {
-        case place_id ~ place_name ~ floor_count ~ status ~ btx_api_url ~ cms_password ~ user_email ~ user_name =>
+        case place_id ~ place_name ~ floor_count ~ status ~ btx_api_url ~ cms_password ~ user_id ~ user_email ~ user_name =>
           val statusName = PlaceEnum().map(status)
           PlaceEx(place_id, place_name, floor_count, status, statusName,
-            btx_api_url, btx_api_url, btx_api_url, cms_password, user_email, user_name)
+            btx_api_url, btx_api_url, btx_api_url, cms_password, user_id, user_email, user_name)
       }
     }
     db.withConnection { implicit connection =>
@@ -274,13 +279,14 @@ class placeDAO @Inject() (dbapi: DBApi) {
               pm.status AS status,
               pm.btx_api_url AS btx_api_url,
               pm.cms_password AS cms_password,
+              COALESCE(u.user_id, -1) AS user_id,
               COALESCE(u.email, '-') AS user_email,
               COALESCE(u.name, '-') AS user_name
           FROM place_master pm
             LEFT OUTER JOIN floor_master f ON pm.place_id = f.place_id
             LEFT OUTER JOIN user_master u ON pm.place_id = u.current_place_id AND u.permission = 3
           WHERE pm.active_flg = true
-          GROUP BY pm.place_id, pm.place_name, pm.status, u.email, u.name
+          GROUP BY pm.place_id, pm.place_name, pm.status, u.user_id, u.email, u.name
           ORDER BY ${PlaceEnum().sortTypeMap(sortType)}"""
       SQL(selectSQL).as(list.*)
     }

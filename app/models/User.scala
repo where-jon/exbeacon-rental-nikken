@@ -269,24 +269,6 @@ class UserDAO @Inject() (
     )
   }
 
-  def changePasswordByEmail(userEmail: String, passwd: String) = {
-    Future.successful(
-      db.withConnection { implicit connection =>
-        val sql = SQL("""
-            UPDATE user_master
-            SET
-              password = {passwd},
-              updatetime = now()
-            WHERE email = {userEmail}
-          """).on(
-          'userEmail -> userEmail,
-          'passwd -> passwd
-        )
-        sql.executeUpdate()
-      }
-    )
-  }
-
   def changePasswordById(userId: String, passwd: String) = {
     Future.successful(
       db.withConnection { implicit connection =>
@@ -330,17 +312,19 @@ class UserDAO @Inject() (
     }
   }
 
-  def updateUserNameByEmail(userId: String, userName: String) = {
+  def updateUserNameById(userId: Int, userLoginId: String, userName: String) = {
     Future.successful(
       db.withConnection { implicit connection =>
         val sql = SQL("""
             UPDATE user_master
             SET
               name = {userName},
+              email = {userLoginId},
               updatetime = now()
-            WHERE email = {userEmail}
+            WHERE user_id = {userId}
           """).on(
-          'userEmail -> userId,
+          'userId -> userId,
+          'userLoginId -> userLoginId,
           'userName -> userName
         )
         sql.executeUpdate()
@@ -348,19 +332,23 @@ class UserDAO @Inject() (
     )
   }
 
-  def updateUserNameLevelById(userId: String, userName: String, level: String) = {
+  def updateUserNameLevelById(
+    userId: String, userName: String, userLoginId: String, level: String
+  ) = {
     Future.successful(
       db.withConnection { implicit connection =>
         val sql = SQL("""
             UPDATE user_master
             SET
               name = {userName},
+              email = {userLoginId},
               permission = {level},
               updatetime = now()
             WHERE user_id = {userId}
           """).on(
           'userId -> userId.toInt,
           'userName -> userName,
+          'userLoginId -> userLoginId,
           'level -> level.toInt
         )
         sql.executeUpdate()
@@ -381,5 +369,53 @@ class UserDAO @Inject() (
         sql.executeUpdate()
       }
     )
+  }
+
+  def selectByLoginId(loginId: String): Seq[User] = {
+    db.withConnection { implicit connection =>
+      val sql = SQL("""
+        SELECT
+          user_id
+          , email
+          , name
+          , password
+          , place_id
+          , current_place_id
+          , active_flg
+          , permission
+        FROM user_master
+        WHERE email = {email} AND active_flg = true
+        """
+      ).on(
+        'email -> loginId
+      )
+      sql.as(simple.*)
+    }
+  }
+
+  def checkExistByLoginId(loginId: String, exoutUserId: Int) = {
+    db.withConnection { implicit connection =>
+      val sql = SQL("""
+        SELECT
+          user_id
+          , email
+          , name
+          , password
+          , place_id
+          , current_place_id
+          , active_flg
+          , permission
+        FROM user_master
+        WHERE
+          email = {email}
+          AND active_flg = true
+          AND user_id <> {userId}
+        """
+      ).on(
+        'email -> loginId,
+        'userId -> exoutUserId
+      )
+      sql.as(simple.*)
+    }
   }
 }
