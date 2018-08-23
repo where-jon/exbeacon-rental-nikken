@@ -23,6 +23,7 @@ class ItemLogDataActor @Inject()(config: Configuration
   ) extends Actor {
   val BATCH_NAME = "仮設材記録"
   var dbDatas :Seq[BeaconViewer] = null; // 仮設材種別
+  var beaconData : Seq[itemLogPositionData]
   private val enableLogging = config.getBoolean("akka.quartz.schedules.ItemLogDataActor.loggingStart").getOrElse(false)
 
   def receive = {
@@ -46,7 +47,7 @@ class ItemLogDataActor @Inject()(config: Configuration
             dbDatas = beaconDAO.selectBeaconViewer(placeId)
             val beaconListApi = beaconService.getItemLogPosition(dbDatas,true,placeId)
             beaconListApi.zipWithIndex.map { case (beacon, i) =>
-              System.out.println("-------beaconData--------" + beacon)
+              beaconData = beacon
               itemlogDAO.insert(beacon)
             }
           }
@@ -55,6 +56,7 @@ class ItemLogDataActor @Inject()(config: Configuration
         case e: Exception =>
           System.out.println("--------------------バッチエラー検知.start--------------------------")
           System.out.println("dbDatas:::" + dbDatas)
+          System.out.println("beaconData:::" + beaconData)
           Logger.error(s"""${BATCH_NAME}にてエラーが発生""", e)
           System.out.println("--------------------バッチエラー検知.end--------------------------")
       }
