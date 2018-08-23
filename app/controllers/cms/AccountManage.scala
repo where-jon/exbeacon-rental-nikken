@@ -24,18 +24,28 @@ case class AccountCreateForm(
   userPassword2: String // 確認用パスワード
 )
 
+/**
+  * アカウント更新時のForm
+  */
 case class AccountUpdateForm(
   userId: String, // アカウントID
   userName: String, // アカウント名
+  userLoginId: String, // ログインID
   userLevel: String // アカウント権限
 )
 
+/**
+  * アカウントパスワード更新時のForm
+  */
 case class AccountPasswordUpdateForm(
   userId: String,
   userPassword1: String,
   userPassword2: String
 )
 
+/**
+  * アカウント削除時のForm
+  */
 case class AccountDeleteForm(
   userId: String
 )
@@ -81,9 +91,13 @@ class AccountManage @Inject()(
       )
       (AccountCreateForm.apply)
       (AccountCreateForm.unapply)
-        verifying (
+      verifying (
         Messages("error.cms.AccountManage.create.passwords.notEqual"),
         form => form.userPassword1 == form.userPassword2
+      )
+      verifying (
+        Messages("error.cms.AccountManage.create.userLoginId.exist"), // 指定されたログインIDは既に使われています。
+        form => (userService.selectByLoginId(form.userLoginId).length == 0)
       )
     )
     val form = inputForm.bindFromRequest
@@ -112,17 +126,23 @@ class AccountManage @Inject()(
       mapping(
         "userId" -> text.verifying(Messages("error.cms.AccountManage.update.userId.empty"), {!_.isEmpty}),
         "userName" -> text.verifying(Messages("error.cms.AccountManage.update.userName.empty"), {!_.isEmpty}),
+        "userLoginId" -> text.verifying(Messages("error.cms.AccountManage.update.userLoginId.empty"), {!_.isEmpty}),
         "userLevel" -> text.verifying(Messages("error.cms.AccountManage.update.userLevel.empty"), {!_.isEmpty})
       )
       (AccountUpdateForm.apply)
       (AccountUpdateForm.unapply)
+      verifying (
+        Messages("error.cms.AccountManage.update.userLoginId.exist"), // 指定されたログインIDは既に使われています。
+        form => (userService.checkExistByLoginId(form.userLoginId, form.userId.toInt).length == 0)
+      )
     )
     val form = inputForm.bindFromRequest
     if (form.hasErrors) {
       val errMsg = form.errors.map(_.message).mkString(HTML_BR)
       Redirect(routes.AccountManage.index()).flashing(ERROR_MSG_KEY -> errMsg)
     } else {
-      userService.updateUserNameLevelById(form.get.userId, form.get.userName, form.get.userLevel)
+      val inForm = form.get
+      userService.updateUserNameLevelById(inForm.userId, inForm.userName, inForm.userLoginId, inForm.userLevel)
       Redirect(routes.AccountManage.index.path)
         .flashing(SUCCESS_MSG_KEY -> Messages("success.cms.AccountManage.update"))
     }
@@ -158,7 +178,7 @@ class AccountManage @Inject()(
   def delete = SecuredAction { implicit request =>
     val inputForm = Form(
       mapping(
-        "userId" -> text.verifying(Messages("error.cms.accountManage.delete.userId.empty"), {!_.isEmpty})
+        "userId" -> text.verifying(Messages("error.cms.AccountManage.delete.userId.empty"), {!_.isEmpty})
       )
       (AccountDeleteForm.apply)(AccountDeleteForm.unapply)
     )

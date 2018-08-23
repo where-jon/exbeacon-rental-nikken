@@ -88,6 +88,7 @@ function showUpdateModal(){
     if(selectLine.length > 0){
         $('#updateUserId').val(selectLine.attr('data-userId'));
         $('#updateUserName').val(selectLine.attr('data-userName'));
+        $('#updateUserLoginId').val(selectLine.attr('data-userLoginId'));
         $('#updateUserLevel').val(selectLine.attr('data-userLevel'));
         $('#updateModal').modal();
     }

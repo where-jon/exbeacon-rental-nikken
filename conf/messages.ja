@@ -61,9 +61,9 @@ error.CarReserve.registerModal.inputCarNo.duplicate=入力された作業車は�
 # CMS入力エラー
 error.cms.PlaceManage.register.inputPlaceName.empty=現場名称を入力してください。
 error.cms.PlaceManage.register.inputPlaceStatus.empty=状態を選択してください。
-error.cms.PlaceManage.register.inputPlaceUserId.empty=現場担当者IDを入力してください。
-error.cms.PlaceManage.register.inputPlaceUserName.empty=現場担当者名を入力してください。
-error.cms.PlaceManage.register.inputPlaceStatus.empty=状態を選択してください。
+error.cms.PlaceManage.register.inputUserLoginId.empty=現場担当者IDを入力してください。
+error.cms.PlaceManage.register.inputUserLoginId.exist=指定された現場担当者IDは既に使われています。
+error.cms.PlaceManage.register.inputUserName.empty=現場担当者名を入力してください。
 error.cms.PlaceManage.passwordUpdate.inputPassword.empty=パスワードを入力してください。
 error.cms.PlaceManage.passwordUpdate.inputRePassword.empty=確認用パスワードを入力してください。
 error.cms.PlaceManage.passwordUpdate.notEqual=パスワードと確認用パスワードが異なります。
@@ -154,18 +154,21 @@ error.changePassword.password.current.notequal=現在のパスワードが異な
 
 error.cms.AccountManage.create.userName.empty=名前を入力してください。
 error.cms.AccountManage.create.userLoginId.empty=IDを入力してください。
+error.cms.AccountManage.create.userLoginId.exist=指定されたログインIDは既に使われています。
 error.cms.AccountManage.create.userLevel.empty=権限を選択してください。
 error.cms.AccountManage.create.userPassword1.empty=パスワードを入力してください。
 error.cms.AccountManage.create.userPassword2.empty=確認用パスワードを入力してください。
 error.cms.AccountManage.create.passwords.notEqual=パスワードと確認用パスワードが異なります。
 error.cms.AccountManage.update.userId.empty=USER.IDを入力してください。
 error.cms.AccountManage.update.userName.empty=名前を入力してください。
+error.cms.AccountManage.update.userLoginId.empty=ログインIDを入力してください。
+error.cms.AccountManage.update.userLoginId.exist=指定されたログインIDは既に使われています。
 error.cms.AccountManage.update.userLevel.empty=権限を選択してください。
 error.cms.AccountManage.passwordUpdate.userId.empty=USER.IDを入力してください。
 error.cms.AccountManage.passwordUpdate.userPassword1.empty=パスワードを入力してください。
 error.cms.AccountManage.passwordUpdate.userPassword2.empty=確認パスワードを入力してください。
 error.cms.AccountManage.passwordUpdate.notEqual=パスワードと確認パスワードが異なります。
-error.cms.accountManage.delete.userId.empty=削除するアカウントを指定してください。
+error.cms.AccountManage.delete.userId.empty=削除するアカウントを指定してください。
 
 ################################################################################################
 # SUCCESS
@@ -233,14 +236,14 @@ lang.cms.placeManage.input.title=現場登録
 lang.cms.placeManage.input.popup.title=現場登録
 lang.cms.placeManage.input.popup.placeName=現場名称
 lang.cms.placeManage.input.popup.placeName.placeholder=新しい現場の名称を入力してください
-lang.cms.placeManage.input.popup.placeUserId=現場担当者ID
-lang.cms.placeManage.input.popup.placeUserId.placeholder=新しい現場担当者のIDを入力してください
-lang.cms.placeManage.input.popup.placeUserName=現場担当者名
-lang.cms.placeManage.input.popup.placeUserName.placeholder=新しい現場担当者の名前を入力してください
-lang.cms.placeManage.input.popup.placeUserPassword1=パスワード
-lang.cms.placeManage.input.popup.placeUserPassword1.placeholder=新しいパスワードを入力してください
-lang.cms.placeManage.input.popup.placeUserPassword2=確認用パスワード
-lang.cms.placeManage.input.popup.placeUserPassword2.placeholder=確認の為同じパスワードを入力してください
+lang.cms.placeManage.input.popup.userLoginId=現場担当者ログインID
+lang.cms.placeManage.input.popup.userLoginId.placeholder=新しい現場担当者のログインIDを入力してください
+lang.cms.placeManage.input.popup.userName=現場担当者名
+lang.cms.placeManage.input.popup.userName.placeholder=新しい現場担当者の名前を入力してください
+lang.cms.placeManage.input.popup.userPassword1=パスワード
+lang.cms.placeManage.input.popup.userPassword1.placeholder=新しいパスワードを入力してください
+lang.cms.placeManage.input.popup.userPassword2=確認用パスワード
+lang.cms.placeManage.input.popup.userPassword2.placeholder=確認の為同じパスワードを入力してください
 
 
 lang.cms.placeManage.change.title=現場管理
@@ -258,7 +261,7 @@ lang.cms.placeManage.list.header.id=ID
 lang.cms.placeManage.list.header.placeName=現場名称
 lang.cms.placeManage.list.header.floor=階数
 lang.cms.placeManage.list.header.status=状態
-lang.cms.placeManage.list.header.userId=現場担当者ID
+lang.cms.placeManage.list.header.userLoginId=現場担当者ID
 lang.cms.placeManage.list.header.userName=現場担当者名
 
 # CMS文字列（現場管理）
@@ -275,10 +278,12 @@ lang.cms.placeManage.place.button.password=パスワード変更
 lang.cms.placeManage.place.button.edit=編集
 lang.cms.placeManage.placeUpdate.popup.title=編集
 lang.cms.placeManage.placeUpdate.popup.name=現場名称
-lang.cms.placeManage.placeUpdate.popup.placeholder=現場名称を入力してください
+lang.cms.placeManage.placeUpdate.popup.name.placeholder=現場名称を入力してください
 lang.cms.placeManage.placeUpdate.popup.status=状態
 lang.cms.placeManage.placeUpdate.popup.userName=現場担当者名
 lang.cms.placeManage.placeUpdate.popup.userName.placeholder=現場担当者名を入力してください
+lang.cms.placeManage.placeUpdate.popup.userLoginId=現場担当者ID
+lang.cms.placeManage.placeUpdate.popup.userLoginId.placeholder=現場担当者IDを入力してください
 lang.cms.placeManage.passwordUpdate.popup.title=管理パスワード変更
 lang.cms.placeManage.passwordUpdate.popup.password=パスワード
 lang.cms.placeManage.passwordUpdate.popup.reEnter=パスワード再入力
@@ -463,6 +468,8 @@ lang.cms.accountManage.create.popup.userPassword2.placeholder=確認の為同じ
 lang.cms.accountManage.update.popup.title=現場アカウント更新
 lang.cms.accountManage.update.popup.userName=名前
 lang.cms.accountManage.update.popup.userName.placeholder=名前を入力してください
+lang.cms.accountManage.update.popup.userLoginId=ログインID
+lang.cms.accountManage.update.popup.userLoginId.placeholder=ログインIDを入力してください
 lang.cms.accountManage.update.popup.userLevel=権限
 lang.cms.accountManage.passwordUpdate.popup.title=パスワード変更
 lang.cms.accountManage.passwordUpdate.popup.userPassword1=パスワード

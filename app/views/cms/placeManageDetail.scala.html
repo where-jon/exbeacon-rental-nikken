@@ -40,7 +40,7 @@
                                         <th class="tableTh placeNameTh">@Messages("lang.cms.placeManage.place.list.header.placeName")</th>
                                         <th class="tableTh stateTh">@Messages("lang.cms.placeManage.place.list.header.status")</th>
                                         <th class="tableTh userNameTh">@Messages("lang.cms.placeManage.list.header.userName")</th>
-                                        <th class="tableTh userEmailTh">@Messages("lang.cms.placeManage.list.header.userId")</th>
+                                        <th class="tableTh userEmailTh">@Messages("lang.cms.placeManage.list.header.userLoginId")</th>
                                         <th class="tableTh floorCountTh">@Messages("lang.cms.placeManage.place.list.header.floor")</th>
                                     </tr>
                                 </thead>
@@ -91,13 +91,13 @@
                 <form id="placeUpdateForm" name="placeUpdateForm" enctype="multipart/form-data" class="form-horizontal" method="post" action="@controllers.cms.routes.PlaceManage.update.path">
                     @CSRF.formField
                     <input type="hidden" name="placeId" value="@place.placeId">
-                    <input type="hidden" name="userId" value="@place.userEmail">
+                    <input type="hidden" name="userId" value="@place.userId">
                     <div class="modal-header">@Messages("lang.cms.placeManage.placeUpdate.popup.title")</div>
                     <div class="modal-body">
                         <div class="form-group">
                             <label class="control-label col-xs-5">@Messages("lang.cms.placeManage.placeUpdate.popup.name")</label>
                             <div class="col-xs-5" style="padding-left: 0px;padding-right: 0px;">
-                                <input type="text" name="placeName" value="@place.placeName" class="form-control" placeholder='@Messages("lang.cms.placeManage.placeUpdate.popup.placeholder")'>
+                                <input type="text" name="placeName" value="@place.placeName" class="form-control" placeholder='@Messages("lang.cms.placeManage.placeUpdate.popup.name.placeholder")'>
                             </div>
                         </div>
                         <div class="form-group">
@@ -118,6 +118,12 @@
                             <label class="control-label col-xs-5">@Messages("lang.cms.placeManage.placeUpdate.popup.userName")</label>
                             <div class="col-xs-5" style="padding-left: 0px;padding-right: 0px;">
                                 <input type="text" name="userName" class="form-control" value="@place.userName" placeholder='@Messages("lang.cms.placeManage.placeUpdate.popup.userName.placeholder")' />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-xs-5">@Messages("lang.cms.placeManage.placeUpdate.popup.userLoginId")</label>
+                            <div class="col-xs-5" style="padding-left: 0px;padding-right: 0px;">
+                                <input type="text" name="userLoginId" class="form-control" value="@place.userEmail" placeholder='@Messages("lang.cms.placeManage.placeUpdate.popup.userLoginId.placeholder")' />
                             </div>
                         </div>
                     </div>
@@ -144,7 +150,7 @@
                     <div class="modal-body">
                         <div class="form-group">
                             <input type="hidden" name="placeId" value="@place.placeId">
-                            <input type="hidden" name="userId" value="@place.userEmail">
+                            <input type="hidden" name="userId" value="@place.userId">
                             <label class="control-label col-xs-5">@Messages("lang.cms.placeManage.passwordUpdate.popup.password")</label>
                             <div class="col-xs-5" style="padding-left: 0px;padding-right: 0px;">
                                 <input type="password" name="password1" class="form-control">

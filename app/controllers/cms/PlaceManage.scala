@@ -26,17 +26,18 @@ case class CmsLoginForm(inputPlaceId: String, inputCmsLoginPassword: String, inp
 case class PlaceRegisterForm(
   placeName: String, // 現場名
   placeStatus: String, // 状態
-  placeUserId: String, // 現場担当者ID
-  placeUserName: String, // 現場担当者名
-  placeUserPassword1: String, // パスワード
-  placeUserPassword2: String // 確認用パスワード
+  userLoginId: String, // 現場担当者ログインID
+  userName: String, // 現場担当者名
+  userPassword1: String, // パスワード
+  userPassword2: String // 確認用パスワード
 )
 case class PlaceUpdateForm(
   placeId: String,
   userId: String,
   placeName: String,
   placeStatus: String,
-  userName: String
+  userName: String,
+  userLoginId: String
 )
 case class PasswordUpdateForm(
   placeId: String,
@@ -180,16 +181,20 @@ class PlaceManage @Inject() (
       mapping(
         "placeName" -> text.verifying(Messages("error.cms.PlaceManage.register.inputPlaceName.empty"), {!_.isEmpty}),
         "placeStatus" -> text.verifying(Messages("error.cms.PlaceManage.register.inputPlaceStatus.empty"), {!_.isEmpty}),
-        "placeUserId" -> text.verifying(Messages("error.cms.PlaceManage.register.inputPlaceUserId.empty"), {!_.isEmpty}),
-        "placeUserName" -> text.verifying(Messages("error.cms.PlaceManage.register.inputPlaceUserName.empty"), {!_.isEmpty}),
-        "placeUserPassword1" -> text.verifying(Messages("error.cms.PlaceManage.passwordUpdate.inputPassword.empty"), {!_.isEmpty}),
-        "placeUserPassword2" -> text.verifying(Messages("error.cms.PlaceManage.passwordUpdate.inputRePassword.empty"), {!_.isEmpty})
+        "userLoginId" -> text.verifying(Messages("error.cms.PlaceManage.register.inputUserLoginId.empty"), {!_.isEmpty}),
+        "userName" -> text.verifying(Messages("error.cms.PlaceManage.register.inputUserName.empty"), {!_.isEmpty}),
+        "userPassword1" -> text.verifying(Messages("error.cms.PlaceManage.passwordUpdate.inputPassword.empty"), {!_.isEmpty}),
+        "userPassword2" -> text.verifying(Messages("error.cms.PlaceManage.passwordUpdate.inputRePassword.empty"), {!_.isEmpty})
       )
       (PlaceRegisterForm.apply)
       (PlaceRegisterForm.unapply)
       verifying (
         Messages("error.cms.PlaceManage.passwordUpdate.notEqual"),
-        form => form.placeUserPassword1 == form.placeUserPassword2
+        form => form.userPassword1 == form.userPassword2
+      )
+      verifying (
+        Messages("error.cms.PlaceManage.register.inputUserLoginId.exist"), // 指定されたログインIDは既に使われています。
+        form => (userService.selectByLoginId(form.userLoginId).length == 0)
       )
     )
     // フォームの取得
@@ -201,11 +206,11 @@ class PlaceManage @Inject() (
       Redirect(routes.PlaceManage.sortPlaceListWith(selectedSortType)).flashing(ERROR_MSG_KEY -> errMsg)
     }else{
       // DB登録
-      val placeEx = PlaceEx.apply(0, form.get.placeName, 0, form.get.placeStatus.toInt, "", "", "", "", "", "", "")
+      val placeEx = PlaceEx.apply(0, form.get.placeName, 0, form.get.placeStatus.toInt, "", "", "", "", "", -1, "", "")
       val placeId = placeDAO.insertEx(placeEx)
-      val hs = passwordHasherRegistry.current.hash(form.get.placeUserPassword1)
+      val hs = passwordHasherRegistry.current.hash(form.get.userPassword1)
       val user = User.apply(
-        Option(0), form.get.placeUserId, true, hs.password, form.get.placeUserName,
+        Option(0), form.get.userLoginId, true, hs.password, form.get.userName,
         Option(placeId), Option(placeId), "",
         true, 3, null
       )
@@ -222,15 +227,21 @@ class PlaceManage @Inject() (
         "userId" -> text,
         "placeName" -> text.verifying(Messages("error.cms.PlaceManage.register.inputPlaceName.empty"), {!_.isEmpty}),
         "placeStatus" -> text.verifying(Messages("error.cms.PlaceManage.register.inputPlaceStatus.empty"), {!_.isEmpty}),
-        "userName" -> text.verifying(Messages("error.cms.PlaceManage.register.inputPlaceUserName.empty"), {!_.isEmpty})
-    )(PlaceUpdateForm.apply)(PlaceUpdateForm.unapply))
+        "userName" -> text.verifying(Messages("error.cms.PlaceManage.register.inputUserName.empty"), {!_.isEmpty}),
+        "userLoginId" -> text.verifying(Messages("error.cms.PlaceManage.register.inputUserLoginId.empty"), {!_.isEmpty})
+    )(PlaceUpdateForm.apply)(PlaceUpdateForm.unapply)
+      verifying (
+      Messages("error.cms.PlaceManage.register.inputUserLoginId.exist"), // 指定されたログインIDは既に使われています。
+      form => (userService.checkExistByLoginId(form.userLoginId, form.userId.toInt).length == 0)
+    )
+    )
     val form = inputForm.bindFromRequest
     if (form.hasErrors){
-      Redirect(routes.PlaceManage.sortPlaceListWith(selectedSortType))
+      Redirect(routes.PlaceManage.detail())
         .flashing(ERROR_MSG_KEY -> form.errors.map(_.message).mkString(HTML_BR))
     }else{
       placeDAO.updateById(form.get.placeId.toInt, form.get.placeName, form.get.placeStatus.toInt)
-      userService.updateUserNameByEmail(form.get.userId, form.get.userName)
+      userService.updateUserNameById(form.get.userId.toInt, form.get.userLoginId, form.get.userName)
       Redirect(s"""${routes.PlaceManage.detail().path()}?${KEY_PLACE_ID}=${form.get.placeId}""")
         .flashing(SUCCESS_MSG_KEY -> Messages("success.cms.PlaceManage.register"))
     }
@@ -251,9 +262,10 @@ class PlaceManage @Inject() (
       Redirect(routes.PlaceManage.detail()).flashing(ERROR_MSG_KEY -> errMsg)
     }else{
       if(form.get.password1 != form.get.password2){
-        Redirect(routes.PlaceManage.sortPlaceListWith(selectedSortType)).flashing(ERROR_MSG_KEY -> Messages("error.cms.PlaceManage.passwordUpdate.notEqual"))
+        Redirect(routes.PlaceManage.detail())
+          .flashing(ERROR_MSG_KEY -> Messages("error.cms.PlaceManage.passwordUpdate.notEqual"))
       }else{
-        userService.changePasswordByEmail(
+        userService.changePasswordById(
           form.get.userId,
           passwordHasherRegistry.current.hash(form.get.password1).password
         )
