@@ -49,5 +49,5 @@ $(function(){
     btnEvent();
 
     // テーブルを固定
-    gInitView.fixTable();
+    gInitView.fixTableNoBtn();
 });
