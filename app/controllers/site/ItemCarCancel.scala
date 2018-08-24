@@ -171,19 +171,17 @@ class ItemCarCancel @Inject()(config: Configuration
     var dbDatas : Seq[CarViewer] = null;
     dbDatas = carDAO.selectCarMasterCancel(placeId,itemIdList)
     var carListApi = beaconService.getItemCarBeaconPosition(dbDatas,true,placeId)
-    if(carListApi!=null){
-      if (ITEM_TYPE_FILTER != 0) {
-        carListApi = carListApi.filter(_.item_type_id == ITEM_TYPE_FILTER)
-      }
-      if (WORK_TYPE_FILTER != "") {
-        carListApi = carListApi.filter(_.work_type_name == WORK_TYPE_FILTER)
-      }
-      if (COMPANY_NAME_FILTER != "") {
-        carListApi = carListApi.filter(_.company_name == COMPANY_NAME_FILTER)
-      }
-      if (RESERVE_DATE != "") {
-        carListApi = carListApi.filter(_.reserve_start_date == RESERVE_DATE)
-      }
+    if (ITEM_TYPE_FILTER != 0) {
+      carListApi = carListApi.filter(_.item_type_id == ITEM_TYPE_FILTER)
+    }
+    if (WORK_TYPE_FILTER != "") {
+      carListApi = carListApi.filter(_.work_type_name == WORK_TYPE_FILTER)
+    }
+    if (COMPANY_NAME_FILTER != "") {
+      carListApi = carListApi.filter(_.company_name == COMPANY_NAME_FILTER)
+    }
+    if (RESERVE_DATE != "") {
+      carListApi = carListApi.filter(_.reserve_start_date == RESERVE_DATE)
     }
 
 
