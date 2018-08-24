@@ -1,0 +1,95 @@
+@(
+exbList: Seq[ExbTelemetryData]
+)(implicit user: User, messages: Messages, request: RequestHeader, flash: Flash)
+
+@import controllers.routes
+@import helper._
+
+<!doctype html>
+<html lang="ja">
+<head>
+    @templates.htmlHead(title = Messages("lang.analysis.gateway.page.title"))
+    <link rel="stylesheet" href="@routes.MyAssets.css("telemetry/telemetry.css")"/>
+    <script type="text/javascript" src="@routes.MyAssets.js("analysis/telemetry.js")"></script>
+    <script></script>
+</head>
+
+<body>
+<!-- content -->
+<div class="container">
+    <!-- ナビバー  -->
+    @templates.navBar()
+    <div class="row">
+        <!-- 左サイドバー -->
+        @views.html.templates.sideMenu()
+        <!-- メイン -->
+        <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10 mainSpace">
+            <!-- メッセージ -->
+            @views.html.templates.msgDiv()
+            <!-- 画面題字 -->
+            <div class="form-group" style="font-weight:bold;font-size:19px;margin:15px 0px;">
+                @Messages("lang.analysis.telemetry.page.title")
+
+                <div class = "top__map__btn--area">
+                    <!-- <button class=" btn__type telemetry__Btn">全体図</button> -->
+                    <a id="btn-update" class="btn__update--style">
+                     <span class="error__span--frame" id = "errorSpan">
+                         <i id = "update-element" class="btn__icon--style btn__telemetry__icon--style fa fa-refresh fa-3x"></i>
+                     </span>
+                        <!--   <div class="date"></div>
+                         <div class="time"></div> -->
+                    </a>
+                </div>
+            </div>
+            <!-- テーブルのROW -->
+            <div class="row tableRow">
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="padding:0;">
+                    <div class="table-responsive-body">
+                        <table class="table table-bordered table-condensed itemTable">
+                            <thead>
+                            <tr>
+                                <th colspan="5" class="tableTitleTh">@Messages("lang.analysis.telemetry.page.title")</th>
+                            </tr>
+                            <tr>
+                                <!--<th class="tableTh ">meshid_deviceid</th>
+                                <th class="tableTh ">deviceid</th>-->
+                                <th class="tableTh ">@Messages("lang.analysis.telemetry.exbNo")</th>
+                                <th class="tableTh ">@Messages("lang.analysis.telemetry.exbName")</th>
+                                <th class="tableTh ">@Messages("lang.analysis.telemetry.exbPosName")</th>
+                                <th class="tableTh ">@Messages("lang.analysis.telemetry.status")</th>
+                                <th class="tableTh ">@Messages("lang.analysis.telemetry.updatetime")</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            @exbList.zipWithIndex.map { case(exb, i) =>
+                            @if(exb.status == "動作不良"){
+                                <tr class="danger rowColor rowHover">
+                            }else{
+                                @if(exb.status == "受信不良"){
+                                <tr class="txWarning rowColor rowHover">
+                                }else{
+                                <tr class="rowColor rowHover">
+                                }
+                            }
+                                    <td class="itemTd text-center">@exb.description</td>
+                                    <td class="itemTd text-center">@exb.cur_exb_name</td>
+                                    <td class="itemTd text-center">@exb.cur_pos_name</td>
+                                    @if(exb.status == "動作不良" || exb.status == "受信不良"){
+                                    <td class="itemTd text-center checkTd">@exb.status
+                                        <span class="hidden itemTd text-center">@exb.iBeaconTime</span>
+                                    </td>
+                                    }else{
+                                    <td class="itemTd text-center">@exb.status</td>
+                                    }
+                                    <td class="itemTd text-center">@exb.updatetime</td>
+                                </tr>
+                            }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+    </div>
+</div>
+</body>
+</html>

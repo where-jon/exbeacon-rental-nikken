@@ -1,10 +1,11 @@
 package controllers
 
+import java.sql.Timestamp
 import java.text.SimpleDateFormat
-import java.util.{Calendar, Date, Locale}
 import java.time.format.DateTimeFormatter
 import java.time.{ZoneId, ZonedDateTime}
 import java.util.concurrent.TimeUnit
+import java.util.{Calendar, Date, Locale}
 import javax.inject.Inject
 
 import akka.util.Timeout
@@ -544,4 +545,58 @@ class BeaconService @Inject() (config: Configuration,
     gatewayList
   }
 
+  /**
+    * EXB状態取得
+    *
+    * EXCloudIfActorにて非同期で取得しているGW状態情報を取得する
+    *
+    * @param placeId  接続現場情報
+    * @return  List[gateWayState]
+    */
+  def getTelemetryState(placeId:Int): Seq[ExbTelemetryData] = {
+
+    this.getCloudUrl(placeId)
+    val telemetryList = Await.result(ws.url(TELEMETRY_API_URL).get().map { response =>
+      Json.parse(response.body).asOpt[List[telemeryState]].getOrElse(Nil)
+    }, Duration.Inf)
+    val mSimpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.JAPAN)
+    val bplist = telemetryList.map { v =>
+      val exbDatas =exbDao.selectExbApiInfo(placeId,v.description.toInt)
+      var vExbPosName = "未検知"
+      var vExbName = "未検知"
+      var vTimeStamp = "未検知"
+      var vStatus = "未検知"
+      var vIBeaconTime = "未検知"
+
+      if(exbDatas.length > 0){
+        vExbPosName = exbDatas.last.exb_pos_name
+        vExbName = exbDatas.last.exb_device_name
+        val vCurrentEpochTime = System.currentTimeMillis()
+
+        if (v.timestamp < (vCurrentEpochTime - 60 * 60 * 0.5 * 1000)) { // 30分以上前
+          vStatus = "動作不良"
+        }
+        else {
+          if (v.ibeacon_received < vCurrentEpochTime - 60*60*24*1000) { // 24時間以上前
+            vStatus = "受信不良"
+          }else{
+            vStatus = "正常"
+          }
+        }
+        // epochを現在時間へ
+        vTimeStamp = mSimpleDateFormat.format(new Timestamp(v.timestamp))
+        vIBeaconTime = mSimpleDateFormat.format(new Timestamp(v.ibeacon_received))
+      }
+      ExbTelemetryData(
+        v.description
+        ,v.power_level
+        ,vExbName
+        ,vExbPosName
+        , vTimeStamp
+        ,vIBeaconTime
+        , vStatus
+      )
+    }
+    return bplist
+  }
 }
