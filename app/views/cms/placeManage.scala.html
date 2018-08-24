@@ -38,18 +38,18 @@
                 <div class="row tableRow">
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="padding:0;">
                         <div class="table-responsive-body">
-                            <table id ="itemTable" class="table table-bordered table-condensed itemTable">
+                            <table id ="itemTable" class="table table-bordered table-condensed itemTable" style="width:100%;">
                                 <thead>
                                     <tr>
-                                        <th colspan="6" class="tableTitleTh">@Messages("lang.cms.placeManage.list.header.title")</th>
+                                        <th colspan="6" class="tableTitleTh" style="width:100%">@Messages("lang.cms.placeManage.list.header.title")</th>
                                     </tr>
                                     <tr>
-                                        <th class="tableTh noTh">@Messages("lang.cms.placeManage.list.header.id")</th>
-                                        <th class="tableTh placeNameTh">@Messages("lang.cms.placeManage.list.header.placeName")</th>
-                                        <th class="tableTh stateTh">@Messages("lang.cms.placeManage.list.header.status")</th>
-                                        <th class="tableTh userNameTh">@Messages("lang.cms.placeManage.list.header.userName")</th>
-                                        <th class="tableTh userEmailTh">@Messages("lang.cms.placeManage.list.header.userId")</th>
-                                        <th class="tableTh floorCountTh">@Messages("lang.cms.placeManage.list.header.floor")</th>
+                                        <th class="tableTh noTh" style="width:10%">@Messages("lang.cms.placeManage.list.header.id")</th>
+                                        <th class="tableTh placeNameTh" style="width:35%">@Messages("lang.cms.placeManage.list.header.placeName")</th>
+                                        <th class="tableTh stateTh" style="width:10%">@Messages("lang.cms.placeManage.list.header.status")</th>
+                                        <th class="tableTh userNameTh" style="width:20%">@Messages("lang.cms.placeManage.list.header.userName")</th>
+                                        <th class="tableTh userEmailTh" style="width:20%">@Messages("lang.cms.placeManage.list.header.userLoginId")</th>
+                                        <th class="tableTh floorCountTh" style="width:5%">@Messages("lang.cms.placeManage.list.header.floor")</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -63,12 +63,12 @@
                                             data-userEmail="@place.userEmail"
                                             data-floorCount="@place.floorCount"
                                         >
-                                            <td class="itemTd text-right">@place.placeId</td>
-                                            <td class="itemTd text-left">@place.placeName</td>
-                                            <td class="itemTd text-center">@place.statusName</td>
-                                            <td class="itemTd text-left">@place.userName</td>
-                                            <td class="itemTd text-left">@place.userEmail</td>
-                                            <td class="itemTd text-right">@place.floorCount</td>
+                                            <td class="itemTd text-right" style="width:10%">@place.placeId</td>
+                                            <td class="itemTd text-left" style="width:35%;white-space:normal;word-break:break-all">@place.placeName</td>
+                                            <td class="itemTd text-center" style="width:10%">@place.statusName</td>
+                                            <td class="itemTd text-left" style="width:20%">@place.userName</td>
+                                            <td class="itemTd text-left" style="width:20%">@place.userEmail</td>
+                                            <td class="itemTd text-right" style="width:5%">@place.floorCount</td>
                                         </tr>
                                     }
                                 </tbody>
