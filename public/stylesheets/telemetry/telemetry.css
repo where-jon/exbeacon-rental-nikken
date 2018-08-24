@@ -43,9 +43,9 @@ td{
 }
 
 .row-template {
-      text-align:left;
-      box-sizing: content-box !important;
-    }
+  text-align:left;
+  box-sizing: content-box !important;
+}
 
 /*
     telemetry
@@ -63,6 +63,10 @@ td{
 .table > tbody > tr.txWarning > th,
 .table > tfoot > tr.txWarning > th {
   background-color: #fdec4c;
+}
+
+.txUndetected {
+  background-color: #b1b1b1 !important;
 }
 
 /*** table-bordered の改変 start ****************************************/

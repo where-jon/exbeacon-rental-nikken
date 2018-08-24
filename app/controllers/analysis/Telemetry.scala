@@ -36,8 +36,12 @@ class Telemetry @Inject()(
     if(reqIdentity.level >= 2){
       val placeId = super.getCurrentPlaceId
       val exbListApi = beaconService.getTelemetryState(placeId)
-      Ok(views.html.analysis.telemetry(exbListApi))
-
+      if(exbListApi!=null){
+        Ok(views.html.analysis.telemetry(exbListApi))
+      }else{
+        // apiデータがない場合
+        Redirect(site.routes.UnDetected.index)
+      }
     }else{
       Redirect(site.routes.WorkPlace.index)
     }

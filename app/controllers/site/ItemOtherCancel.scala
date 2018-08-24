@@ -3,6 +3,7 @@ package controllers.site
 import javax.inject.{Inject, Singleton}
 
 import com.mohiva.play.silhouette.api.Silhouette
+import controllers.site
 import controllers.{BaseController, BeaconService}
 import models._
 import play.api._
@@ -189,20 +190,25 @@ class ItemOtherCancel @Inject()(config: Configuration
 
   /** 初期表示 */
   def index = SecuredAction { implicit request =>
-      // 初期化
-      init();
-      val placeId = super.getCurrentPlaceId
-      //検索側データ取得
-      getSearchData(placeId)
+    // 初期化
+    init();
+    val placeId = super.getCurrentPlaceId
+    //検索側データ取得
+    getSearchData(placeId)
 
-      // dbデータ取得
-      val dbDatas = otherDAO.selectOtherMasterCancel(placeId,itemIdList)
-      var otherListApi = beaconService.getItemOtherBeaconPosition(dbDatas,true,placeId)
+    // dbデータ取得
+    val dbDatas = otherDAO.selectOtherMasterCancel(placeId,itemIdList)
+    val otherListApi = beaconService.getItemOtherBeaconPosition(dbDatas,true,placeId)
 
-
-      System.out.println("otherListApi:" + otherListApi.length)
+    if(otherListApi!=null){
       Ok(views.html.site.itemOtherCancel(ITEM_TYPE_FILTER,COMPANY_NAME_FILTER,WORK_TYPE_FILTER,RESERVE_START_DATE,RESERVE_END_DATE
         ,otherListApi,itemTypeList,companyNameList,floorNameList,workTypeList,WORK_TYPE))
+    }else{
+      // apiデータがない場合
+      Redirect(site.routes.UnDetected.index)
+    }
+
+
   }
 
 }

@@ -3,6 +3,7 @@ package controllers.site
 import javax.inject.{Inject, Singleton}
 
 import com.mohiva.play.silhouette.api.Silhouette
+import controllers.site
 import controllers.{BaseController, BeaconService}
 import models.{ItemType, PowerEnum}
 import play.api._
@@ -105,7 +106,13 @@ class TxTagManage @Inject()(config: Configuration
     val totalDbDatas = dbDatas union  dbDatasKeyData
     val beaconListApi = beaconService.getTxData(totalDbDatas,true,placeId)
 
-    val POWER_ENUM = PowerEnum().map;
-    Ok(views.html.site.txTagManage(POWER_ENUM,POWER_FILTER,ITEM_TYPE_FILTER,itemTypeList,beaconListApi))
+    if(beaconListApi!=null){
+      val POWER_ENUM = PowerEnum().map;
+      Ok(views.html.site.txTagManage(POWER_ENUM,POWER_FILTER,ITEM_TYPE_FILTER,itemTypeList,beaconListApi))
+    }else{
+      // apiデータがない場合
+      Redirect(site.routes.UnDetected.index)
+    }
+
   }
 }

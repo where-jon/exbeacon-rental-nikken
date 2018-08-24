@@ -3,6 +3,7 @@ package controllers.site
 import javax.inject.{Inject, Singleton}
 
 import com.mohiva.play.silhouette.api.Silhouette
+import controllers.site
 import controllers.{BaseController, BeaconService}
 import models._
 import play.api._
@@ -124,10 +125,14 @@ class ItemOtherMaster @Inject()(config: Configuration
     // dbデータ取得
     val dbDatas = otherDAO.selectOtherMasterViewer(placeId,itemIdList)
     val otherListApi = beaconService.getItemOtherBeaconPosition(dbDatas,true,placeId)
-
-      System.out.println("floorNameList:" + floorNameList)
+    if(otherListApi!=null){
       Ok(views.html.site.itemOtherMaster(ITEM_TYPE_FILTER, COMPANY_NAME_FILTER,FLOOR_NAME_FILTER,WORK_TYPE_FILTER
         ,otherListApi,itemTypeList,companyNameList,floorNameList,workTypeList,WORK_TYPE))
+    }else{
+      // apiデータがない場合
+      Redirect(site.routes.UnDetected.index)
+    }
+
   }
 
 }
