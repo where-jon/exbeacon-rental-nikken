@@ -68,7 +68,11 @@ exbList: Seq[ExbTelemetryData]
                                 @if(exb.status == "受信不良"){
                                 <tr class="txWarning rowColor rowHover">
                                 }else{
+                                @if(exb.status == "未検知"){
+                                <tr class="txUndetected rowColor rowHover">
+                                }else{
                                 <tr class="rowColor rowHover">
+                                }
                                 }
                             }
                                     <td class="itemTd text-center">@exb.description</td>
