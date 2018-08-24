@@ -5,6 +5,7 @@ import java.util.{Date, Locale}
 import javax.inject.{Inject, Singleton}
 
 import com.mohiva.play.silhouette.api.Silhouette
+import controllers.site
 import controllers.{BaseController, BeaconService}
 import models._
 import play.api._
@@ -240,12 +241,12 @@ class ItemOtherReserve @Inject()(config: Configuration
     // dbデータ取得
     val dbDatas = otherDAO.selectOtherMasterReserve(placeId,itemIdList)
     var otherListApi = beaconService.getItemOtherBeaconPosition(dbDatas,true,placeId)
-
-    // 全体から空いてるものだけ表示する。
-    //otherListApi = otherListApi.filter(_.reserve_id == -1)
-    System.out.println("otherListApi:" + otherListApi.length)
-    Ok(views.html.site.itemOtherReserve(ITEM_TYPE_FILTER,WORK_TYPE_FILTER,RESERVE_START_DATE,RESERVE_END_DATE
-      ,otherListApi,itemTypeList,companyNameList,floorNameList,workTypeList,WORK_TYPE))
-
+    if(otherListApi!=null){
+      Ok(views.html.site.itemOtherReserve(ITEM_TYPE_FILTER,WORK_TYPE_FILTER,RESERVE_START_DATE,RESERVE_END_DATE
+        ,otherListApi,itemTypeList,companyNameList,floorNameList,workTypeList,WORK_TYPE))
+    }else{
+      // apiデータがない場合
+      Redirect(site.routes.UnDetected.index)
+    }
   }
 }

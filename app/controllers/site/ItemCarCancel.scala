@@ -3,6 +3,7 @@ package controllers.site
 import javax.inject.{Inject, Singleton}
 
 import com.mohiva.play.silhouette.api.Silhouette
+import controllers.site
 import controllers.{BaseController, BeaconService}
 import models._
 import play.api._
@@ -170,19 +171,21 @@ class ItemCarCancel @Inject()(config: Configuration
     var dbDatas : Seq[CarViewer] = null;
     dbDatas = carDAO.selectCarMasterCancel(placeId,itemIdList)
     var carListApi = beaconService.getItemCarBeaconPosition(dbDatas,true,placeId)
+    if(carListApi!=null){
+      if (ITEM_TYPE_FILTER != 0) {
+        carListApi = carListApi.filter(_.item_type_id == ITEM_TYPE_FILTER)
+      }
+      if (WORK_TYPE_FILTER != "") {
+        carListApi = carListApi.filter(_.work_type_name == WORK_TYPE_FILTER)
+      }
+      if (COMPANY_NAME_FILTER != "") {
+        carListApi = carListApi.filter(_.company_name == COMPANY_NAME_FILTER)
+      }
+      if (RESERVE_DATE != "") {
+        carListApi = carListApi.filter(_.reserve_start_date == RESERVE_DATE)
+      }
+    }
 
-    if (ITEM_TYPE_FILTER != 0) {
-      carListApi = carListApi.filter(_.item_type_id == ITEM_TYPE_FILTER)
-    }
-    if (WORK_TYPE_FILTER != "") {
-      carListApi = carListApi.filter(_.work_type_name == WORK_TYPE_FILTER)
-    }
-    if (COMPANY_NAME_FILTER != "") {
-      carListApi = carListApi.filter(_.company_name == COMPANY_NAME_FILTER)
-    }
-    if (RESERVE_DATE != "") {
-      carListApi = carListApi.filter(_.reserve_start_date == RESERVE_DATE)
-    }
 
     Ok(views.html.site.itemCarCancel(ITEM_TYPE_FILTER,COMPANY_NAME_FILTER,WORK_TYPE_FILTER,RESERVE_DATE
       ,carListApi,itemTypeList,companyNameList,floorNameList,workTypeList,WORK_TYPE))
@@ -199,11 +202,14 @@ class ItemCarCancel @Inject()(config: Configuration
       // dbデータ取得
       val dbDatas = carDAO.selectCarMasterCancel(placeId,itemIdList)
       var carListApi = beaconService.getItemCarBeaconPosition(dbDatas,true,placeId)
-
-
-      System.out.println("carListApi:" + carListApi.length)
+    if(carListApi!=null){
       Ok(views.html.site.itemCarCancel(ITEM_TYPE_FILTER,COMPANY_NAME_FILTER,WORK_TYPE_FILTER,RESERVE_DATE
         ,carListApi,itemTypeList,companyNameList,floorNameList,workTypeList,WORK_TYPE))
+    }else{
+      // apiデータがない場合
+      Redirect(site.routes.UnDetected.index)
+    }
+
   }
 
 }

@@ -5,6 +5,7 @@ import java.util.{Date, Locale}
 import javax.inject.{Inject, Singleton}
 
 import com.mohiva.play.silhouette.api.Silhouette
+import controllers.site
 import controllers.{BaseController, BeaconService}
 import models._
 import play.api._
@@ -239,12 +240,13 @@ class ItemCarReserve @Inject()(config: Configuration
     val dbDatas = carDAO.selectCarMasterReserve(placeId,itemIdList)
     var carListApi = beaconService.getItemCarBeaconPosition(dbDatas,true,placeId)
 
-    // 全体から空いてるものだけ表示する。
-    //carListApi = carListApi.filter(_.reserve_id == -1)
-
-    System.out.println("carListApi:" + carListApi.length)
-    Ok(views.html.site.itemCarReserve(ITEM_TYPE_FILTER,WORK_TYPE_FILTER,RESERVE_DATE
-      ,carListApi,itemTypeList,companyNameList,floorNameList,workTypeList,WORK_TYPE))
+    if(carListApi!=null){
+      Ok(views.html.site.itemCarReserve(ITEM_TYPE_FILTER,WORK_TYPE_FILTER,RESERVE_DATE
+        ,carListApi,itemTypeList,companyNameList,floorNameList,workTypeList,WORK_TYPE))
+    }else{
+      // apiデータがない場合
+      Redirect(site.routes.UnDetected.index)
+    }
   }
 
 }
