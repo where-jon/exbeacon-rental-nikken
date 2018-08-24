@@ -144,7 +144,7 @@
 \*!------------------------------------*/
 
 .drawer-hamburger {
-  position: fixed;
+  position: absolute;
   z-index: 104;
   top: 0;
   display: block;
