@@ -93,7 +93,6 @@ GET     /analysis/gateway/getdata             controllers.analysis.Gateway.getDa
 
 # GW状態監視
 GET     /analysis/telemetry                   controllers.analysis.Telemetry.index
-GET     /analysis/telemetry/getdata           controllers.analysis.Telemetry.getData
 
 # マップマネージャー
 GET    /manage/mapManager              controllers.manage.MapManager.index

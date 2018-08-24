@@ -1,5 +1,5 @@
 @(
-exbList: Seq[telemeryState]
+exbList: Seq[ExbTelemetryData]
 )(implicit user: User, messages: Messages, request: RequestHeader, flash: Flash)
 
 @import controllers.routes
@@ -48,20 +48,40 @@ exbList: Seq[telemeryState]
                         <table class="table table-bordered table-condensed itemTable">
                             <thead>
                             <tr>
-                                <th colspan="3" class="tableTitleTh">@Messages("lang.analysis.telemetry.page.title")</th>
+                                <th colspan="5" class="tableTitleTh">@Messages("lang.analysis.telemetry.page.title")</th>
                             </tr>
                             <tr>
-                                <th class="tableTh ">meshid_deviceid</th>
-                                <th class="tableTh ">deviceid</th>
-                                <th class="tableTh ">description</th>
+                                <!--<th class="tableTh ">meshid_deviceid</th>
+                                <th class="tableTh ">deviceid</th>-->
+                                <th class="tableTh ">@Messages("lang.analysis.telemetry.exbNo")</th>
+                                <th class="tableTh ">@Messages("lang.analysis.telemetry.exbName")</th>
+                                <th class="tableTh ">@Messages("lang.analysis.telemetry.exbPosName")</th>
+                                <th class="tableTh ">@Messages("lang.analysis.telemetry.status")</th>
+                                <th class="tableTh ">@Messages("lang.analysis.telemetry.updatetime")</th>
                             </tr>
                             </thead>
                             <tbody>
                             @exbList.zipWithIndex.map { case(exb, i) =>
+                            @if(exb.status == "動作不良"){
+                                <tr class="danger rowColor rowHover">
+                            }else{
+                                @if(exb.status == "受信不良"){
+                                <tr class="txWarning rowColor rowHover">
+                                }else{
                                 <tr class="rowColor rowHover">
-                                     <td class="itemTd text-center ">@exb.meshid_deviceid</td>
-                                     <td class="itemTd text-center ">@exb.deviceid</td>
-                                     <td class="itemTd text-center ">@exb.description</td>
+                                }
+                            }
+                                    <td class="itemTd text-center">@exb.description</td>
+                                    <td class="itemTd text-center">@exb.cur_exb_name</td>
+                                    <td class="itemTd text-center">@exb.cur_pos_name</td>
+                                    @if(exb.status == "動作不良" || exb.status == "受信不良"){
+                                    <td class="itemTd text-center checkTd">@exb.status
+                                        <span class="hidden itemTd text-center">@exb.iBeaconTime</span>
+                                    </td>
+                                    }else{
+                                    <td class="itemTd text-center">@exb.status</td>
+                                    }
+                                    <td class="itemTd text-center">@exb.updatetime</td>
                                 </tr>
                             }
                             </tbody>

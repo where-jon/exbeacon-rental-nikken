@@ -26,22 +26,12 @@ class Telemetry @Inject()(
   , btxLastPositionDAO: models.btxLastPositionDAO
   ) extends BaseController with I18nSupport {
 
-
-  var placeId : Int = -1
-  /* 仮設材テーブルと予約テーブルとapiを結合したデータを取得*/
-  def getData = SecuredAction{ implicit request =>
-    val placeId = super.getCurrentPlaceId
-    val gatewayListApi = beaconService.getTelemetryState(placeId)
-    Ok(Json.toJson(gatewayListApi))
-
-  }
-
     /**
     * 初期表示
     * @return
     */
   def index = SecuredAction { implicit request =>
-     placeId = super.getCurrentPlaceId
+    val  placeId = super.getCurrentPlaceId
     val reqIdentity = request.identity
     if(reqIdentity.level >= 2){
       val placeId = super.getCurrentPlaceId

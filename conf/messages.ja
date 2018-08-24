@@ -600,6 +600,14 @@ error.analysis.movementCar.search.date.empty=分析月を入力してくださ�
 # GateWay
 lang.analysis.gateway.page.title=GW状態監視
 
+# EXB状態監視Telemetry
+lang.analysis.telemetry.page.title=EXB状態監視
+lang.analysis.telemetry.exbNo=EXB番号
+lang.analysis.telemetry.exbName=EXB名
+lang.analysis.telemetry.exbPosName=設置場所名
+lang.analysis.telemetry.status=状態
+lang.analysis.telemetry.updatetime=最終取得時間
+
 # 仮設材管理文字列（作業車・立馬）
 lang.site.carMaster.page.title=作業車・立馬一覧
 lang.site.carReserve.page.title=作業車・立馬予約
