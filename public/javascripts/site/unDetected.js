@@ -31,7 +31,7 @@ function dbExecuteManager(routeUrl){
 function btnEvent(){
 
     // DatePickerの設定 start---------------------------------------
-     gDatePicker.dayClickEvent();
+     gDatePicker.todayClickEvent();
      gDatePicker.htmlDayClickEvent();
     // DatePickerの設定 end-----------------------------------------
 
@@ -63,7 +63,7 @@ $(function(){
     btnEvent();
 
     // テーブルを固定
-    gInitView.fixTable();
+    gInitView.fixTableNoBtn();
 
     // マウス操作とタップ操作をバインド
     gInitView.bindMouseAndTouch();

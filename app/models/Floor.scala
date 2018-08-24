@@ -60,6 +60,16 @@ case class FloorInfo(
   exbDeviceIdList: Seq[String]
 )
 
+
+case class FloorInfoData(
+  floor_id: Int,
+  display_order: Int,
+  active_flg:Boolean,
+  floor_name: String,
+  exbDeviceNoList: Seq[String],
+  exbDeviceIdList: Seq[String]
+)
+
 @javax.inject.Singleton
 class floorDAO @Inject() (dbapi: DBApi) {
 
@@ -173,7 +183,6 @@ class floorDAO @Inject() (dbapi: DBApi) {
   def deleteById(floorId:Int): Unit = {
     db.withTransaction { implicit connection =>
       SQL("""delete from floor_master where floor_id = {floorId} ;""").on('floorId -> floorId).executeUpdate()
-      SQL("""delete from exb_master where floor_id = {floorId} ;""").on('floorId -> floorId).executeUpdate()
       // コミット
       connection.commit()
 
@@ -185,54 +194,61 @@ class floorDAO @Inject() (dbapi: DBApi) {
     * フロアの新規登録
     * @return
     */
-  def insert(floorName:String, placeId: Int, deviceList: Seq[(Int,Int)]) = {
+  def insert(floorName:String,displayOrder:Int,activeFlg:Boolean, placeId: Int) = {
 
     db.withTransaction { implicit connection =>
       // 順序の取得
-      val selectQuery = s"""select coalesce(max(display_order), 0) from floor_master where place_id = ${placeId}"""
-      var cnt = SQL(selectQuery).as(scalar[Int].single)
-
-      cnt = cnt + 1
-
+//      val selectQuery = s"""select coalesce(max(display_order), 0) from floor_master where place_id = ${placeId}"""
+//      var cnt = SQL(selectQuery).as(scalar[Int].single)
+//      cnt = cnt + 1
       // フロアマスタへの登録
       val params: Seq[NamedParameter] = Seq(
         "floorName" -> floorName,
-        "displayOrder" -> cnt,
+        "displayOrder" -> displayOrder,
+        "activeFlg" -> activeFlg,
         "placeId" -> placeId
       )
       val insertSql = SQL(
         """
-          insert into floor_master (floor_name, display_order, place_id)
-          values ({floorName}, {displayOrder}, {placeId})
+           insert into floor_master (floor_name, display_order, place_id,active_flg,updatetime,floor_map_width,floor_map_height,floor_map_image)
+           values ({floorName}, {displayOrder}, {placeId},{activeFlg},now(),0,0,'')
+
         """
       ).on(params:_*)
 
       // SQL実行
       val floorId: Option[Long] = insertSql.executeInsert()
-Logger.debug(s"""フロアを登録、ID：" + ${floorId.get.toInt}""")
+      Logger.debug(s"""フロアを登録、ID：" + ${floorId.get.toInt}""")
+    }
+  }
 
-      // EXBマスタへの登録 ---------------
-      val indexedValues = deviceList.zipWithIndex
 
-      val rows = indexedValues.map{ case (value, i) =>
-          s"""({place_id_${i}}, {exb_device_no_${i}}, {exb_device_id_${i}}, {floor_id_${i}})"""
-      }.mkString(",")
+  /**
+    * フロアの更新
+    * @return
+    */
+  def update(floorId:Int,floorName:String,displayOrder:Int,activeFlg:Boolean, placeId: Int) = {
 
-      val parameters = indexedValues.flatMap{ case(value, i) =>
-        Seq(
-          NamedParameter(s"place_id_${i}" , placeId),
-          NamedParameter(s"exb_device_no_${i}" , value._1),
-          NamedParameter(s"exb_device_id_${i}" , value._2),
-          NamedParameter(s"floor_id_${i}" , floorId.get.toInt)
-        )
-      }
-
-      // SQL実行
-      BatchSql(s""" insert into exb_master (place_id, exb_device_no, exb_device_id, floor_id) values ${rows} """, parameters).execute
-
+    db.withTransaction { implicit connection =>
+      SQL(
+        """
+          update floor_master set
+              floor_name = {floorName}
+            , display_order = {displayOrder}
+            , active_flg = {activeFlg}
+            , updatetime = now()
+          where floor_id = {floorId}
+          and place_id = {placeId};
+        """).on(
+        'floorName -> floorName,
+              'displayOrder -> displayOrder,
+              'activeFlg -> activeFlg,
+              'floorId -> floorId,
+              'placeId -> placeId
+      ).executeUpdate()
       // コミット
       connection.commit()
-Logger.debug(s"""EXBマスタを登録""")
+      Logger.debug(s"""フロアを更新、ID：" + ${floorId.toString}""")
     }
   }
 
@@ -323,11 +339,41 @@ Logger.debug(s"""EXBマスタを更新""")
       }
   }
 
+
+  /**
+    * フロアの表示順重複チェック
+    * @return
+    */
+  def floorDisplayOrderCheck(displayOrder:Int, placeId: Int) = {
+
+    db.withConnection { implicit connection =>
+      val sql = SQL("""
+        select
+          floor_id,
+          floor_name ,
+          display_order,
+          place_id ,
+          active_flg,
+          floor_map_width,
+          floor_map_height,
+          floor_map_image
+          from floor_master as floor
+          where floor.place_id = {placeId}
+          and display_order ={displayOrder}
+       """).on(
+        "displayOrder" -> displayOrder,
+        "placeId" -> placeId
+      )
+
+      sql.as(simpleFloorAll.*)
+    }
+  }
+
+
   /**
     * フロア情報の取得
     * @return
     */
-  //def selectFloorAll(placeId: Int) = {
   def selectFloorAll(placeId: Int): Seq[FloorAll] = {
 
     db.withConnection { implicit connection =>
@@ -349,9 +395,78 @@ Logger.debug(s"""EXBマスタを更新""")
         "placeId" -> placeId
       )
 
-    sql.as(simpleFloorAll.*)
+      sql.as(simpleFloorAll.*)
     }
   }
+
+  /**
+    * フロア管理画面表示データ取得
+    * @return
+    */
+  //def selectFloorAll(placeId: Int) = {
+  def selectFloorInfoData(placeId: Int): Seq[FloorInfoData] = {
+
+    val simple = {
+      get[Int]("floor_id") ~
+        get[Int]("display_order") ~
+        get[Boolean]("active_flg") ~
+        get[String]("floor_name") ~
+        get[String]("exb_device_no_str") ~
+        get[String]("exb_device_id_str")  map {
+        case floor_id ~ display_order ~active_flg~floor_name ~ exb_device_no_str ~ exb_device_id_str  =>
+          FloorInfoData(floor_id, display_order,active_flg,floor_name, exb_device_no_str.split(",").toSeq, exb_device_id_str.split(",").toSeq)
+      }
+    }
+
+    db.withConnection { implicit connection =>
+      val sql = SQL("""
+        select
+             f.floor_id
+             , f.display_order
+             , f.floor_name
+             , f.active_flg
+             , ARRAY_TO_STRING(
+               ARRAY(
+                 SELECT
+                   e.exb_device_no
+                 FROM
+                 exb_master e
+                 WHERE
+                 e.floor_id = f.floor_id
+             and e.place_id = {placeId}
+             ORDER BY
+               e.exb_device_no
+             )
+             , ',') as exb_device_no_str
+             , ARRAY_TO_STRING(
+               ARRAY(
+                 SELECT
+                   e.exb_device_id
+                 FROM
+                 exb_master e
+                 WHERE
+                 e.floor_id = f.floor_id
+             and e.place_id = {placeId}
+             ORDER BY
+               e.exb_device_id
+             )
+             , ',') as exb_device_id_str
+               from
+             place_master p
+               inner join floor_master f
+               on p.place_id = f.place_id
+             and p.active_flg = true
+             where f.place_id = {placeId}
+             order by f.display_order
+
+       """).on(
+        "placeId" -> placeId
+      )
+
+      sql.as(simple.*)
+    }
+  }
+
 
 
   def updateFloorMap(map_id: Int, map_image: String, map_width: Int, map_height: Int): Int = {

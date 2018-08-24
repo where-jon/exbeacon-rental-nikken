@@ -1,4 +1,4 @@
-@(isNoWorkTime:Boolean)(implicit user: User, messages: Messages, request: RequestHeader, flash: Flash)
+@()(implicit user: User, messages: Messages, request: RequestHeader, flash: Flash)
 
 @import controllers.routes
 @import helper._
@@ -17,9 +17,11 @@
 <div class="container">
     <!-- ナビバー  -->
     @templates.navBar()
-    <div class="row" style="margin-top: 50px;">
+    <div class="row">
+        <!-- 左サイドバー -->
+        @views.html.templates.sideMenu()
         <!-- メイン -->
-        <div class="col-xs-9 col-sm-9 col-md-12 col-lg-12 mainSpace">
+        <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10 mainSpace">
             <!-- メッセージ -->
             @views.html.templates.msgDiv()
             <!-- 画面題字 -->

@@ -22,7 +22,6 @@ var vExbViewerData;
 
 $(function () {
 
-
      var initManager = function() {
          var viewHidden = function() {
             for (var i = 0;i< vMapElement.length; ++i){
@@ -49,6 +48,11 @@ $(function () {
         var vMapElement = document.getElementsByClassName("level")
             for (var i = 0;i< vMapElement.length; ++i){
                 vMapElement[i].addEventListener('click', function(event) {
+                        if(gClickPos!=null){
+                            // 設定pullDown位置を表示
+                           var getDisplayOrder =  document.getElementsByClassName("item-" + gClickPos)[0].textContent
+                            $('#input-floor-category-' + gClickPos ).val(getDisplayOrder);
+                        }
                        if(preClickPos == gClickPos){
                             //alert("同じところ")
                             var vTempElement = document.getElementById("viewer-list-" + gClickPos)
@@ -132,8 +136,9 @@ $(function () {
 
                     viewHidden();
                     var vFloor = document.getElementById("input_viewer_pos_floor-" + gClickPos ).value
-                    gMapPos = Number(vFloor)
-                    document.getElementById("beaconMap-" + vFloor).classList.remove("hidden");
+                    var vMapIndex = Number(document.getElementsByClassName("item-" + gClickPos)[0].textContent)
+                    gMapPos = vMapIndex
+                   document.getElementById("beaconMap-" + vMapIndex).classList.remove("hidden");
 
              });
            });
@@ -162,8 +167,11 @@ $(function () {
                 document.getElementById("beaconMap-" + result).classList.remove("hidden");
 
                 var vElement = document.getElementById("input_viewer_pos_floor-" + gClickPos)
-                vElement.value = result;
-                vExbViewerData[pos].floor = result;
+                vElement.value =  $('.dataFloorId-' + result).attr('data-floorId');
+                vExbViewerData[pos].displayOrder = result;
+                document.getElementsByClassName("item-" + gClickPos)[0].textContent = result
+                //　フロア マップ位置変更
+                $('#floor-category').val(result).prop("selected", true);
                 reloadManager();
 
             });
@@ -174,10 +182,14 @@ $(function () {
           vInputPosType.forEach(function(vPosType, pos) {
             vPosType.addEventListener('change', function() {
                  var result = $(vPosType).val();
+                 var vId = "#" + $(vPosType)[0].id +" option:selected"
+                 var vPosName =$(vId).data("typename");
                  console.dir("result::" + result);
                  var vElement = document.getElementById("input_viewer_pos_type-" + gClickPos)
                  vElement.value = result;
-                 vExbViewerData[pos].viewType = result;
+                 var vElementTypeName = document.getElementById("input_viewer_pos_type_name-" + gClickPos)
+                 vElementTypeName.value = vPosName;
+                 vExbViewerData[pos].viewType = vPosName;
                  reloadManager();
             });
           });
@@ -381,6 +393,11 @@ $(function () {
                 // count
                 var viewer_pos_count = document.getElementById("input_viewer_pos_count-" + gClickPos).value;
                 vExbViewerData[i].posCount = Number(viewer_pos_count);
+//
+//                // floor
+//                var viewer_pos_display_order = document.getElementById("viewer_pos_display_order-" + gClickPos).value;
+//                vExbViewerData[i].displayOrder = Number(viewer_pos_display_order);
+
 
             }
         }

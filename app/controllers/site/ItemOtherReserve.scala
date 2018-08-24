@@ -1,8 +1,11 @@
 package controllers.site
 
+import java.text.SimpleDateFormat
+import java.util.{Date, Locale}
 import javax.inject.{Inject, Singleton}
 
 import com.mohiva.play.silhouette.api.Silhouette
+import controllers.site
 import controllers.{BaseController, BeaconService}
 import models._
 import play.api._
@@ -21,18 +24,18 @@ import utils.silhouette.MyEnv
 
 @Singleton
 class ItemOtherReserve @Inject()(config: Configuration
-, val silhouette: Silhouette[MyEnv]
-, val messagesApi: MessagesApi
-, carDAO: models.itemCarDAO
-, otherDAO: models.itemOtherDAO
-, companyDAO: models.companyDAO
-, beaconService: BeaconService
-, floorDAO: models.floorDAO
-, btxDAO: models.btxDAO
-,reserveMasterDAO: models.ReserveMasterDAO
-, itemTypeDAO: models.ItemTypeDAO
-, workTypeDAO: models.WorkTypeDAO
-) extends BaseController with I18nSupport {
+  , val silhouette: Silhouette[MyEnv]
+  , val messagesApi: MessagesApi
+  , carDAO: models.itemCarDAO
+  , otherDAO: models.itemOtherDAO
+  , companyDAO: models.companyDAO
+  , beaconService: BeaconService
+  , floorDAO: models.floorDAO
+  , btxDAO: models.btxDAO
+  ,reserveMasterDAO: models.ReserveMasterDAO
+  , itemTypeDAO: models.ItemTypeDAO
+  , workTypeDAO: models.WorkTypeDAO
+  ) extends BaseController with I18nSupport {
 
    /*検索用*/
   var ITEM_TYPE_FILTER = 0;
@@ -124,11 +127,11 @@ class ItemOtherReserve @Inject()(config: Configuration
               beaconService.currentTimeReserveCheck(ItemOtherReserveData.inputStartDate,ItemOtherReserveData.workTypeName)
             if(vCurrentTimeCheck == "OK"){
               var setData = List[ReserveItem]()
-              var vCompanyId = companyNameList.filter(_.companyName == ItemOtherReserveData.companyName).last.companyId
-              var vFloorId = floorNameList.filter(_.floor_name == ItemOtherReserveData.floorName).last.floor_Id
-              var vWorkTypeId = workTypeList.filter(_.work_type_name == ItemOtherReserveData.workTypeName).last.work_type_id
-              var vReserveStartDate = ItemOtherReserveData.inputStartDate
-              var vReserveEndDate = ItemOtherReserveData.inputEndDate
+              val vCompanyId = companyNameList.filter(_.companyName == ItemOtherReserveData.companyName).last.companyId
+              val vFloorId = floorNameList.filter(_.floor_name == ItemOtherReserveData.floorName).last.floor_Id
+              val vWorkTypeId = workTypeList.filter(_.work_type_name == ItemOtherReserveData.workTypeName).last.work_type_id
+              val vReserveStartDate = ItemOtherReserveData.inputStartDate
+              val vReserveEndDate = ItemOtherReserveData.inputEndDate
               var idListData = List[Int]()
               var idTypeListData = List[Int]()
               ItemOtherReserveData.itemId.zipWithIndex.map { case (itemId, i) =>
@@ -142,7 +145,7 @@ class ItemOtherReserve @Inject()(config: Configuration
                 }
               }
               // 検索ロジック追加あるかどうかを判断する
-              var vAlerdyReserveData = reserveMasterDAO.selectOtherReserve(placeId,idListData,idTypeListData,vWorkTypeId,vReserveStartDate,vReserveEndDate)
+              val vAlerdyReserveData = reserveMasterDAO.selectOtherReserve(placeId,idListData,idTypeListData,vWorkTypeId,vReserveStartDate,vReserveEndDate)
               System.out.println("vCount :" + vAlerdyReserveData)
               if(vAlerdyReserveData.isEmpty) { // 予約されたものがない
                 val result = otherDAO.reserveItemOther(setData)
@@ -163,8 +166,20 @@ class ItemOtherReserve @Inject()(config: Configuration
                     + "すでに予約されてます"))
               }
             }else{ // 現在時刻から予約可能かを判定でエラーの場合
-              Redirect(routes.ItemOtherReserve.index())
-                .flashing(ERROR_MSG_KEY -> Messages(vCurrentTimeCheck))
+              if(vCurrentTimeCheck == "当日"){
+                val currentTime = new Date();
+                val mSimpleDateFormatHour = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.JAPAN)
+                val mCurrentTime = mSimpleDateFormatHour.format(currentTime)
+                var errMsg = Seq[String]()
+                errMsg :+= vCurrentTimeCheck
+                errMsg :+= Messages("error.site.reserve.overtime", mCurrentTime,ItemOtherReserveData.workTypeName)
+                errMsg :+= Messages("error.site.reserve.overtime.define")
+                Redirect(routes.ItemOtherReserve.index())
+                  .flashing(ERROR_MSG_KEY -> errMsg.mkString(HTML_BR))
+              }else{
+                Redirect(routes.ItemOtherReserve.index())
+                  .flashing(ERROR_MSG_KEY -> Messages(vCurrentTimeCheck))
+              }
             }
           }else{
             Redirect(routes.ItemOtherReserve.index())
@@ -226,12 +241,12 @@ class ItemOtherReserve @Inject()(config: Configuration
     // dbデータ取得
     val dbDatas = otherDAO.selectOtherMasterReserve(placeId,itemIdList)
     var otherListApi = beaconService.getItemOtherBeaconPosition(dbDatas,true,placeId)
-
-    // 全体から空いてるものだけ表示する。
-    //otherListApi = otherListApi.filter(_.reserve_id == -1)
-    System.out.println("otherListApi:" + otherListApi.length)
-    Ok(views.html.site.itemOtherReserve(ITEM_TYPE_FILTER,WORK_TYPE_FILTER,RESERVE_START_DATE,RESERVE_END_DATE
-      ,otherListApi,itemTypeList,companyNameList,floorNameList,workTypeList,WORK_TYPE))
-
+    if(otherListApi!=null){
+      Ok(views.html.site.itemOtherReserve(ITEM_TYPE_FILTER,WORK_TYPE_FILTER,RESERVE_START_DATE,RESERVE_END_DATE
+        ,otherListApi,itemTypeList,companyNameList,floorNameList,workTypeList,WORK_TYPE))
+    }else{
+      // apiデータがない場合
+      Redirect(site.routes.UnDetected.index)
+    }
   }
 }

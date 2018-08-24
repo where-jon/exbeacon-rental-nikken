@@ -12,8 +12,16 @@ viewType: Seq[ViewType]
 <!doctype html>
 <html lang="ja" style = "overflow: hidden;">
 <head>
-    @templates.htmlHead(title = Messages("lang.cms.carManage.title"))
-    <script type="text/javascript" src="@routes.MyAssets.js("manage/exb_viewer_manager.js")"></script>
+@templates.htmlHead(title = Messages("lang.cms.carManage.title"))
+<style type="text/css">
+    .navbar-brand {
+        margin-left: 5px;
+        text-align: center;
+    }
+    div#pcTabletNav {
+        margin:0px;
+    }
+</style>
 <script></script>
 </head>
 
@@ -31,14 +39,14 @@ viewType: Seq[ViewType]
 
 			<select id="floor-category" class=" manager__data--floor">
 				@mapViewer.zipWithIndex.map { case(map, i) =>
-					<option value="@map.display_order" @{if(map.display_order == 1) "selected" else ""}>@map.floor_name</option>
+					<option value="@map.display_order" @{if(i==0) "selected" else ""}>@map.floor_name</option>
 				}
 			</select>
 		</div>
 
 	</div>
 	<!-- exbマスター -->
-	<div class = "db__common--frame hidden">
+	<div class="db__common--frame hidden" style="margin-top: 642px;">
 		<table class="table"  >
 			<tbody>
 
@@ -52,6 +60,7 @@ viewType: Seq[ViewType]
 				<td class="item" id="viewer_pos_margin-@i">@viewer.view_tx_margin</td>
 				<td class="item" id="viewer_pos_count-@i">@viewer.view_tx_count</td>
 				<td class="item" id="viewer_pos_floor-@i">@viewer.floor_id</td>
+				<td class="item-@viewer.exb_id" id="viewer_pos_display_order-@i">@viewer.display_order</td>
 				<td class="item" id="viewer_pos_size-@i">@viewer.view_tx_size</td>
 				<td class="item" id="exb_pos_name-@i">@viewer.exb_pos_name</td>
 				<td class="item" id="exb_id-@i">@viewer.exb_id</td>
@@ -120,19 +129,20 @@ viewType: Seq[ViewType]
 						<td class="item viewer__posFloor--frame" style="width: 10%;text-align:  center;">
 							<input class="hidden form-control input-sm" type="text" data-type = "floor-form" id="input_viewer_pos_floor-@viewer.exb_id" value="@viewer.floor_id" name="viewerPosFloor[@i]">
 
-							<select id="input-floor-category-@i" class="exb__select--category inputFloor">
+							<select id="input-floor-category-@viewer.exb_id" class="exb__select--category inputFloor">
 								@mapViewer.zipWithIndex.map { case(map, i) =>
-								<option value="@map.display_order"  @{if(map.display_order == viewer.floor_id.toInt) "selected" else ""}>@map.floor_name</option>
+								<option class="dataFloorId-@map.display_order" data-floorId="@map.floor_id" value="@map.display_order"  @{if(map.display_order == viewer.floor_id.toInt) "selected" else ""}>@map.floor_name</option>
 								}
 							</select>
 						</td>
 
 						<!-- viewer_pos_type  -->
 						<td class="item viewer__posType--frame" style="width: 10%;text-align:  center;">
-							<input class="form-control input-sm hidden" type="text" data-type = "type-form" id="input_viewer_pos_type-@viewer.exb_id" value="@viewer.view_type_id" name="viewerPosType[@i]">
+							<input class="hidden form-control input-sm" type="text" data-type = "type-form" id="input_viewer_pos_type-@viewer.exb_id" value="@viewer.view_type_id" name="viewerPosType[@i]">
+							<input class="hidden form-control input-sm " type="text" data-type = "type-form" id="input_viewer_pos_type_name-@viewer.exb_id" value="@viewer.view_type_name">
 							<select id="input-view-category-@i" class="exb__select--category inputPosType">
 								@viewType.zipWithIndex.map { case(view, i) =>
-								<option value="@view.view_type_id"  @{if(view.view_type_name == viewer.view_type_name) "selected" else ""}>@view.view_type_name</option>
+								<option value="@view.view_type_id" data-typename="@view.view_type_name"  @{if(view.view_type_name == viewer.view_type_name) "selected" else ""}>@view.view_type_name</option>
 								}
 							</select>
 						</td>
@@ -187,7 +197,7 @@ viewType: Seq[ViewType]
 		}
 	</div>
 
-
+	<script type="text/javascript" src="@routes.MyAssets.js("manage/exb_viewer_manager.js")"></script>
 
 </body>
 </html>

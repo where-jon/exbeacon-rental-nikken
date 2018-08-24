@@ -1,8 +1,11 @@
 package controllers.site
 
+import java.text.SimpleDateFormat
+import java.util.{Date, Locale}
 import javax.inject.{Inject, Singleton}
 
 import com.mohiva.play.silhouette.api.Silhouette
+import controllers.site
 import controllers.{BaseController, BeaconService}
 import models._
 import play.api._
@@ -126,10 +129,10 @@ class ItemCarReserve @Inject()(config: Configuration
             beaconService.currentTimeReserveCheck(ItemCarReserveData.inputDate,ItemCarReserveData.workTypeName)
           if(vCurrentTimeCheck == "OK"){  // 現在時刻から予約可能かを判定
             var setData = List[ReserveItem]()
-            var vCompanyId = companyNameList.filter(_.companyName == ItemCarReserveData.companyName).last.companyId
-            var vFloorId = floorNameList.filter(_.floor_name == ItemCarReserveData.floorName).last.floor_Id
-            var vWorkTypeId = workTypeList.filter(_.work_type_name == ItemCarReserveData.workTypeName).last.work_type_id
-            var vReserveDate = ItemCarReserveData.inputDate
+            val vCompanyId = companyNameList.filter(_.companyName == ItemCarReserveData.companyName).last.companyId
+            val vFloorId = floorNameList.filter(_.floor_name == ItemCarReserveData.floorName).last.floor_Id
+            val vWorkTypeId = workTypeList.filter(_.work_type_name == ItemCarReserveData.workTypeName).last.work_type_id
+            val vReserveDate = ItemCarReserveData.inputDate
             var idListData = List[Int]()
             var idTypeListData = List[Int]()
             ItemCarReserveData.itemId.zipWithIndex.map { case (itemId, i) =>
@@ -143,7 +146,7 @@ class ItemCarReserve @Inject()(config: Configuration
               }
             }
             // 検索ロジック追加あるかどうかを判断する
-            var vAlerdyReserveData = reserveMasterDAO.selectCarReserve(placeId,idListData,idTypeListData,vWorkTypeId,vReserveDate,vReserveDate)
+            val vAlerdyReserveData = reserveMasterDAO.selectCarReserve(placeId,idListData,idTypeListData,vWorkTypeId,vReserveDate,vReserveDate)
             System.out.println("vCount :" + vAlerdyReserveData)
             if(vAlerdyReserveData.isEmpty){ // 予約されたものがない
               val result = carDAO.reserveItemCar(setData)
@@ -163,8 +166,19 @@ class ItemCarReserve @Inject()(config: Configuration
                   + "すでに予約されてます"))
             }
           }else{  // 現在時刻から予約可能かを判定でエラーの場合
-            Redirect(routes.ItemCarReserve.index())
-              .flashing(ERROR_MSG_KEY -> Messages(vCurrentTimeCheck))
+            if(vCurrentTimeCheck == "当日"){
+              val currentTime = new Date();
+              val mSimpleDateFormatHour = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.JAPAN)
+              val mCurrentTime = mSimpleDateFormatHour.format(currentTime)
+              var errMsg = Seq[String]()
+              errMsg :+= Messages("error.site.reserve.overtime", mCurrentTime,ItemCarReserveData.workTypeName)
+              errMsg :+= Messages("error.site.reserve.overtime.define")
+              Redirect(routes.ItemCarReserve.index())
+                .flashing(ERROR_MSG_KEY -> errMsg.mkString(HTML_BR))
+            } else {
+              Redirect(routes.ItemCarReserve.index())
+                .flashing(ERROR_MSG_KEY -> Messages(vCurrentTimeCheck))
+            }
           }
         }else{
           Redirect(routes.ItemCarReserve.index())
@@ -226,12 +240,13 @@ class ItemCarReserve @Inject()(config: Configuration
     val dbDatas = carDAO.selectCarMasterReserve(placeId,itemIdList)
     var carListApi = beaconService.getItemCarBeaconPosition(dbDatas,true,placeId)
 
-    // 全体から空いてるものだけ表示する。
-    //carListApi = carListApi.filter(_.reserve_id == -1)
-
-    System.out.println("carListApi:" + carListApi.length)
-    Ok(views.html.site.itemCarReserve(ITEM_TYPE_FILTER,WORK_TYPE_FILTER,RESERVE_DATE
-      ,carListApi,itemTypeList,companyNameList,floorNameList,workTypeList,WORK_TYPE))
+    if(carListApi!=null){
+      Ok(views.html.site.itemCarReserve(ITEM_TYPE_FILTER,WORK_TYPE_FILTER,RESERVE_DATE
+        ,carListApi,itemTypeList,companyNameList,floorNameList,workTypeList,WORK_TYPE))
+    }else{
+      // apiデータがない場合
+      Redirect(site.routes.UnDetected.index)
+    }
   }
 
 }

@@ -1,7 +1,9 @@
 @(
-itemTypeList: Seq[ItemType],
-mapViewer: Seq[FloorAll],
-exbViewer: Seq[ExbAll]
+itemTypeList: Seq[ItemType]
+,mapViewer: Seq[FloorAll]
+,exbViewer: Seq[ExbAll]
+,updateSec: Int
+,VIEW_COUNT: Int
 )(implicit user: User, messages: Messages, request: RequestHeader, flash: Flash)
 
 @import controllers.routes
@@ -13,10 +15,20 @@ exbViewer: Seq[ExbAll]
     @templates.htmlHead(title = Messages("lang.cms.carManage.title"))
     <link rel="stylesheet" href="@routes.MyAssets.css("workplace/building-main.css")"/>
     <script type="text/javascript" src="@routes.MyAssets.js("site/workPlace.js")"></script>
+    <style type="text/css">
+      .navbar-brand {
+        margin-left: 5px;
+        text-align: center;
+      }
+      div#pcTabletNav {
+        margin:0px;
+      }
+    </style>
     <script></script>
 </head>
 
 <body>
+<!-- content -->
     @views.html.templates.navBar()
 
     <div class="top-area">
@@ -24,9 +36,9 @@ exbViewer: Seq[ExbAll]
             <div id="top-title" class="top__btn--text">@Messages("lang.site.workPlace.page.title")
                 <div class="line__view--text" style="margin-top: 30px;font-size: 15px;margin-left: 18px;">&nbsp;凡例&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;</div>
             </div>
-            <div class="col-xs-6 col-sm-9 col-md-10 col-lg-12" style="display: -webkit-box;margin-top: 70px;">
+            <div class="col-xs-6 col-sm-9 col-md-9 col-lg-9" style="display: -webkit-box;margin-top: 70px;">
                 <span class = "line__view--style" style="background:black"></span>
-                <span class = "line__view--text" style="vertical-align: 7px">@Messages("lang.site.workPlace.page.maxDevice")&nbsp</span>
+                <span id="viewCount" data-count = "@VIEW_COUNT" class = "line__view--text" style="vertical-align: 7px">@(VIEW_COUNT)個以上</span>
                 <!--仮設材種別を表示-->
                 @itemTypeList.zipWithIndex.map{ case(itemType, i) =>
                     <span class = "line__view--style" style="background:@itemType.item_type_icon_color"></span>
@@ -38,7 +50,7 @@ exbViewer: Seq[ExbAll]
                 <select id="floor-category" class=" manager__data--floor">
                     @mapViewer.zipWithIndex.map { case(map, i) =>
                     <!--<option value="@map.floor_id" @{if(map.floor_id == 1) "selected" else ""}>@map.floor_name</option>-->
-                    <option class= @{if(map.active_flg) "visible" else "hidden"}  value="@map.display_order" @{if(map.display_order == 1) "selected" else ""} >@map.floor_name</option>
+                    <option class= @{if(map.active_flg) "visible" else "hidden"}  value="@map.display_order" @{if(i == 0) "selected" else ""} >@map.floor_name</option>
                     }
                 </select>
             </div>
@@ -53,8 +65,7 @@ exbViewer: Seq[ExbAll]
     </div>
 
     <div class="manager__main--frame" id ="map__main--frame">
-
-
+        <div id="updateSec" class="update__sec__frame">@updateSec</div>
         <div class = "alert__result--frame">
             @tags.alertFromRequestDbResult(request, "resultOK")
             @tags.alertFromRequestDbResult(request, "resultNG")
@@ -67,8 +78,8 @@ exbViewer: Seq[ExbAll]
                 </div>
             </div>
         }
-        <div class="infoAllFrame hidden" id="infoAllFrame" style="background: black; color: white; visibility: visible;">
-            <table width="97%" border="1" cellspacing="0" cellpadding="0">
+        <div class="infoAllFrame hidden" id="infoAllFrame" style="background: black; color: white; visibility: visible;height: 100%;">
+            <table id="tableId" width="100%" border="1" cellspacing="0" cellpadding="0">
                 <thead>
                 <tr>
                     <td class = "td__title--frame">仮設材種別</td>
@@ -78,7 +89,7 @@ exbViewer: Seq[ExbAll]
                 </tr>
                 </thead>
             </table>
-            <div class="" style="height: 230px;overflow-y: auto;">
+            <div id= "allInfo" class="" style="overflow-y: overlay;background: black;">
                 <table id ="tableId" width="100%" border="1" cellspacing="0" cellpadding="0">
                     <tbody id ="tbodyId">
                     </tbody>
@@ -123,7 +134,7 @@ exbViewer: Seq[ExbAll]
                     </td>
                     <td class="item" id="viewer_pos_num-@i">@viewer.exb_device_id</td>
                     <td class="item" id="viewer_pos_count-@i">@viewer.view_tx_count</td>
-                    <td class="item" id="viewer_pos_floor-@i">@viewer.floor_id</td>
+                    <td class="item" id="viewer_pos_floor-@i">@viewer.display_order</td>
                     <td class="item" id="viewer_pos_size-@i">@viewer.view_tx_size</td>
                     <td class="item" id="exb_pos_name-@i">@viewer.exb_pos_name</td>
                     <td class="item" id="exb_device_id-@i">@viewer.exb_device_id</td>
@@ -134,7 +145,6 @@ exbViewer: Seq[ExbAll]
             </table>
         </div>
     </div>
-
 </body>
 
 </html>

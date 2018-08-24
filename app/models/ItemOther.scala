@@ -13,81 +13,102 @@ import play.api.db._
 
 /*その他仮設材予約取消用formクラス*/
 case class ItemOtherCancelData(
-itemTypeIdList: List[Int],
-itemId: List[Int],
-workTypeNameList: List[String],
-reserveStartDateList: List[String],
-checkVal: List[Int]
+  itemTypeIdList: List[Int]
+  , itemId: List[Int]
+  , workTypeNameList: List[String]
+  , reserveStartDateList: List[String]
+  , checkVal: List[Int]
 )
 
 
 /*その他仮設材予約取消検索用formクラス*/
 case class ItemOtherCancelSearchData(
-  itemTypeId: Int,
-  workTypeName: String,
-  companyName: String,
-  inputStartDate: String,
-  inputEndDate: String
+  itemTypeId: Int
+  , workTypeName: String
+  , companyName: String
+  , inputStartDate: String
+  , inputEndDate: String
 )
 
 
 /*その他仮設材予約用formクラス*/
 case class ItemOtherReserveData(
-  itemTypeId: Int,
-  workTypeName: String,
-  inputStartDate: String,
-  inputEndDate: String,
-  companyName: String,
-  floorName: String,
-  itemId: List[Int],
-  itemTypeIdList: List[Int],
-  checkVal: List[Int]
+  itemTypeId: Int
+  , workTypeName: String
+  , inputStartDate: String
+  , inputEndDate: String
+  , companyName: String
+  , floorName: String
+  , itemId: List[Int]
+  , itemTypeIdList: List[Int]
+  , checkVal: List[Int]
 
 )
 
 /*その他仮設材検索用formクラス*/
 case class ItemOtherSearchData(
-  itemTypeId: Int,
-  workTypeName: String,
-  inputStartDate: String,
-  inputEndDate: String
+  itemTypeId: Int
+  , workTypeName: String
+  , inputStartDate: String
+  , inputEndDate: String
 )
 
+/*その他仮設材管理検索用*/
 case class ItemOther(
-  itemOtherId: Int,
-  itemTypeId: Int,
-  note: String,
-  itemOtherNo: String,
-  itemOtherName: String,
-  itemOtherBtxId: Int,
-  placeId: Int
+  itemOtherId: Int
+  , itemTypeId: Int
+  , note: String
+  , itemOtherNo: String
+  , itemOtherName: String
+  , itemOtherBtxId: Int
+  , placeId: Int
+)
+
+/*その他仮設材管理用*/
+case class ItemOtherViewer(
+  itemOtherId: Int
+  , itemTypeId: Int
+  , itemTypeName: String
+  , itemOtherNote: String
+  , itemOtherNo: String
+  , itemOtherName: String
+  , itemOtherBtxId: Int
+  , placeId: Int
 )
 
 case class OtherViewer(
-  item_other_id: Int,
-  item_other_btx_id: Int,
-  item_type_id: Int,
-  item_type_name:String,
-  note:String,
-  item_other_no: String,
-  item_other_name:String,
-  place_id: Int,
-  reserve_start_date:String,
-  reserve_end_date:String,
-  company_id: Int,
-  company_name: String,
-  work_type_id: Int,
-  work_type_name: String,
-  reserve_floor_name: String,
-  reserve_id: Int
+  item_other_id: Int
+  , item_other_btx_id: Int
+  , item_type_id: Int
+  , item_type_name:String
+  , note:String
+  , item_other_no: String
+  , item_other_name:String
+  , place_id: Int
+  , reserve_start_date:String
+  , reserve_end_date:String
+  , company_id: Int
+  , company_name: String
+  , work_type_id: Int
+  , work_type_name: String
+  , reserve_floor_name: String
+  , reserve_id: Int
 )
 
 /*作業車・立馬一覧用formクラス*/
 case class ItemOtherData(
-  itemTypeId: Int,
-  companyName: String,
-  floorName: String,
-  workTypeName: String
+  itemTypeId: Int
+  , companyName: String
+  , floorName: String
+  , workTypeName: String
+)
+
+/*作業車・立馬一覧用formクラス*/
+case class ItemTypeSerect(
+  itemTypeId: Int
+  , companyName: String
+  , floorName: String
+  , workTypeName: String
 )
 
 @javax.inject.Singleton
@@ -95,20 +116,24 @@ class itemOtherDAO @Inject()(dbapi: DBApi) {
 
   private val db = dbapi.database("default")
 
-  val simple = {
+  val itemmanage = {
     get[Int]("item_other_id") ~
       get[Int]("item_type_id") ~
+      get[String]("item_type_name") ~
       get[String]("note") ~
       get[String]("item_other_no") ~
       get[String]("item_other_name") ~
       get[Int]("item_other_btx_id") ~
       get[Int]("place_id") map {
-      case item_other_id ~ item_type_id ~ note ~ item_other_no ~ item_other_name ~ item_other_btx_id ~  place_id  =>
-        ItemOther(item_other_id, item_type_id, note, item_other_no, item_other_name, item_other_btx_id, place_id)
+      case item_other_id ~ item_type_id ~ item_type_name ~ note ~ item_other_no ~ item_other_name ~ item_other_btx_id ~  place_id  =>
+        ItemOtherViewer(item_other_id, item_type_id, item_type_name, note, item_other_no, item_other_name, item_other_btx_id, place_id)
     }
   }
-
-  def selectOtherMasterInfo(placeId: Int): Seq[ItemOther] = {
+  /**
+    * その他仮設材情報の取得
+    * @return
+    */
+  def selectOtherMasterInfo(placeId: Int): Seq[ItemOtherViewer] = {
     db.withConnection { implicit connection =>
       val sql = SQL(
         """
@@ -127,19 +152,37 @@ class itemOtherDAO @Inject()(dbapi: DBApi) {
                on i.item_type_id = c.item_type_id
                and i.active_flg = true
                and c.active_flg = true
-		           where c.place_id = {placeId} order by item_other_id ;
+		           where i.item_type_category_id = 2 and c.place_id = {placeId}
+		           order by item_other_id ;
 		          """).on(
         "placeId" -> placeId
       )
-      sql.as(simple.*)
+      sql.as(itemmanage.*)
+    }
+  }
+
+  val simple = {
+    get[Int]("item_other_id") ~
+      get[Int]("item_type_id") ~
+      get[String]("note") ~
+      get[String]("item_other_no") ~
+      get[String]("item_other_name") ~
+      get[Int]("item_other_btx_id") ~
+      get[Int]("place_id") map {
+      case item_other_id ~ item_type_id ~ note ~ item_other_no ~ item_other_name ~ item_other_btx_id ~  place_id  =>
+        ItemOther(item_other_id, item_type_id, note, item_other_no, item_other_name, item_other_btx_id, place_id)
     }
   }
 
   /**
-    * 作業車情報の取得
+    * その他仮設材情報の取得
     * @return
     */
-  def selectOtherInfo(placeId: Int, carNo: String = "", carId: Option[Int] = None): Seq[ItemOther] = {
+  def selectOtherInfo(
+   placeId: Int
+   , itemotherNo: String
+   , itemotherId: Option[Int] = None
+   , itemOtherBtxId: Option[Int] = None): Seq[ItemOther] = {
 
     db.withConnection { implicit connection =>
       val selectPh =
@@ -147,10 +190,10 @@ class itemOtherDAO @Inject()(dbapi: DBApi) {
           select
                 c.item_other_id
               , c.item_type_id
-              , c.note
+              , c.item_other_btx_id
               , c.item_other_no
               , c.item_other_name
-              , c.item_other_btx_id
+              , c.note
               , c.place_id
           from
             place_master p
@@ -161,11 +204,14 @@ class itemOtherDAO @Inject()(dbapi: DBApi) {
         """
 
       var wherePh = """ where p.place_id = {placeId} """
-      if(carNo.isEmpty == false){
-        wherePh += s""" and c.item_other_no = '${carNo}' """
+      if(itemotherNo.isEmpty == false){
+        wherePh += s""" and c.item_other_no = '${itemotherNo}' """
       }
-      if(carId != None){
-        wherePh += s""" and c.item_other_id = ${carId.get} """
+      if(itemotherId != None){
+        wherePh += s""" and c.item_other_id = ${itemotherId.get} """
+      }
+      if(itemOtherBtxId != None){
+        wherePh += s""" and c.item_other_btx_id = ${itemOtherBtxId.get} """
       }
       val orderPh =
         """
@@ -178,59 +224,134 @@ class itemOtherDAO @Inject()(dbapi: DBApi) {
 
 
   /**
-    * 作業車の削除
+    * 仮設材の削除
     * @return
     */
-  def delete(carId:Int, placeId: Int, btxIdList: Seq[Int]): Unit = {
+  def delete(itemOtherId:Int, placeId: Int): Unit = {
     db.withTransaction { implicit connection =>
 
-      // Txの削除
-      SQL(
-        """
-          delete from btx_master where place_id = {placeId} and btx_id in ({btxIdList}) ;
-        """)
-        .on('placeId -> placeId, 'btxIdList -> btxIdList).executeUpdate()
-
       // 作業車の削除
-      SQL("""delete from item_other_master where item_other_id = {carId} ;""").on('carId -> carId).executeUpdate()
+      SQL("""delete from item_other_master where item_other_id = {itemOtherId} ;""").on('itemOtherId -> itemOtherId).executeUpdate()
 
       // コミット
       connection.commit()
 
-      Logger.debug(s"""業者を削除、ID：" + ${carId.toString}""")
+      Logger.debug(s"""仮設材を削除、ID：" + ${itemOtherId.toString}""")
     }
   }
 
-
   /**
-    * 作業車の新規登録
+    * 仮設材のBtxID
     * @return
     */
-  def insert(carNo: String, carName: String, carBtxId: Int, carKeyBtxId: Int, placeId: Int, itemTypeId: Int): Int = {
+  def selectItemOtherBtxListBtxCheck(placeId: Int, itemOtherBtxId: Int): Seq[ItemOther] = {
+    db.withConnection { implicit connection =>
+      val selectPh =
+        """
+          select
+                c.item_other_id
+               , c.item_type_id
+               , c.item_other_btx_id
+               , c.item_other_no
+               , c.item_other_name
+               , c.note
+               , c.place_id
+          from
+            place_master p
+            inner join item_other_master c
+              on p.place_id = c.place_id
+              and p.active_flg = true
+              and c.active_flg = true
+        """
+
+      var wherePh =
+        """
+           where p.place_id = {placeId}
+           and c.item_other_btx_id = {itemOtherBtxId}
+        """.stripMargin
+      val orderPh =
+        """
+          order by
+            c.item_other_id
+        """
+      SQL(selectPh + wherePh + orderPh).on('placeId -> placeId, 'itemOtherBtxId -> itemOtherBtxId).as(simple.*)
+    }
+  }
+
+  val reserveMasterCheck = {
+    get[Int]("item_id") ~
+      get[Int]("work_type_id") ~
+      get[String]("reserve_start_date")~
+      get[String]("reserve_end_date") map {
+      case item_id ~ work_type_id ~ reserve_start_date ~ reserve_end_date =>
+        ReserveMasterCheck(item_id, work_type_id, reserve_start_date, reserve_end_date)
+    }
+  }
+  /*作業車・立馬予約状況確認*/
+  def selectCarReserveCheck(
+                             placeId: Int,
+                             itemOtherId: Int
+                           ): Seq[ReserveMasterCheck] = {
+
+    db.withConnection { implicit connection =>
+      val selectPh =
+        """
+          select
+               r.item_id
+             , r.work_type_id
+             , to_char(r.reserve_start_date, 'YYYYMMDD') as reserve_start_date
+             , to_char(r.reserve_end_date, 'YYYYMMDD') as reserve_end_date
+          from
+           place_master p
+             inner join reserve_table r
+               on p.place_id = r.place_id
+               and p.active_flg = true
+               and r.active_flg = true
+          where
+            r.active_flg = true
+            and r.place_id = """  + {placeId} + """
+        """
+      // 追加検索条件
+      var wherePh = ""
+      wherePh += s""" and r.item_id = {itemOtherId} """
+
+      // 表示順を設定
+      val orderPh =
+        """
+          order by
+            r.item_id
+        """
+      SQL(selectPh + wherePh + orderPh).on('placeId -> placeId, 'itemOtherId -> itemOtherId).as(reserveMasterCheck.*)
+    }
+  }
+
+  /**
+    * 仮設材の新規登録
+    * @return
+    */
+  def insert(
+              ItemOtherNo: String,
+              ItemOtherName: String,
+              ItemOtherBtxId: Int,
+              ItemOtherNote: String,
+              ItemTypeId: Int,
+              placeId: Int): Int = {
     db.withTransaction { implicit connection =>
-
-      // BTXマスタの登録
-      val btxList = Seq[Int](carBtxId, carKeyBtxId)
-      btxList.foreach( btxId =>{
-        SQL("""insert into btx_master (btx_id, place_id) values ({btxId}, {placeId})""")
-          .on('btxId -> btxId, 'placeId -> placeId).executeInsert()
-      })
-
       // 作業車マスタの登録
       // パラメータのセット
       val params: Seq[NamedParameter] = Seq(
-        "carNo" -> carNo
-        ,"carName" -> carName
-        ,"carBtxId" -> carBtxId
-        ,"carKeyBtxId" -> carKeyBtxId
+        "ItemOtherNo" -> ItemOtherNo
+        ,"ItemTypeId" -> ItemTypeId
+        ,"ItemOtherName" -> ItemOtherName
+        ,"ItemOtherBtxId" -> ItemOtherBtxId
+        ,"ItemOtherNote" -> ItemOtherNote
         ,"placeId" -> placeId
-        ,"itemTypeId" -> itemTypeId
       )
       // クエリ
       val sql = SQL(
         """
-          insert into item_other_master (item_other_no,item_type_id, item_other_name, item_other_btx_id, place_id)
-          values ({carNo}, {itemTypeId}, {carName}, {carBtxId}, {carKeyBtxId}, {placeId})
+          insert into item_other_master (item_other_no,item_type_id, item_other_name, item_other_btx_id, note, place_id)
+          values ({ItemOtherNo}, {ItemTypeId}, {ItemOtherName}, {ItemOtherBtxId}, {ItemOtherNote}, {placeId})
         """)
         .on(params:_*)
 
@@ -240,56 +361,50 @@ class itemOtherDAO @Inject()(dbapi: DBApi) {
       // コミット
       connection.commit()
 
-      Logger.debug("作業車を新規登録、ID：" + id.get.toString)
+      Logger.debug("仮設材を新規登録、ID：" + id.get.toString)
 
       id.get.toInt
     }
   }
 
   /**
-    * 業者の更新
+    * その他仮設材情報の更新
     * @return
     */
-  def update(carId:Int, carNo: String, carName: String, carBtxId:Int, carKeyBtxId:Int, placeId:Int,
-             oldBtxId:Int, oldCarKeyBtxId:Int): Unit = {
+  def update(
+              ItemOtherId:Int,
+              ItemOtherNo: String,
+              ItemOtherName: String,
+              ItemOtherBtxId:Int,
+              ItemOtherNote:String,
+              ItemTypeId:Int,
+              placeId:Int): Unit = {
     db.withTransaction { implicit connection =>
 
-      // 古い情報でのBTXマスタ更新リスト
-      val oldBtxList = Seq[Int](oldBtxId, oldCarKeyBtxId)
-      // 削除
-      SQL(
-        """
-          delete from btx_master where btx_id in ({btxIdList}) ;
-        """)
-        .on('btxIdList -> oldBtxList).executeUpdate()
-
-      // 新しい情報でのBTXマスタ更新リスト
-      val newBtxList = Seq[Int](carBtxId, carKeyBtxId)
-
-      // 登録
-      newBtxList.foreach( btxId =>{
-        SQL("""insert into btx_master (btx_id, place_id) values ({btxId}, {placeId})""")
-          .on('btxId -> btxId, 'placeId -> placeId).executeInsert()
-      })
-
-
-      // 作業車マスタの更新
+      // その他仮設材マスタの更新
       SQL(
         """
           update item_other_master set
-              item_other_no = {carNo}
-            , item_other_name = {carName}
-            , item_other_btx_id = {carBtxId}
-            , updatetime = now()
-          where item_other_id = {carId} ;
+                    item_type_id = {ItemTypeId}
+                  , item_other_btx_id = {ItemOtherBtxId}
+                  , item_other_no = {ItemOtherNo}
+                  , item_other_name = {ItemOtherName}
+                  , note = {ItemOtherNote}
+                  , updatetime = now()
+          where item_other_id = {ItemOtherId} ;
         """).on(
-        'carNo -> carNo, 'carName -> carName, 'carBtxId -> carBtxId, 'carKeyBtxId -> carKeyBtxId, 'carId -> carId
+        'ItemTypeId -> ItemTypeId,
+              'ItemOtherBtxId -> ItemOtherBtxId,
+              'ItemOtherNo -> ItemOtherNo,
+              'ItemOtherName -> ItemOtherName,
+              'ItemOtherNote -> ItemOtherNote,
+              'ItemOtherId -> ItemOtherId
       ).executeUpdate()
 
       // コミット
       connection.commit()
 
-      Logger.debug(s"""作業車情報を更新、ID：" + ${carId.toString}""")
+      Logger.debug(s"""その他仮設材情報を更新、ID：" + ${ItemOtherId.toString}""")
     }
   }
 
@@ -535,30 +650,41 @@ class itemOtherDAO @Inject()(dbapi: DBApi) {
       var wherePh = ""
       wherePh += s""" and c.place_id = ${placeId} """
 
-      var vCount = this.getOtherMasterSearch(placeId, itemTypeId, workTypeName, reserveStartDate,reserveEndDate, itemIdList).length
+      val vCount = this.getOtherMasterSearch(placeId, itemTypeId, workTypeName, reserveStartDate,reserveEndDate, itemIdList).length
       //and r.reserve_start_date != to_date('${reserveStartDate}', 'YYYY-MM-DD')
-      if(workTypeName == "終日" || vCount == 0 ){
+      if(vCount == 0 ){
         wherePh += s"""
             and not r.item_id in
-            (select r.item_id from reserve_table where
-                      r.reserve_start_date  between to_date('${reserveStartDate}', 'YYYY-MM-DD') and  to_date('${reserveEndDate}', 'YYYY-MM-DD')
-                      or r.reserve_end_date between to_date('${reserveStartDate}', 'YYYY-MM-DD') and  to_date('${reserveEndDate}', 'YYYY-MM-DD'))
-            """
-      }else if (workTypeName == ""){
-        wherePh += s"""
-            and not r.item_id in
-            (select r.item_id from reserve_table where
+            (select item_id from reserve_table where
                       r.reserve_start_date  between to_date('${reserveStartDate}', 'YYYY-MM-DD') and  to_date('${reserveEndDate}', 'YYYY-MM-DD')
                       or r.reserve_end_date between to_date('${reserveStartDate}', 'YYYY-MM-DD') and  to_date('${reserveEndDate}', 'YYYY-MM-DD'))
             """
       }else{
-        wherePh += s"""
+        if(workTypeName == "終日"){
+          wherePh += s"""
+            and not r.item_id in
+            (select item_id from reserve_table where
+                      r.reserve_start_date  between to_date('${reserveStartDate}', 'YYYY-MM-DD') and  to_date('${reserveEndDate}', 'YYYY-MM-DD')
+                      or r.reserve_end_date between to_date('${reserveStartDate}', 'YYYY-MM-DD') and  to_date('${reserveEndDate}', 'YYYY-MM-DD'))
+            """
+        }else if (workTypeName == ""){
+          wherePh += s"""
+            and not r.item_id in
+            (select item_id from reserve_table where
+                      r.reserve_start_date  between to_date('${reserveStartDate}', 'YYYY-MM-DD') and  to_date('${reserveEndDate}', 'YYYY-MM-DD')
+                      or r.reserve_end_date between to_date('${reserveStartDate}', 'YYYY-MM-DD') and  to_date('${reserveEndDate}', 'YYYY-MM-DD'))
+            """
+        }else{
+          wherePh += s"""
              and not r.item_id in
-            (select r.item_id from reserve_table where work.work_type_name ='${workTypeName}')
+            (select item_id from reserve_table where (work.work_type_name ='${workTypeName}' or work_type_id = 3)
                 and r.reserve_start_date  = to_date('${reserveStartDate}', 'YYYY-MM-DD')
                 and r.reserve_end_date = to_date('${reserveEndDate}', 'YYYY-MM-DD')
+             )
           """
+        }
       }
+
       wherePh += s""" or coalesce(r.reserve_id, -1) = -1 and c.active_flg = true and c.place_id = ${placeId} """
 
       // 表示順を設定
@@ -735,6 +861,43 @@ class itemOtherDAO @Inject()(dbapi: DBApi) {
 
         """
       SQL(selectPh).as(otherMasterViewer.*)
+    }
+  }
+
+  /**
+    * 作業車・立馬情報 仮設材種別チェック用
+    * @return
+    */
+  def selectItemTypeCheck(placeId: Int, itemTypeId: Int): Seq[ItemOther] = {
+
+    db.withConnection { implicit connection =>
+      val selectPh =
+        """
+          select
+                c.item_other_id
+              , c.item_type_id
+              , c.note
+              , c.item_other_no
+              , c.item_other_name
+              , c.item_other_btx_id
+              , c.place_id
+          from
+            place_master p
+            inner join item_other_master c
+              on p.place_id = c.place_id
+              and p.active_flg = true
+              and c.active_flg = true
+        """
+
+      var wherePh = """ where p.place_id = {placeId} """
+          wherePh += s""" and c.item_type_id = {itemTypeId} """
+
+      val orderPh =
+        """
+          order by
+            c.item_other_id
+        """
+      SQL(selectPh + wherePh + orderPh).on('placeId -> placeId, 'itemTypeId -> itemTypeId).as(simple.*)
     }
   }
 

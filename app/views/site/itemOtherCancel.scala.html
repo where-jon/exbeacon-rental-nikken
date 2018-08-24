@@ -18,8 +18,7 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
 <html lang="ja">
 <head>
     @templates.htmlHead(title = Messages("lang.cms.carManage.title"))
-    <link rel="stylesheet" href="@routes.MyAssets.css("cms/carManage.css")"/>
-    <script type="text/javascript" src="@routes.MyAssets.lib("jquery.tablefix_1.0.1.js")"></script>
+    <link rel="stylesheet" href="@routes.MyAssets.css("cms/itemCarManage.css")"/>
     <script></script>
 </head>
 <body>
@@ -27,9 +26,11 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
 <div class="container">
     <!-- ナビバー  -->
     @views.html.templates.navBar()
-    <div class="row" style="margin-top: 50px;">
+    <div class="row">
+        <!-- サイドメニュー -->
+        @views.html.templates.sideMenu()
         <!-- メイン -->
-        <div class="col-lg-12 mainSpace">
+        <div class="col-lg-10 mainSpace">
             <!-- 画面題字 -->
             <div class="form-group" style="font-weight:bold;font-size:19px;margin:25px 0px;">
                 <!-- メッセージ -->

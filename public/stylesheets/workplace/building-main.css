@@ -549,14 +549,6 @@
 	margin-left: 16px;
 }
 
-.top-btn.btn-signout {
-	position: absolute;
-	right: 3vmin;
-	background-color: #dedede;
-	margin-top: 5px;
-	top: 2px;
-}
-
 .user__tag--name--nondetect{
 	 visibility: hidden;
 }
@@ -1034,10 +1026,7 @@ height:100%;
 /* main.lessと非同期 */
 
 .btn-navbar {
-    color: #333333;
-    background-color: #ffffff;
-    border-color: #f2f2f2;
-    /*top: 4px !important;*/
+    color: #FFF;
 }
 .top__test__btn--area {
         left: 0;
@@ -1234,20 +1223,16 @@ margin-top: 135px;
 	z-index: 10;
 }
 
-
 .navbar-brand {
-	position: relative !important;
-	width: inherit !important;
-    color: black !important;
-    font-size: 24px !important;
-	text-align: center !important;
-	height: 10px !important;
+    text-align: center;
 }
 .update__sec__frame {
 	visibility: hidden;
 }
 
-
+.trAll {
+	height: 4vmin;
+}
 
 .error__span--frame{
 display: inline-block;
@@ -1286,6 +1271,7 @@ color:#a94442
 
 .td__title--frame{
     width: 30%;
+    height:4vmin;
 }
 .td--frame{
     width: 30%;
@@ -1296,3 +1282,6 @@ color:#a94442
 		width: 100%;
 	}
 }
+
+
+/*****************************/

@@ -8,7 +8,6 @@
 <head>
     @templates.htmlHead(title = Messages("lang.cms.placeManage.place.title"))
     <link rel="stylesheet" href="@routes.MyAssets.css("cms/placeManageDetail.css")"/>
-    <script type="text/javascript" src="@routes.MyAssets.lib("jquery.tablefix_1.0.1.js")"></script>
     <script></script>
 </head>
 <body>
@@ -16,10 +15,11 @@
     <div class="container">
         <!-- ナビバー  -->
         @views.html.templates.navBar()
-        <div class="row" style="margin-top: 50px;">
+        <div class="row">
             <!-- 左サイドバー -->
+            @views.html.templates.sideMenu()
             <!-- メイン -->
-            <div class="col-lg-12 mainSpace">
+            <div class="mainSpace col-xs-10 col-sm-10 col-md-10 col-lg-10">
                 <!-- メッセージ -->
                 @views.html.templates.msgDiv()
                 <!-- 画面題字 -->
@@ -30,28 +30,28 @@
                 <div class="row tableRow">
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="padding:0;">
                         <div class="table-responsive-body">
-                            <table class="table table-bordered table-condensed itemTable">
+                            <table class="table table-bordered table-condensed itemTable" style="width:100%;">
                                 <thead>
                                     <tr>
-                                        <th colspan="6" class="tableTitleTh">@Messages("lang.cms.placeManage.place.list.header.title")</th>
+                                        <th colspan="6" class="tableTitleTh" style="width:100%">@Messages("lang.cms.placeManage.place.list.header.title")</th>
                                     </tr>
                                     <tr>
-                                        <th class="tableTh noTh">@Messages("lang.cms.placeManage.place.list.header.id")</th>
-                                        <th class="tableTh placeNameTh">@Messages("lang.cms.placeManage.place.list.header.placeName")</th>
-                                        <th class="tableTh stateTh">@Messages("lang.cms.placeManage.place.list.header.status")</th>
-                                        <th class="tableTh userNameTh">@Messages("lang.cms.placeManage.list.header.userName")</th>
-                                        <th class="tableTh userEmailTh">@Messages("lang.cms.placeManage.list.header.userId")</th>
-                                        <th class="tableTh floorCountTh">@Messages("lang.cms.placeManage.place.list.header.floor")</th>
+                                        <th class="tableTh noTh" style="width:10%">@Messages("lang.cms.placeManage.place.list.header.id")</th>
+                                        <th class="tableTh placeNameTh" style="width:35%">@Messages("lang.cms.placeManage.place.list.header.placeName")</th>
+                                        <th class="tableTh stateTh" style="width:10%">@Messages("lang.cms.placeManage.place.list.header.status")</th>
+                                        <th class="tableTh userNameTh" style="width:20%">@Messages("lang.cms.placeManage.list.header.userName")</th>
+                                        <th class="tableTh userEmailTh" style="width:20%">@Messages("lang.cms.placeManage.list.header.userLoginId")</th>
+                                        <th class="tableTh floorCountTh" style="width:5%">@Messages("lang.cms.placeManage.place.list.header.floor")</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr class="rowColor">
-                                        <td class="itemTd text-right">@place.placeId</td>
-                                        <td class="itemTd text-left">@place.placeName</td>
-                                        <td class="itemTd text-center">@place.statusName</td>
-                                        <td class="itemTd text-left">@place.userName</td>
-                                        <td class="itemTd text-left">@place.userEmail</td>
-                                        <td class="itemTd text-right">@place.floorCount</td>
+                                        <td class="itemTd text-right" style="width:10%">@place.placeId</td>
+                                        <td class="itemTd text-left" style="width:35%;white-space:normal;word-break:break-all">@place.placeName</td>
+                                        <td class="itemTd text-center" style="width:10%">@place.statusName</td>
+                                        <td class="itemTd text-left" style="width:20%">@place.userName</td>
+                                        <td class="itemTd text-left" style="width:20%">@place.userEmail</td>
+                                        <td class="itemTd text-right" style="width:5%">@place.floorCount</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -91,13 +91,13 @@
                 <form id="placeUpdateForm" name="placeUpdateForm" enctype="multipart/form-data" class="form-horizontal" method="post" action="@controllers.cms.routes.PlaceManage.update.path">
                     @CSRF.formField
                     <input type="hidden" name="placeId" value="@place.placeId">
-                    <input type="hidden" name="userId" value="@place.userEmail">
+                    <input type="hidden" name="userId" value="@place.userId">
                     <div class="modal-header">@Messages("lang.cms.placeManage.placeUpdate.popup.title")</div>
                     <div class="modal-body">
                         <div class="form-group">
                             <label class="control-label col-xs-5">@Messages("lang.cms.placeManage.placeUpdate.popup.name")</label>
                             <div class="col-xs-5" style="padding-left: 0px;padding-right: 0px;">
-                                <input type="text" name="placeName" value="@place.placeName" class="form-control" placeholder='@Messages("lang.cms.placeManage.placeUpdate.popup.placeholder")'>
+                                <input type="text" name="placeName" value="@place.placeName" class="form-control" placeholder='@Messages("lang.cms.placeManage.placeUpdate.popup.name.placeholder")'>
                             </div>
                         </div>
                         <div class="form-group">
@@ -118,6 +118,12 @@
                             <label class="control-label col-xs-5">@Messages("lang.cms.placeManage.placeUpdate.popup.userName")</label>
                             <div class="col-xs-5" style="padding-left: 0px;padding-right: 0px;">
                                 <input type="text" name="userName" class="form-control" value="@place.userName" placeholder='@Messages("lang.cms.placeManage.placeUpdate.popup.userName.placeholder")' />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-xs-5">@Messages("lang.cms.placeManage.placeUpdate.popup.userLoginId")</label>
+                            <div class="col-xs-5" style="padding-left: 0px;padding-right: 0px;">
+                                <input type="text" name="userLoginId" class="form-control" value="@place.userEmail" placeholder='@Messages("lang.cms.placeManage.placeUpdate.popup.userLoginId.placeholder")' />
                             </div>
                         </div>
                     </div>
@@ -144,7 +150,7 @@
                     <div class="modal-body">
                         <div class="form-group">
                             <input type="hidden" name="placeId" value="@place.placeId">
-                            <input type="hidden" name="userId" value="@place.userEmail">
+                            <input type="hidden" name="userId" value="@place.userId">
                             <label class="control-label col-xs-5">@Messages("lang.cms.placeManage.passwordUpdate.popup.password")</label>
                             <div class="col-xs-5" style="padding-left: 0px;padding-right: 0px;">
                                 <input type="password" name="password1" class="form-control">

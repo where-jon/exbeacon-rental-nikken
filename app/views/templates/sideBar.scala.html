@@ -2,111 +2,14 @@
 
 @import controllers.routes
 
-<head>
-    <link rel="stylesheet" href="@routes.MyAssets.css("sidebar/sidebar.css")"/>
-    <link rel="stylesheet" href="@routes.MyAssets.css("sidebar/drawer.css")"/>
-    <link rel="stylesheet" href="@routes.MyAssets.css("datepicker/bootstrap-datetimepicker.css")"/>
-    <link rel="stylesheet" media="screen" href="@routes.MyAssets.lib("fontawesome/css/font-awesome.min.css")">
-    <script type="text/javascript" src="@routes.MyAssets.js("sidebar/iscroll.min.js")"></script>
-    <script type="text/javascript" src="@routes.MyAssets.js("sidebar/drawer.min.js")"></script>
-    <script type="text/javascript" src="@routes.MyAssets.js("sidebar/drawer-setting.js")"></script>
-
-    <script type="text/javascript" src="@routes.MyAssets.js("datepicker/moment.min.js")"></script>
-    <script type="text/javascript" src="@routes.MyAssets.js("datepicker/moment-with-locales.js")"></script>
-    <script type="text/javascript" src="@routes.MyAssets.js("datepicker/bootstrap-datetimepicker.js")"></script>
-
-    <!--共通-->
-    <link rel="stylesheet" href="@routes.MyAssets.css("common/main.css")"/>
-    <script type="text/javascript" src="@routes.MyAssets.js("common/g.common.js")"></script>
-    <script type="text/javascript" src="@routes.MyAssets.js("common/g.postion.js")"></script>
-    <script type="text/javascript" src="@routes.MyAssets.js("common/string-ja.js")"></script>
-    <script type="text/javascript" src="@routes.MyAssets.js("common/bootbox.min.js")"></script>
-    <script type="text/javascript" src="@routes.MyAssets.js("common/classie.js")"></script>
-
-    <script></script>
-</head>
-
-<body class="drawer drawer--left">
-
-<header id="header">
-    <button type="button" class="drawer-toggle drawer-hamburger" style="">
+<header id="header" class="drawer drawer--left">
+    <button type="button" class="drawer-toggle drawer-hamburger" style="margin-top:-3px">
         <i class="fa fa-bars" aria-hiden="true"></i>
         <span class="sr-only">toggle navigation</span>
     </button>
     <nav class="drawer-nav" role="navigation">
-        <ul class="drawer-menu">
-            <li class="acc">
-                <a class="menu-title"><i class="fa fa-eye"></i>&nbsp;&nbsp;仮設材管理<span class="open-state"><i class="open-state fa fa-angle-down" style="margin-left:10px;"></i></span></a>
-                <ul class="menu-items" style="display: block;">
-                    <li><a href="/site/workPlace"><i class="fa fa-circle-o"></i>&nbsp;@Messages("lang.site.workPlace.page.title")</a></li>
-                    <li><a href="/site/itemCarMaster"><i class="fa fa-circle-o"></i>&nbsp;@Messages("lang.site.carMaster.page.title")</a></li>
-                    <li><a href="/site/itemCarReserve"><i class="fa fa-circle-o"></i>&nbsp;@Messages("lang.site.carReserve.page.title")</a></li>
-                    <li><a href="/site/itemCarCancel"><i class="fa fa-circle-o"></i>&nbsp;@Messages("lang.site.carCancel.page.title")</a></li>
-                    <li><a href="/site/itemOtherMaster"><i class="fa fa-circle-o"></i>&nbsp;@Messages("lang.site.otherMaster.page.title")</a></li>
-                    <li><a href="/site/itemOtherReserve"><i class="fa fa-circle-o"></i>&nbsp;@Messages("lang.site.otherReserve.page.title")</a></li>
-                    <li><a href="/site/itemOtherCancel"><i class="fa fa-circle-o"></i>&nbsp;@Messages("lang.site.otherCancel.page.title")</a></li>
-                    <li><a href="/site/unDetected"><i class="fa fa-circle-o"></i>&nbsp;@Messages("lang.site.unDetected.page.title")</a></li>
-                    <li style = "text-decoration:line-through;"><a href="/"><i class="fa fa-circle-o"></i>&nbsp;ビーコンタグ電池残量確認</a></li>
-                </ul>
-            </li>
-            @if(user.services.contains("level2") || user.services.contains("level3") || user.services.contains("master") ) {
-                <li class="acc">
-                    <a class="menu-title"><i class="fa fa-bar-chart"></i>&nbsp;&nbsp;分析
-                        <span class="open-state"><i class="open-state fa fa-angle-left" style="margin-left:10px;"></i></span></a>
-                    <ul class="menu-items">
-                        <li><a href="/analysis/movementCar"><i class="fa fa-circle-o"></i>&nbsp;作業車稼働状況</a></li>
-                        <li style = "text-decoration:line-through;"><a href="/"><i class="fa fa-circle-o"></i>&nbsp;EXB状態監視</a></li>
-                        <li><a href="/analysis/gateway"><i class="fa fa-circle-o"></i>&nbsp;@Messages("lang.analysis.gateway.page.title")</a></li>
-                    </ul>
-                </li>
-                <li class="acc">
-                    <a class="menu-title"><i class="fa fa-gear"></i>&nbsp;&nbsp;メンテナンス<span class="open-state"><i class="open-state fa fa-angle-left" style="margin-left:10px;"></i></span></a>
-                    <ul class="menu-items">
-                        <li><a href="/cms/carManage"><i class="fa fa-circle-o"></i>&nbsp;作業車・立馬管理</a></li>
-                        <li><a href="/cms/itemManage"><i class="fa fa-circle-o"></i>&nbsp;その他仮設材管理</a></li>
-                        <li><a href="/cms/itemTypeManage"><i class="fa fa-circle-o"></i>&nbsp;仮設材種別管理</a></li>
-                        <li><a href="/cms/companyManage"><i class="fa fa-circle-o"></i>&nbsp;業者管理</a></li>
-                        <li style = "text-decoration:line-through;"><a href="/"><i class="fa fa-circle-o"></i>&nbsp;現場アカウント管理</a></li>
-                    </ul>
-                </li>
-
-            }
-            @if(user.services.contains("level3") || user.services.contains("master") ) {
-                <li class="acc">
-                    <a class="menu-title"><i class="fa fa-wrench"></i>&nbsp;&nbsp;システム管理<span class="open-state"><i class="open-state fa fa-angle-left" style="margin-left:10px;"></i></span></a>
-                    <ul class="menu-items">
-                        <li><a href="/cms/floorManage"><i class="fa fa-circle-o"></i>&nbsp;@Messages("lang.manage.floorManager")</a></li>
-                        <li><a href="/manage/mapManager"><i class="fa fa-circle-o"></i>&nbsp;@Messages("lang.manage.mapManager")</a></li>
-                        <li><a href=""><i class="fa fa-circle-o"></i>&nbsp;@Messages("lang.manage.exbManager")</a></li>
-                        <li><a href="/manage/exbViewerManager"><i class="fa fa-circle-o"></i>&nbsp;@Messages("lang.manage.exbViewerManager")</a></li>
-                    </ul>
-                </li>
-            }
-            @if(user.services.contains("master")) {
-                <li class="acc">
-                    <a class="menu-title"><i class="fa fa-building"></i>&nbsp;&nbsp;@Messages("lang.cms.placeManage.title")<span class="open-state"><i class="open-state fa fa-angle-left" style="margin-left:10px;"></i></span></a>
-                    <ul class="menu-items">
-                        <li><a href="/"><i class="fa fa-circle-o"></i>&nbsp;@Messages("lang.cms.placeManage.tabName")</a></li>
-                        <li><a href="/change-password"><i class="fa fa-circle-o"></i>&nbsp;@Messages("lang.cms.placeManage.changePassword.page.title")</a></li>
-                    </ul>
-                </li>
-
-                <li class="acc">
-                    <a class="menu-title"><i class="fa fa-key"></i>&nbsp;&nbsp;TESTページ(既存)<span class="open-state"><i class="open-state fa fa-angle-left" style="margin-left:10px;"></i></span></a>
-                    <ul class="menu-items">
-                        <li><a href="/cms/txTagManage"><i class="fa fa-circle-o"></i>&nbsp;EXBeacon一覧</a></li>
-                        <li ><a href="/carReserve"><i class="fa fa-circle-o"></i>&nbsp;作業車・立馬予約</a></li>
-                        <li><a href="/cms/carManage"><i class="fa fa-circle-o"></i>&nbsp;作業車・立馬管理</a></li>
-                        <li><a href="/cms/itemManage"><i class="fa fa-circle-o"></i>&nbsp;その他仮設材管理</a></li>
-                        <li><a href="/manage/exbManager"><i class="fa fa-circle-o"></i>&nbsp;(旧)@Messages("lang.manage.exbManager")</a></li>
-                    </ul>
-                </li>
-            }
-        </ul>
+        <div class="drawer-menu">
+            @views.html.templates.innerMenu()
+        </div>
     </nav>
 </header>
-
-</body>
-
-</aside>
-

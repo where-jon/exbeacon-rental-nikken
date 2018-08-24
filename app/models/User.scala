@@ -11,6 +11,22 @@ import javax.inject.Inject
 import play.api.db._
 import play.api.Logger
 
+case class UserLevelEnum(
+  map: Map[Int, String] = Map[Int,String] (
+    1 -> "一般",
+    2 -> "管理者"
+  )
+)
+
+case class UserAllLevelEnum(
+  map: Map[Int, String] = Map[Int,String] (
+    1 -> "一般",
+    2 -> "管理者",
+    3 -> "現場担当者",
+    4 -> "システム管理者"
+  )
+)
+
 case class User(
     id: Option[Long],
     email: String,
@@ -19,6 +35,7 @@ case class User(
     name: String,
     placeId: Option[Int],
     currentPlaceId: Option[Int],
+    currentPlaceName: String,
     isSysMng: Boolean,
     level: Int,
     /*
@@ -57,7 +74,10 @@ object User {
 }
 
 @javax.inject.Singleton
-class UserDAO @Inject() (dbapi: DBApi) {
+class UserDAO @Inject() (
+  dbapi: DBApi,
+  placeDAO: models.placeDAO
+) {
 
   private val db = dbapi.database("default")
 
@@ -73,24 +93,25 @@ class UserDAO @Inject() (dbapi: DBApi) {
       get[Int]("user_master.permission") map {
         case id ~ email ~ name ~ password ~ place_id ~ current_place_id  ~ level~ permission=>
           User(
-            Some(id.toString.toLong)
-            , email
-            , true
-            , password
-            , name
-            , place_id
-            , if(current_place_id == None){
-                if(place_id == None){
-                  Option(1)
-                }else{
-                  place_id
-                }
+            Some(id.toString.toLong),
+            email,
+            true,
+            password,
+            name,
+            place_id,
+            if(current_place_id == None){
+              if(place_id == None){
+                Option(1)
               }else{
-                current_place_id
+                place_id
               }
-            , (place_id == None)
-            , level
-            , List(if (permission == 4) "master" else if (permission == 3) "level3" else if (permission == 2) "level2" else if (permission == 1) "level1"  else "none")
+            }else{
+              current_place_id
+            },
+            placeDAO.selectPlaceNameByPlaceId(current_place_id.getOrElse(0)),
+            (place_id == None),
+            level,
+            List(if (permission == 4) "master" else if (permission == 3) "level3" else if (permission == 2) "level2" else if (permission == 1) "level1"  else "none")
           )
       }
   }
@@ -145,6 +166,7 @@ class UserDAO @Inject() (dbapi: DBApi) {
           , user.name
           , user.placeId
           , user.currentPlaceId
+          , ""
           , (user.placeId == None)
           , user.level
           , user.services)
@@ -223,6 +245,7 @@ class UserDAO @Inject() (dbapi: DBApi) {
           , user.name
           , user.placeId
           , user.currentPlaceId
+          , ""
           , (user.placeId == None)
           , user.level
           , user.services)
@@ -246,7 +269,7 @@ class UserDAO @Inject() (dbapi: DBApi) {
     )
   }
 
-  def changePasswordByEmail(userEmail: String, passwd: String) = {
+  def changePasswordById(userId: String, passwd: String) = {
     Future.successful(
       db.withConnection { implicit connection =>
         val sql = SQL("""
@@ -254,9 +277,9 @@ class UserDAO @Inject() (dbapi: DBApi) {
             SET
               password = {passwd},
               updatetime = now()
-            WHERE email = {userEmail}
+            WHERE user_id = {userId}
           """).on(
-          'userEmail -> userEmail,
+          'userId -> userId.toInt,
           'passwd -> passwd
         )
         sql.executeUpdate()
@@ -264,21 +287,135 @@ class UserDAO @Inject() (dbapi: DBApi) {
     )
   }
 
-  def updateUserNameByEmail(userId: String, userName: String) = {
+  def selectAccountByPlaceId(placeId: Int): Seq[User] = {
+    db.withConnection { implicit connection =>
+      val sql = SQL("""
+        SELECT
+          user_id,
+          email,
+          name,
+          password,
+          place_id,
+          current_place_id,
+          active_flg,
+          permission
+        FROM user_master
+        WHERE
+          place_id = {placeId}
+          AND permission IN (1, 2)
+          AND active_flg = true
+        ORDER by user_id
+      """).on(
+        'placeId -> placeId
+      )
+      sql.as(simple.*)
+    }
+  }
+
+  def updateUserNameById(userId: Int, userLoginId: String, userName: String) = {
     Future.successful(
       db.withConnection { implicit connection =>
         val sql = SQL("""
             UPDATE user_master
             SET
               name = {userName},
+              email = {userLoginId},
               updatetime = now()
-            WHERE email = {userEmail}
+            WHERE user_id = {userId}
           """).on(
-          'userEmail -> userId,
+          'userId -> userId,
+          'userLoginId -> userLoginId,
           'userName -> userName
         )
         sql.executeUpdate()
       }
     )
+  }
+
+  def updateUserNameLevelById(
+    userId: String, userName: String, userLoginId: String, level: String
+  ) = {
+    Future.successful(
+      db.withConnection { implicit connection =>
+        val sql = SQL("""
+            UPDATE user_master
+            SET
+              name = {userName},
+              email = {userLoginId},
+              permission = {level},
+              updatetime = now()
+            WHERE user_id = {userId}
+          """).on(
+          'userId -> userId.toInt,
+          'userName -> userName,
+          'userLoginId -> userLoginId,
+          'level -> level.toInt
+        )
+        sql.executeUpdate()
+      }
+    )
+  }
+
+  def deleteLogicalById(userId: String) = {
+    Future.successful(
+      db.withConnection { implicit connection =>
+        val sql = SQL("""
+            UPDATE user_master
+            SET active_flg = false, updatetime = now()
+            WHERE user_id = {userId}
+          """).on(
+          'userId -> userId.toInt
+        )
+        sql.executeUpdate()
+      }
+    )
+  }
+
+  def selectByLoginId(loginId: String): Seq[User] = {
+    db.withConnection { implicit connection =>
+      val sql = SQL("""
+        SELECT
+          user_id
+          , email
+          , name
+          , password
+          , place_id
+          , current_place_id
+          , active_flg
+          , permission
+        FROM user_master
+        WHERE email = {email} AND active_flg = true
+        """
+      ).on(
+        'email -> loginId
+      )
+      sql.as(simple.*)
+    }
+  }
+
+  def checkExistByLoginId(loginId: String, exoutUserId: Int) = {
+    db.withConnection { implicit connection =>
+      val sql = SQL("""
+        SELECT
+          user_id
+          , email
+          , name
+          , password
+          , place_id
+          , current_place_id
+          , active_flg
+          , permission
+        FROM user_master
+        WHERE
+          email = {email}
+          AND active_flg = true
+          AND user_id <> {userId}
+        """
+      ).on(
+        'email -> loginId,
+        'userId -> exoutUserId
+      )
+      sql.as(simple.*)
+    }
   }
 }

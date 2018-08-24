@@ -18,6 +18,8 @@ var INSERT_MAX = 10;
 var TAG_MARGIN_TOP = 40
 var TAG_MARGIN_BOTTOM = -132
 
+var TEXT_SIZE_BASE = 10;
+var TEXT_LINE_BASE = 2;
 
 var MAP_WIDTH = 1366;
 var MAP_HEIGHT = 574;
@@ -32,10 +34,18 @@ var PIN_MARGIN_Y = 7;
 var MARGIN_BASE = 1;
 var BASE_ASPECT = 2.67;
 
-var VIEW_COUNT = 3
+var VIEW_COUNT = -1
 
 var gResizeCheck = false;
 var gResize = {
+    /* 文字サイズを再調整するロジック*/
+    textResize : function(vElement,motoSize) {
+        var vSize = (motoSize) * (MARGIN_BASE)
+        $(vElement).css('font-size', vSize - TEXT_SIZE_BASE +"px");
+        $(vElement).css('line-height', vSize - TEXT_LINE_BASE +"px");
+
+    },
+
     mapCenterMove : function() {
         var vMainFrame= document.getElementById("map__main--frame")
         var vAspectHeight =  Math.round((vMainFrame.clientWidth/BASE_ASPECT)*1)/1
@@ -170,6 +180,30 @@ var gInitView = {
         $('.colTableDiv').css("width","");
 
     },
+    fixTableNoBtn : function() {
+            // テーブルの固定
+            var h = $(window).height()*0.85;
+            // テーブルの調整
+            var ua = navigator.userAgent;
+            if (ua.indexOf('iPad') > 0 || ua.indexOf('Android') > 0 || ua.indexOf('iPhone') > 0 || ua.indexOf('iPod') > 0){
+                // タッチデバイス
+                if ($('.mainSpace').height() > h) {
+                    var w = $('.mainSpace').width()*0.99;
+                    $('.itemTable').tablefix({width:w, height: h, fixRows: 2});
+                } else {
+                    var w = $('.mainSpace').width();
+                    $('.itemTable').tablefix({width:w, fixRows: 2});
+                }
+            }else{
+                // PCブラウザ
+                var w = $('.mainSpace').width();
+                $('.itemTable').tablefix({height: h, fixRows: 2});
+                $('.rowTableDiv').width(w);
+            }
+            $('.bodyTableDiv').find('.itemTable').css('margin-bottom','0');
+            $('.colTableDiv').css("width","");
+
+        },
 
     bindMouseAndTouch : function() {
         var ua = navigator.userAgent;
@@ -240,6 +274,19 @@ var gDatePicker = {
             gDatePicker.dayDateTimeSetting();
         });
     },
+
+     todayClickEvent : function() {
+            var selectPinElement = [].slice.call(document.querySelectorAll(".inputClass"));
+            selectPinElement.forEach(function(pin, pos) {
+                $(pin).datetimepicker({
+                     format : 'YYYY/MM/DD',
+                     locale: 'ja',
+                     maxDate: "now"
+                 });
+                gDatePicker.dateChangeEvent(pin)
+                gDatePicker.dayDateTimeSetting();
+            });
+        },
 
     dayClickEvent2 : function() {
             var selectPinElement = [].slice.call(document.querySelectorAll(".inputClass"));
@@ -827,993 +874,6 @@ var getDateAndTime = function() {
 	}
 }
 
-  var gSpecialstam =       [
-          {
-			id : -1,
-			floor : 3,
-			posName : "未検知",
-			row : "top",
-			viewType : "nowhere",
-			margin : 3,
-			visible : false,
-			y : 13,
-			x : -103,
-		},
-		// 18FE
-		{
-			id : 1,
-			beaconId : "18E-01",
-			posName : "18F東　ランド",
-			floor : 3,
-			viewType : "3x3",
-			visible : false,
-			margin : -1,
-			y : 68.5,
-			x : 159
-		},
-
-		{
-			id : 2,
-			beaconId : "18E-02",
-			posName : "18F東　ランド",
-			floor : 3,
-			viewType : "3x3",
-			visible : false,
-			margin : -1,
-			y : 68.5,
-			x : 145
-		},
-
-		{
-			id : 3,
-			beaconId : "18E-03",
-			posName : "18F東　ランド",
-			floor : 3,
-			viewType : "3x3",
-			visible : false,
-			margin : -1,
-			y : 68.5,
-			x : 128
-		},
-
-		{
-			id : 4,
-			beaconId : "18E-04",
-			posName : "18F東　ランド",
-			floor : 3,
-			viewType : "3x3",
-			visible : false,
-			margin : -1,
-			y : 68.5,
-			x : 113
-		},
-
-		{
-			id : 5,
-			beaconId : "18E-05",
-			posName : "18F東　ランド",
-			floor : 3,
-			viewType : "2x3",
-			visible : false,
-			margin : 3,
-			y : 59,
-			x : 158
-		},
-
-		{
-			id : 6,
-			beaconId : "18E-06",
-			posName : "18F東　ランド",
-			floor : 3,
-			viewType : "2x2",
-			visible : false,
-			margin : 3,
-			y : 57,
-			x : 144
-		},
-
-		{
-			id : 7,
-			beaconId : "18E-07",
-			posName : "18F東　ランド",
-			floor : 3,
-			viewType : "2x2",
-			visible : false,
-			margin : 3,
-			y : 57,
-			x : 135
-		},
-
-		{
-			id : 8,
-			beaconId : "18E-08",
-			posName : "18F東　ランド",
-			floor : 3,
-			viewType : "2x2",
-			visible : false,
-			margin : 3,
-			y : 57,
-			x : 121
-		},
-
-		{
-			id : 9,
-			beaconId : "18E-09",
-			posName : "18F東　ランド",
-			floor : 3,
-			viewType : "2x2",
-			visible : false,
-			margin : 3,
-			y : 57,
-			x : 111
-		},
-
-		{
-			id : 10,
-			beaconId : "18E-10",
-			posName : "18F東　ランド",
-			floor : 3,
-			viewType : "2x2",
-			visible : false,
-			margin : 3,
-			y : 42,
-			x : 144
-		},
-
-		{
-			id : 11,
-			beaconId : "18E-11",
-			posName : "18F東　ランド",
-			floor : 3,
-			viewType : "2x2",
-			visible : false,
-			margin : 3,
-			y : 42,
-			x : 134
-		},
-
-		{
-			id : 12,
-			beaconId : "18E-12",
-			posName : "18F東　ランド",
-			floor : 3,
-			viewType : "2x2_circle",
-			visible : false,
-			margin : 3,
-			y : 42,
-			x : 116
-		},
-
-		{
-			id : 13,
-			beaconId : "18E-13",
-			posName : "18F東　ランド",
-			floor : 3,
-			viewType : "2x2",
-			visible : false,
-			margin : 3,
-			y : 30,
-			x : 144
-		},
-
-		{
-			id : 14,
-			beaconId : "18E-14",
-			posName : "18F東　ランド",
-			floor : 3,
-			viewType : "2x2",
-			visible : false,
-			margin : 3,
-			y : 30,
-			x : 135
-		},
-
-		{
-			id : 15,
-			beaconId : "18E-15",
-			posName : "18F東　ランド",
-			floor : 3,
-			viewType : "2x2_circle",
-			visible : false,
-			margin : 3,
-			y : 30,
-			x : 116
-		},
-
-		{
-			id : 16,
-			beaconId : "18E-16",
-			posName : "18F東　メールコーナー",
-			floor : 3,
-			viewType : "2x2_circle",
-			visible : false,
-			margin : 3,
-			y : 25,
-			x : 158
-		},
-
-		{
-			id : 17,
-			beaconId : "18E-17",
-			floor : 3,
-			posName : "18F東　出入口（ランド）",
-			viewType : "2x2_circle",
-			visible : false,
-			margin : 3,
-			y : 18,
-			x : 124
-		}, {
-			id : 18,
-			beaconId : "18E-18",
-			floor : 3,
-			posName : "18F東　金魚鉢",
-			viewType : "2x2_circle",
-			visible : false,
-			margin : 3,
-			y : 63,
-			x : 87
-		},
-
-		{
-			id : 19,
-			beaconId : "18E-19",
-			floor : 3,
-			posName : "18F東　関所",
-			viewType : "3x3",
-			visible : false,
-			margin : -1,
-			y : 48.5,
-			x : 89
-		},
-
-		{
-			id : 20,
-			beaconId : "18E-20",
-			floor : 3,
-			posName : "18F東　関所",
-			viewType : "2x2",
-			visible : false,
-			margin : 3,
-			y : 47.5,
-			x : 75
-		},
-
-		{
-			id : 21,
-			beaconId : "18E-21",
-			floor : 3,
-			posName : "18F東　ミラコスタ",
-			viewType : "2x2_circle",
-			visible : false,
-			margin : 3,
-			y : 32,
-			x : 96
-		},
-
-		{
-			id : 22,
-			beaconId : "18E-22",
-			floor : 3,
-			posName : "18F東　ミラコスタ",
-			viewType : "2x2_circle",
-			visible : false,
-			margin : 3,
-			y : 30,
-			x : 81
-		},
-
-		{
-			id : 23,
-			beaconId : "18E-23",
-			floor : 3,
-			posName : "18F東　シー",
-			viewType : "3x3",
-			visible : false,
-			margin : -1,
-			y : 68.5,
-			x : 63
-		},
-
-		{
-			id : 24,
-			beaconId : "18E-24",
-			floor : 3,
-			posName : "18F東　シー",
-			viewType : "3x3",
-			visible : false,
-			margin : -1,
-			y : 68.5,
-			x : 48
-		},
-
-		{
-			id : 25,
-			beaconId : "18E-25",
-			floor : 3,
-			posName : "18F東　シー",
-			viewType : "3x3",
-			visible : false,
-			margin : -1,
-			y : 68.5,
-			x : 33
-		},
-
-		{
-			id : 26,
-			beaconId : "18E-26",
-			floor : 3,
-			posName : "18F東　シー",
-			viewType : "3x3",
-			visible : false,
-			margin : -1,
-			y : 68.5,
-			x : 18
-		},
-
-		{
-			id : 27,
-			beaconId : "18E-27",
-			floor : 3,
-			posName : "18F東　シー",
-			viewType : "1x4",
-			visible : false,
-			margin : 1,
-			y : 53.5,
-			x : 69.8
-		},
-
-		{
-			id : 28,
-			beaconId : "18E-28",
-			floor : 3,
-			posName : "18F東　シー",
-			viewType : "3x3_table",
-			visible : false,
-			margin : 3,
-			y : 57,
-			x : 53
-		},
-
-		{
-			id : 29,
-			beaconId : "18E-29",
-			floor : 3,
-			posName : "18F東　シー",
-			viewType : "2x2",
-			visible : false,
-			margin : 3,
-			y : 57,
-			x : 38
-		},
-
-		{
-			id : 30,
-			beaconId : "18E-30",
-			floor : 3,
-			posName : "18F東　シー",
-			viewType : "2x2",
-			visible : false,
-			margin : 3,
-			y : 57,
-			x : 28
-		},
-
-		{
-			id : 31,
-			beaconId : "18E-31",
-			floor : 3,
-			posName : "18F東　シー",
-			viewType : "2x2",
-			visible : false,
-			margin : 3,
-			y : 59,
-			x : 15
-		},
-
-		{
-			id : 32,
-			beaconId : "18E-32",
-			floor : 3,
-			posName : "18F東　シー",
-			viewType : "2x2_circle",
-			visible : false,
-			margin : 3,
-			y : 42,
-			x : 56
-		},
-
-		{
-			id : 33,
-			beaconId : "18E-33",
-			floor : 3,
-			posName : "18F東　シー",
-			viewType : "2x2",
-			visible : false,
-			margin : 3,
-			y : 42,
-			x : 38
-		},
-
-		{
-			id : 34,
-			beaconId : "18E-34",
-			floor : 3,
-			posName : "18F東　シー",
-			viewType : "2x2",
-			visible : false,
-			margin : 3,
-			y : 42,
-			x : 28
-		},
-
-		{
-			id : 35,
-			beaconId : "18E-35",
-			floor : 3,
-			posName : "18F東　シー",
-			viewType : "2x2",
-			visible : false,
-			margin : 3,
-			y : 49,
-			x : 15
-		},
-
-		{
-			id : 36,
-			beaconId : "18E-36",
-			floor : 3,
-			posName : "18F東　シー",
-			viewType : "2x2_circle",
-			visible : false,
-			margin : 3,
-			y : 30,
-			x : 56
-		},
-
-		{
-			id : 37,
-			beaconId : "18E-37",
-			floor : 3,
-			posName : "18F東　シー",
-			viewType : "2x2",
-			visible : false,
-			margin : 3,
-			y : 29,
-			x : 38
-		},
-
-		{
-			id : 38,
-			beaconId : "18E-38",
-			floor : 3,
-			posName : "18F東　シー",
-			viewType : "2x2",
-			visible : false,
-			margin : 3,
-			y : 29,
-			x : 28
-		},
-
-		{
-			id : 39,
-			beaconId : "18E-39",
-			floor : 3,
-			posName : "18F東　シー",
-			viewType : "2x2",
-			visible : false,
-			margin : 3,
-			y : 37,
-			x : 15
-		},
-
-		{
-			id : 40,
-			beaconId : "18E-40",
-			floor : 3,
-			posName : "18F東　出入口（シー）",
-			viewType : "2x2_circle",
-			visible : false,
-			margin : 3,
-			y : 18,
-			x : 48
-		},
-
-		{
-			id : 41,
-			beaconId : "18E-41",
-			floor : 3,
-			posName : "18F東　作業室",
-			viewType : "2x2_circle",
-			visible : false,
-			margin : 3,
-			y : 23,
-			x : 12
-		},
-
-		// 18FW
-		{
-			id : 42,
-			beaconId : "18W-01",
-			floor : 2,
-			posName : "18F西　出入口",
-			viewType : "2x2_circle",
-			visible : false,
-			margin : 3,
-			y : 71,
-			x : 124
-		},
-
-		{
-			id : 43,
-			beaconId : "18W-02",
-			floor : 2,
-			posName : "18F西　組合室",
-			viewType : "2x2_circle",
-			visible : false,
-			margin : 3,
-			y : 67,
-			x : 112
-		},
-
-		{
-			id : 44,
-			beaconId : "18W-03",
-			floor : 2,
-			posName : "18F西　人事室",
-			viewType : "2x2_circle",
-			visible : false,
-			margin : 3,
-			y : 58,
-			x : 140
-		},
-
-		{
-			id : 45,
-			beaconId : "18W-04",
-			floor : 2,
-			posName : "18F西　倉庫",
-			viewType : "2x2_circle",
-			visible : false,
-			margin : 3,
-			y : 44,
-			x : 147
-		},
-
-
-		{
-			id : 46,
-			beaconId : "18W-05",
-			floor : 2,
-			posName : "18F西　コクピット",
-			viewType : "1x4",
-			visible : false,
-			margin : 1,
-			y : 22,
-			x : 163
-		},
-		{
-			id : 47,
-			beaconId : "18W-06",
-			floor : 2,
-			posName : "18F西　コクピット",
-			viewType : "2x2_circle",
-			visible : false,
-			margin : 3,
-			y : 29,
-			x : 146
-		},
-		{
-			id : 48,
-			beaconId : "18W-07",
-			floor : 2,
-			posName : "18F西　ビジネスクラス",
-			viewType : "2x2_circle",
-			visible : false,
-			margin : 3,
-			y : 31,
-			x : 129
-		},
-		{
-			id : 49,
-			beaconId : "18W-08",
-			floor : 2,
-			posName : "18F西　ビジネスクラス",
-			viewType : "2x2_circle",
-			visible : false,
-			margin : 3,
-			y : 31,
-			x : 120
-		}
-		,
-		{
-			id : 50,
-			beaconId : "18W-09",
-			floor : 2,
-			posName : "18F西　ビジネスクラス",
-			viewType : "2x2_circle",
-			visible : false,
-			margin : 3,
-			y : 31,
-			x : 110
-		}
-		,
-		{
-			id : 51,
-			beaconId : "18W-10",
-			floor : 2,
-			posName : "18F西　コクピット",
-			viewType : "5x5",
-			visible : false,
-			margin : 3,
-			y : 21,
-			x : 156
-		}
-
-		,
-		{
-			id : 52,
-			beaconId : "18W-11",
-			floor : 2,
-			posName : "18F西　ビジネスクラス",
-			viewType : "2x2_circle",
-			visible : false,
-			margin : 3,
-			y : 19,
-			x : 130
-		}
-
-		,
-		{
-			id : 53,
-			beaconId : "18W-12",
-			floor : 2,
-			posName : "18F西　ビジネスクラス",
-			viewType : "2x2_circle",
-			visible : false,
-			margin : 3,
-			y : 19,
-			x : 123
-		}
-
-		,
-		{
-			id : 54,
-			beaconId : "18W-13",
-			floor : 2,
-			posName : "18F西　ビジネスクラス",
-			viewType : "2x2_circle",
-			visible : false,
-			margin : 3,
-			y : 19,
-			x : 117
-		}
-
-
-		,
-		{
-			id : 55,
-			beaconId : "18W-14",
-			floor : 2,
-			posName : "18F西　ビジネスクラス",
-			viewType : "2x2_circle",
-			visible : false,
-			margin : 3,
-			y : 19,
-			x : 111
-		}
-
-		,
-		{
-			id : 56,
-			beaconId : "18W-15",
-			floor : 2,
-			posName : "18F西　出入口",
-			viewType : "2x2_circle",
-			visible : false,
-			margin : 3,
-			y : 71,
-			x : 49
-		}
-
-
-		,
-		{
-			id : 57,
-			beaconId : "18W-16",
-			floor : 2,
-			posName : "18F西　Ｃスタ",
-			viewType : "2x2_circle",
-			visible : false,
-			margin : 3,
-			y : 60,
-			x : 88
-		}
-
-		,
-		{
-			id : 58,
-			beaconId : "18W-17",
-			floor : 2,
-			posName : "18F西　ドトール",
-			viewType : "2x2_circle",
-			visible : false,
-			margin : 3,
-			y : 51,
-			x : 61
-		}
-
-		,
-		{
-			id : 59,
-			beaconId : "18W-18",
-			floor : 2,
-			posName : "18F西　やるき茶屋",
-			viewType : "2x2_circle",
-			visible : false,
-			margin : 3,
-			y : 51,
-			x : 37
-		}
-
-		,
-		{
-			id : 60,
-			beaconId : "18W-19",
-			floor : 2,
-			posName : "18F西　デニーズ",
-			viewType : "2x2_circle",
-			visible : false,
-			margin : 3,
-			y : 65,
-			x : 10
-		}
-		,
-		{
-			id : 61,
-			beaconId : "18W-20",
-			floor : 2,
-			posName : "18F西　Ｃスタ",
-			viewType : "3x3",
-			visible : false,
-			margin : -1,
-			y : 47,
-			x : 98
-		}
-		,
-		{
-			id : 62,
-			beaconId : "18W-21",
-			floor : 2,
-			posName : "18F西　Ｃスタ",
-			viewType : "3x3",
-			visible : false,
-			margin : -1,
-			y : 47,
-			x : 82
-		}
-		,
-		{
-			id : 63,
-			beaconId : "18W-22",
-			floor : 2,
-			posName : "18F西　土間土間",
-			viewType : "2x2",
-			visible : false,
-			margin : 3,
-			y : 51,
-			x : 13
-		}
-
-		,
-		{
-			id : 64,
-			beaconId : "18W-23",
-			floor : 2,
-			posName : "18F西　スタバ",
-			viewType : "2x2_circle",
-			visible : false,
-			margin : 3,
-			y : 23,
-			x : 84
-		}
-		,
-		{
-			id : 65,
-			beaconId : "18W-24",
-			floor : 2,
-			posName : "18F西　卓球台",
-			viewType : "2x2_circle",
-			visible : false,
-			margin : 3,
-			y : 23,
-			x : 56
-		}
-
-		,
-		{
-			id : 66,
-			beaconId : "18W-25",
-			floor : 2,
-			posName : "18F西　ガスト／タリーズ",
-			viewType : "2x2_circle",
-			visible : false,
-			margin : 3,
-			y : 26,
-			x : 20
-		}
-
-		,
-		{
-			id : 67,
-			beaconId : "18W-26",
-			floor : 2,
-			posName : "18F　コア東倉庫",
-			viewType : "1x1_right",
-			visible : false,
-			margin : 0,
-			y : 80.5,
-			x : 105
-		}
-		,
-		{
-			id : 68,
-			beaconId : "18W-27",
-			floor : 2,
-			posName : "18F　コア西倉庫",
-			viewType : "1x1_right",
-			visible : false,
-			margin : 0,
-			y : 80.5,
-			x : 40
-		}
-		,
-		{
-			id : 69,
-			beaconId : "18W-28",
-			floor : 2,
-			posName : "18F西　サーバー室",
-			viewType : "2x2_circle",
-			visible : false,
-			margin : 3,
-			y : 50,
-			x : 122
-		}
-
-		// 16F
-
-		,
-		{
-			id : 70,
-			beaconId : "16E-01",
-			floor : 1,
-			posName : "16F　十倉",
-			viewType : "2x2_circle",
-			visible : false,
-			margin : 3,
-			y : 60,
-			x : 158
-		}
-
-
-		,
-		{
-			id : 71,
-			beaconId : "16E-02",
-			floor : 1,
-			posName : "16F　八街",
-			viewType : "2x2_circle",
-			visible : false,
-			margin : 3,
-			y :60,
-			x :142
-		}
-
-
-		,
-		{
-			id : 72,
-			beaconId : "16E-03",
-			floor : 1,
-			posName : "16F　六実",
-			viewType : "2x2_circle",
-			visible : false,
-			margin : 3,
-			y : 60,
-			x : 125
-		}
-
-		,
-		{
-			id : 73,
-			beaconId : "16E-04",
-			floor : 1,
-			posName : "16F　豊四季",
-			viewType : "2x2_circle",
-			visible : false,
-			margin : 3,
-			y : 65,
-			x : 111
-		}
-
-
-		,
-		{
-			id : 74,
-			beaconId : "16E-05",
-			floor : 1,
-			posName : "16F　Ｃクッキング",
-			viewType : "2x2_circle",
-			visible : false,
-			margin : 3,
-			y : 28,
-			x : 158
-		}
-
-
-		,
-		{
-			id : 75,
-			beaconId : "16E-06",
-			floor : 1,
-			posName : "16F　Ｂクッキング",
-			viewType : "2x2_circle",
-			visible : false,
-			margin : 3,
-			y : 26,
-			x : 141
-		}
-
-		,
-		{
-			id : 76,
-			beaconId : "16E-07",
-			floor : 1,
-			posName : "16F　Ａクッキング",
-			viewType : "2x2_circle",
-			visible : false,
-			margin : 3,
-			y : 26,
-			x : 125
-		}
-		,
-		{
-			id : 77,
-			beaconId : "16E-08",
-			floor : 1,
-			posName : "16F　受付",
-			viewType : "2x2_circle",
-			visible : false,
-			margin : 3,
-			y : 20,
-			x : 110
-		}
-		,
-		{
-			id : 78,
-			beaconId : "16E-09",
-			floor : 1,
-			posName : "16F　セミナリオ３",
-			viewType : "2x2_circle",
-			visible : false,
-			margin : 3,
-			y : 50,
-			x : 81
-		}
-		,
-		{
-			id : 79,
-			beaconId : "16E-10",
-			floor : 1,
-			posName : "16F　セミナリオ１・２",
-			viewType : "2x2_circle",
-			visible : false,
-			margin : 3,
-			y : 50,
-			x : 47
-		}
-	]
-
-
 var gBeaconPosition = {
     setPosition : function() {
         // frame 空データ取得
@@ -2119,6 +1179,9 @@ var gViewerManage = {
                 var viewer_pos_floor = vExbViewerData[i].floor
                 gExbViewerUiData[vCount].floor = Number(viewer_pos_floor);
 
+                var viewer_pos_display_order = document.getElementById("viewer_pos_display_order-" + i).textContent;
+                gExbViewerUiData[vCount].displayOrder = Number(viewer_pos_display_order);
+
                 var viewer_pos_size = vExbViewerData[i].size
                 gExbViewerUiData[vCount].size = Number(viewer_pos_size);
 
@@ -2139,11 +1202,14 @@ var gViewerManage = {
                 pinFrame.style.width = (beaconData.size) * (MARGIN_BASE) + "px";
                 pinFrame.style.height =(beaconData.size) * (MARGIN_BASE)+ "px";
 
+                 // 文字サイズ再調整
+                gResize.textResize(pinFrame,beaconData.size)
+
                 pinFrame.id = "exb_id_" + beaconData.posNum;
                 pinFrame.className = "exb__viewer--frame";
                 pinFrame.textContent = beaconData.posNum;
 
-                var tempElement = document.getElementById("beaconMap-" +beaconData.floor)
+                var tempElement = document.getElementById("beaconMap-" +beaconData.displayOrder)
                 if(tempElement!= null)
                     tempElement.appendChild(pinFrame);
                 // 非表示のopacityを設定
@@ -2192,6 +1258,9 @@ var gViewerManage = {
                 var viewer_pos_count = document.getElementById("viewer_pos_count-" + i).textContent;
                 gExbViewerUiData[vCount].posCount = Number(viewer_pos_count);
 
+                var viewer_pos_display_order = document.getElementById("viewer_pos_display_order-" + i).textContent;
+                gExbViewerUiData[vCount].displayOrder = Number(viewer_pos_display_order);
+
                 var viewer_pos_floor = document.getElementById("viewer_pos_floor-" + i).textContent;
                 gExbViewerUiData[vCount].floor = Number(viewer_pos_floor);
 
@@ -2216,11 +1285,14 @@ var gViewerManage = {
                 pinFrame.style.width = (beaconData.size) * (MARGIN_BASE) + "px";
                 pinFrame.style.height =(beaconData.size) * (MARGIN_BASE)+ "px";
 
+                // 文字サイズ再調整
+                gResize.textResize(pinFrame,beaconData.size)
+
                 pinFrame.id = "exb_id_" + beaconData.posNum;
                 pinFrame.className = "exb__viewer--frame";
                 pinFrame.textContent = beaconData.posNum;
 
-                var tempElement = document.getElementById("beaconMap-" +beaconData.floor)
+                var tempElement = document.getElementById("beaconMap-" +beaconData.displayOrder)
                 if(tempElement!= null)
                     tempElement.appendChild(pinFrame);
                 // 非表示のopacityを設定

@@ -1,4 +1,4 @@
-@(itemTypeList: Seq[ItemType], placeId: Int)(implicit user: User, messages: Messages, request: RequestHeader, flash: Flash)
+@(ITEM_TYPE_FILTER: String, itemTypeMap: Map[Int,String],itemTypeList: Seq[ItemType], placeId: Int)(implicit user: User, messages: Messages, request: RequestHeader, flash: Flash)
 
 @import controllers.routes
 @import helper._
@@ -8,11 +8,9 @@
 <head>
     @templates.htmlHead(title = Messages("lang.cms.itemTypeManage.title"))
     <link rel="stylesheet" href="@routes.MyAssets.css("cms/itemTypeManage.css")"/>
-    <link rel="stylesheet" media="screen" href="@routes.MyAssets.lib("tablesorter/css/theme.bootstrap.css")">
     <link rel="stylesheet" href="@routes.MyAssets.css("color/colorpicker.css")"/>
     <script type="text/javascript" src="@routes.MyAssets.lib("jquery.tablefix_1.0.1.js")"></script>
-    <script type="text/javascript" src="@routes.MyAssets.js("itemTypeManage.js")"></script>
-    <script type="text/javascript" src="./devkit/js/color/colorpicker.js"></script>
+    <script type="text/javascript" src="@routes.MyAssets.js("color/colorpicker.js")"></script>
     <script></script>
 </head>
 <body>
@@ -20,9 +18,11 @@
 <div class="container">
     <!-- ナビバー  -->
     @views.html.templates.navBar()
-    <div class="row" style="margin-top: 50px;">
+    <div class="row">
+        <!-- 左サイドバー -->
+        @views.html.templates.sideMenu()
         <!-- メイン -->
-        <div class="col-xs-9 col-sm-9 col-md-12 col-lg-12 mainSpace">
+        <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10 mainSpace">
             <!-- メッセージ -->
             @views.html.templates.msgDiv()
             <!-- 画面題字 -->
@@ -51,7 +51,10 @@
                             <tr class="rowColor rowHover" id="@itemType.item_type_id">
                                 <td class="itemTd text-right itemTypeId">@itemType.item_type_id</td>
                                 <td class="itemTd text-left itemTypeName">@itemType.item_type_name</td>
-                                <td class="itemTd text-left itemTypeCategory">@itemType.item_type_category_id</td>
+
+                                <td class="hidden text-left itemTypeCategoryId">@itemType.item_type_category_id</td>
+                                <td class="itemTd text-left itemTypeCategory">@itemTypeMap(itemType.item_type_category_id)</td>
+
                                 <!-- 色表示 -->
                                 <td id ="previewBackgroundId" class="item preview_frame" style="background: @itemType.item_type_row_color;" >
                                     <div id="previewColorId" class="preview_icon" style="background: @itemType.item_type_icon_color; color: @itemType.item_type_text_color;">@itemType.item_type_id</div>
@@ -113,13 +116,16 @@
                             <input type="text" id="inputItemTypeName" name="inputItemTypeName" class="form-control" placeholder="@Messages("lang.cms.itemTypeManage.itemTypeUpdate.popup.itemName")">
                         </div>
                     </div>
-
                     <!-- 仮設材カテゴリー名 -->
                     <div class="form-group">
                         <label class="control-label col-xs-4">@Messages("lang.cms.itemTypeManage.itemTypeUpdate.popup.category")</label>
-                        <div class="col-xs-5  col-sm-5 col-md-5" style="padding-left: 0px;padding-right: 0px;">
-                            <input type="text" id="inputItemTypeCategory" name="inputItemTypeCategory" class="form-control" placeholder="@Messages("lang.cms.itemTypeManage.itemTypeUpdate.popup.category")">
-                        </div>
+                        <select id="item_type" style="height: 30px; width: 100px;">
+                            !--仮設材カテゴリEnumから検索フィルタを設置-->
+                            @itemTypeMap.map{case (key, value) =>
+                            <option value="@(key+1)">@value</option>
+                            }
+                        </select>
+                        <input class="hidden form-control input-sm" type="text" id="inputItemTypeCategory" name="inputItemTypeCategory" value="@ITEM_TYPE_FILTER">
                     </div>
                     <!-- 仮設材種別アイコンカラー(RGB) -->
                     <div class="form-group">

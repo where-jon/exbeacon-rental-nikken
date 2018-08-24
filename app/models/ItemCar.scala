@@ -11,64 +11,64 @@ import play.api.db._
 
 /*作業車・立馬予約用formクラス*/
 case class ItemCarReserveData(
-  itemTypeId: Int,
-  workTypeName: String,
-  inputDate: String,
-  companyName: String,
-  floorName: String,
-  itemId: List[Int],
-  itemTypeIdList: List[Int],
-  checkVal: List[Int]
+  itemTypeId: Int
+  , workTypeName: String
+  , inputDate: String
+  , companyName: String
+  , floorName: String
+  , itemId: List[Int]
+  , itemTypeIdList: List[Int]
+  , checkVal: List[Int]
 
 )
 
 /*作業車・立馬予約取消用formクラス*/
 case class ItemCarCancelData(
-  itemTypeIdList: List[Int],
-  itemId: List[Int],
-  workTypeNameList: List[String],
-  reserveStartDateList: List[String],
-  checkVal: List[Int]
+  itemTypeIdList: List[Int]
+  , itemId: List[Int]
+  , workTypeNameList: List[String]
+  , reserveStartDateList: List[String]
+  , checkVal: List[Int]
 )
 
 
 /*作業車・立馬予約取消検索用formクラス*/
 case class ItemCarCancelSearchData(
-  itemTypeId: Int,
-  workTypeName: String,
-  companyName: String,
-  inputDate: String
+  itemTypeId: Int
+  , workTypeName: String
+  , companyName: String
+  , inputDate: String
 )
 
 /*作業車・立馬予約検索用formクラス*/
 case class ItemCarSearchData(
-   itemTypeId: Int,
-   workTypeName: String,
-   inputDate: String
+   itemTypeId: Int
+   , workTypeName: String
+   , inputDate: String
  )
 
 case class ItemCar(
-  itemCarId: Int,
-  itemTypeId: Int,
-  note: String,
-  itemCarNo: String,
-  itemCarName: String,
-  itemCarBtxId: Int,
-  itemCarKeyBtxId: Int,
-  placeId: Int
+  itemCarId: Int
+  , itemTypeId: Int
+  , note: String
+  , itemCarNo: String
+  , itemCarName: String
+  , itemCarBtxId: Int
+  , itemCarKeyBtxId: Int
+  , placeId: Int
 )
 
 /*作業車・立馬管理検索用*/
 case class ItemCarViewer(
-  itemCarId: Int,
-  itemTypeId: Int,
-  itemTypeName: String,
-  itemCarNote: String,
-  itemCarNo: String,
-  itemCarName: String,
-  itemCarBtxId: Int,
-  itemCarKeyBtxId: Int,
-  placeId: Int
+  itemCarId: Int
+  , itemTypeId: Int
+  , itemTypeName: String
+  , itemCarNote: String
+  , itemCarNo: String
+  , itemCarName: String
+  , itemCarBtxId: Int
+  , itemCarKeyBtxId: Int
+  , placeId: Int
 )
 
 /*作業車・立馬管理予約検索用*/
@@ -80,30 +80,30 @@ case class ReserveMasterCheck(
 )
 
 case class CarViewer(
-  item_car_id: Int,
-  item_car_btx_id: Int,
-  item_car_key_btx_id: Int,
-  item_type_id: Int,
-  item_type_name:String,
-  note:String,
-  item_car_no: String,
-  item_car_name:String,
-  place_id: Int,
-  reserve_start_date:String,
-  company_id: Int,
-  company_name: String,
-  work_type_id: Int,
-  work_type_name: String,
-  reserve_floor_name: String,
-  reserve_id: Int
+  item_car_id: Int
+  , item_car_btx_id: Int
+  , item_car_key_btx_id: Int
+  , item_type_id: Int
+  , item_type_name:String
+  , note:String
+  , item_car_no: String
+  , item_car_name:String
+  , place_id: Int
+  , reserve_start_date:String
+  , company_id: Int
+  , company_name: String
+  , work_type_id: Int
+  , work_type_name: String
+  , reserve_floor_name: String
+  , reserve_id: Int
 )
 
 /*作業車・立馬一覧用formクラス*/
 case class ItemCarData(
-  itemTypeId: Int,
-  companyName: String,
-  floorName: String,
-  workTypeName: String
+  itemTypeId: Int
+  , companyName: String
+  , floorName: String
+  , workTypeName: String
 )
 
 @javax.inject.Singleton
@@ -351,7 +351,7 @@ class itemCarDAO @Inject()(dbapi: DBApi) {
         """
       // 追加検索条件
       var wherePh = ""
-      wherePh += s""" and r.item_id = ${carId} """
+      wherePh += s""" and r.item_id = {carId} """
 
       // 表示順を設定
       val orderPh =
@@ -359,7 +359,7 @@ class itemCarDAO @Inject()(dbapi: DBApi) {
           order by
             r.item_id
         """
-      SQL(selectPh + wherePh + orderPh).as(reserveMasterCheck.*)
+      SQL(selectPh + wherePh + orderPh).on('placeId -> placeId, 'carId -> carId).as(reserveMasterCheck.*)
     }
   }
 
@@ -680,23 +680,29 @@ class itemCarDAO @Inject()(dbapi: DBApi) {
       var wherePh = ""
       wherePh += s""" and c.place_id = ${placeId} """
 
-      var vCount = this.getCarMasterSearch(placeId, itemTypeId, workTypeName, reserveDate, itemIdList).length
-        if(workTypeName == "終日" || vCount == 0 ){
+      val vCount = this.getCarMasterSearch(placeId, itemTypeId, workTypeName, reserveDate, itemIdList).length
+      if( vCount == 0 ){
         wherePh += s"""
             and not r.item_id in
-            (select r.item_id from reserve_table where reserve_start_date = to_date('${reserveDate}', 'YYYY-MM-DD'))  """
-      }else if (workTypeName == "") {
-
-        wherePh += s"""
+            (select item_id from reserve_table where reserve_start_date = to_date('${reserveDate}', 'YYYY-MM-DD'))  """
+      }else{
+        if(workTypeName == "終日"){
+          wherePh += s"""
+            and not r.item_id in
+            (select item_id from reserve_table where reserve_start_date = to_date('${reserveDate}', 'YYYY-MM-DD'))  """
+        }else if (workTypeName == "") {
+          wherePh += s"""
              and not r.item_id in
-            (select r.item_id from reserve_table where reserve_start_date = to_date('${reserveDate}', 'YYYY-MM-DD'))  """
-      } else{
+            (select item_id from reserve_table where reserve_start_date = to_date('${reserveDate}', 'YYYY-MM-DD'))  """
+        } else{
           wherePh +=
             s"""
              and not r.item_id in
-            (select r.item_id from reserve_table where work.work_type_name ='${workTypeName}')
-            and reserve_start_date = to_date('${reserveDate}', 'YYYY-MM-DD') """
+            (select item_id from reserve_table where (work.work_type_name ='${workTypeName}' or work_type_id = 3) and reserve_start_date = to_date('${reserveDate}', 'YYYY-MM-DD')
+            ) """
+        }
       }
+
       wherePh += s""" or coalesce(r.reserve_id, -1) = -1 and c.active_flg = true and c.place_id = ${placeId} """
 
       // 表示順を設定
@@ -820,7 +826,43 @@ class itemCarDAO @Inject()(dbapi: DBApi) {
     }
   }
 
+  /**
+    * 作業車・立馬情報 仮設材種別チェック用
+    * @return
+    */
+  def selectItemTypeCheck(placeId: Int, itemTypeId: Int): Seq[ItemCar] = {
 
+    db.withConnection { implicit connection =>
+      val selectPh =
+        """
+          select
+                c.item_car_id
+              , c.item_type_id
+              , c.note
+              , c.item_car_no
+              , c.item_car_name
+              , c.item_car_btx_id
+              , c.item_car_key_btx_id
+              , c.place_id
+          from
+            place_master p
+            inner join item_car_master c
+              on p.place_id = c.place_id
+              and p.active_flg = true
+              and c.active_flg = true
+        """
+
+      var wherePh = """ where p.place_id = {placeId} """
+          wherePh += s""" and c.item_type_id = {itemTypeId} """
+
+      val orderPh =
+        """
+          order by
+            c.item_car_id
+        """
+      SQL(selectPh + wherePh + orderPh).on('placeId -> placeId, 'itemTypeId -> itemTypeId).as(simple.*)
+    }
+  }
 
 }
 

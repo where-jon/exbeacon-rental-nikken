@@ -1,5 +1,7 @@
 package models
 
+import java.text.SimpleDateFormat
+import java.util.{Calendar, Date, Locale}
 import javax.inject.Inject
 
 import anorm.SqlParser.get
@@ -285,6 +287,16 @@ object itemBeaconPositionData {
 
 
 
+/** EXB状態監視用データ*/
+case class ExbTelemetryData(
+  description: Long
+  ,power: Long
+  ,cur_exb_name: String
+  ,cur_pos_name: String
+  ,updatetime: String
+  ,iBeaconTime: String
+  ,status: String
+)
 /**
   * ItemLog用測位APIの結果をフロントエンド側に返却するためのデータモデル
   *
@@ -370,6 +382,52 @@ case class BeaconViewer(
 )
 
 
+
+/**
+  * EXCloud測位APIから取得するデータモデル
+  */
+case class telemeryState(
+  meshid_deviceid: String
+  ,deviceid: String
+  ,description: Long
+  ,timestamp: Long
+  ,firm_ver: Long
+  ,power_level: Long
+  ,ibeacon_major: Long
+  ,ibeacon_minor: Long
+  ,ibeacon_txpower: Long
+  ,ibeacon_interval: Long
+  ,hour168_count: Long
+  ,hour24_count: Long
+  ,hour12_count: Long
+  ,hour6_count: Long
+  ,hour3_count: Long
+  ,ibeacon_received: Long
+)
+object telemeryState {
+  implicit val jsonReads: Reads[telemeryState] = (
+    ((JsPath \ "meshid_deviceid").read[String] | Reads.pure(""))~
+      ((JsPath \ "deviceid").read[String] | Reads.pure(""))~
+      ((JsPath \ "description").read[Long] | Reads.pure(0L))~
+      ((JsPath \ "timestamp").read[Long] | Reads.pure(0L))~
+      ((JsPath \ "firm_ver").read[Long] | Reads.pure(0L))~
+      ((JsPath \ "power_level").read[Long] | Reads.pure(0L))~
+      ((JsPath \ "ibeacon_major").read[Long] | Reads.pure(0L))~
+      ((JsPath \ "ibeacon_minor").read[Long] | Reads.pure(0L))~
+      ((JsPath \ "ibeacon_txpower").read[Long] | Reads.pure(0L))~
+      ((JsPath \ "ibeacon_interval").read[Long] | Reads.pure(0L))~
+      ((JsPath \ "hour168_count").read[Long] | Reads.pure(0L))~
+      ((JsPath \ "hour24_count").read[Long] | Reads.pure(0L))~
+      ((JsPath \ "hour12_count").read[Long] | Reads.pure(0L))~
+      ((JsPath \ "hour6_count").read[Long] | Reads.pure(0L))~
+      ((JsPath \ "hour3_count").read[Long] | Reads.pure(0L))~
+      ((JsPath \ "ibeacon_received").read[Long] | Reads.pure(0L))
+    )(telemeryState.apply _)
+
+  implicit def jsonWrites = Json.writes[telemeryState]
+}
+
+
 /**
   * EXCloud測位APIから取得するデータモデル
   *
@@ -379,20 +437,11 @@ case class BeaconViewer(
   * @param timestamp    当日最後に検出した時刻
   */
 case class gateWayState(
-                         num: Int,
-                         deviceid: Int,
-                         updated: Long,
-                         timestamp: Long
-                       ) {
-  def copy(
-            num: Int = this.num,
-            deviceid: Int = this.deviceid,
-            updated: Long = this.updated,
-            timestamp: Long = this.timestamp
-          ): gateWayState = {
-    gateWayState(num, deviceid, updated, timestamp)
-  }
-}
+     num: Int,
+     deviceid: Int,
+     updated: Long,
+     timestamp: Long
+)
 
 object gateWayState {
   implicit val jsonReads: Reads[gateWayState] = (
@@ -442,6 +491,21 @@ class beaconDAO @Inject()(dbapi: DBApi) {
 
   /*現場状況画面用 sql文 20180723*/
   def selectBeaconViewer(placeId: Int): Seq[BeaconViewer] = {
+
+    // 現在時刻設定
+    val mSimpleDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.JAPAN)
+    val currentTime = new Date();
+    val mTime = mSimpleDateFormat.format(currentTime)
+    val mHour = new SimpleDateFormat("HH").format(Calendar.getInstance().getTime()).toInt
+
+    val vWorkType =
+      if(mHour < 13)
+        WorkTypeIdEnum().map.get("午前").last
+      else
+        WorkTypeIdEnum().map.get("午後").last
+
+    val vWorkAllDayType = WorkTypeIdEnum().map.get("終日").last
+
     db.withConnection { implicit connection =>
       val selectPh =
         """
@@ -492,6 +556,12 @@ class beaconDAO @Inject()(dbapi: DBApi) {
                   ) as c
                 left JOIN reserve_table as r on c.item_id = r.item_id and c.item_type_id = r.item_type_id
                 and r.active_flg = true
+                and r.reserve_start_date  between to_date('
+                """ + {mTime} +"""
+                ', 'YYYY-MM-DD') and  to_date('
+                """ + {mTime} +"""
+                ', 'YYYY-MM-DD')
+                and (r.work_type_id = """ + {vWorkType} +"""or r.work_type_id =""" + {vWorkAllDayType} +""")
                 left JOIN item_type as i on i.item_type_id = c.item_type_id
                 and i.active_flg = true
                 left JOIN company_master as co on co.company_id = r.company_id
@@ -513,6 +583,21 @@ class beaconDAO @Inject()(dbapi: DBApi) {
 
   /*現場状況画面用 sql文 20180723*/
   def selectCarKeyViewer(placeId: Int): Seq[BeaconViewer] = {
+
+    // 現在時刻設定
+    val mSimpleDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.JAPAN)
+    val currentTime = new Date();
+    val mTime = mSimpleDateFormat.format(currentTime)
+    val mHour = new SimpleDateFormat("HH").format(Calendar.getInstance().getTime()).toInt
+
+    val vWorkType =
+      if(mHour < 13)
+        WorkTypeIdEnum().map.get("午前").last
+      else
+        WorkTypeIdEnum().map.get("午後").last
+
+    val vWorkAllDayType = WorkTypeIdEnum().map.get("終日").last
+
     db.withConnection { implicit connection =>
       val selectPh =
         """
@@ -563,6 +648,12 @@ class beaconDAO @Inject()(dbapi: DBApi) {
                   ) as c
                 left JOIN reserve_table as r on c.item_id = r.item_id and c.item_type_id = r.item_type_id
                 and r.active_flg = true
+                and r.reserve_start_date  between to_date('
+                """ + {mTime} +"""
+                ', 'YYYY-MM-DD') and  to_date('
+                """ + {mTime} +"""
+                ', 'YYYY-MM-DD')
+                and (r.work_type_id = """ + {vWorkType} +"""or r.work_type_id =""" + {vWorkAllDayType} +""")
                 left JOIN item_type as i on i.item_type_id = c.item_type_id
                 and i.active_flg = true
                 left JOIN company_master as co on co.company_id = r.company_id
@@ -573,7 +664,7 @@ class beaconDAO @Inject()(dbapi: DBApi) {
                 and floor.active_flg = true
                   where c.place_id =  """  + {placeId} + """
                   and c.active_flg = true
-                  and c.item_type_id = 1
+                  and i.item_type_category_id = 0
                   order by c.item_btx_id
 
         """

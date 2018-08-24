@@ -17,6 +17,8 @@ itemId:Int,
 itemName:String
 ,operatingRate : Float
 ,reserveOperatingRate :Float
+,operatingCount :Int
+,reserveOperatingCount :Int
 )
 
 /*作業車稼働状況分析用クラス*/
@@ -152,6 +154,25 @@ class ItemLogDAO @Inject() (dbapi: DBApi) {
       vUpdateData = "0001-01-01 00:00:00"
     }
 
+//    System.out.println("---------------------------------")
+//    System.out.println("place_id:" + itemLogData.place_id)
+//    System.out.println("finish_floor_name:" + itemLogData.cur_pos_name)
+//    System.out.println("finish_exb_name:" + itemLogData.cur_exb_name)
+//    System.out.println("item_id:" + itemLogData.item_id)
+//    System.out.println("item_type_id:" + itemLogData.item_type_id)
+//    System.out.println("item_name:" + itemLogData.item_name)
+//    System.out.println("item_btx_id:" + itemLogData.item_btx_id)
+//    System.out.println("item_car_key_btx_id:" + itemLogData.item_key_btx)
+//    System.out.println("reserve_flg:" + vReserveFlg)
+//    System.out.println("reserve_start_date:" + vStartData)
+//    System.out.println("reserve_end_date:" +vEndData)
+//    System.out.println("working_flg:" + vWorkingFlg)
+//    System.out.println("finish_floor_id:" +  -1)
+//    System.out.println("finish_exb_id:" + itemLogData.pos_id)
+//    System.out.println("finish_updatetime:" + vUpdateData)
+//    System.out.println("company_id:" + -1)
+//    System.out.println("company_name:" + itemLogData.company_name)
+//    System.out.println("---------------------------------")
 
     db.withConnection { implicit connection =>
       val sql = SQL("""
@@ -260,6 +281,7 @@ class ItemLogDAO @Inject() (dbapi: DBApi) {
         left join item_log as itemLog on itemLog.item_btx_id = itemCar.item_car_btx_id
         and itemLog.working_flg =  """ + {workingFlg}+ """
         and itemLog.place_id = """ + {placeId}+ """
+        and itemLog.finish_floor_name != '不在'
         and itemLog.finish_updatetime
         between to_date('""" + {startDate}+ """', 'YYYY-MM-DD') and  TO_TIMESTAMP('""" + {endDate}+ """', 'YYYY-MM-DD') + '1 day'
        where itemCar.place_id = """ + {placeId}+ """
@@ -295,6 +317,7 @@ class ItemLogDAO @Inject() (dbapi: DBApi) {
         and itemLog.working_flg =  """ + {workingFlg}+ """
         and itemLog.reserve_flg = """ + {reserveFlg}+ """
         and itemLog.place_id = """ + {placeId}+ """
+        and itemLog.finish_floor_name != '不在'
         and itemLog.finish_updatetime
         between to_date('""" + {startDate}+ """', 'YYYY-MM-DD') and  TO_TIMESTAMP('""" + {endDate}+ """', 'YYYY-MM-DD') + '1 day'
        where itemCar.place_id = """ + {placeId}+ """

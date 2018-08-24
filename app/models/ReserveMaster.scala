@@ -10,16 +10,16 @@ import play.api.db._
 
 
 case class WorkTypeCount(
-  item_count: Int,
-  item_id: Int
+item_count: Int,
+item_id: Int
 )
 
 case class ReserveMasterInfo(
-                               itemId: Int
-                               , workTypeId: Int
-                               , reserveStartDate: String
-                               , reserveEndDate: String
-                             )
+itemId: Int
+, workTypeId: Int
+, reserveStartDate: String
+, reserveEndDate: String
+)
 
 @javax.inject.Singleton
 class ReserveMasterDAO @Inject() (dbapi: DBApi) {
@@ -31,13 +31,13 @@ class ReserveMasterDAO @Inject() (dbapi: DBApi) {
     * @return
     */
   def selectCarReserve(
-                        placeId: Int
-                        , itemIdList:Seq[Int] = Seq[Int]()
-                        , itemTypeIdList:Seq[Int] = Seq[Int]()
-                        , workTypeId: Int
-                        , reserveStartDate:String = ""
-                        , reserveEndDate:String = ""
-                      ): Seq[ReserveMasterInfo] = {
+  placeId: Int
+  , itemIdList:Seq[Int] = Seq[Int]()
+  , itemTypeIdList:Seq[Int] = Seq[Int]()
+  , workTypeId: Int
+  , reserveStartDate:String = ""
+  , reserveEndDate:String = ""
+  ): Seq[ReserveMasterInfo] = {
 
     val simple = {
       get[Int]("item_id") ~
@@ -81,7 +81,11 @@ class ReserveMasterDAO @Inject() (dbapi: DBApi) {
       }
 
       if(workTypeId!=null){
-        wherePh += s""" and r.work_type_id  =  ${workTypeId} """
+        if(workTypeId == 3){  // 終日の場合
+          wherePh += s""" and r.work_type_id in  (1,2) """
+        }else {
+          wherePh += s""" and r.work_type_id  =  ${workTypeId} """
+        }
       }
 
       val orderPh =
@@ -98,13 +102,13 @@ class ReserveMasterDAO @Inject() (dbapi: DBApi) {
     * @return
     */
   def selectOtherReserve(
-                        placeId: Int
-                        , itemIdList:Seq[Int] = Seq[Int]()
-                        , itemTypeIdList:Seq[Int] = Seq[Int]()
-                        , workTypeId: Int
-                        , reserveStartDate:String = ""
-                        , reserveEndDate:String = ""
-                      ): Seq[ReserveMasterInfo] = {
+      placeId: Int
+      , itemIdList:Seq[Int] = Seq[Int]()
+      , itemTypeIdList:Seq[Int] = Seq[Int]()
+      , workTypeId: Int
+      , reserveStartDate:String = ""
+      , reserveEndDate:String = ""
+    ): Seq[ReserveMasterInfo] = {
 
     val simple = {
       get[Int]("item_id") ~
@@ -136,8 +140,8 @@ class ReserveMasterDAO @Inject() (dbapi: DBApi) {
       wherePh += s""" and r.place_id = ${placeId} """
 
       if(!reserveStartDate.isEmpty && !reserveEndDate.isEmpty){
-        wherePh += s""" and reserve_start_date between to_date('${reserveStartDate}', 'YYYY-MM-DD')  and  to_date('${reserveEndDate}', 'YYYY-MM-DD')
-                        or reserve_end_date between to_date('${reserveStartDate}', 'YYYY-MM-DD') and  to_date('${reserveEndDate}', 'YYYY-MM-DD') """
+        wherePh += s""" and (reserve_start_date between to_date('${reserveStartDate}', 'YYYY-MM-DD')  and  to_date('${reserveEndDate}', 'YYYY-MM-DD')
+                        or reserve_end_date between to_date('${reserveStartDate}', 'YYYY-MM-DD') and  to_date('${reserveEndDate}', 'YYYY-MM-DD') )"""
       }
 
       if(!itemIdList.isEmpty){
@@ -148,7 +152,12 @@ class ReserveMasterDAO @Inject() (dbapi: DBApi) {
       }
 
       if(workTypeId!=null){
-        wherePh += s""" and r.work_type_id  =  ${workTypeId} """
+        if(workTypeId == 3){  // 終日の場合
+          wherePh += s""" and r.work_type_id in  (1,2) """
+        }else{
+          wherePh += s""" and r.work_type_id  =  ${workTypeId} """
+        }
+
       }
 
       val orderPh =
@@ -247,7 +256,50 @@ class ReserveMasterDAO @Inject() (dbapi: DBApi) {
     }
   }
 
+  /**
+    * 仮設材種別チェック用
+    * @return
+    */
+  def selectReserveItemTypeCheck(
+                        placeId: Int
+                        , itemTypeId: Int
+                      ): Seq[ReserveMasterInfo] = {
 
+    val simple = {
+      get[Int]("item_id") ~
+        get[Int]("work_type_id") ~
+        get[String]("reserve_start_date")~
+        get[String]("reserve_end_date") map {
+        case item_id ~ work_type_id ~ reserve_start_date ~ reserve_end_date  =>
+          ReserveMasterInfo(item_id, work_type_id, reserve_start_date, reserve_end_date)
+      }
+    }
+
+    db.withConnection { implicit connection =>
+      val selectPh =
+        """
+          select
+              r.item_id
+            , r.work_type_id
+            , to_char(r.reserve_start_date, 'YYYYMMDD') as reserve_start_date
+            , to_char(r.reserve_end_date, 'YYYYMMDD') as reserve_end_date
+          from
+              reserve_table as r
+          where
+            r.active_flg = true
+        """
+      var wherePh = ""
+      wherePh += s""" and r.place_id = {placeId} """
+      wherePh += s""" and r.item_type_id = {itemTypeId} """
+
+      val orderPh =
+        """
+          order by
+            r.item_id
+        """
+      SQL(selectPh+ wherePh + orderPh).on('placeId -> placeId, 'itemTypeId -> itemTypeId).as(simple.*)
+    }
+  }
 
 }
 

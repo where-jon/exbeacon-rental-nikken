@@ -5,6 +5,7 @@ import javax.inject.Inject
 
 import anorm.SqlParser._
 import anorm._
+import play.api.Logger
 import play.api.db._
 
 case class Exb(
@@ -76,7 +77,9 @@ case class ExbAll(
    view_tx_margin: Int,
    view_tx_count: Int,
    place_id: Int,
-   floor_id: Int
+   floor_id: Int,
+   floor_name: String,
+   display_order: Int
 )
 
 @javax.inject.Singleton
@@ -174,8 +177,8 @@ class ExbDAO @Inject() (dbapi: DBApi) {
            e.exb_id
           , e.exb_device_name
           , e.exb_pos_name
-          , floor.floor_id
-          , floor.floor_name as cur_floor_name
+          , coalesce(floor.floor_id,-1) as floor_id
+          , coalesce(floor.floor_name,'無し') as cur_floor_name
         from
           exb_master e
           left join floor_master floor
@@ -191,6 +194,126 @@ class ExbDAO @Inject() (dbapi: DBApi) {
       sql.as(simpleApi.*)
     }
   }
+
+  /**
+    * EXB設置場所番号重複チェック
+    * @return
+    */
+  def exbSetupNumCheck(exbDeviceId:Int, placeId: Int) = {
+
+    db.withConnection { implicit connection =>
+      val sql = SQL("""
+                      select
+                      exb_id,
+                      exb_device_id,
+                      exb_device_no,
+                      exb_device_name,
+                      exb_pos_name,
+                      exb_pos_x,
+                      exb_pos_y,
+                      exb_view_flag,
+                      exb.view_type_id,
+                      v.view_type_name,
+                      view_tx_size,
+                      view_tx_margin,
+                      view_tx_count,
+                      exb.place_id,
+                      coalesce(exb.floor_id, -1) as floor_id,
+                      coalesce(floor.floor_name, '無') as floor_name,
+                      coalesce(floor.display_order, -1) as display_order
+                    from exb_master as exb
+                      left JOIN view_type as v on v.view_type_id = exb.view_type_id and v.active_flg = true
+                      left JOIN floor_master as floor on floor.floor_id = exb.floor_id
+                    where exb.place_id = {placeId}
+                    and exb.exb_device_id ={exbDeviceId}
+                    order by exb_id;
+       """).on(
+        "exbDeviceId" -> exbDeviceId,
+        "placeId" -> placeId
+      )
+
+      sql.as(simpleExbAll.*)
+    }
+  }
+
+  /**
+    * EXBの更新
+    * @return
+    */
+  def update(inputDeviceId:Int,inputDeviceNo:Int,inputDeviceName:String,inputPosName:String,setupFloorId: Int,exbId: Int,placeId: Int) = {
+
+    db.withTransaction { implicit connection =>
+      SQL(
+        """
+          update exb_master set
+              exb_device_id = {inputDeviceId}
+            , exb_device_no = {inputDeviceNo}
+            , exb_device_name = {inputDeviceName}
+            , exb_pos_name = {inputPosName}
+            , floor_id = {setupFloorId}
+            , updatetime = now()
+          where exb_id = {exbId}
+          and place_id = {placeId};
+        """).on(
+        'inputDeviceId -> inputDeviceId,
+        'inputDeviceNo -> inputDeviceNo,
+        'inputDeviceName -> inputDeviceName,
+        'inputPosName -> inputPosName,
+        'setupFloorId -> setupFloorId,
+        'exbId -> exbId,
+        'placeId -> placeId
+      ).executeUpdate()
+      // コミット
+      connection.commit()
+      Logger.debug(s"""EXBを更新、ID：" + ${exbId.toString}""")
+    }
+  }
+
+  /**
+    * EXBの新規登録
+    * @return
+    */
+  def insertData(inputDeviceId:Int,inputDeviceNo:Int,inputDeviceName:String,inputPosName:String,setupFloorId: Int,placeId: Int) = {
+    db.withTransaction { implicit connection =>
+      // フロアマスタへの登録
+      val params: Seq[NamedParameter] = Seq(
+        "inputDeviceId" -> inputDeviceId
+        ,"inputDeviceNo" -> inputDeviceNo
+        ,"inputDeviceName" -> inputDeviceName
+        ,"inputPosName" -> inputPosName
+        ,"setupFloorId" -> setupFloorId
+        ,"placeId" -> placeId
+
+      )
+      val insertSql = SQL(
+        """
+           insert into exb_master (exb_device_id, exb_device_no, exb_device_name, exb_pos_name, exb_pos_x, exb_pos_y, exb_view_flag, view_type_id, view_tx_size, view_tx_margin, view_tx_count, place_id, floor_id, updatetime)
+           values ({inputDeviceId}, {inputDeviceNo}, {inputDeviceName},{inputPosName},0,0,true,1,25,-1,1,{placeId},{setupFloorId},now())
+
+        """
+      ).on(params:_*)
+
+      // SQL実行
+      val floorId: Option[Long] = insertSql.executeInsert()
+      Logger.debug(s"""フロアを登録、ID：" + ${floorId.get.toInt}""")
+    }
+  }
+
+
+  /**
+    * EXB削除
+    * @return
+    */
+  def deleteById(exbId:Int): Unit = {
+    db.withTransaction { implicit connection =>
+      SQL("""delete from exb_master where exb_id = {exbId} ;""").on('exbId -> exbId).executeUpdate()
+      // コミット
+      connection.commit()
+
+      Logger.debug(s"""EXBを削除、ID：" + ${exbId.toString}""")
+    }
+  }
+
 
   def deleteExb(exb: ExbData): String = {
     var vCheck = false;
@@ -253,14 +376,14 @@ class ExbDAO @Inject() (dbapi: DBApi) {
                   set exb_pos_name = {exb_pos_name},
                   	  exb_device_id = {exb_device_id},
         			  exb_id = {exb_edit_id},
-                  	  exb_name = {exb_name} 
+                  	  exb_name = {exb_name}
                   where exb_id = {exb_id};
-                  
+
                INSERT INTO exb_master (exb_id,exb_device_id,exb_name,exb_pos_name)
                select {exb_edit_id}, {exb_device_id}, {exb_name}, {exb_pos_name}
-               
+
                where not exists (select 1 from exb_master where exb_id = {exb_edit_id});
-               
+
               """).on(
           'exb_id -> exb_id,
           'exb_edit_id -> exb_edit_id,
@@ -304,9 +427,11 @@ class ExbDAO @Inject() (dbapi: DBApi) {
       get[Int]("view_tx_margin") ~
       get[Int]("view_tx_count") ~
       get[Int]("place_id") ~
-      get[Int]("floor_id") map {
-        case exb_id ~ exb_device_id ~ exb_device_no ~ exb_device_name ~ exb_pos_name ~ exb_pos_x ~ exb_pos_y ~ exb_view_flag ~ view_type_id ~ view_type_name~ view_tx_size ~ view_tx_margin ~ view_tx_count ~ place_id ~ floor_id =>
-          ExbAll(exb_id, exb_device_id, exb_device_no, exb_device_name, exb_pos_name,exb_pos_x, exb_pos_y, exb_view_flag, view_type_id, view_type_name, view_tx_size, view_tx_margin, view_tx_count, place_id,floor_id)
+      get[Int]("floor_id")~
+      get[String]("floor_name")~
+      get[Int]("display_order")map {
+        case exb_id ~ exb_device_id ~ exb_device_no ~ exb_device_name ~ exb_pos_name ~ exb_pos_x ~ exb_pos_y ~ exb_view_flag ~ view_type_id ~ view_type_name~ view_tx_size ~ view_tx_margin ~ view_tx_count ~ place_id ~ floor_id ~ floor_name~ display_order =>
+          ExbAll(exb_id, exb_device_id, exb_device_no, exb_device_name, exb_pos_name,exb_pos_x, exb_pos_y, exb_view_flag, view_type_id, view_type_name, view_tx_size, view_tx_margin, view_tx_count, place_id,floor_id,floor_name,display_order)
       }
   }
 
@@ -395,7 +520,9 @@ class ExbDAO @Inject() (dbapi: DBApi) {
           view_tx_margin,
           view_tx_count,
           exb.place_id,
-          exb.floor_id
+          coalesce(exb.floor_id, -1) as floor_id,
+          coalesce(floor.floor_name, '無') as floor_name,
+          coalesce(floor.display_order, -1) as display_order
         from exb_master as exb
           left JOIN view_type as v on v.view_type_id = exb.view_type_id and v.active_flg = true
           left JOIN floor_master as floor on floor.floor_id = exb.floor_id

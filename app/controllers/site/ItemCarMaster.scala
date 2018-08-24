@@ -3,13 +3,12 @@ package controllers.site
 import javax.inject.{Inject, Singleton}
 
 import com.mohiva.play.silhouette.api.Silhouette
-import controllers.BaseController
-import controllers.BeaconService
+import controllers.{BaseController, BeaconService, site}
 import models._
 import play.api._
 import play.api.data.Form
 import play.api.data.Forms._
-import play.api.i18n.{I18nSupport, Messages, MessagesApi}
+import play.api.i18n.{I18nSupport, MessagesApi}
 import utils.silhouette.MyEnv
 
 
@@ -125,10 +124,12 @@ class ItemCarMaster @Inject()(config: Configuration
     // dbデータ取得
     val dbDatas = carDAO.selectCarMasterViewer(placeId,itemIdList)
     val carListApi = beaconService.getItemCarBeaconPosition(dbDatas,true,placeId)
-
-    System.out.println("carListApi:" + carListApi.length)
-    Ok(views.html.site.itemCarMaster(ITEM_TYPE_FILTER, COMPANY_NAME_FILTER,FLOOR_NAME_FILTER,WORK_TYPE_FILTER
-      ,carListApi,itemTypeList,companyNameList,floorNameList,workTypeList,WORK_TYPE))
+    if(carListApi!=null){
+      Ok(views.html.site.itemCarMaster(ITEM_TYPE_FILTER, COMPANY_NAME_FILTER,FLOOR_NAME_FILTER,WORK_TYPE_FILTER
+        ,carListApi,itemTypeList,companyNameList,floorNameList,workTypeList,WORK_TYPE))
+    }else{
+      // apiデータがない場合
+      Redirect(site.routes.UnDetected.index)
+    }
   }
-
 }

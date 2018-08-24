@@ -27,9 +27,8 @@ import net.ceedubs.ficus.Ficus._
 import javax.inject.{ Inject, Singleton }
 import views.html.{ auth => viewsAuth }
 
-
 /**
-  * パスワード変更画面で使うCase Class
+  * パスワード変更画面で使うFORM
   */
 case class ChangePasswordForm(
   email: String = "", // ユーザID
@@ -38,6 +37,9 @@ case class ChangePasswordForm(
   newPassword2: String = "" // 入力された確認用パスワード
 )
 
+/**
+  * 認証関係
+  */
 @Singleton
 class Auth @Inject() (
     val silhouette: Silhouette[MyEnv],
@@ -153,96 +155,6 @@ class Auth @Inject() (
   }
 
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  // FORGOT PASSWORD
-
-  val emailForm = Form(single("email" -> email))
-
-  /**
-   * Starts the reset password mechanism if the user has forgot his password. It shows a form to insert his email address.
-   */
-  def forgotPassword = UserAwareAction { implicit request =>
-    request.identity match {
-      case Some(_) => Redirect(routes.Application.index)
-      case None => Ok(viewsAuth.forgotPassword(emailForm))
-    }
-  }
-
-  /**
-   * Sends an email to the user with a link to reset the password
-   */
-  def handleForgotPassword = UnsecuredAction.async { implicit request =>
-    emailForm.bindFromRequest.fold(
-      formWithErrors => Future.successful(BadRequest(viewsAuth.forgotPassword(formWithErrors))),
-      email => userService.retrieve(email).flatMap {
-        case Some(_) => {
-          val token = MailTokenUser(email, isSignUp = false)
-          tokenService.create(token).map { _ =>
-            Mailer.forgotPassword(email, link = routes.Auth.resetPassword(token.id).absoluteURL())
-            Ok(viewsAuth.forgotPasswordSent(email))
-          }
-        }
-        case None => Future.successful(BadRequest(viewsAuth.forgotPassword(emailForm.withError("email", Messages("auth.user.notexists")))))
-      }
-    )
-  }
-
-  val resetPasswordForm = Form(tuple(
-    "password1" -> passwordValidation,
-    "password2" -> nonEmptyText
-  ) verifying (Messages("auth.passwords.notequal"), passwords => passwords._2 == passwords._1))
-
-  /**
-   * Confirms the user's link based on the token and shows him a form to reset the password
-   */
-  def resetPassword(tokenId: String) = UnsecuredAction.async { implicit request =>
-    tokenService.retrieve(tokenId).flatMap {
-      case Some(token) if (!token.isSignUp && !token.isExpired) => {
-        Future.successful(Ok(viewsAuth.resetPassword(tokenId, resetPasswordForm)))
-      }
-      case Some(token) => {
-        tokenService.consume(tokenId)
-        notFoundDefault
-      }
-      case None => notFoundDefault
-    }
-  }
-
-  /**
-   * Saves the new password and authenticates the user
-   */
-  def handleResetPassword(tokenId: String) = UnsecuredAction.async { implicit request =>
-    resetPasswordForm.bindFromRequest.fold(
-      formWithErrors => Future.successful(BadRequest(viewsAuth.resetPassword(tokenId, formWithErrors))),
-      passwords => {
-        tokenService.retrieve(tokenId).flatMap {
-          case Some(token) if (!token.isSignUp && !token.isExpired) => {
-            val loginInfo: LoginInfo = token.email
-            userService.retrieve(loginInfo).flatMap {
-              case Some(user) => {
-                for {
-                  _ <- authInfoRepository.update(loginInfo, passwordHasherRegistry.current.hash(passwords._1))
-                  authenticator <- env.authenticatorService.create(user.email)
-                  result <- env.authenticatorService.renew(authenticator, Ok(viewsAuth.resetedPassword(user)))
-                } yield {
-                  tokenService.consume(tokenId)
-                  env.eventBus.publish(LoginEvent(user, request))
-                  result
-                }
-              }
-              case None => Future.failed(new IdentityNotFoundException("Couldn't find user"))
-            }
-          }
-          case Some(token) => {
-            tokenService.consume(tokenId)
-            notFoundDefault
-          }
-          case None => notFoundDefault
-        }
-      }
-    )
-  }
-
-  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // CHANGE PASSWORD
 
   var changePasswordForm = Form(
@@ -264,8 +176,13 @@ class Auth @Inject() (
    * Starts the change password mechanism. It shows a form to insert his current password and the new one.
    */
   def changePassword = SecuredAction { implicit request =>
-    // Viewを表示
-    Ok(viewsAuth.changePassword(changePasswordForm, userService.selectSuperUserList()))
+    if (request.identity.level >= 4) {
+      // Viewを表示
+      Ok(viewsAuth.changePassword(changePasswordForm, userService.selectSuperUserList()))
+    } else {
+      // 権限無いとき退場
+      Redirect(site.routes.WorkPlace.index())
+    }
   }
 
   /**

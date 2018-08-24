@@ -4,7 +4,7 @@
     display: -webkit-box;
     display: -ms-flexbox;
     top: 54px;
-    background: rgba(191, 191, 191, 1);
+    background: #FFF;
     width: 100%;
     height: 50px;
 }
@@ -17,7 +17,7 @@
 }
 .top__map__btn--area {
     right: 25px;
-    top: 5px;
+    top: 0px;
     position: absolute;
 }
 
@@ -130,7 +130,7 @@ thead.scrollHead{
 
 /*btn.start*/
 .btn__type {
-    margin-left: 1em;
+    /*margin-left: 1em;*/
     width: 8em;
     color: white;
     background: #545454;
@@ -179,7 +179,7 @@ thead.scrollHead{
     height: 75px;
     left: 0;
     z-index: 1;
-    top: 100px;
+    top: 104px;
     position: absolute;
     background: #ffffff;
 }

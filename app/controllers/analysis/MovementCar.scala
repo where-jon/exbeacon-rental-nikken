@@ -6,6 +6,7 @@ import java.util.{Date, Locale}
 import javax.inject.{Inject, Singleton}
 
 import com.mohiva.play.silhouette.api.Silhouette
+import controllers.site
 import controllers.{BaseController, BeaconService}
 import models._
 import play.api._
@@ -42,7 +43,7 @@ class MovementCar @Inject()(config: Configuration
   val REAL_WORK_DAY = 5;
   val DAY_WORK_TIME = 6;
   val HOUR_MINUTE = 60;
-  val BATCH_INTERVAL_MINUTE = 1;
+  var BATCH_INTERVAL_MINUTE = 60; //ログ検知インタバル初期値60分 daidan30分
 
   val CALENDAR_TYPE = "今月のみ";
   //val CALENDAR_TYPE = "今月以外";
@@ -52,7 +53,7 @@ class MovementCar @Inject()(config: Configuration
   var TOTAL_LENGTH = 0;
 
   val movementCarSearchForm = Form(mapping(
-    "inputDate" -> text
+    "inputDate" -> text.verifying(Messages("error.analysis.movementCar.search.date.empty"), {!_.isEmpty})
   )(MovementCarSearchData.apply)(MovementCarSearchData.unapply))
 
   /*登録用*/
@@ -73,6 +74,7 @@ class MovementCar @Inject()(config: Configuration
     DETECT_MONTH = mTime
     DETECT_MONTH_DAY += "-01"
     NOW_DATE = mSimpleDateFormat2.format(currentTime)
+    BATCH_INTERVAL_MINUTE = config.getInt("web.positioning.countMinute").get
   }
 
   /** 　検索側データ取得 */
@@ -122,7 +124,7 @@ class MovementCar @Inject()(config: Configuration
       calendarList.zipWithIndex.map{ case (calendar, i) =>
 
         // 検知フラグがtrue
-        val getWorkFlgSqlData =itemlogDAO.selectWorkingOn(false,car.item_car_id,placeId,calendar.iWeekStartDay,calendar.iWeekEndDay,itemIdList)
+        val getWorkFlgSqlData =itemlogDAO.selectWorkingOn(true,car.item_car_id,placeId,calendar.iWeekStartDay,calendar.iWeekEndDay,itemIdList)
         val vWofkFlgDetectCount = getWorkFlgSqlData.last.detected_count
         if(vWofkFlgDetectCount>0){
           System.out.println(vWofkFlgDetectCount)
@@ -137,11 +139,11 @@ class MovementCar @Inject()(config: Configuration
         // 週末があるため実際
         val vOperatingRate = this.getDetectedCount(vWofkFlgDetectCount,vRealWorkTime)
         // 予約ともに検知フラグがtrue
-        val getReserveWorkFlgSqlData =itemlogDAO.selectReserveAndWorkingOn(false,false,car.item_car_id,placeId,calendar.iWeekStartDay,calendar.iWeekEndDay,itemIdList)
+        val getReserveWorkFlgSqlData =itemlogDAO.selectReserveAndWorkingOn(true,true,car.item_car_id,placeId,calendar.iWeekStartDay,calendar.iWeekEndDay,itemIdList)
         val vReserveWofkFlgDetectCount = getReserveWorkFlgSqlData.last.detected_count
         val vReserveOperatingRate = this.getDetectedCount(vReserveWofkFlgDetectCount,vRealWorkTime)
 
-        WorkRate(car.item_car_id,car.item_car_name,vOperatingRate,vReserveOperatingRate)
+        WorkRate(car.item_car_id,car.item_car_name,vOperatingRate,vReserveOperatingRate,vWofkFlgDetectCount,vReserveWofkFlgDetectCount)
 
       }
     }
@@ -347,33 +349,42 @@ class MovementCar @Inject()(config: Configuration
 
   /** 　検索ロジック */
   def search = SecuredAction { implicit request =>
-    System.out.println("start search:")
-    val placeId = super.getCurrentPlaceId
-    //検索側データ取得
-    getSearchData(placeId)
+    movementCarSearchForm.bindFromRequest.fold(
+      formWithErrors =>
+        Redirect(routes.MovementCar.index())
+          //.flashing(ERROR_MSG_KEY -> Messages(formWithErrors.errors.map(_.message +"<br>").mkString("\n"))),  //herokuで動かない
+            .flashing(ERROR_MSG_KEY -> Messages("error.analysis.movementCar.search.date.empty")),
+      searchForm => {
+        val placeId = super.getCurrentPlaceId
+        //検索側データ取得
+        getSearchData(placeId)
+        // 検索情報
+        DETECT_MONTH = searchForm.inputDate
+        val calendarList =  this.getCalendarData()
+        val logItemAllList =  getAllItemLogData(placeId,itemIdList,calendarList)
 
-    // 検索情報
-    val searchForm = movementCarSearchForm.bindFromRequest.get
-    DETECT_MONTH = searchForm.inputDate
-
-    val calendarList =  this.getCalendarData()
-    val logItemAllList =  getAllItemLogData(placeId,itemIdList,calendarList)
-
-    Ok(views.html.analysis.movementCar(logItemAllList,calendarList,DETECT_MONTH,TOTAL_LENGTH))
+        Ok(views.html.analysis.movementCar(logItemAllList,calendarList,DETECT_MONTH,TOTAL_LENGTH))
+      }
+    )
   }
 
   /** 初期表示 */
   def index = SecuredAction { implicit request =>
-    // 初期化
-    init();
-    val placeId = super.getCurrentPlaceId
-    //検索側データ取得
-    getSearchData(placeId)
+    val reqIdentity = request.identity
+    if(reqIdentity.level >= 2){
+      // 初期化
+      init();
+      val placeId = super.getCurrentPlaceId
+      //検索側データ取得
+      getSearchData(placeId)
 
-    // DB探索になる今月に関するデータをセット
-    val calendarList =  this.getCalendarData()
-    val logItemAllList =  getAllItemLogData(placeId,itemIdList,calendarList)
-    Ok(views.html.analysis.movementCar(logItemAllList,calendarList,DETECT_MONTH,TOTAL_LENGTH))
+      // DB探索になる今月に関するデータをセット
+      val calendarList =  this.getCalendarData()
+      val logItemAllList =  getAllItemLogData(placeId,itemIdList,calendarList)
+      Ok(views.html.analysis.movementCar(logItemAllList,calendarList,DETECT_MONTH,TOTAL_LENGTH))
+    }else{
+      Redirect(site.routes.WorkPlace.index)
+    }
   }
 
 }
