@@ -1268,6 +1268,10 @@ color:#a94442
     vertical-align: 7px;
     font-weight: bold;
 }
+.line__view--title{
+    vertical-align: 7px;
+    font-weight: bold;
+}
 
 .td__title--frame{
     width: 30%;
