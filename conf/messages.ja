@@ -619,6 +619,19 @@ success.site.carReserve.update=作業車・立馬予約を完了しました。
 error.site.carReserve.update=作業車・立馬予約に問題が発生しました。<br/>
 error.site.carReserve.noselect=予約対象未選択
 
+# 作業車・立馬予約文字列
+lang.cms.itemCarManage.select=選択
+lang.cms.itemCarManage.floor=現在フロア
+lang.cms.itemCarManage.pos=現在位置
+lang.cms.itemCarManage.itemId=実ID
+lang.cms.itemCarManage.txId=Tag ID
+lang.cms.itemCarManage.typeId=種別ID
+lang.cms.itemCarManage.typeName=種別
+lang.cms.itemCarManage.name=名称
+lang.cms.itemCarManage.reserveDate=予約日
+lang.cms.itemCarManage.reserveTerm=予約期間
+lang.cms.itemCarManage.reserveId=予約ID
+
 # 予約画面共通
 error.site.reserve.overtime=現在時刻「{0}」は「{1}」予約可能時間を過ぎてるので本日内予約はできません。
 error.site.reserve.overtime.define=「午前」「終日」は 当日「8時」まで「午後」は 当日「13時」まで予約可能
