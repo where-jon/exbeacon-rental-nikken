@@ -41,8 +41,8 @@ itemTypeList: Seq[ItemType]
                 <span id="viewCount" data-count = "@VIEW_COUNT" class = "line__view--text" style="vertical-align: 7px">@(VIEW_COUNT)個以上</span>
                 <!--仮設材種別を表示-->
                 @itemTypeList.zipWithIndex.map{ case(itemType, i) =>
-                    <span data-stam = "@itemType.item_type_name" class = "line__view--style" style="background:@itemType.item_type_icon_color"></span>
-                    <span data-stam = "@itemType.item_type_name" class = "line__view--text" style="vertical-align: 7px">@itemType.item_type_name&nbsp</span>
+                    <span data-itemType = "@itemType.item_type_name" class = "line__view--style" style="background:@itemType.item_type_icon_color"></span>
+                    <span data-itemType = "@itemType.item_type_name" class = "line__view--text" style="vertical-align: 7px">@itemType.item_type_name&nbsp</span>
                 }
             </div>
 
