@@ -103,8 +103,10 @@ logItemAllList: Seq[List[WorkRate]]
                                     @if(j == 0){
                                         <td class="itemTd text-center ">@logItem.itemName</td>
                                     }
-                                    <td class="itemTd text-center ">@logItem.operatingRate% (@logItem.operatingCount 回)</td>
-                                    <td class="itemTd text-center ">@logItem.reserveOperatingRate% (@logItem.reserveOperatingCount 回)</td>
+                                    <!--<td class="itemTd text-center ">@logItem.operatingRate% (@logItem.operatingCount 回)</td>
+                                    <td class="itemTd text-center ">@logItem.reserveOperatingRate% (@logItem.reserveOperatingCount 回)</td>-->
+                                    <td class="itemTd text-center ">@logItem.operatingRate%</td>
+                                    <td class="itemTd text-center ">@logItem.reserveOperatingRate%</td>
                                 }
                             </tr>
                             }
