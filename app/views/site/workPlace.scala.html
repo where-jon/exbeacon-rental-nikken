@@ -34,15 +34,15 @@ itemTypeList: Seq[ItemType]
     <div class="top-area">
         <div class="top__btn--area ">
             <div id="top-title" class="top__btn--text">@Messages("lang.site.workPlace.page.title")
-                <div class="line__view--text" style="margin-top: 30px;font-size: 15px;margin-left: 18px;">&nbsp;凡例&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;</div>
+                <div class="line__view--title" style="margin-top: 30px;font-size: 15px;margin-left: 18px;">&nbsp;凡例&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;</div>
             </div>
             <div class="col-xs-6 col-sm-9 col-md-9 col-lg-9" style="display: -webkit-box;margin-top: 70px;">
-                <span class = "line__view--style" style="background:black"></span>
+                <span id="viewStyle" class = "line__view--style" style="background:black"></span>
                 <span id="viewCount" data-count = "@VIEW_COUNT" class = "line__view--text" style="vertical-align: 7px">@(VIEW_COUNT)個以上</span>
                 <!--仮設材種別を表示-->
                 @itemTypeList.zipWithIndex.map{ case(itemType, i) =>
-                    <span class = "line__view--style" style="background:@itemType.item_type_icon_color"></span>
-                    <span class = "line__view--text" style="vertical-align: 7px">@itemType.item_type_name&nbsp</span>
+                    <span data-stam = "@itemType.item_type_name" class = "line__view--style" style="background:@itemType.item_type_icon_color"></span>
+                    <span data-stam = "@itemType.item_type_name" class = "line__view--text" style="vertical-align: 7px">@itemType.item_type_name&nbsp</span>
                 }
             </div>
 
