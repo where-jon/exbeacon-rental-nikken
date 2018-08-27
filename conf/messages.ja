@@ -303,7 +303,6 @@ lang.cms.floorManage.title=フロア管理
 lang.cms.floorManage.displayOrder=表示順
 lang.cms.floorManage.name=フロア名
 lang.cms.floorManage.display=現場状況画面表示
-lang.cms.floorManage.exbId=EXB管理番号（固定）
 lang.cms.floorManage.floorId=フロア管理番号（固定）
 
 lang.cms.floorManage.floorUpdate.popup.displayOrder=表示順
@@ -323,8 +322,8 @@ error.cms.floorManage.floorUpdate.inputDisplayOrder.duplicate=表示順「{0}」
 
 # CMS文字列（EXB管理）
 lang.cms.exbManage.title=EXB管理
-lang.cms.exbManage.exbId =EXB管理番号（固定）
-lang.cms.exbManage.deviceId=デバイスID
+lang.cms.exbManage.exbId =EXB設置番号（固定）
+lang.cms.exbManage.deviceId=EXBデバイスID
 lang.cms.exbManage.deviceId.popup.placeholder=1
 lang.cms.exbManage.deviceNo=デバイス番号
 lang.cms.exbManage.deviceNo.popup.placeholder=1
