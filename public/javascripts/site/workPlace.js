@@ -593,12 +593,14 @@ function itemTypeRemoveHidden(vFloor) {
                 document.getElementById("viewCount").style.display = ""
             }
             for (var i = 0;i<viewColorElement.length;++i){
-               if(beaconData.typeName == $(viewColorElement[i]).attr('data-stam')){
+               if( beaconData.typeName == $(viewColorElement[i]).attr('data-itemType')
+                    || beaconData.typeName == $(viewColorElement[i]).attr('data-itemType') + "[鍵]"){
                   viewColorElement[i].style.display = ""
                }
             }
             for (var i = 0;i<viewTextElement.length;++i){
-               if(beaconData.typeName == $(viewTextElement[i]).attr('data-stam')){
+               if( beaconData.typeName == $(viewTextElement[i]).attr('data-itemType')
+                    || beaconData.typeName == $(viewTextElement[i]).attr('data-itemType') + "[鍵]"){
                   viewTextElement[i].style.display = ""
                }
             }
