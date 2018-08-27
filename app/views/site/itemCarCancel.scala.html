@@ -106,21 +106,21 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
                         <table class="table table-bordered table-condensed itemTable">
                             <thead>
                             <tr>
-                                <th colspan="12" class="tableTitleTh">@Messages("lang.site.carCancel.page.title")</th>
+                                <th colspan="9" class="tableTitleTh">@Messages("lang.site.carCancel.page.title")</th>
                             </tr>
                             <tr>
                                 <th class="tableTh ">選択</th>
                                 <th class="tableTh ">現在フロア</th>
                                 <th class="tableTh ">現在位置</th>
-                                <th class="tableTh ">実ID</th>
+                                <th class="tableTh hidden">実ID</th>
                                 <th class="tableTh ">Tag ID</th>
-                                <th class="tableTh ">種別ID</th>
+                                <th class="tableTh hidden">種別ID</th>
                                 <th class="tableTh ">種別</th>
                                 <th class="tableTh ">名称</th>
                                 <th class="tableTh ">予約業者</th>
                                 <th class="tableTh ">予約日</th>
                                 <th class="tableTh ">予約期間</th>
-                                <th class="tableTh ">予約ID</th>
+                                <th class="tableTh hidden ">予約ID</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -131,11 +131,11 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
                                     </td>
                                     <td class="itemTd text-center ">@car.cur_pos_name</td>
                                     <td class="itemTd text-center modalSelect">@car.cur_exb_name</td>
-                                    <td class="itemTd text-center ">@car.item_car_id
+                                    <td class="itemTd text-center hidden">@car.item_car_id
                                         <input class="hidden form-control input-sm" type="text" id="itemId-@i" name="itemId[@i]" value="@car.item_car_id">
                                     </td>
                                     <td class="itemTd text-center ">@car.item_car_btx_id</td>
-                                    <td class="itemTd text-center ">@car.item_type_id
+                                    <td class="itemTd text-center hidden">@car.item_type_id
                                         <input class="hidden form-control input-sm" type="text" id="itemTypeIdList-@i" name="itemTypeIdList[@i]" value="@car.item_type_id">
                                     </td>
                                     <td class="itemTd text-center ">@car.item_type_name</td>
@@ -147,7 +147,7 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
                                     <td class="itemTd text-center ">@car.work_type_name
                                         <input class="hidden form-control input-sm" type="text" id="workTypeNameList-@i" name="workTypeNameList[@i]" value="@car.work_type_name">
                                     </td>
-                                    <td class="itemTd text-center ">@car.reserve_id</td>
+                                    <td class="itemTd text-center hidden">@car.reserve_id</td>
                                 </tr>
                             }
                             </tbody>

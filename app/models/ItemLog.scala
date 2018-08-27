@@ -240,7 +240,7 @@ class ItemLogDAO @Inject() (dbapi: DBApi) {
               ,itemType.item_type_id
               ,itemType.item_type_name
               ,item.item_name
-              order by item.item_btx_id
+              order by item.item_btx_id,finish_detected_time desc
         """
       ).on(
         'place_id -> placeId,

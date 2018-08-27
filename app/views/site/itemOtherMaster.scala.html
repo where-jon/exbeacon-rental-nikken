@@ -104,7 +104,7 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
                         <table class="table table-bordered table-condensed itemTable">
                             <thead>
                             <tr>
-                                <th colspan="9" class="tableTitleTh">@Messages("lang.site.otherMaster.page.title")</th>
+                                <th colspan="8" class="tableTitleTh">@Messages("lang.site.otherMaster.page.title")</th>
                             </tr>
                             <tr>
                                 <th class="tableTh ">現在フロア</th>
@@ -115,7 +115,7 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
                                 <th class="tableTh ">業者</th>
                                 <th class="tableTh ">予約フロア</th>
                                 <th class="tableTh ">期間</th>
-                                <th class="tableTh ">予約ID</th>
+                                <th class="tableTh hidden">予約ID</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -129,7 +129,7 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
                                     <td class="itemTd text-center ">@other.company_name</td>
                                     <td class="itemTd text-center ">@other.reserve_floor_name</td>
                                     <td class="itemTd text-center ">@other.work_type_name</td>
-                                    <td class="itemTd text-center ">@other.reserve_id</td>
+                                    <td class="itemTd text-center hidden">@other.reserve_id</td>
                                 </tr>
                             }
                             </tbody>

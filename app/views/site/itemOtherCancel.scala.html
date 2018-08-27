@@ -122,22 +122,22 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
                         <table class="table table-bordered table-condensed itemTable">
                             <thead>
                             <tr>
-                                <th colspan="13" class="tableTitleTh">@Messages("lang.site.otherCancel.page.title")</th>
+                                <th colspan="10" class="tableTitleTh">@Messages("lang.site.otherCancel.page.title")</th>
                             </tr>
                             <tr>
                                 <th class="tableTh ">選択</th>
                                 <th class="tableTh ">現在フロア</th>
                                 <th class="tableTh ">現在位置</th>
-                                <th class="tableTh ">実ID</th>
+                                <th class="tableTh hidden">実ID</th>
                                 <th class="tableTh ">Tag ID</th>
-                                <th class="tableTh ">種別ID</th>
+                                <th class="tableTh hidden">種別ID</th>
                                 <th class="tableTh ">種別</th>
                                 <th class="tableTh ">名称</th>
                                 <th class="tableTh ">予約業者</th>
                                 <th class="tableTh ">予約最初日</th>
                                 <th class="tableTh ">予約最終日</th>
                                 <th class="tableTh ">予約期間</th>
-                                <th class="tableTh ">予約ID</th>
+                                <th class="tableTh hidden">予約ID</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -148,11 +148,11 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
                                     </td>
                                     <td class="itemTd text-center ">@other.cur_pos_name</td>
                                     <td class="itemTd text-center modalSelect">@other.cur_exb_name</td>
-                                    <td class="itemTd text-center ">@other.item_other_id
+                                    <td class="itemTd text-center hidden">@other.item_other_id
                                         <input class="hidden form-control input-sm" type="text" id="itemId-@i" name="itemId[@i]" value="@other.item_other_id">
                                     </td>
                                     <td class="itemTd text-center ">@other.item_other_btx_id</td>
-                                    <td class="itemTd text-center ">@other.item_type_id
+                                    <td class="itemTd text-center hidden">@other.item_type_id
                                         <input class="hidden form-control input-sm" type="text" id="itemTypeIdList-@i" name="itemTypeIdList[@i]" value="@other.item_type_id">
                                     </td>
                                     <td class="itemTd text-center ">@other.item_type_name</td>
@@ -165,7 +165,7 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
                                     <td class="itemTd text-center ">@other.work_type_name
                                         <input class="hidden form-control input-sm" type="text" id="workTypeNameList-@i" name="workTypeNameList[@i]" value="@other.work_type_name">
                                     </td>
-                                    <td class="itemTd text-center ">@other.reserve_id</td>
+                                    <td class="itemTd text-center hidden">@other.reserve_id</td>
                                 </tr>
                             }
                             </tbody>
