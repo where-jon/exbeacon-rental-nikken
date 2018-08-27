@@ -13,19 +13,19 @@
     <div class="navbar col-xs-10 col-sm-10 col-md-10 col-lg-10" style="padding:0px;">
         <div class="row" style="margin:0px;height:20px;">
             <div class="col-xs-9 col-sm-9 col-md-9 col-lg-9" style="padding:0px;height:20px;">
-                <div class="text-left" style="margin-top:5px;margin-left:10px;font-size:2vmin;overflow:hidden;white-space:nowrap;">
+                <div class="text-left" style="margin-top:5px;margin-left:10px;font-size:90%;overflow:hidden;white-space:nowrap;">
                     @user.currentPlaceName
                 </div>
             </div>
             <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3" style="padding:0px;height:20px;">
-                <div class="text-right" style="margin-top:5px;margin-right:10px;font-size:2vmin;overflow:hidden;white-space:nowrap;">
+                <div class="text-right" style="margin-top:5px;margin-right:10px;font-size:80%;overflow:hidden;white-space:nowrap;">
                     @{user.name}&nbsp;@{user.email}
                 </div>
             </div>
         </div>
         <div class="row" style="margin:0px;height:34px;">
             <div class="col-xs-9 col-sm-9 col-md-9 col-lg-9" style="padding:0px;height:34px;">
-                <ul class="nav navbar-nav" style="font-size:1.6vmin">
+                <ul class="nav navbar-nav" style="font-size:80%">
                     <li class="pull-left" style="margin-left:2px">
                         @if(request.path contains "/site/") {
                         <a class="text-center tabSelected menu-title"><i class="fa fa-eye"></i>&nbsp;@Messages("lang.navbar.tab.temporaryMaterialManagement")</a>
