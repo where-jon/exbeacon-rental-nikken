@@ -89,12 +89,15 @@ class MovementCar @Inject()(config: Configuration
   }
 
   /** 　作業時間を計算 */
-  def getDetectedCount(detectedCount:Integer, weekTotalTime:Integer) : Float = {
+  def getDetectedCount(detectedCount:Integer, weekTotalTime:Integer,bRealWorkDayCheck:Boolean) : Float = {
     if(detectedCount == 0 || detectedCount == -1){
       0
     }else{
       val vCountResult = (detectedCount * BATCH_INTERVAL_MINUTE) / (weekTotalTime * HOUR_MINUTE).toFloat * 100
-      Math.round(vCountResult*10)/10.0.toFloat  // 小数点2位以下を四捨五
+      if(!bRealWorkDayCheck)
+        Math.round(vCountResult*10)/10.0.toFloat + 100 // 週末判定で入って働いたら100%すでに超え
+      else
+        Math.round(vCountResult*10)/10.0.toFloat // 小数点2位以下を四捨五
     }
   }
 
@@ -129,19 +132,20 @@ class MovementCar @Inject()(config: Configuration
         if(vWofkFlgDetectCount>0){
           System.out.println(vWofkFlgDetectCount)
         }
-
+        var bRealWorkDayCheck = true
         // 実際働く時間（土、日だけの場合もある）
         val vRealWorkTime = if(calendar.iWeekRealWorkDay == 0 ){
+          bRealWorkDayCheck = false
           calendar.iWeekTotalWorkDay * DAY_WORK_TIME // 実際残り日（土日最大二日）から動いたら判定に入れる
         }else {
           calendar.iWeekTotalTime
         }
         // 週末があるため実際
-        val vOperatingRate = this.getDetectedCount(vWofkFlgDetectCount,vRealWorkTime)
+        val vOperatingRate = this.getDetectedCount(vWofkFlgDetectCount,vRealWorkTime,bRealWorkDayCheck)
         // 予約ともに検知フラグがtrue
         val getReserveWorkFlgSqlData =itemlogDAO.selectReserveAndWorkingOn(true,true,car.item_car_id,placeId,calendar.iWeekStartDay,calendar.iWeekEndDay,itemIdList)
         val vReserveWofkFlgDetectCount = getReserveWorkFlgSqlData.last.detected_count
-        val vReserveOperatingRate = this.getDetectedCount(vReserveWofkFlgDetectCount,vRealWorkTime)
+        val vReserveOperatingRate = this.getDetectedCount(vReserveWofkFlgDetectCount,vRealWorkTime,bRealWorkDayCheck)
 
         WorkRate(car.item_car_id,car.item_car_name,vOperatingRate,vReserveOperatingRate,vWofkFlgDetectCount,vReserveWofkFlgDetectCount)
 
