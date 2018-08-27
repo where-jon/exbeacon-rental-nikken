@@ -37,24 +37,24 @@ floorInfoList: Seq[FloorInfoData]
                                         <th colspan="6" class="tableTitleTh">@Messages("lang.cms.floorManage.title")</th>
                                     </tr>
                                     <tr>
-                                        <th class="tableTh deviceTh">フロアID</th>
-                                        <th class="tableTh deviceTh">表示順</th>
-                                        <th class="tableTh floorTh">フロア名</th>
-                                        <th class="tableTh deviceTh">現場状況画面表示</th>
-                                        <th class="tableTh deviceTh">EXB設置番号</th>
+                                        <th class="tableTh deviceTh">@Messages("lang.cms.floorManage.displayOrder")</th>
+                                        <th class="tableTh deviceTh">@Messages("lang.cms.floorManage.display")</th>
+                                        <th class="tableTh floorTh">@Messages("lang.cms.floorManage.name")</th>
+                                        <th class="tableTh deviceTh">@Messages("lang.cms.floorManage.floorId")</th>
+                                        <th class="tableTh deviceTh">@Messages("lang.cms.floorManage.exbId")</th>
                                     </tr>
                                 </thead>
                                 <tbody class="sortable">
                                     @for(floor <- floorInfoList){
                                         <tr class="rowColor rowHover" id="@floor.floor_id" data-floorId="@floor.floor_id">
-                                            <td class="itemTd text-center">@floor.floor_id</td>
                                             <td class="itemTd text-center displayOrder">@floor.display_order</td>
-                                            <td class="itemTd text-center floorName">@floor.floor_name</td>
                                             @if(floor.active_flg){
                                                 <td class="itemTd text-center activeFlg">表示</td>
                                             }else{
                                                 <td class="itemTd text-center activeFlg">非表示</td>
                                             }
+                                            <td class="itemTd text-center floorName">@floor.floor_name</td>
+                                            <td class="itemTd text-center">@floor.floor_id</td>
                                             <td class="itemTd text-center floor_name">
                                                 @for(exbDeviceId <- floor.exbDeviceIdList){
                                                 <span class="part">@exbDeviceId</span>
