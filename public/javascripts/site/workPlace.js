@@ -487,6 +487,8 @@ function getJson() {
                 workerBtn = [];
                 userTag = []
                 setFrame();
+                // itemTypeあるものだけ表示
+                itemTypeCheck();
                 // user iconクリックイベント
                 personBtnEvent();
                 ChangeCheck = false;
@@ -580,6 +582,50 @@ var finishUpdate = function() {
 }
 
 
+function itemTypeRemoveHidden(vFloor) {
+    var viewColorElement = [].slice.call(document.querySelectorAll(".line__view--style"));
+    var viewTextElement = [].slice.call(document.querySelectorAll(".line__view--text"));
+    var vSelectFloor = Number(vFloor)
+    TotalBeaconsData.forEach(function(beaconData, i) {
+        if(beaconData.pos.floor == vSelectFloor){
+            if(beaconData.overCheck){
+                document.getElementById("viewStyle").style.display = ""
+                document.getElementById("viewCount").style.display = ""
+            }
+            for (var i = 0;i<viewColorElement.length;++i){
+               if( beaconData.typeName == $(viewColorElement[i]).attr('data-itemType')
+                    || beaconData.typeName == $(viewColorElement[i]).attr('data-itemType') + "[鍵]"){
+                  viewColorElement[i].style.display = ""
+               }
+            }
+            for (var i = 0;i<viewTextElement.length;++i){
+               if( beaconData.typeName == $(viewTextElement[i]).attr('data-itemType')
+                    || beaconData.typeName == $(viewTextElement[i]).attr('data-itemType') + "[鍵]"){
+                  viewTextElement[i].style.display = ""
+               }
+            }
+        }
+    });
+}
+
+var itemTypeHidden = function() {
+    var vStyleElement = document.getElementsByClassName("line__view--style")
+    for (var i = 0;i< vStyleElement.length; ++i){
+        vStyleElement[i].style.display = "none"
+    }
+    var vTextElement = document.getElementsByClassName("line__view--text")
+    for (var i = 0;i< vTextElement.length; ++i){
+        vTextElement[i].style.display = "none"
+    }
+ }
+
+//　凡例に現在検知されたitemTypeだけ表示する
+ var itemTypeCheck = function() {
+      itemTypeHidden();
+      var result = $('#floor-category option:selected').val();
+      itemTypeRemoveHidden(result)
+ }
+
 var viewHidden = function() {
     var vMapElement = document.getElementsByClassName("level")
     for (var i = 0;i< vMapElement.length; ++i){
@@ -613,6 +659,9 @@ $(function () {
      $('#floor-category').change(function() {
          viewHidden();
          var result = $('#floor-category option:selected').val();
+         // itemTypeあるものだけ表示
+         itemTypeCheck();
+
          console.log("floor:" + result)
          gMapPos = result;
          document.getElementById("beaconMap-" + result).classList.remove("hidden");

@@ -1,5 +1,8 @@
 package controllers.cms
 
+import java.text.SimpleDateFormat
+import java.util.{Calendar, Date, Locale}
+
 import com.mohiva.play.silhouette.api.Silhouette
 import controllers.{BaseController, site}
 import javax.inject.{Inject, Singleton}
@@ -157,7 +160,56 @@ class ItemCarManage @Inject()(
           // 予約情報テーブルに作業車・立馬IDが存在していないか
           val itemCarReserveList = carDAO.selectCarReserveCheck(super.getCurrentPlaceId, f.inputCarId.toInt)
           if (itemCarReserveList.length > 0) {
-            errMsg :+= Messages("error.cms.ItemOtherManage.update.inputItemOtherIdReserve.use.noChange", f.inputCarId)
+            var chkFlg : Int = 0
+            // 現在時刻設定
+            val mSimpleDateFormat = new SimpleDateFormat("yyyyMMdd", Locale.JAPAN)
+            val currentTime = new Date();
+            val mTime = mSimpleDateFormat.format(currentTime)
+            val mHour = new SimpleDateFormat("HH").format(Calendar.getInstance().getTime()).toInt
+            for(itemCarReserve <- itemCarReserveList){
+              if(itemCarReserve.reserveEndDate.toInt < mTime.toInt) {
+                // 予約期間が前日の場合、または期間が終日の場合
+                chkFlg = 2
+
+              }else{
+                // 当日以降
+                if (itemCarReserve.workTypeId == 1) {
+                  // 午前予約の場合
+                  if (itemCarReserve.reserveEndDate.toInt == mTime.toInt) {
+                    if (mHour < 13) {
+                      // 予約済み（使用中）
+                      chkFlg = 1
+                    }else{
+                      // 現在時刻が13時を過ぎていた場合
+                      if(chkFlg != 1){
+                        chkFlg = 2
+                      }
+                    }
+                  }
+                } else if (itemCarReserve.workTypeId == 2) {
+                  // 午後予約の場合
+                  if (itemCarReserve.reserveEndDate.toInt == mTime.toInt) {
+                    if (mHour < 17) {
+                      // 予約済み（使用中）
+                      chkFlg = 1
+                    }else{
+                      // 現在時刻が17時を過ぎていた場合
+                      if(chkFlg != 1){
+                        chkFlg = 2
+                      }
+                    }
+                  }
+                }else{
+                  // 未来で予約済み
+                  chkFlg = 1
+                }
+              }
+            }
+            if(chkFlg == 1){
+              errMsg :+= Messages("error.cms.CarManage.update.inputCarIdReserve.use.noChange", f.inputCarId);
+            }else if(chkFlg == 2){
+              errMsg :+= Messages("error.cms.CarManage.update.inputCarIdReserve.use.exceed", f.inputCarId);
+            }
           }
           // TagIDがその他仮設材管理に存在してはいけない
           val itemOtherBtxList1 = itemOtherDAO.selectItemOtherBtxListBtxCheck(super.getCurrentPlaceId, f.inputCarBtxId.toInt)
@@ -271,7 +323,56 @@ class ItemCarManage @Inject()(
       // 予約情報テーブルに作業車・立馬IDが存在していないか
       val carReserveList = carDAO.selectCarReserveCheck(super.getCurrentPlaceId, f.deleteCarId.toInt)
       if(carReserveList.length > 0){
-        errMsg :+= Messages("error.cms.CarManage.delete.inputCarIdReserve.use", f.deleteCarId)
+        var chkFlg : Int = 0
+        // 現在時刻設定
+        val mSimpleDateFormat = new SimpleDateFormat("yyyyMMdd", Locale.JAPAN)
+        val currentTime = new Date();
+        val mTime = mSimpleDateFormat.format(currentTime)
+        val mHour = new SimpleDateFormat("HH").format(Calendar.getInstance().getTime()).toInt
+        for(itemCarReserve <- carReserveList) {
+          if (itemCarReserve.reserveEndDate.toInt < mTime.toInt) {
+            // 予約期間が前日の場合、または期間が終日の場合
+            chkFlg = 2
+
+          } else {
+            // 当日以降
+            if (itemCarReserve.workTypeId == 1) {
+              // 午前予約の場合
+              if (itemCarReserve.reserveEndDate.toInt == mTime.toInt) {
+                if (mHour < 13) {
+                  // 予約済み（使用中）
+                  chkFlg = 1
+                } else {
+                  // 現在時刻が13時を過ぎていた場合
+                  if (chkFlg != 1) {
+                    chkFlg = 2
+                  }
+                }
+              }
+            } else if (itemCarReserve.workTypeId == 2) {
+              // 午後予約の場合
+              if (itemCarReserve.reserveEndDate.toInt == mTime.toInt) {
+                if (mHour < 17) {
+                  // 予約済み（使用中）
+                  chkFlg = 1
+                } else {
+                  // 現在時刻が17時を過ぎていた場合
+                  if (chkFlg != 1) {
+                    chkFlg = 2
+                  }
+                }
+              }
+            } else {
+              // 未来で予約済み
+              chkFlg = 1
+            }
+          }
+        }
+        if(chkFlg == 1){
+          errMsg :+= Messages("error.cms.CarManage.delete.inputCarIdReserve.use.noChange", f.deleteCarId);
+        }else if(chkFlg == 2){
+          errMsg :+= Messages("error.cms.CarManage.update.inputCarIdReserve.use.exceed", f.deleteCarId);
+        }
       }
 
       // 検索
