@@ -174,6 +174,7 @@ error.cms.AccountManage.passwordUpdate.userPassword2.empty=確認パスワード
 error.cms.AccountManage.passwordUpdate.notEqual=パスワードと確認パスワードが異なります。
 error.cms.AccountManage.delete.userId.empty=削除するアカウントを指定してください。
 
+error.undetected.api=この現場はAPIデータが正しくありません。管理者確認が必要です。
 ################################################################################################
 # SUCCESS
 success.CarReserve.registerModal=予約を登録しました。
