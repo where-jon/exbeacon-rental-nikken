@@ -3,13 +3,12 @@ package controllers.site
 import javax.inject.{Inject, Singleton}
 
 import com.mohiva.play.silhouette.api.Silhouette
-import controllers.site
-import controllers.{BaseController, BeaconService}
+import controllers.{BaseController, BeaconService, errors}
 import models.{ItemType, PowerEnum}
 import play.api._
 import play.api.data.Form
 import play.api.data.Forms.{mapping, _}
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.libs.ws._
 import utils.silhouette.MyEnv
 
@@ -96,22 +95,30 @@ class TxTagManage @Inject()(config: Configuration
   def index = SecuredAction{ implicit request =>
 
     val placeId = super.getCurrentPlaceId
-    //検索側データ取得
-    getSearchData(placeId)
-    // ①仮設材すべてを取得
-    val dbDatas = beaconDAO.selectBeaconViewer(placeId)
-    // ②仮設材種別作業車の鍵をものとして取得
-    val dbDatasKeyData = beaconDAO.selectCarKeyViewer(placeId)
-    // ①、②を結合
-    val totalDbDatas = dbDatas union  dbDatasKeyData
-    val beaconListApi = beaconService.getTxData(totalDbDatas,true,placeId)
+    if(beaconService.getCloudUrl(placeId)){
+      //検索側データ取得
+      getSearchData(placeId)
+      // ①仮設材すべてを取得
+      val dbDatas = beaconDAO.selectBeaconViewer(placeId)
+      // ②仮設材種別作業車の鍵をものとして取得
+      val dbDatasKeyData = beaconDAO.selectCarKeyViewer(placeId)
+      // ①、②を結合
+      val totalDbDatas = dbDatas union  dbDatasKeyData
+      val beaconListApi = beaconService.getTxData(totalDbDatas,true,placeId)
 
-    if(beaconListApi!=null){
-      val POWER_ENUM = PowerEnum().map;
-      Ok(views.html.site.txTagManage(POWER_ENUM,POWER_FILTER,ITEM_TYPE_FILTER,itemTypeList,beaconListApi))
+      if(beaconListApi!=null){
+        val POWER_ENUM = PowerEnum().map;
+        Ok(views.html.site.txTagManage(POWER_ENUM,POWER_FILTER,ITEM_TYPE_FILTER,itemTypeList,beaconListApi))
+      }else{
+        // apiと登録データが違う場合
+        Redirect(errors.routes.UnDetectedApi.indexSite)
+          .flashing(ERROR_MSG_KEY -> Messages("error.unmatched.data"))
+      }
+
     }else{
       // apiデータがない場合
-      Redirect(site.routes.UnDetected.index)
+      Redirect(errors.routes.UnDetectedApi.indexSite)
+        .flashing(ERROR_MSG_KEY -> Messages("error.undetected.api"))
     }
 
   }
