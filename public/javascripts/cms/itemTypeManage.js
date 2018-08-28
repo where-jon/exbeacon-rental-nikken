@@ -101,9 +101,12 @@ function showInputModal(isRegister){
         $('#inputItemTypeCategoryName').val('');
         $('#inputItemTypeCategory').val('');
         $('#item_type').val("0");
-        $('#inputItemTypeIconColor').val('');
-        $('#inputItemTypeTextColor').val('');
-        $('#inputItemTypeRowColor').val('');
+        $('#inputItemTypeIconColor').val("rgb(255,255,255");
+        $('#background-color').val("#FFFFFF");
+        $('#inputItemTypeTextColor').val("rgb(0,0,0");
+        $('#text-color').val("#000000");
+        $('#inputItemTypeRowColor').val("rgb(0,0,0");
+        $('#row-color').val("#000000");
         $('#inputNote').val('');
 
         $('#itemTypeUpdateFooter').addClass('hidden');
@@ -118,8 +121,14 @@ function showInputModal(isRegister){
             $('#item_type').val((parseInt($('#'+itemTypeId).find('.itemTypeCategoryId').text()) + 1).toString());
 
             $('#inputItemTypeIconColor').val($('#'+itemTypeId).find('.itemTypeIconColor').text());
+            var rgbEditIcon = colorEdit($('#'+itemTypeId).find('.itemTypeIconColor').text());
+            $('#background-color').val(rgbEditIcon);
             $('#inputItemTypeTextColor').val($('#'+itemTypeId).find('.itemTypeTextColor').text());
+            var rgbEditText = colorEdit($('#'+itemTypeId).find('.itemTypeTextColor').text());
+            $('#text-color').val(rgbEditText);
             $('#inputItemTypeRowColor').val($('#'+itemTypeId).find('.itemTypeRowColor').text());
+            var rgbEditRow = colorEdit($('#'+itemTypeId).find('.itemTypeRowColor').text());
+            $('#row-color').val(rgbEditRow);
             $('#inputNote').val($('#'+itemTypeId).find('.itemNote').text());
 
             $('#itemTypeUpdateFooter').removeClass('hidden');
@@ -141,6 +150,22 @@ function deleteItemType() {
         $('#deleteItemTypeId').val(itemTypeId);
         $('#deleteForm').submit();
     }
+}
+
+// カラーコード変換
+function colorEdit(rgbColor) {
+    var rgbEdit = rgbColor.slice(4);
+    rgbEdit = rgbEdit.replace(")", "");
+    var listRgb = rgbEdit.split(",");
+    var retRgb = "#";
+    if(listRgb.length == 3) {
+        retRgb = retRgb + ("00" + parseInt(listRgb[0]).toString(16)).slice(-2);
+        retRgb = retRgb + ("00" + parseInt(listRgb[1]).toString(16)).slice(-2);
+        retRgb = retRgb + ("00" + parseInt(listRgb[2]).toString(16)).slice(-2);
+    }else{
+        retRgb = retRgb + "000000";
+    }
+    return retRgb;
 }
 
 // 表示ボタンをクリックする時に発生するイベント
@@ -167,6 +192,34 @@ $(function(){
     viewBtnEvent();
     // マウス操作とタップ操作をバインド
     bindMouseAndTouch();
+
+    $('#background-color').on('change', function(e) {
+        var colorEdit = $(this).val();
+        colorEdit = colorEdit.slice(1);
+        var r = parseInt(colorEdit.substring(0, 2), 16);
+        var g = parseInt(colorEdit.substring(2, 4), 16);
+        var b = parseInt(colorEdit.substring(4, 6), 16);
+        var colorRgb = "rgb(" + r + "," + g + "," + b + ")";
+        $('#inputItemTypeIconColor').val(colorRgb);
+      });
+      $('#text-color').on('change', function(e) {
+        var colorEdit = $(this).val();
+        colorEdit = colorEdit.slice(1);
+        var r = parseInt(colorEdit.substring(0, 2), 16);
+        var g = parseInt(colorEdit.substring(2, 4), 16);
+        var b = parseInt(colorEdit.substring(4, 6), 16);
+        var colorRgb = "rgb(" + r + "," + g + "," + b + ")";
+        $('#inputItemTypeTextColor').val(colorRgb);
+      });
+      $('#row-color').on('change', function(e) {
+        var colorEdit = $(this).val();
+        colorEdit = colorEdit.slice(1);
+        var r = parseInt(colorEdit.substring(0, 2), 16);
+        var g = parseInt(colorEdit.substring(2, 4), 16);
+        var b = parseInt(colorEdit.substring(4, 6), 16);
+        var colorRgb = "rgb(" + r + "," + g + "," + b + ")";
+        $('#inputItemTypeRowColor').val(colorRgb);
+      });
 
     // リサイズ対応
     var timer = false;
