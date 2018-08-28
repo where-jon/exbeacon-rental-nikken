@@ -1,9 +1,9 @@
 @(
-POWER_ENUM: Map[Int,String]
-,POWER_FILTER: Int
-,ITEM_TYPE_FILTER: Int
-,itemTypeList: Seq[ItemType]
-,txList: Seq[itemBeaconPositionData]
+    POWER_ENUM: Map[Int,String]
+    ,POWER_FILTER: Int
+    ,ITEM_TYPE_FILTER: Int
+    ,itemTypeList: Seq[ItemType]
+    ,txList: Seq[itemBeaconPositionData]
 )(implicit user: User, messages: Messages, request: RequestHeader, flash: Flash)
 @import b3.vertical.fieldConstructor
 @import controllers.routes
@@ -12,9 +12,9 @@ POWER_ENUM: Map[Int,String]
 <!doctype html>
 <html lang="ja">
 <head>
-    @templates.htmlHead(title = Messages("lang.cms.carManage.title"))
-    <link rel="stylesheet" href="@routes.MyAssets.css("cms/itemCarManage.css")"/>
-    <script></script>
+@templates.htmlHead(title = Messages("lang.cms.carManage.title"))
+<link rel="stylesheet" href="@routes.MyAssets.css("cms/itemCarManage.css")"/>
+<script></script>
 </head>
 <body>
 <!-- content -->
@@ -25,7 +25,7 @@ POWER_ENUM: Map[Int,String]
         <!-- サイドメニュー -->
         @views.html.templates.sideMenu()
         <!-- メイン -->
-        <div class="col-lg-10 mainSpace">
+        <div class="mainSpace col-xs-10 col-sm-10 col-md-10 col-lg-10">
             <!-- 画面題字 -->
             <div class="form-group" style="font-weight:bold;font-size:19px;margin:25px 0px;">
                 <!-- メッセージ -->
@@ -33,100 +33,93 @@ POWER_ENUM: Map[Int,String]
                 <!--タイトル-->
                 @Messages("lang.site.txTagManage.title")
             </div>
-            <!-- ボタン-->
             <form id="viewForm" method="post" action="">
                 @CSRF.formField
                 <div class="row tableRow" style="margin-top: 10px;">
-                    <div class="text-center col-xs-2 col-sm-2 col-md-2" style="padding:0;">
-                        電池残量 :
-                        <select id="POWER_FILTER" style="width: 100px;">
-                            <option value="-1"></option>
-                            @POWER_ENUM.zipWithIndex.map { case(power, i) =>
-                            <option value="@power._1">@power._2</option>
-                            }
-                        </select>
-                         <input class="hidden form-control input-sm" type="text" id="powerValue" name="powerValue" value = "@POWER_FILTER">
+                    <div class="text-left col-xs-11 col-sm-11 col-md-11 col-lg-11" style="padding:0;">
+                        <div style="margin-right:20px;float:left;">
+                            電池残量 :
+                            <select id="POWER_FILTER" style="width: 100px;">
+                                <option value="-1"></option>
+                                @POWER_ENUM.zipWithIndex.map { case(power, i) =>
+                                    <option value="@power._1">@power._2</option>
+                                }
+                            </select>
+                            <input class="hidden form-control input-sm" type="text" id="powerValue" name="powerValue" value = "@POWER_FILTER">
+                        </div>
+                        <div style="float:left;">
+                            種別 :
+                            <select id="ITEM_TYPE_FILTER" style="width: 100px;">
+                                <!--仮設材種別テーブルから検索フィルタを設置-->
+                                <option value="0">すべて</option>
+                                @itemTypeList.zipWithIndex.map { case(itemType, i) =>
+                                    <option value="@itemType.item_type_id">@itemType.item_type_name</option>
+                                }
+                            </select>
+                            <input class="hidden form-control input-sm" type="text" id="itemTypeId" name="itemTypeId" value = "@ITEM_TYPE_FILTER">
+                        </div>
                     </div>
-
-
-                    <div class="text-center col-xs-2 col-sm-2 col-md-2" style="padding:0;">
-                        種別 :
-                        <select id="ITEM_TYPE_FILTER" style="width: 100px;">
-                            <!--仮設材種別テーブルから検索フィルタを設置-->
-                            <option value="0">すべて</option>
-                            @itemTypeList.zipWithIndex.map { case(itemType, i) =>
-                            <option value="@itemType.item_type_id">@itemType.item_type_name</option>
-                            }
-                        </select>
-                        <input class="hidden form-control input-sm" type="text" id="itemTypeId" name="itemTypeId" value = "@ITEM_TYPE_FILTER">
+                    <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1" style="padding:0;">
+                        <div id = "viewBtn" class="text-center btn btn__view--frame" style="width:100%">
+                            表示
+                        </div>
                     </div>
-                    <!--表示ボタン-->
-                    <div id = "viewBtn" class="text-center btn btn__view--frame">
-                        表示
-                    </div>
+                    @CSRF.formField
                 </div>
-                @CSRF.formField
             </form>
-
             <!-- テーブルのROW -->
             <div class="row tableRow">
                 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="padding:0;">
                     <div class="table-responsive-body">
                         <table class="table table-bordered table-condensed itemTable">
                             <thead>
-                            <tr>
-                                <th colspan="6" class="tableTitleTh">@Messages("lang.site.txTagManage.title")</th>
-                            </tr>
-                            <tr>
-                                <th class="tableTh txTagNoTh">@Messages("lang.site.txTagManage.txTag.id")</th>
-                                <th class="tableTh batteryTh">@Messages("lang.site.txTagManage.txTag.powerLevel")</th>
-                                <th class="tableTh floorTh">@Messages("lang.site.txTagManage.txTag.curfloor")</th>
-                                <th class="tableTh locationTh">@Messages("lang.site.txTagManage.txTag.curpos")</th>
-                                <th class="tableTh kindTh">@Messages("lang.site.txTagManage.txTag.kind")</th>
-                                <th class="tableTh nameTh">@Messages("lang.site.txTagManage.txTag.name")</th>
-                            </tr>
+                                <tr>
+                                    <th colspan="6" class="tableTitleTh">@Messages("lang.site.txTagManage.title")</th>
+                                </tr>
+                                <tr>
+                                    <th class="tableTh txTagNoTh">@Messages("lang.site.txTagManage.txTag.id")</th>
+                                    <th class="tableTh batteryTh">@Messages("lang.site.txTagManage.txTag.powerLevel")</th>
+                                    <th class="tableTh floorTh">@Messages("lang.site.txTagManage.txTag.curfloor")</th>
+                                    <th class="tableTh locationTh">@Messages("lang.site.txTagManage.txTag.curpos")</th>
+                                    <th class="tableTh kindTh">@Messages("lang.site.txTagManage.txTag.kind")</th>
+                                    <th class="tableTh nameTh">@Messages("lang.site.txTagManage.txTag.name")</th>
+                                </tr>
                             </thead>
                             <tbody>
-                            @for(data <- txList){
-                            <tr class="rowColor">
-                                <td class="itemTd text-center">@{data.btx_id}</td>
-                                <td class="itemTd text-center" class="item preview_frame">
-                                    <!-- 色表示 -->
-                                    @{
-                                    if(data.power_level < 20){
-                                        if(data.power_level == -1){
-                                            <div id="batteryDanger" class="preview_icon" style="background: #c00; color: #fff;">未検知</div>
-                                        }else{
-                                            <div id="batteryDanger" class="preview_icon" style="background: #c00; color: #fff;">交換</div>
-                                        }
-                                    }else if(data.power_level <= 30){
-                                    <div id="batteryWarn" class="preview_icon" style="background: #ed7d31; color: #fff;">注意</div>
-                                    }else{
-                                    <div id="batteryOk" class="preview_icon" style="background: #70ad47; color: #fff;">良好</div>
-                                    }
-                                    }
-                                </td>
-                                <td class="itemTd text-center">@{data.cur_pos_name}</td>
-                                <td class="itemTd text-center">@{data.cur_exb_name}</td>
-                                <td class="itemTd text-center">@{data.item_type_name}</td>
-                                <td class="itemTd text-center">@{data.item_name}</td>
-                            </tr>
-                            }
+                                @for(data <- txList){
+                                    <tr class="rowColor">
+                                        <td class="itemTd text-center">@{data.btx_id}</td>
+                                        <td class="itemTd text-center" class="item preview_frame">
+                                            <!-- 色表示 -->
+                                            @{
+                                                if(data.power_level < 20){
+                                                    if(data.power_level == -1){
+                                                        <div id="batteryDanger" class="preview_icon" style="background: #c00; color: #fff;">未検知</div>
+                                                    }else{
+                                                        <div id="batteryDanger" class="preview_icon" style="background: #c00; color: #fff;">交換</div>
+                                                    }
+                                                }else if(data.power_level <= 30){
+                                                    <div id="batteryWarn" class="preview_icon" style="background: #ed7d31; color: #fff;">注意</div>
+                                                }else{
+                                                    <div id="batteryOk" class="preview_icon" style="background: #70ad47; color: #fff;">良好</div>
+                                                }
+                                            }
+                                        </td>
+                                        <td class="itemTd text-center">@{data.cur_pos_name}</td>
+                                        <td class="itemTd text-center">@{data.cur_exb_name}</td>
+                                        <td class="itemTd text-center">@{data.item_type_name}</td>
+                                        <td class="itemTd text-center">@{data.item_name}</td>
+                                    </tr>
+                                }
                             </tbody>
                         </table>
                     </div>
                 </div>
             </div>
         </div>
-
-        </div>
     </div>
 </div>
-
 <script type="text/javascript" src="@routes.MyAssets.js("site/txTagManage.js")"></script>
 <script></script>
-
 </body>
 </html>
-
-
