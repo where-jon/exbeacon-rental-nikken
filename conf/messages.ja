@@ -241,13 +241,13 @@ lang.cms.placeManage.input.popup.title=現場登録
 lang.cms.placeManage.input.popup.placeName=現場名称
 lang.cms.placeManage.input.popup.placeName.placeholder=新しい現場の名称を入力してください
 lang.cms.placeManage.input.popup.userLoginId=現場担当者ログインID
-lang.cms.placeManage.input.popup.userLoginId.placeholder=新しい現場担当者のログインIDを入力してください
+lang.cms.placeManage.input.popup.userLoginId.placeholder=現場担当者のログインIDを入力してください
 lang.cms.placeManage.input.popup.userName=現場担当者名
-lang.cms.placeManage.input.popup.userName.placeholder=新しい現場担当者の名前を入力してください
+lang.cms.placeManage.input.popup.userName.placeholder=現場担当者名を入力してください
 lang.cms.placeManage.input.popup.userPassword1=パスワード
 lang.cms.placeManage.input.popup.userPassword1.placeholder=新しいパスワードを入力してください
 lang.cms.placeManage.input.popup.userPassword2=確認用パスワード
-lang.cms.placeManage.input.popup.userPassword2.placeholder=確認の為同じパスワードを入力してください
+lang.cms.placeManage.input.popup.userPassword2.placeholder=同じパスワードを入力してください
 
 
 lang.cms.placeManage.change.title=現場管理
@@ -472,7 +472,7 @@ lang.cms.accountManage.create.popup.userLevel=権限
 lang.cms.accountManage.create.popup.userPassword1=パスワード
 lang.cms.accountManage.create.popup.userPassword1.placeholder=新しいパスワードを入力してください
 lang.cms.accountManage.create.popup.userPassword2=確認用パスワード
-lang.cms.accountManage.create.popup.userPassword2.placeholder=確認の為同じパスワードを入力してください
+lang.cms.accountManage.create.popup.userPassword2.placeholder=同じパスワードを入力してください
 lang.cms.accountManage.update.popup.title=現場アカウント更新
 lang.cms.accountManage.update.popup.userName=名前
 lang.cms.accountManage.update.popup.userName.placeholder=名前を入力してください

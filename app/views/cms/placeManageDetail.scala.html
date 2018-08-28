@@ -95,14 +95,14 @@
                     <div class="modal-header">@Messages("lang.cms.placeManage.placeUpdate.popup.title")</div>
                     <div class="modal-body">
                         <div class="form-group">
-                            <label class="control-label col-xs-5">@Messages("lang.cms.placeManage.placeUpdate.popup.name")</label>
-                            <div class="col-xs-5" style="padding-left: 0px;padding-right: 0px;">
+                            <label class="control-label col-xs-4">@Messages("lang.cms.placeManage.placeUpdate.popup.name")</label>
+                            <div class="col-xs-7" style="padding-left: 0px;padding-right: 0px;">
                                 <input type="text" name="placeName" value="@place.placeName" class="form-control" placeholder='@Messages("lang.cms.placeManage.placeUpdate.popup.name.placeholder")'>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="control-label col-xs-5" style="padding-top: 0px;">@Messages("lang.cms.placeManage.placeUpdate.popup.status")</label>
-                            <div class="col-xs-5" style="padding-left: 0px;padding-right: 0px;">
+                            <label class="control-label col-xs-4" style="padding-top: 0px;">@Messages("lang.cms.placeManage.placeUpdate.popup.status")</label>
+                            <div class="col-xs-7" style="padding-left: 0px;padding-right: 0px;">
                                 <select name="placeStatus" class="form-control">
                                     @statusMap.map{case (code, name) =>
                                         @if(code == place.status){
@@ -115,14 +115,14 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="control-label col-xs-5">@Messages("lang.cms.placeManage.placeUpdate.popup.userName")</label>
-                            <div class="col-xs-5" style="padding-left: 0px;padding-right: 0px;">
+                            <label class="control-label col-xs-4">@Messages("lang.cms.placeManage.placeUpdate.popup.userName")</label>
+                            <div class="col-xs-7" style="padding-left: 0px;padding-right: 0px;">
                                 <input type="text" name="userName" class="form-control" value="@place.userName" placeholder='@Messages("lang.cms.placeManage.placeUpdate.popup.userName.placeholder")' />
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="control-label col-xs-5">@Messages("lang.cms.placeManage.placeUpdate.popup.userLoginId")</label>
-                            <div class="col-xs-5" style="padding-left: 0px;padding-right: 0px;">
+                            <label class="control-label col-xs-4">@Messages("lang.cms.placeManage.placeUpdate.popup.userLoginId")</label>
+                            <div class="col-xs-7" style="padding-left: 0px;padding-right: 0px;">
                                 <input type="text" name="userLoginId" class="form-control" value="@place.userEmail" placeholder='@Messages("lang.cms.placeManage.placeUpdate.popup.userLoginId.placeholder")' />
                             </div>
                         </div>
@@ -151,15 +151,15 @@
                         <div class="form-group">
                             <input type="hidden" name="placeId" value="@place.placeId">
                             <input type="hidden" name="userId" value="@place.userId">
-                            <label class="control-label col-xs-5">@Messages("lang.cms.placeManage.passwordUpdate.popup.password")</label>
-                            <div class="col-xs-5" style="padding-left: 0px;padding-right: 0px;">
-                                <input type="password" name="password1" class="form-control">
+                            <label class="control-label col-xs-4">@Messages("lang.cms.placeManage.passwordUpdate.popup.password")</label>
+                            <div class="col-xs-7" style="padding-left: 0px;padding-right: 0px;">
+                                <input type="password" name="password1" class="form-control" placeholder='@Messages("lang.cms.placeManage.input.popup.userPassword1.placeholder")'>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="control-label col-xs-5">@Messages("lang.cms.placeManage.passwordUpdate.popup.reEnter")</label>
-                            <div class="col-xs-5" style="padding-left: 0px;padding-right: 0px;">
-                                <input type="password" name="password2" class="form-control">
+                            <label class="control-label col-xs-4">@Messages("lang.cms.placeManage.passwordUpdate.popup.reEnter")</label>
+                            <div class="col-xs-7" style="padding-left: 0px;padding-right: 0px;">
+                                <input type="password" name="password2" class="form-control" placeholder='@Messages("lang.cms.placeManage.input.popup.userPassword1.placeholder")'>
                             </div>
                         </div>
                     </div>
