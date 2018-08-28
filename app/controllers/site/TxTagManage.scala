@@ -95,19 +95,26 @@ class TxTagManage @Inject()(config: Configuration
   def index = SecuredAction{ implicit request =>
 
     val placeId = super.getCurrentPlaceId
-    //検索側データ取得
-    getSearchData(placeId)
-    // ①仮設材すべてを取得
-    val dbDatas = beaconDAO.selectBeaconViewer(placeId)
-    // ②仮設材種別作業車の鍵をものとして取得
-    val dbDatasKeyData = beaconDAO.selectCarKeyViewer(placeId)
-    // ①、②を結合
-    val totalDbDatas = dbDatas union  dbDatasKeyData
-    val beaconListApi = beaconService.getTxData(totalDbDatas,true,placeId)
+    if(beaconService.getCloudUrl(placeId)){
+      //検索側データ取得
+      getSearchData(placeId)
+      // ①仮設材すべてを取得
+      val dbDatas = beaconDAO.selectBeaconViewer(placeId)
+      // ②仮設材種別作業車の鍵をものとして取得
+      val dbDatasKeyData = beaconDAO.selectCarKeyViewer(placeId)
+      // ①、②を結合
+      val totalDbDatas = dbDatas union  dbDatasKeyData
+      val beaconListApi = beaconService.getTxData(totalDbDatas,true,placeId)
 
-    if(beaconListApi!=null){
-      val POWER_ENUM = PowerEnum().map;
-      Ok(views.html.site.txTagManage(POWER_ENUM,POWER_FILTER,ITEM_TYPE_FILTER,itemTypeList,beaconListApi))
+      if(beaconListApi!=null){
+        val POWER_ENUM = PowerEnum().map;
+        Ok(views.html.site.txTagManage(POWER_ENUM,POWER_FILTER,ITEM_TYPE_FILTER,itemTypeList,beaconListApi))
+      }else{
+        // apiと登録データが違う場合
+        Redirect(errors.routes.UnDetectedApi.indexSite)
+          .flashing(ERROR_MSG_KEY -> Messages("error.unmatched.data"))
+      }
+
     }else{
       // apiデータがない場合
       Redirect(errors.routes.UnDetectedApi.indexSite)

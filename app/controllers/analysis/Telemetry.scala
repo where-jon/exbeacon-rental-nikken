@@ -33,10 +33,15 @@ class Telemetry @Inject()(
     val  placeId = super.getCurrentPlaceId
     val reqIdentity = request.identity
     if(reqIdentity.level >= 2){
-      val placeId = super.getCurrentPlaceId
-      val exbListApi = beaconService.getTelemetryState(placeId)
-      if(exbListApi!=null){
-        Ok(views.html.analysis.telemetry(exbListApi))
+      if(beaconService.getCloudUrl(placeId)){
+        val exbListApi = beaconService.getTelemetryState(placeId)
+        if(exbListApi!=null){
+          Ok(views.html.analysis.telemetry(exbListApi))
+        }else{
+          // apiと登録データが違う場合
+          Redirect(errors.routes.UnDetectedApi.indexAnalysis)
+            .flashing(ERROR_MSG_KEY -> Messages("error.unmatched.data"))
+        }
       }else{
         // apiデータがない場合
         Redirect(errors.routes.UnDetectedApi.indexAnalysis)

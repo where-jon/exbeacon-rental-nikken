@@ -42,25 +42,31 @@ class WorkPlace @Inject()(config: Configuration
 
   /** 初期表示 */
   def index = SecuredAction { implicit request =>
-    val UPDATE_SEC = config.getInt("web.positioning.updateSec").get
-    val VIEW_COUNT = config.getInt("web.positioning.viewCount").get
     val placeId = super.getCurrentPlaceId
-    /*仮設材種別取得*/
-    val itemTypeList = itemTypeDAO.selectItemTypeInfo(placeId);
-    // map情報
-    val mapViewer = floorDAO.selectFloorAll(placeId)
-    val exbData = exbDAO.selectExbAll(placeId)
+    if(beaconService.getCloudUrl(placeId)){
+      val UPDATE_SEC = config.getInt("web.positioning.updateSec").get
+      val VIEW_COUNT = config.getInt("web.positioning.viewCount").get
 
-    // ①仮設材すべてを取得
-    val dbDatas = beaconDAO.selectBeaconViewer(placeId)
-    // ②仮設材種別作業車の鍵をものとして取得
-    val dbDatasKeyData = beaconDAO.selectCarKeyViewer(placeId)
-    // ①、②を結合
-    val totalDbDatas = dbDatas union  dbDatasKeyData
-    val beaconListApi = beaconService.getBeaconPosition(totalDbDatas,true,placeId)
+      /*仮設材種別取得*/
+      val itemTypeList = itemTypeDAO.selectItemTypeInfo(placeId);
+      // map情報
+      val mapViewer = floorDAO.selectFloorAll(placeId)
+      val exbData = exbDAO.selectExbAll(placeId)
 
-    if(beaconListApi!=null){
-      Ok(views.html.site.workPlace(itemTypeList,mapViewer,exbData,UPDATE_SEC,VIEW_COUNT))
+      // ①仮設材すべてを取得
+      val dbDatas = beaconDAO.selectBeaconViewer(placeId)
+      // ②仮設材種別作業車の鍵をものとして取得
+      val dbDatasKeyData = beaconDAO.selectCarKeyViewer(placeId)
+      // ①、②を結合
+      val totalDbDatas = dbDatas union  dbDatasKeyData
+      val beaconListApi = beaconService.getBeaconPosition(totalDbDatas,true,placeId)
+      if(beaconListApi!= null) {
+        Ok(views.html.site.workPlace(itemTypeList,mapViewer,exbData,UPDATE_SEC,VIEW_COUNT))
+      }else{
+        // apiと登録データが違う場合
+        Redirect(errors.routes.UnDetectedApi.indexSite)
+          .flashing(ERROR_MSG_KEY -> Messages("error.unmatched.data"))
+      }
     }else{
       // apiデータがない場合
       Redirect(errors.routes.UnDetectedApi.indexSite)

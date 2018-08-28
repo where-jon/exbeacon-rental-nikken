@@ -115,24 +115,28 @@ class ItemOtherMaster @Inject()(config: Configuration
 
   /** 初期表示 */
   def index = SecuredAction { implicit request =>
-    // 初期化
-    init();
     val placeId = super.getCurrentPlaceId
-    //検索側データ取得
-    getSearchData(placeId)
-
-    // dbデータ取得
-    val dbDatas = otherDAO.selectOtherMasterViewer(placeId,itemIdList)
-    val otherListApi = beaconService.getItemOtherBeaconPosition(dbDatas,true,placeId)
-    if(otherListApi!=null){
-      Ok(views.html.site.itemOtherMaster(ITEM_TYPE_FILTER, COMPANY_NAME_FILTER,FLOOR_NAME_FILTER,WORK_TYPE_FILTER
-        ,otherListApi,itemTypeList,companyNameList,floorNameList,workTypeList,WORK_TYPE))
+    if(beaconService.getCloudUrl(placeId)){
+      // 初期化
+      init();
+      //検索側データ取得
+      getSearchData(placeId)
+      // dbデータ取得
+      val dbDatas = otherDAO.selectOtherMasterViewer(placeId,itemIdList)
+      val otherListApi = beaconService.getItemOtherBeaconPosition(dbDatas,true,placeId)
+      if(otherListApi!=null){
+        Ok(views.html.site.itemOtherMaster(ITEM_TYPE_FILTER, COMPANY_NAME_FILTER,FLOOR_NAME_FILTER,WORK_TYPE_FILTER
+          ,otherListApi,itemTypeList,companyNameList,floorNameList,workTypeList,WORK_TYPE))
+      }else{
+        // apiと登録データが違う場合
+        Redirect(errors.routes.UnDetectedApi.indexSite)
+          .flashing(ERROR_MSG_KEY -> Messages("error.unmatched.data"))
+      }
     }else{
       // apiデータがない場合
       Redirect(errors.routes.UnDetectedApi.indexSite)
         .flashing(ERROR_MSG_KEY -> Messages("error.undetected.api"))
     }
-
   }
 
 }

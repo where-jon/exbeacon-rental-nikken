@@ -233,18 +233,24 @@ class ItemOtherReserve @Inject()(config: Configuration
 
   /** 初期表示 */
   def index = SecuredAction { implicit request =>
-    // 初期化
-    init();
     val placeId = super.getCurrentPlaceId
-    //検索側データ取得
-    getSearchData(placeId)
+    if(beaconService.getCloudUrl(placeId)){
+      // 初期化
+      init();
+      //検索側データ取得
+      getSearchData(placeId)
 
-    // dbデータ取得
-    val dbDatas = otherDAO.selectOtherMasterReserve(placeId,itemIdList)
-    var otherListApi = beaconService.getItemOtherBeaconPosition(dbDatas,true,placeId)
-    if(otherListApi!=null){
-      Ok(views.html.site.itemOtherReserve(ITEM_TYPE_FILTER,WORK_TYPE_FILTER,RESERVE_START_DATE,RESERVE_END_DATE
-        ,otherListApi,itemTypeList,companyNameList,floorNameList,workTypeList,WORK_TYPE))
+      // dbデータ取得
+      val dbDatas = otherDAO.selectOtherMasterReserve(placeId,itemIdList)
+      val otherListApi = beaconService.getItemOtherBeaconPosition(dbDatas,true,placeId)
+      if(otherListApi!=null){
+        Ok(views.html.site.itemOtherReserve(ITEM_TYPE_FILTER,WORK_TYPE_FILTER,RESERVE_START_DATE,RESERVE_END_DATE
+          ,otherListApi,itemTypeList,companyNameList,floorNameList,workTypeList,WORK_TYPE))
+      }else{
+        // apiと登録データが違う場合
+        Redirect(errors.routes.UnDetectedApi.indexSite)
+          .flashing(ERROR_MSG_KEY -> Messages("error.unmatched.data"))
+      }
     }else{
       // apiデータがない場合
       Redirect(errors.routes.UnDetectedApi.indexSite)

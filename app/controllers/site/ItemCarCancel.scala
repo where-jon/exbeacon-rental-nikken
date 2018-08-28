@@ -190,24 +190,29 @@ class ItemCarCancel @Inject()(config: Configuration
 
   /** 初期表示 */
   def index = SecuredAction { implicit request =>
+    val placeId = super.getCurrentPlaceId
+    if(beaconService.getCloudUrl(placeId)){
       // 初期化
       init();
-      val placeId = super.getCurrentPlaceId
       //検索側データ取得
       getSearchData(placeId)
-
       // dbデータ取得
       val dbDatas = carDAO.selectCarMasterCancel(placeId,itemIdList)
-      var carListApi = beaconService.getItemCarBeaconPosition(dbDatas,true,placeId)
-    if(carListApi!=null){
-      Ok(views.html.site.itemCarCancel(ITEM_TYPE_FILTER,COMPANY_NAME_FILTER,WORK_TYPE_FILTER,RESERVE_DATE
-        ,carListApi,itemTypeList,companyNameList,floorNameList,workTypeList,WORK_TYPE))
+      val carListApi = beaconService.getItemCarBeaconPosition(dbDatas,true,placeId)
+      if(carListApi!=null){
+        Ok(views.html.site.itemCarCancel(ITEM_TYPE_FILTER,COMPANY_NAME_FILTER,WORK_TYPE_FILTER,RESERVE_DATE
+          ,carListApi,itemTypeList,companyNameList,floorNameList,workTypeList,WORK_TYPE))
+      }else{
+        // apiと登録データが違う場合
+        Redirect(errors.routes.UnDetectedApi.indexSite)
+          .flashing(ERROR_MSG_KEY -> Messages("error.unmatched.data"))
+      }
+
     }else{
       // apiデータがない場合
       Redirect(errors.routes.UnDetectedApi.indexSite)
         .flashing(ERROR_MSG_KEY -> Messages("error.undetected.api"))
     }
-
   }
 
 }
