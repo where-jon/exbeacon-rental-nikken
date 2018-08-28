@@ -3,10 +3,9 @@ package controllers.analysis
 import javax.inject.{Inject, Singleton}
 
 import com.mohiva.play.silhouette.api.Silhouette
-import controllers.{BaseController, BeaconService, site}
+import controllers.{BaseController, BeaconService, errors, site}
 import play.api._
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.Json
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.libs.ws._
 import utils.silhouette.MyEnv
 
@@ -40,7 +39,8 @@ class Telemetry @Inject()(
         Ok(views.html.analysis.telemetry(exbListApi))
       }else{
         // apiデータがない場合
-        Redirect(site.routes.UnDetected.index)
+        Redirect(errors.routes.UnDetectedApi.indexAnalysis)
+          .flashing(ERROR_MSG_KEY -> Messages("error.undetected.api"))
       }
     }else{
       Redirect(site.routes.WorkPlace.index)

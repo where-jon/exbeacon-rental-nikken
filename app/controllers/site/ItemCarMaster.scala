@@ -3,12 +3,12 @@ package controllers.site
 import javax.inject.{Inject, Singleton}
 
 import com.mohiva.play.silhouette.api.Silhouette
-import controllers.{BaseController, BeaconService, site}
+import controllers.{BaseController, BeaconService, errors}
 import models._
 import play.api._
 import play.api.data.Form
 import play.api.data.Forms._
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import utils.silhouette.MyEnv
 
 
@@ -129,7 +129,8 @@ class ItemCarMaster @Inject()(config: Configuration
         ,carListApi,itemTypeList,companyNameList,floorNameList,workTypeList,WORK_TYPE))
     }else{
       // apiデータがない場合
-      Redirect(site.routes.UnDetected.index)
+      Redirect(errors.routes.UnDetectedApi.indexSite)
+        .flashing(ERROR_MSG_KEY -> Messages("error.undetected.api"))
     }
   }
 }

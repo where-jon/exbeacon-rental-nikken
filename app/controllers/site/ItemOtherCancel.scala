@@ -3,6 +3,7 @@ package controllers.site
 import javax.inject.{Inject, Singleton}
 
 import com.mohiva.play.silhouette.api.Silhouette
+import controllers.errors
 import controllers.site
 import controllers.{BaseController, BeaconService}
 import models._
@@ -205,7 +206,8 @@ class ItemOtherCancel @Inject()(config: Configuration
         ,otherListApi,itemTypeList,companyNameList,floorNameList,workTypeList,WORK_TYPE))
     }else{
       // apiデータがない場合
-      Redirect(site.routes.UnDetected.index)
+      Redirect(errors.routes.UnDetectedApi.indexSite)
+        .flashing(ERROR_MSG_KEY -> Messages("error.undetected.api"))
     }
 
 
