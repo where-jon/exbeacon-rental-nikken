@@ -100,13 +100,13 @@ function showInputModal(isRegister){
         $('#inputItemTypeName').val('');
         $('#inputItemTypeCategoryName').val('');
         $('#inputItemTypeCategory').val('');
-        $('#item_type').val("0");
-        $('#inputItemTypeIconColor').val("rgb(255,255,255");
-        $('#background-color').val("#FFFFFF");
-        $('#inputItemTypeTextColor').val("rgb(0,0,0");
-        $('#text-color').val("#000000");
-        $('#inputItemTypeRowColor').val("rgb(0,0,0");
-        $('#row-color').val("#000000");
+        $('#item_type').val('0');
+        $('#inputItemTypeIconColor').val('rgb(0,0,0)');
+        $('#background-color').val('#000000');
+        $('#inputItemTypeTextColor').val('rgb(255,255,255)');
+        $('#text-color').val('#FFFFFF');
+        $('#inputItemTypeRowColor').val('rgb(255,255,255)');
+        $('#row-color').val('#FFFFFF');
         $('#inputNote').val('');
 
         $('#itemTypeUpdateFooter').addClass('hidden');
