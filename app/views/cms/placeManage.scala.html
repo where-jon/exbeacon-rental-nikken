@@ -18,10 +18,12 @@
         <div class="row">
             <!-- 左サイドバー -->
             @views.html.templates.sideMenu()
+            <span class="mainSpace col-xs-10 col-sm-10 col-md-10 col-lg-10">
+              <!-- メッセージ -->
+              @views.html.templates.msgDiv()
+            </span>
             <!-- メイン -->
             <div class="mainSpace col-xs-10 col-sm-10 col-md-10 col-lg-10">
-                <!-- メッセージ -->
-                @views.html.templates.msgDiv()
                 <!-- 画面題字 -->
                 <div class="form-group" style="font-weight:bold;font-size:19px;margin:15px 0px;">
                     @Messages("placeManage.title")
@@ -64,7 +66,7 @@
                                             data-floorCount="@place.floorCount"
                                         >
                                             <td class="itemTd text-right" style="width:10%">@place.placeId</td>
-                                            <td class="itemTd text-left" style="width:35%;white-space:normal;word-break:break-all">@place.placeName</td>
+                                            <td class="itemTd text-left" style="width:35%">@place.placeName</td>
                                             <td class="itemTd text-center" style="width:10%">@place.statusName</td>
                                             <td class="itemTd text-left" style="width:20%">@place.userName</td>
                                             <td class="itemTd text-left" style="width:20%">@place.userEmail</td>
@@ -108,11 +110,11 @@
                     <div class="modal-body">
                         <div class="form-group">
                             <label class="control-label col-xs-4">@Messages("lang.cms.placeManage.input.popup.placeName")</label>
-                            <div class="col-xs-5" style="padding-left: 0px;padding-right: 0px;">
+                            <div class="col-xs-7" style="padding-left: 0px;padding-right: 0px;">
                                 <input type="text" name="placeName" id="inputPlaceName" class="form-control" placeholder='@Messages("lang.cms.placeManage.input.popup.placeName.placeholder")' />
                             </div>
                             <label class="control-label col-xs-4">@Messages("lang.cms.placeManage.placeUpdate.popup.status")</label>
-                            <div class="col-xs-5" style="padding-left: 0px;padding-right: 0px;">
+                            <div class="col-xs-7" style="padding-left: 0px;padding-right: 0px;">
                                 <select name="placeStatus" id="inputPlaceStatus" class="form-control">
                                     @statusMap.map{case (code, name) =>
                                         <option value="@code">@name</option>
@@ -120,19 +122,19 @@
                                 </select>
                             </div>
                             <label class="control-label col-xs-4">@Messages("lang.cms.placeManage.input.popup.userName")</label>
-                            <div class="col-xs-5" style="padding-left: 0px;padding-right: 0px;">
+                            <div class="col-xs-7" style="padding-left: 0px;padding-right: 0px;">
                                 <input type="text" name="userName" id="inputPlaceUserName" class="form-control" placeholder='@Messages("lang.cms.placeManage.input.popup.userName.placeholder")' />
                             </div>
                             <label class="control-label col-xs-4">@Messages("lang.cms.placeManage.input.popup.userLoginId")</label>
-                            <div class="col-xs-5" style="padding-left: 0px;padding-right: 0px;">
+                            <div class="col-xs-7" style="padding-left: 0px;padding-right: 0px;">
                                 <input type="text" name="userLoginId" id="inputPlaceUserLoginId" class="form-control" placeholder='@Messages("lang.cms.placeManage.input.popup.userLoginId.placeholder")' />
                             </div>
                             <label class="control-label col-xs-4">@Messages("lang.cms.placeManage.input.popup.userPassword1")</label>
-                            <div class="col-xs-5" style="padding-left: 0px;padding-right: 0px;">
+                            <div class="col-xs-7" style="padding-left: 0px;padding-right: 0px;">
                                 <input type="password" name="userPassword1" id="inputPlaceUserPassword1" class="form-control" placeholder='@Messages("lang.cms.placeManage.input.popup.userPassword1.placeholder")' />
                             </div>
                             <label class="control-label col-xs-4">@Messages("lang.cms.placeManage.input.popup.userPassword2")</label>
-                            <div class="col-xs-5" style="padding-left: 0px;padding-right: 0px;">
+                            <div class="col-xs-7" style="padding-left: 0px;padding-right: 0px;">
                                 <input type="password" name="userPassword2" id="inputPlaceUserPassword2" class="form-control" placeholder='@Messages("lang.cms.placeManage.input.popup.userPassword2.placeholder")' />
                             </div>
                         </div>

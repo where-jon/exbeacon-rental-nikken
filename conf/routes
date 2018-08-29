@@ -40,6 +40,10 @@ POST    /cms/floorManage/floorDelete    controllers.cms.FloorManage.floorDelete
 #  POST    /cms/floorManage/sort           controllers.cms.FloorManage.sort
 
 
+# API未検知
+GET    /site/unDetectedApi            controllers.errors.UnDetectedApi.indexSite
+GET    /analysis/unDetectedApi        controllers.errors.UnDetectedApi.indexAnalysis
+
 # 現場状況
 GET    /site/workPlace                 controllers.site.WorkPlace.index
 GET    /site/workPlace/getData         controllers.site.WorkPlace.getData
@@ -87,12 +91,12 @@ GET    /analysis/movementCar                 controllers.analysis.MovementCar.in
 POST   /analysis/movementCar                 controllers.analysis.MovementCar.search
 GET   /analysis/movementCar/csvExport       controllers.analysis.MovementCar.csvExport
 
-# GW状態監視
-GET     /analysis/gateway                     controllers.analysis.Gateway.index
-GET     /analysis/gateway/getdata             controllers.analysis.Gateway.getData
+
+# EXB状態監視
+GET     /analysis/telemetry                   controllers.analysis.Telemetry.index
 
 # GW状態監視
-GET     /analysis/telemetry                   controllers.analysis.Telemetry.index
+GET     /analysis/gateway                   controllers.analysis.Gateway.index
 
 # マップマネージャー
 GET    /manage/mapManager              controllers.manage.MapManager.index

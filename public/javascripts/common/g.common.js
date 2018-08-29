@@ -156,6 +156,30 @@ var gResize = {
 
 /*画面初期表示関連*/
 var gInitView = {
+    removeTable : function() {
+        var clonedTable = $('.bodyTableDiv').find('table').clone();
+        $(clonedTable).attr('style', '');
+        $('.baseDiv').remove();
+        $('.table-responsive-body').append(clonedTable.prop("outerHTML"));
+
+    },
+    tableResize : function(vType) {
+        // リサイズ対応
+        var timer = false;
+        $(window).resize(function() {
+            if (timer !== false) {
+                clearTimeout(timer);
+            }
+            timer = setTimeout(function() {
+                // 処理の再実行
+                gInitView.removeTable();
+                if(vType == "NoBtn") gInitView.fixTableNoBtn();
+                else gInitView.fixTable();
+                gInitView.bindMouseAndTouch();
+            }, 200);
+        });
+
+    },
     fixTable : function() {
         // テーブルの固定
         var h = $(window).height()*0.65;

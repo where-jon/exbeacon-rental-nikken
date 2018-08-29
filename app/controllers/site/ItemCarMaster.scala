@@ -3,12 +3,12 @@ package controllers.site
 import javax.inject.{Inject, Singleton}
 
 import com.mohiva.play.silhouette.api.Silhouette
-import controllers.{BaseController, BeaconService, site}
+import controllers.{BaseController, BeaconService, errors}
 import models._
 import play.api._
 import play.api.data.Form
 import play.api.data.Forms._
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import utils.silhouette.MyEnv
 
 
@@ -115,21 +115,27 @@ class ItemCarMaster @Inject()(config: Configuration
 
   /** 初期表示 */
   def index = SecuredAction { implicit request =>
-    // 初期化
-    init();
     val placeId = super.getCurrentPlaceId
-    //検索側データ取得
-    getSearchData(placeId)
-
-    // dbデータ取得
-    val dbDatas = carDAO.selectCarMasterViewer(placeId,itemIdList)
-    val carListApi = beaconService.getItemCarBeaconPosition(dbDatas,true,placeId)
-    if(carListApi!=null){
-      Ok(views.html.site.itemCarMaster(ITEM_TYPE_FILTER, COMPANY_NAME_FILTER,FLOOR_NAME_FILTER,WORK_TYPE_FILTER
-        ,carListApi,itemTypeList,companyNameList,floorNameList,workTypeList,WORK_TYPE))
+    if(beaconService.getCloudUrl(placeId)){
+      // 初期化
+      init();
+      //検索側データ取得
+      getSearchData(placeId)
+      // dbデータ取得
+      val dbDatas = carDAO.selectCarMasterViewer(placeId,itemIdList)
+      val carListApi = beaconService.getItemCarBeaconPosition(dbDatas,true,placeId)
+      if(carListApi!=null){
+        Ok(views.html.site.itemCarMaster(ITEM_TYPE_FILTER, COMPANY_NAME_FILTER,FLOOR_NAME_FILTER,WORK_TYPE_FILTER
+          ,carListApi,itemTypeList,companyNameList,floorNameList,workTypeList,WORK_TYPE))
+      }else{
+        // apiと登録データが違う場合
+        Redirect(errors.routes.UnDetectedApi.indexSite)
+          .flashing(ERROR_MSG_KEY -> Messages("error.unmatched.data"))
+      }
     }else{
       // apiデータがない場合
-      Redirect(site.routes.UnDetected.index)
+      Redirect(errors.routes.UnDetectedApi.indexSite)
+        .flashing(ERROR_MSG_KEY -> Messages("error.undetected.api"))
     }
   }
 }

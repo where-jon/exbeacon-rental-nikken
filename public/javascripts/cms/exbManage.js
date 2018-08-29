@@ -132,6 +132,9 @@ $(function(){
     // テーブルを固定
     gInitView.fixTable();
 
+    // 画面更新
+    gInitView.tableResize();
+
     // マウス操作とタップ操作をバインド
     gInitView.bindMouseAndTouch();
 });
