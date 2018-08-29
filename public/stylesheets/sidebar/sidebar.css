@@ -357,3 +357,7 @@ td.battery {
   border-radius: 3px;
 }
 
+.itemTd{
+    white-space: normal !important;
+    word-break: break-all !important;
+}

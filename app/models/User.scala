@@ -22,7 +22,7 @@ case class UserAllLevelEnum(
   map: Map[Int, String] = Map[Int,String] (
     1 -> "一般",
     2 -> "管理者",
-    3 -> "現場担当者",
+    3 -> "現場責任者",
     4 -> "システム管理者"
   )
 )

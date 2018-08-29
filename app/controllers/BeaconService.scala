@@ -555,10 +555,10 @@ class BeaconService @Inject() (config: Configuration,
   /**
     * EXB状態取得
     *
-    * EXCloudIfActorにて非同期で取得しているGW状態情報を取得する
+    * EXB状態情報を取得する
     *
     * @param placeId  接続現場情報
-    * @return  List[gateWayState]
+    * @return  List[ExbTelemetryData]
     */
   def getTelemetryState(placeId:Int): Seq[ExbTelemetryData] = {
       val telemetryList = Await.result(ws.url(TELEMETRY_API_URL).get().map { response =>
@@ -600,5 +600,47 @@ class BeaconService @Inject() (config: Configuration,
           , vStatus
         )
       }
+  }
+
+
+  /**
+    * GW状態取得
+    *
+    * GW状態情報を取得する
+    *
+    * @param placeId  接続現場情報
+    * @return  List[gateWayState]
+    */
+  def getGatewayState(placeId:Int): Seq[GwTelemetryData] = {
+    val gatewayList = Await.result(ws.url(GATEWAY_API_URL).get().map { response =>
+      Json.parse(response.body).asOpt[List[gateWayState]].getOrElse(Nil)
+    }, Duration.Inf)
+    val mSimpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.JAPAN)
+    gatewayList.map { v=>
+      var vTimeStamp = "未検知"
+      var vStatus = "未検知"
+      var vUpdated = "未検知"
+
+        val vCurrentEpochTime = System.currentTimeMillis()
+        if (v.updated < vCurrentEpochTime - 60*60*24*1000) { // 24時間以上前
+          vStatus = "受信不良"
+        } else {
+          if (v.updated < (vCurrentEpochTime - 60 * 60 * 0.5 * 1000)) { // 30分間以上前
+            vStatus = "動作不良"
+          }else{
+            vStatus = "正常"
+          }
+        }
+        // epochを現在時間へ
+      vTimeStamp = mSimpleDateFormat.format(new Timestamp(v.timestamp))
+      vUpdated = mSimpleDateFormat.format(new Timestamp(v.updated))
+      GwTelemetryData(
+        v.num
+        ,v.deviceid
+        , vUpdated
+        , vTimeStamp
+        ,vStatus
+      )
+    }
   }
 }
