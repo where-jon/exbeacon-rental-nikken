@@ -649,7 +649,7 @@ lang.site.carCancel.page.title=作業車・立馬予約取消
 lang.site.carCancel.page.delete=選択された作業車・立馬予約を取消します。
 success.site.carCancel.cancel=作業車・立馬予約取消を完了しました。
 error.site.carCancel.cancel=作業車・立馬予約取消に問題が発生しました。<br/>
-error.site.carCancel.noselect=予約対象未選択
+error.site.carCancel.noselect=予約取消対象未選択
 
 error.site.carReserve.reserve=すでに予約されてます。
 success.site.carCancel.remove=作業車・立馬取消を完了しました。
@@ -660,13 +660,15 @@ lang.site.otherReserve.page.title=その他仮設材予約
 lang.site.otherCancel.page.title=その他仮設材予約取消
 lang.site.otherCancel.page.delete=選択されたその他仮設材予約を取消します。
 success.site.otherReserve.update=その他仮設材予約を完了しました。
+error.site.otherReserve.noselect=予約対象未選択
 error.site.otherReserve.update=その他仮設材予約に問題が発生しました。
 success.site.otherCancel.remove=その他仮設材予約取消を完了しました。
+
 
 lang.site.otherCancel.page.title=その他仮設材予約取消
 success.site.otherCancel.cancel=その他仮設材予約取消を完了しました。
 error.site.otherCancel.cancel=その他仮設材予約取消に問題が発生しました。<br/>
-error.site.otherCancel.noselect=予約対象未選択
+error.site.otherCancel.noselect=予約取消対象未選択
 
 
 # BTN仮設材　
