@@ -8,7 +8,7 @@
 <head>
     @templates.htmlHead(title = Messages("lang.cms.itemTypeManage.title"))
     <link rel="stylesheet" href="@routes.MyAssets.css("cms/itemTypeManage.css")"/>
-    <link rel="stylesheet" href="@routes.MyAssets.css("color/colorpicker.css")"/>
+    <link rel="stylesheet" href="@routes.MyAssets.public("stylesheets/color/colorpicker.css")"/>
     <script type="text/javascript" src="@routes.MyAssets.lib("jquery.tablefix_1.0.1.js")"></script>
     <script type="text/javascript" src="@routes.MyAssets.js("color/colorpicker.js")"></script>
     <script></script>
@@ -130,22 +130,25 @@
                     <!-- 仮設材種別アイコンカラー(RGB) -->
                     <div class="form-group">
                         <label class="control-label col-xs-4">@Messages("lang.cms.itemTypeManage.itemTypeUpdate.popup.icon.color")</label>
-                        <div class="col-xs-3" style="padding-left: 0px;padding-right: 0px;">
-                            <input type="text" id="inputItemTypeIconColor" name="inputItemTypeIconColor" class="form-control" placeholder="rgb(255,255,255)">
+                        <div class="col-xs-3" style="padding-left: 0px;padding-right: 0px; background-color: hsl(0, 80%, 70%);">
+                            <input id="background-color" class="form-control" type="color">
+                            <input type="hidden" name="inputItemTypeIconColor" id="inputItemTypeIconColor">
                         </div>
                     </div>
                     <!-- 仮設材種別文字カラー(RGB) -->
                     <div class="form-group">
                         <label class="control-label col-xs-4">@Messages("lang.cms.itemTypeManage.itemTypeUpdate.popup.font.color")</label>
                         <div class="col-xs-3" style="padding-left: 0px;padding-right: 0px;">
-                            <input type="text" id="inputItemTypeTextColor" name="inputItemTypeTextColor" class="form-control" placeholder="rgb(255,255,255)">
+                            <input id="text-color" class="form-control" type="color">
+                            <input type="hidden" name="inputItemTypeTextColor" id="inputItemTypeTextColor">
                         </div>
                     </div>
-                    <!-- 仮設材種別行カラー(RGB) -->
-                    <div class="form-group">
+                    <!-- 仮設材種別行カラー(RGB) 未使用-->
+                    <div class="hidden">
                         <label class="control-label col-xs-4">@Messages("lang.cms.itemTypeManage.itemTypeUpdate.popup.row.color")</label>
                         <div class="col-xs-3" style="padding-left: 0px;padding-right: 0px;">
-                            <input type="text" id="inputItemTypeRowColor" name="inputItemTypeRowColor" class="form-control" placeholder="rgb(255,255,255)">
+                            <input id="row-color" class="form-control" type="color">
+                            <input type="hidden" name="inputItemTypeRowColor" id="inputItemTypeRowColor">
                         </div>
                     </div>
                     <!-- 備考(DB項目) -->
@@ -155,6 +158,7 @@
                             <input type="text" id="inputNote" name="inputNote" class="form-control" placeholder="@Messages("lang.cms.itemTypeManage.itemTypeUpdate.popup.biko")">
                         </div>
                     </div>
+
                 </div>
                 <div class="modal-footer">
                     <div class="col-xs-6 text-center">
