@@ -184,7 +184,7 @@ class ItemOtherReserve @Inject()(config: Configuration
             }
           }else{
             Redirect(routes.ItemOtherReserve.index())
-              .flashing(ERROR_MSG_KEY -> Messages("予約対象未選択"))
+              .flashing(ERROR_MSG_KEY -> Messages("error.site.otherReserve.noselect"))
           }
         }
       }

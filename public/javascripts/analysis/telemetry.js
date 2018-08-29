@@ -27,6 +27,8 @@ $(function(){
     // マウス操作とタップ操作をバインド
     gInitView.bindMouseAndTouch();
 
+    // 画面サイズ変更による再調整
+    gInitView.tableResize("NoBtn");
 
     // 5分単位更新
     setInterval(function() {
