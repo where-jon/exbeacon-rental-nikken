@@ -101,12 +101,12 @@ function showInputModal(isRegister){
         $('#inputItemTypeCategoryName').val('');
         $('#inputItemTypeCategory').val('');
         $('#item_type').val('0');
-        $('#inputItemTypeIconColor').val('rgb(0,0,0)');
-        $('#background-color').val('#000000');
-        $('#inputItemTypeTextColor').val('rgb(255,255,255)');
-        $('#text-color').val('#FFFFFF');
+        $('#inputItemTypeIconColor').val('rgb(106,106,106)');
+        $('#background-color').val('#6a6a6a');
+        $('#inputItemTypeTextColor').val('rgb(106,106,106)');
+        $('#text-color').val('#6a6a6a');
         $('#inputItemTypeRowColor').val('rgb(255,255,255)');
-        $('#row-color').val('#FFFFFF');
+        $('#row-color').val('#ffffff');
         $('#inputNote').val('');
 
         $('#itemTypeUpdateFooter').addClass('hidden');
