@@ -26,8 +26,8 @@ case class CmsLoginForm(inputPlaceId: String, inputCmsLoginPassword: String, inp
 case class PlaceRegisterForm(
   placeName: String, // 現場名
   placeStatus: String, // 状態
-  userLoginId: String, // 現場担当者ログインID
-  userName: String, // 現場担当者名
+  userLoginId: String, // 現場責任者ログインID
+  userName: String, // 現場責任者名
   userPassword1: String, // パスワード
   userPassword2: String // 確認用パスワード
 )
