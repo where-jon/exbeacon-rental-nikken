@@ -1,7 +1,9 @@
 package controllers.cms
 
-import javax.inject.{Inject, Singleton}
+import java.text.SimpleDateFormat
+import java.util.{Calendar, Date, Locale}
 
+import javax.inject.{Inject, Singleton}
 import com.mohiva.play.silhouette.api.Silhouette
 import controllers.BaseController
 import controllers.site
@@ -93,6 +95,72 @@ class CompanyManage @Inject()(config: Configuration
         if(companyList.nonEmpty){
           errMsg :+= Messages("error.cms.CompanyManage.update.inputCompanyName.duplicate", f.inputCompanyName)
         }
+
+        // 予約情報テーブルに作業車・立馬IDが存在していないか
+        val itemReserveList = companyDAO.selectCarReserveCheck(super.getCurrentPlaceId, f.inputCompanyId.toInt)
+        if(itemReserveList.length > 0){
+          var chkFlg : Int = 0
+          var companyNm : String = ""
+          // 現在時刻設定
+          val mSimpleDateFormat = new SimpleDateFormat("yyyyMMdd", Locale.JAPAN)
+          val currentTime = new Date();
+          val mTime = mSimpleDateFormat.format(currentTime)
+          val mHour = new SimpleDateFormat("HH").format(Calendar.getInstance().getTime()).toInt
+          for(itemReserve <- itemReserveList) {
+            companyNm = itemReserve.companyName
+            if (itemReserve.reserveEndDate.toInt < mTime.toInt) {
+              // 予約期間が前日の場合、または期間が終日の場合
+              if (chkFlg != 1) {
+                chkFlg = 2
+              }
+
+            } else {
+              // 当日以降
+              if (itemReserve.workTypeId == 1) {
+                // 午前予約の場合
+                if (itemReserve.reserveEndDate.toInt == mTime.toInt) {
+                  if (mHour < 13) {
+                    // 予約済み（使用中）
+                    chkFlg = 1
+                  } else {
+                    // 現在時刻が13時を過ぎていた場合
+                    if (chkFlg != 1) {
+                      chkFlg = 2
+                    }
+                  }
+                }else{
+                  // 予約済み（使用中）
+                  chkFlg = 1
+                }
+              } else if (itemReserve.workTypeId == 2) {
+                // 午後予約の場合
+                if (itemReserve.reserveEndDate.toInt == mTime.toInt) {
+                  if (mHour < 17) {
+                    // 予約済み（使用中）
+                    chkFlg = 1
+                  } else {
+                    // 現在時刻が17時を過ぎていた場合
+                    if (chkFlg != 1) {
+                      chkFlg = 2
+                    }
+                  }
+                } else{
+                  // 予約済み（使用中）
+                  chkFlg = 1
+                }
+              } else {
+                // 未来で予約済み
+                chkFlg = 1
+              }
+            }
+          }
+          if(chkFlg == 1){
+            errMsg :+= Messages("error.cms.CompanyManage.update.inputCompanyName.use.noChange", companyNm);
+          }else if(chkFlg == 2){
+            errMsg :+= Messages("error.cms.CompanyManage.update.inputCompanyName.use.exceed", companyNm);
+          }
+        }
+
         if(errMsg.nonEmpty){
           // エラーで遷移
           Redirect(routes.CompanyManage.index)
@@ -111,6 +179,7 @@ class CompanyManage @Inject()(config: Configuration
 
   /** 削除 */
   def delete = SecuredAction { implicit request =>
+    var errMsg = Seq[String]()
     // フォームの準備
     val inputForm = Form(mapping(
       "deleteCompanyId" -> text.verifying(Messages("error.cms.CarManage.delete.empty"), {!_.isEmpty})
@@ -125,11 +194,81 @@ class CompanyManage @Inject()(config: Configuration
       Redirect(routes.CompanyManage.index).flashing(ERROR_MSG_KEY -> errMsg)
     } else {
       val f = form.get
-      // DB処理
-      companyDAO.deleteById(f.deleteCompanyId.toInt)
+      // 予約情報テーブルに作業車・立馬IDが存在していないか
+      val itemReserveList = companyDAO.selectCarReserveCheck(super.getCurrentPlaceId, f.deleteCompanyId.toInt)
+      if(itemReserveList.length > 0){
+        var chkFlg : Int = 0
+        var companyNm : String = ""
+        // 現在時刻設定
+        val mSimpleDateFormat = new SimpleDateFormat("yyyyMMdd", Locale.JAPAN)
+        val currentTime = new Date();
+        val mTime = mSimpleDateFormat.format(currentTime)
+        val mHour = new SimpleDateFormat("HH").format(Calendar.getInstance().getTime()).toInt
+        for(itemReserve <- itemReserveList) {
+          companyNm = itemReserve.companyName
+          if (itemReserve.reserveEndDate.toInt < mTime.toInt) {
+            // 予約期間が前日の場合、または期間が終日の場合
+            if (chkFlg != 1) {
+              chkFlg = 2
+            }
 
-      // リダイレクト
-      Redirect(routes.CompanyManage.index).flashing(SUCCESS_MSG_KEY -> Messages("success.cms.CompanyManage.delete"))
+          } else {
+            // 当日以降
+            if (itemReserve.workTypeId == 1) {
+              // 午前予約の場合
+              if (itemReserve.reserveEndDate.toInt == mTime.toInt) {
+                if (mHour < 13) {
+                  // 予約済み（使用中）
+                  chkFlg = 1
+                } else {
+                  // 現在時刻が13時を過ぎていた場合
+                  if (chkFlg != 1) {
+                    chkFlg = 2
+                  }
+                }
+              }else{
+                // 予約済み（使用中）
+                chkFlg = 1
+              }
+            } else if (itemReserve.workTypeId == 2) {
+              // 午後予約の場合
+              if (itemReserve.reserveEndDate.toInt == mTime.toInt) {
+                if (mHour < 17) {
+                  // 予約済み（使用中）
+                  chkFlg = 1
+                } else {
+                  // 現在時刻が17時を過ぎていた場合
+                  if (chkFlg != 1) {
+                    chkFlg = 2
+                  }
+                }
+              } else{
+                // 予約済み（使用中）
+                chkFlg = 1
+              }
+            } else {
+              // 未来で予約済み
+              chkFlg = 1
+            }
+          }
+        }
+        if(chkFlg == 1){
+          errMsg :+= Messages("error.cms.CompanyManage.delete.inputCompanyName.use.noChange", companyNm);
+        }else if(chkFlg == 2){
+          errMsg :+= Messages("error.cms.CompanyManage.delete.inputCompanyName.use.exceed", companyNm);
+        }
+      }
+      if(errMsg.nonEmpty){
+        // エラーで遷移
+        Redirect(routes.CompanyManage.index)
+          .flashing(ERROR_MSG_KEY -> errMsg.mkString(HTML_BR))
+      }else {
+        // DB処理
+        companyDAO.deleteById(f.deleteCompanyId.toInt)
+
+        // リダイレクト
+        Redirect(routes.CompanyManage.index).flashing(SUCCESS_MSG_KEY -> Messages("success.cms.CompanyManage.delete"))
+      }
     }
   }
 
