@@ -28,12 +28,14 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
     <div class="row">
         <!-- サイドメニュー -->
         @views.html.templates.sideMenu()
+        <span class="mainSpace col-xs-10 col-sm-10 col-md-10 col-lg-10">
+            <!-- メッセージ -->
+            @views.html.templates.msgDiv()
+        </span>
         <!-- メイン -->
         <div class="mainSpace col-xs-10 col-sm-10 col-md-10 col-lg-10">
             <!-- 画面題字 -->
             <div class="form-group" style="font-weight:bold;font-size:19px;margin:25px 0px;">
-                <!-- メッセージ -->
-                @views.html.templates.msgDiv()
                 <!--タイトル-->
                 @Messages("lang.site.otherReserve.page.title")
             </div>
