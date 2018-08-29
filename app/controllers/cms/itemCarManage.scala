@@ -169,7 +169,9 @@ class ItemCarManage @Inject()(
             for(itemCarReserve <- itemCarReserveList){
               if(itemCarReserve.reserveEndDate.toInt < mTime.toInt) {
                 // 予約期間が前日の場合、または期間が終日の場合
-                chkFlg = 2
+                if (chkFlg != 1) {
+                  chkFlg = 2
+                }
 
               }else{
                 // 当日以降
@@ -185,6 +187,9 @@ class ItemCarManage @Inject()(
                         chkFlg = 2
                       }
                     }
+                  }else{
+                    // 予約済み（使用中）
+                    chkFlg = 1
                   }
                 } else if (itemCarReserve.workTypeId == 2) {
                   // 午後予約の場合
@@ -198,6 +203,9 @@ class ItemCarManage @Inject()(
                         chkFlg = 2
                       }
                     }
+                  }else{
+                    // 予約済み（使用中）
+                    chkFlg = 1
                   }
                 }else{
                   // 未来で予約済み
@@ -332,7 +340,9 @@ class ItemCarManage @Inject()(
         for(itemCarReserve <- carReserveList) {
           if (itemCarReserve.reserveEndDate.toInt < mTime.toInt) {
             // 予約期間が前日の場合、または期間が終日の場合
-            chkFlg = 2
+            if (chkFlg != 1) {
+              chkFlg = 2
+            }
 
           } else {
             // 当日以降
@@ -348,6 +358,9 @@ class ItemCarManage @Inject()(
                     chkFlg = 2
                   }
                 }
+              }else{
+                // 予約済み（使用中）
+                chkFlg = 1
               }
             } else if (itemCarReserve.workTypeId == 2) {
               // 午後予約の場合
@@ -361,6 +374,9 @@ class ItemCarManage @Inject()(
                     chkFlg = 2
                   }
                 }
+              }else{
+                // 予約済み（使用中）
+                chkFlg = 1
               }
             } else {
               // 未来で予約済み
