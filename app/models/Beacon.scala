@@ -289,12 +289,22 @@ object itemBeaconPositionData {
 
 /** EXB状態監視用データ*/
 case class ExbTelemetryData(
-  description: Long
-  ,power: Long
-  ,cur_exb_name: String
-  ,cur_pos_name: String
-  ,updatetime: String
-  ,iBeaconTime: String
+   description: Long
+   ,power: Long
+   ,cur_exb_name: String
+   ,cur_pos_name: String
+   ,updatetime: String
+   ,iBeaconTime: String
+   ,status: String
+)
+
+
+/** EXB状態監視用データ*/
+case class GwTelemetryData(
+  num: Long
+  ,deviceid: Long
+  ,updated: String
+  ,timestamp: String
   ,status: String
 )
 /**
