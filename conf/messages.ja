@@ -346,7 +346,7 @@ lang.cms.exbManage.exbDelete.popup.message=EXBを削除します。\nよろし�
 lang.cms.exbManage.exbUpdate.popup.title=EXB更新
 
 error.cms.exbManage.exbUpdate.delete.empty=削除対象EXBを選択してください。
-error.cms.exbManage.exbUpdate.inputDeviceId.empty=デバイスIDは半角数字入力してください。
+error.cms.exbManage.exbUpdate.inputDeviceId.empty=EXBデバイスIDは半角数字入力してください。
 error.cms.exbManage.exbUpdate.inputDeviceNo.empty=デバイスNOは半角数字で入力してください。
 error.cms.exbManage.exbUpdate.inputDeviceName.empty=デバイス名を入力してください。
 error.cms.exbManage.exbUpdate.inputPosName.empty=場所名を入力してください。
