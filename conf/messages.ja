@@ -611,6 +611,7 @@ error.analysis.movementCar.search.date.empty=分析月を入力してくださ�
 lang.analysis.gateway.page.title=GW状態監視
 lang.analysis.gateway.gwNo=GW番号
 lang.analysis.gateway.gwName=GW端末ID
+lang.analysis.gateway.status=状態
 lang.analysis.gateway.updatetime=最終取得時間
 
 # EXB状態監視Telemetry
