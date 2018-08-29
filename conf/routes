@@ -40,6 +40,10 @@ POST    /cms/floorManage/floorDelete    controllers.cms.FloorManage.floorDelete
 #  POST    /cms/floorManage/sort           controllers.cms.FloorManage.sort
 
 
+# API未検知
+GET    /site/unDetectedApi            controllers.errors.UnDetectedApi.indexSite
+GET    /analysis/unDetectedApi        controllers.errors.UnDetectedApi.indexAnalysis
+
 # 現場状況
 GET    /site/workPlace                 controllers.site.WorkPlace.index
 GET    /site/workPlace/getData         controllers.site.WorkPlace.getData

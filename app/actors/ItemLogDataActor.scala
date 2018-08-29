@@ -44,12 +44,18 @@ class ItemLogDataActor @Inject()(config: Configuration
         placeData.zipWithIndex.map { case (place, i) =>
           if(place.btxApiUrl != null && place.btxApiUrl != ""){
             val placeId = place.placeId
-            dbDatas = beaconDAO.selectBeaconViewer(placeId)
-            val beaconListApi = beaconService.getItemLogPosition(dbDatas,true,placeId)
-            if(beaconListApi!=null){
-              beaconListApi.zipWithIndex.map { case (beacon, i) =>
-                beaconData = beacon
-                itemlogDAO.insert(beacon)
+            if(beaconService.getCloudUrl(placeId)){
+              dbDatas = beaconDAO.selectBeaconViewer(placeId)
+              val beaconListApi = beaconService.getItemLogPosition(dbDatas,true,placeId)
+              if(beaconListApi!= null) {
+                beaconListApi.zipWithIndex.map { case (beacon, i) =>
+                  beaconData = beacon
+                  itemlogDAO.insert(beacon)
+                }
+              }else{
+                System.out.println("--------------------現場apiと登録データ違い.start--------------------------")
+                System.out.println("dbDatas:::" + dbDatas)
+                System.out.println("--------------------現場apiと登録データ違い.end--------------------------")
               }
             }else{
               System.out.println("--------------------現場api情報ない.start--------------------------")
