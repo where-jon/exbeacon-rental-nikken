@@ -2,7 +2,7 @@
 ################################################################################################
 # COMMON
 
-system.name=仮設材管理システム
+system.name=仮設材予約システム
 
 signin.field.loginid=ログインID
 signin.field.loginid.placeholder=ログインID
@@ -609,6 +609,9 @@ error.analysis.movementCar.search.date.empty=分析月を入力してくださ�
 
 # GateWay
 lang.analysis.gateway.page.title=GW状態監視
+lang.analysis.gateway.gwNo=GW番号
+lang.analysis.gateway.gwName=GW端末ID
+lang.analysis.gateway.updatetime=最終取得時間
 
 # EXB状態監視Telemetry
 lang.analysis.telemetry.page.title=EXB状態監視
