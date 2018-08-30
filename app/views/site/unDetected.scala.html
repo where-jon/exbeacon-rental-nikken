@@ -90,13 +90,13 @@
                                         <th colspan="7" class="tableTitleTh">@Messages("lang.site.unDetected.page.title")</th>
                                     </tr>
                                     <tr>
-                                        <th class="tableTh ">Tag ID</th>
-                                        <th class="tableTh ">フロア</th>
-                                        <th class="tableTh ">検知位置</th>
-                                        <th class="tableTh ">最終受信日時</th>
-                                        <th class="tableTh ">当日予約業者</th>
-                                        <th class="tableTh ">種別</th>
-                                        <th class="tableTh ">名称</th>
+                                        <th class="tableTh ">@Messages("lang.site.unDetected.tx")</th>
+                                        <th class="tableTh ">@Messages("lang.site.unDetected.floor")</th>
+                                        <th class="tableTh ">@Messages("lang.site.unDetected.detectedPos")</th>
+                                        <th class="tableTh ">@Messages("lang.site.unDetected.detectedTime")</th>
+                                        <th class="tableTh ">@Messages("lang.site.unDetected.reserveCompany")</th>
+                                        <th class="tableTh ">@Messages("lang.site.unDetected.itemType")</th>
+                                        <th class="tableTh ">@Messages("lang.site.unDetected.itemName")</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -106,7 +106,7 @@
                                             <td class="itemTd text-center ">@unDetected.finish_floor_name</td>
                                             <td class="itemTd text-center ">@unDetected.finish_exb_name</td>
                                             @if(unDetected.finish_detected_time == "0001-01-01 00:00:00"){
-                                                <td class="itemTd text-center ">未検知</td>
+                                                <td class="itemTd text-center ">@Messages("lang.site.unDetected.undetectd")</td>
                                             }else{
                                                 <td class="itemTd text-center ">@unDetected.finish_detected_time</td>
                                             }
