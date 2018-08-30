@@ -64,7 +64,7 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
                         </div>
                         <div style="margin-right:10px;float:left;">
                             @Messages("lang.search.type")
-                            <select id="ITEM_TYPE_FILTER" style="width: 100px;">
+                            <select id="ITEM_TYPE_FILTER" style="width: 120px;">
                                 <!--仮設材種別テーブルから検索フィルタを設置-->
                                 <option value="0"></option>
                                 @itemTypeList.zipWithIndex.map { case(itemType, i) =>
@@ -75,7 +75,7 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
                         </div>
                         <div style="margin-right:10px;float:left;">
                             @Messages("lang.search.company")
-                            <select id="COMPANY_NAME_FILTER" style="width: 100px;">
+                            <select id="COMPANY_NAME_FILTER" style="width: 120px;">
                                 <!--業者マスターから検索フィルタを設置-->
                                 <option value=""></option>
                                 @companyNameList.zipWithIndex.map { case(company, i) =>
@@ -86,7 +86,7 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
                         </div>
                         <div style="margin-right:10px;float:left;">
                             @Messages("lang.search.term")
-                            <select id="WORK_TYPE_FILTER" style="width: 100px;">
+                            <select id="WORK_TYPE_FILTER" style="width: 120px;">
                                 <option value=""></option>
                                 @workTypeList.zipWithIndex.map { case(workType, i) =>
                                     <option value="@workType.work_type_name">@workType.work_type_name</option>
@@ -163,7 +163,7 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
                 <div class="row tableRow" style="margin-top: 30px;">
                     <div class="hidden text-center col-xs-3 col-sm-3 col-md-3">
                         @Messages("lang.search.reserveFloor ")
-                        <select id="FLOOR_NAME_FILTER" style="width: 100px;">
+                        <select id="FLOOR_NAME_FILTER" style="width: 120px;">
                             <!--仮設材種別テーブルから検索フィルタを設置-->
                             <option value=""></option>
                             @floorNameList.zipWithIndex.map { case(floor, i) =>

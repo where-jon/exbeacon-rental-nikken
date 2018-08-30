@@ -41,7 +41,7 @@
                     <div class="text-left col-xs-11 col-sm-11 col-md-11 col-lg-11" style="padding:0;">
                         <div style="margin-right:20px;float:left;">
                             @Messages("lang.search.powerlevel")
-                            <select id="POWER_FILTER" style="width: 100px;">
+                            <select id="POWER_FILTER" style="width: 120px;">
                                 <option value="-1"></option>
                                 @POWER_ENUM.zipWithIndex.map { case(power, i) =>
                                     <option value="@power._1">@power._2</option>
@@ -51,7 +51,7 @@
                         </div>
                         <div style="float:left;">
                             @Messages("lang.search.type")
-                            <select id="ITEM_TYPE_FILTER" style="width: 100px;">
+                            <select id="ITEM_TYPE_FILTER" style="width: 120px;">
                                 <!--仮設材種別テーブルから検索フィルタを設置-->
                                 <option value="0"></option>
                                 @itemTypeList.zipWithIndex.map { case(itemType, i) =>

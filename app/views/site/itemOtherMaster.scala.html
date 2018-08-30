@@ -43,7 +43,7 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
                     <div class="text-left col-xs-10 col-sm-10 col-md-10 col-lg-10" style="padding:0;">
                         <div style="margin-right:10px;float:left;">
                             @Messages("lang.search.curFloor")
-                            <select id="FLOOR_NAME_FILTER" style="width: 100px;">
+                            <select id="FLOOR_NAME_FILTER" style="width: 120px;">
                                 <!--仮設材種別テーブルから検索フィルタを設置-->
                                 <option value=""></option>
                                 @floorNameList.zipWithIndex.map { case(floor, i) =>
@@ -54,7 +54,7 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
                         </div>
                         <div style="margin-right:10px;float:left;">
                             @Messages("lang.search.type")
-                            <select id="ITEM_TYPE_FILTER" style="width: 100px;">
+                            <select id="ITEM_TYPE_FILTER" style="width: 120px;">
                                 <!--仮設材種別テーブルから検索フィルタを設置-->
                                 <option value="0"></option>
                                 @itemTypeList.zipWithIndex.map { case(itemType, i) =>
@@ -65,7 +65,7 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
                         </div>
                         <div style="margin-right:10px;float:left;">
                             @Messages("lang.search.company")
-                            <select id="COMPANY_NAME_FILTER" style="width: 100px;">
+                            <select id="COMPANY_NAME_FILTER" style="width: 120px;">
                                 <!--業者マスターから検索フィルタを設置-->
                                 <option value=""></option>
                                 @companyNameList.zipWithIndex.map { case(company, i) =>
@@ -76,7 +76,7 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
                         </div>
                         <div style="margin-right:10px;float:left;">
                             @Messages("lang.search.term")
-                            <select id="WORK_TYPE_FILTER" style="width: 100px;">
+                            <select id="WORK_TYPE_FILTER" style="width: 120px;">
                                 <!--期間Enumから検索フィルタを設置-->
                                 <!--<option value="0"></option>-->
                                 <!--@workTypeMap.map{case (key, value) =>-->

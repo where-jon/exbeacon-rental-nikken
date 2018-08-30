@@ -50,7 +50,7 @@
                         </div>
                         <div style="margin-right:10px;float:left;">
                             @Messages("lang.search.floor")
-                            <select id="FLOOR_NAME_FILTER" style="width: 100px;">
+                            <select id="FLOOR_NAME_FILTER" style="width: 120px;">
                                 <!--フロアテーブルから検索フィルタを設置-->
                                 <option value=""></option>
                                 <option value=@Messages("lang.search.absence")>@Messages("lang.search.absence")</option>
@@ -63,7 +63,7 @@
                         </div>
                         <div style="margin-right:10px;float:left;">
                             @Messages("lang.search.type")
-                            <select id="ITEM_TYPE_FILTER" style="width: 100px;">
+                            <select id="ITEM_TYPE_FILTER" style="width: 120px;">
                                 <!--仮設材種別テーブルから検索フィルタを設置-->
                                 <option value="0"></option>
                                 @itemTypeList.zipWithIndex.map { case(itemType, i) =>

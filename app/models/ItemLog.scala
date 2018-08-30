@@ -123,9 +123,9 @@ class ItemLogDAO @Inject() (dbapi: DBApi) {
     var vStartData =itemLogData.reserve_start_date
     var vEndData = itemLogData.reserve_end_date
     var vUpdateData = itemLogData.updatetime
-    var vWorkType = itemLogData.work_type_name
+    val vWorkType = itemLogData.work_type_name
     var vReserveFlg = false
-    var vWorkingFlg = itemLogData.work_flg
+    val vWorkingFlg = itemLogData.work_flg
 
     // 現在時刻設定
     val mSimpleDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.JAPAN)
