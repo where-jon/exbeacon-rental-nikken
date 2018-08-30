@@ -85,7 +85,7 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
                         </div>
                     </div>
                     <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2" style="padding:0;">
-                        <div id = "viewBtn" class="text-right btn btn__view--frame">予約情報を確認</div>
+                        <div id = "viewBtn" class="text-right btn btn__view--frame">@Messages("lang.btn.reserve.list")</div>
                     </div>
                 </div>
                 <!-- テーブルのROW -->
@@ -159,7 +159,7 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
                     </div>
                     <!--表示ボタン-->
                     <div id ="reserveBtn" class="text-center btn btn__view--frame">
-                        取消へ
+                        @Messages("lang.btn.move.cancel")
                     </div>
                 </div>
                 @CSRF.formField

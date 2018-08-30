@@ -166,7 +166,7 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
                     </div>
                     <!--表示ボタン-->
                     <div id ="reserveBtn" class="text-center btn btn__view--frame">
-                        予約へ
+                        @Messages("lang.btn.move.reserve")
                     </div>
                 </div>
                 @CSRF.formField
