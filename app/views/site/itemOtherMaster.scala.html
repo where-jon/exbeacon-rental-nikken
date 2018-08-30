@@ -15,7 +15,7 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
 <!doctype html>
 <html lang="ja">
 <head>
-@templates.htmlHead(title = Messages("lang.site.itemOtherMaster.page.title"))
+@templates.htmlHead(title = Messages("lang.cms.carManage.title"))
 <link rel="stylesheet" href="@routes.MyAssets.css("cms/itemCarManage.css")"/>
 <script></script>
 </head>
@@ -35,7 +35,7 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
         <div class="mainSpace col-xs-10 col-sm-10 col-md-10 col-lg-10">
             <!-- 画面題字 -->
             <div class="form-group" style="font-weight:bold;font-size:19px;margin:15px 0px;">
-                @Messages("lang.site.itemOtherMaster.page.title")
+                @Messages("lang.site.otherMaster.page.title")
             </div>
             <!-- ボタン-->
             <form id="viewForm" method="post" action="">
@@ -43,7 +43,7 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
                     <div class="text-left col-xs-10 col-sm-10 col-md-10 col-lg-10" style="padding:0;">
                         <div style="margin-right:10px;float:left;">
                             @Messages("lang.search.curFloor")
-                            <select id="FLOOR_NAME_FILTER" style="width: 100px;">
+                            <select id="FLOOR_NAME_FILTER" style="width: 120px;">
                                 <!--仮設材種別テーブルから検索フィルタを設置-->
                                 <option value=""></option>
                                 @floorNameList.zipWithIndex.map { case(floor, i) =>
@@ -54,7 +54,7 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
                         </div>
                         <div style="margin-right:10px;float:left;">
                             @Messages("lang.search.type")
-                            <select id="ITEM_TYPE_FILTER" style="width: 100px;">
+                            <select id="ITEM_TYPE_FILTER" style="width: 120px;">
                                 <!--仮設材種別テーブルから検索フィルタを設置-->
                                 <option value="0"></option>
                                 @itemTypeList.zipWithIndex.map { case(itemType, i) =>
@@ -65,7 +65,7 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
                         </div>
                         <div style="margin-right:10px;float:left;">
                             @Messages("lang.search.company")
-                            <select id="COMPANY_NAME_FILTER" style="width: 100px;">
+                            <select id="COMPANY_NAME_FILTER" style="width: 120px;">
                                 <!--業者マスターから検索フィルタを設置-->
                                 <option value=""></option>
                                 @companyNameList.zipWithIndex.map { case(company, i) =>
@@ -76,7 +76,7 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
                         </div>
                         <div style="margin-right:10px;float:left;">
                             @Messages("lang.search.term")
-                            <select id="WORK_TYPE_FILTER" style="width: 100px;">
+                            <select id="WORK_TYPE_FILTER" style="width: 120px;">
                                 <!--期間Enumから検索フィルタを設置-->
                                 <!--<option value="0"></option>-->
                                 <!--@workTypeMap.map{case (key, value) =>-->
@@ -91,7 +91,7 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
                         </div>
                     </div>
                     <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2" style="padding:0;">
-                        <div class="text-center btn btn__view--frame" style="width:80%">@Messages("lang.btn.show")</div>
+                        <div class="text-center btn btn__view--frame" style="width:80%">表示</div>
                     </div>
                 </div>
                 @CSRF.formField
@@ -103,18 +103,18 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
                         <table class="table table-bordered table-condensed itemTable">
                             <thead>
                                 <tr>
-                                    <th colspan="8" class="tableTitleTh">@Messages("lang.site.itemOtherMaster.page.title")</th>
+                                    <th colspan="8" class="tableTitleTh">@Messages("lang.site.otherMaster.page.title")</th>
                                 </tr>
                                 <tr>
-                                    <th class="tableTh ">@Messages("lang.site.itemOtherMaster.curFloor")</th>
-                                    <th class="tableTh ">@Messages("lang.site.itemOtherMaster.curPos")</th>
-                                    <th class="tableTh ">@Messages("lang.site.itemOtherMaster.txId")</th>
-                                    <th class="tableTh ">@Messages("lang.site.itemOtherMaster.type")</th>
-                                    <th class="tableTh ">@Messages("lang.site.itemOtherMaster.name")</th>
-                                    <th class="tableTh ">@Messages("lang.site.itemOtherMaster.company")</th>
-                                    <th class="tableTh ">@Messages("lang.site.itemOtherMaster.reserveFloor")</th>
-                                    <th class="tableTh ">@Messages("lang.site.itemOtherMaster.term")</th>
-                                    <th class="tableTh hidden">@Messages("lang.site.itemOtherMaster.reserveId")</th>
+                                    <th class="tableTh ">現在フロア</th>
+                                    <th class="tableTh ">現在位置</th>
+                                    <th class="tableTh ">Tag ID</th>
+                                    <th class="tableTh ">種別</th>
+                                    <th class="tableTh ">名称</th>
+                                    <th class="tableTh ">業者</th>
+                                    <th class="tableTh ">予約フロア</th>
+                                    <th class="tableTh ">期間</th>
+                                    <th class="tableTh hidden">予約ID</th>
                                 </tr>
                             </thead>
                             <tbody>

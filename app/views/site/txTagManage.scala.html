@@ -12,7 +12,7 @@
 <!doctype html>
 <html lang="ja">
 <head>
-@templates.htmlHead(title = Messages("lang.site.txTagManage.title"))
+@templates.htmlHead(title = Messages("lang.cms.carManage.title"))
 <link rel="stylesheet" href="@routes.MyAssets.css("cms/itemCarManage.css")"/>
 <script></script>
 </head>
@@ -41,7 +41,7 @@
                     <div class="text-left col-xs-11 col-sm-11 col-md-11 col-lg-11" style="padding:0;">
                         <div style="margin-right:20px;float:left;">
                             @Messages("lang.search.powerlevel")
-                            <select id="POWER_FILTER" style="width: 100px;">
+                            <select id="POWER_FILTER" style="width: 120px;">
                                 <option value="-1"></option>
                                 @POWER_ENUM.zipWithIndex.map { case(power, i) =>
                                     <option value="@power._1">@power._2</option>
@@ -51,9 +51,9 @@
                         </div>
                         <div style="float:left;">
                             @Messages("lang.search.type")
-                            <select id="ITEM_TYPE_FILTER" style="width: 100px;">
+                            <select id="ITEM_TYPE_FILTER" style="width: 120px;">
                                 <!--仮設材種別テーブルから検索フィルタを設置-->
-                                <option value="0"></option>
+                                <option value="0">すべて</option>
                                 @itemTypeList.zipWithIndex.map { case(itemType, i) =>
                                     <option value="@itemType.item_type_id">@itemType.item_type_name</option>
                                 }
@@ -63,7 +63,7 @@
                     </div>
                     <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1" style="padding:0;">
                         <div id = "viewBtn" class="text-center btn btn__view--frame" style="width:100%">
-                            @Messages("lang.btn.show")
+                            表示
                         </div>
                     </div>
                     @CSRF.formField
