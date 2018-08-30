@@ -408,10 +408,6 @@ class itemCarDAO @Inject()(dbapi: DBApi) {
              oldBtxId:Int, oldCarKeyBtxId:Int): Unit = {
     db.withTransaction { implicit connection =>
 
-      var noteText: String = "note"
-      if(!note.isEmpty){
-        noteText = note
-      }
       // 作業車・立馬マスタの更新
       SQL(
         """
@@ -431,7 +427,7 @@ class itemCarDAO @Inject()(dbapi: DBApi) {
               'carKeyBtxId -> carKeyBtxId,
               'carId -> carId,
               'itemTypeId -> itemTypeId,
-              'note -> noteText
+              'note -> note
       ).executeUpdate()
 
       // コミット
