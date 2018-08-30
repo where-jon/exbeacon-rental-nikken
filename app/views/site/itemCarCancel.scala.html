@@ -16,7 +16,7 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
 <!doctype html>
 <html lang="ja">
 <head>
-@templates.htmlHead(title = Messages("lang.cms.carManage.title"))
+@templates.htmlHead(title = Messages("lang.site.itemCarCancel.page.title"))
 <link rel="stylesheet" href="@routes.MyAssets.css("cms/itemCarManage.css")"/>
 <script></script>
 </head>
@@ -43,7 +43,7 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
                 <div class="row tableRow" style="margin-top: 10px;">
                     <div class="text-left col-xs-10 col-sm-10 col-md-10 col-lg-10" style="padding:0;">
                         <div style="margin-right:10px;float:left;">
-                            <div style="float:left">予約希望日：</div>
+                            <div style="float:left">@Messages("lang.search.reserveDate")</div>
                             <div class='input-group date' id='datetimepicker' style="margin-top:-5px;">
                                 <span class="input-group-addon" style="float:left;width:40px;height:34px;">
                                     <span class="glyphicon glyphicon-calendar"></span>
@@ -52,7 +52,7 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
                             </div>
                         </div>
                         <div style="margin-right:10px;float:left;">
-                            種別 :
+                            @Messages("lang.search.type")
                             <select id="ITEM_TYPE_FILTER" style="width: 100px;">
                                 <!--仮設材種別テーブルから検索フィルタを設置-->
                                 <option value="0"></option>
@@ -63,7 +63,7 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
                             <input class="hidden form-control input-sm" type="text" id="itemTypeId" name="itemTypeId" value="@ITEM_TYPE_FILTER" />
                         </div>
                         <div style="margin-right:10px;float:left;">
-                            業者 :
+                            @Messages("lang.search.company")
                             <select id="COMPANY_NAME_FILTER" style="width: 100px;">
                                 <!--業者マスターから検索フィルタを設置-->
                                 <option value=""></option>
@@ -74,7 +74,7 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
                             <input class="hidden form-control input-sm" type="text" id="companyName" name="companyName" value="@COMPANY_NAME_FILTER" />
                         </div>
                         <div style="margin-right:10px;float:left;">
-                            期間 :
+                            @Messages("lang.search.term")
                             <select id="WORK_TYPE_FILTER" style="width: 100px;">
                                 <option value=""></option>
                                 @workTypeList.zipWithIndex.map { case(workType, i) =>
@@ -85,7 +85,7 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
                         </div>
                     </div>
                     <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2" style="padding:0;">
-                        <div id = "viewBtn" class="text-right btn btn__view--frame">予約情報を確認</div>
+                        <div id = "viewBtn" class="text-right btn btn__view--frame">@Messages("lang.btn.reserve.list")</div>
                     </div>
                 </div>
                 <!-- テーブルのROW -->
@@ -95,21 +95,21 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
                             <table class="table table-bordered table-condensed itemTable">
                                 <thead>
                                     <tr>
-                                        <th colspan="9" class="tableTitleTh">@Messages("lang.site.carCancel.page.title")</th>
+                                        <th colspan="9" class="tableTitleTh">@Messages("lang.site.itemCarCancel.page.title")</th>
                                     </tr>
                                     <tr>
-                                        <th class="tableTh ">選択</th>
-                                        <th class="tableTh ">現在フロア</th>
-                                        <th class="tableTh col-xs-2 col-sm-2 col-md-2 col-lg-2">現在位置</th>
-                                        <th class="tableTh hidden">実ID</th>
-                                        <th class="tableTh ">Tag ID</th>
-                                        <th class="tableTh hidden">種別ID</th>
-                                        <th class="tableTh ">種別</th>
-                                        <th class="tableTh ">名称</th>
-                                        <th class="tableTh ">予約業者</th>
-                                        <th class="tableTh ">予約日</th>
-                                        <th class="tableTh ">予約期間</th>
-                                        <th class="tableTh hidden ">予約ID</th>
+                                        <th class="tableTh ">@Messages("lang.site.itemCarCancel.select")</th>
+                                        <th class="tableTh ">@Messages("lang.site.itemCarCancel.floor")</th>
+                                        <th class="tableTh col-xs-2 col-sm-2 col-md-2 col-lg-2">@Messages("lang.site.itemCarCancel.pos")</th>
+                                        <th class="tableTh hidden">@Messages("lang.site.itemCarCancel.itemId")</th>
+                                        <th class="tableTh ">@Messages("lang.site.itemCarCancel.txId")</th>
+                                        <th class="tableTh hidden">@Messages("lang.site.itemCarCancel.typeId")</th>
+                                        <th class="tableTh ">@Messages("lang.site.itemCarCancel.typeName")</th>
+                                        <th class="tableTh ">@Messages("lang.site.itemCarCancel.name")</th>
+                                        <th class="tableTh ">@Messages("lang.site.itemCarCancel.reserveCompany")</th>
+                                        <th class="tableTh ">@Messages("lang.site.itemCarCancel.reserveDate")</th>
+                                        <th class="tableTh ">@Messages("lang.site.itemCarCancel.reserveTerm")</th>
+                                        <th class="tableTh hidden ">@Messages("lang.site.itemCarCancel.reserveId")</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -159,7 +159,7 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
                     </div>
                     <!--表示ボタン-->
                     <div id ="reserveBtn" class="text-center btn btn__view--frame">
-                        取消へ
+                        @Messages("lang.btn.move.cancel")
                     </div>
                 </div>
                 @CSRF.formField
@@ -172,27 +172,27 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
                         <input type="hidden" name="inputPlaceId" value="" />
                         <input type="hidden" id="inputItemKindId" name="inputItemKindId" />
                         <input type="hidden" id="actualItemInfoStr" name="actualItemInfoStr" />
-                        <div class="modal-header" style="">@Messages("lang.site.carCancel.page.title")</div>
+                        <div class="modal-header" style="">@Messages("lang.site.itemCarCancel.page.title")</div>
                         <div class="modal-body">
                             <div class="hidden form-group" style="margin-bottom: 5px;">
-                                <label class="text-right  control-label col-xs-6">予約希望日</label>
-                                <label id="mReserveDate" class="modalClass control-label">未設定</label>
+                                <label class="text-right  control-label col-xs-6">@Messages("lang.site.item.reserveDate")</label>
+                                <label id="mReserveDate" class="modalClass control-label">@Messages("lang.site.item.noselect")</label>
                             </div>
                             <div class="hidden form-group" style="margin-bottom: 5px;">
-                                <label class="text-right control-label col-xs-6">種別</label>
-                                <label id="mItemTypeName" class="modalClass control-label">未設定</label>
+                                <label class="text-right control-label col-xs-6">@Messages("lang.site.itemCarCancel.typeName")</label>
+                                <label id="mItemTypeName" class="modalClass control-label">@Messages("lang.site.item.noselect")</label>
                             </div>
                             <div class="hidden form-group" style="margin-bottom: 5px;">
-                                <label class="text-right control-label col-xs-6">期間</label>
-                                <label id="mWorkTypeName" class="modalClass control-label">未設定</label>
+                                <label class="text-right control-label col-xs-6">@Messages("lang.site.item.term")</label>
+                                <label id="mWorkTypeName" class="modalClass control-label">@Messages("lang.site.item.noselect")</label>
                             </div>
                             <div class="hidden form-group" style="margin-bottom: 5px;">
-                                <label class="text-right control-label col-xs-6">業者</label>
-                                <label id="mCompanyName" class="modalClass control-label">未設定</label>
+                                <label class="text-right control-label col-xs-6">@Messages("lang.site.item.company")</label>
+                                <label id="mCompanyName" class="modalClass control-label">@Messages("lang.site.item.noselect")</label>
                             </div>
                             <div class="hidden form-group" style="margin-bottom: 5px;">
-                                <label class="text-right control-label col-xs-6">予約フロア</label>
-                                <label id="mReserveFloorName" class="modalClass control-label">未設定</label>
+                                <label class="text-right control-label col-xs-6">@Messages("lang.site.item.reserveFloor")</label>
+                                <label id="mReserveFloorName" class="modalClass control-label">@Messages("lang.site.item.noselect")</label>
                             </div>
                             <div class="form-group" style="margin-bottom: 5px;text-align: center;font-size: 2vmin;">
                                 <label class="text-center control-label">
@@ -205,7 +205,7 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
                                 <button type="button" class="btn btn-default" data-dismiss="modal">@Messages("cancel")</button>
                             </div>
                             <div class="col-xs-6 text-center">
-                                <button id="itemRegisterFooter"  type="" class="text-center btn btn-primary">@Messages("lang.site.carCancel.cancelBtn")</button>
+                                <button id="itemRegisterFooter"  type="" class="text-center btn btn-primary">@Messages("lang.btn.cancel")</button>
                             </div>
                         </div>
                     </div>

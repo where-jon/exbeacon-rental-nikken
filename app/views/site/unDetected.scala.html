@@ -13,7 +13,7 @@
 <!doctype html>
 <html lang="ja">
 <head>
-@templates.htmlHead(title = Messages("lang.cms.carManage.title"))
+@templates.htmlHead(title = Messages("lang.site.unDetected.page.title"))
 <link rel="stylesheet" href="@routes.MyAssets.css("cms/itemCarManage.css")"/>
 <script></script>
 </head>
@@ -40,7 +40,7 @@
                 <div class="row tableRow" style="margin-top: 10px;">
                     <div class="text-left col-xs-11 col-sm-11 col-md-11 col-lg-11" style="padding:0;">
                         <div style="margin-right:10px;float:left;">
-                            <div style="float:left">検出日：</div>
+                            <div style="float:left">@Messages("lang.search.detectedDate")</div>
                             <div class='input-group date' id='datetimepicker' style="margin-top:-5px;">
                                 <span class="input-group-addon" style="float:left;width:40px;height:34px;">
                                     <span class="glyphicon glyphicon-calendar"></span>
@@ -49,19 +49,20 @@
                             </div>
                         </div>
                         <div style="margin-right:10px;float:left;">
-                            フロア :
+                            @Messages("lang.search.floor")
                             <select id="FLOOR_NAME_FILTER" style="width: 100px;">
                                 <!--フロアテーブルから検索フィルタを設置-->
                                 <option value=""></option>
+                                <option value=@Messages("lang.search.absence")>@Messages("lang.search.absence")</option>
+                                <option value=@Messages("lang.search.undetected")>@Messages("lang.search.undetected")</option>
                                 @floorNameList.zipWithIndex.map { case(floor, i) =>
                                     <option value="@floor.floor_name">@floor.floor_name</option>
                                 }
-                                <option value="検知フロア無">検知フロア無</option>
                             </select>
                             <input class="hidden form-control input-sm" type="text" id="floorName" name="floorName" value="@FLOOR_NAME_FILTER" />
                         </div>
                         <div style="margin-right:10px;float:left;">
-                            種別 :
+                            @Messages("lang.search.type")
                             <select id="ITEM_TYPE_FILTER" style="width: 100px;">
                                 <!--仮設材種別テーブルから検索フィルタを設置-->
                                 <option value="0"></option>
@@ -89,32 +90,30 @@
                                         <th colspan="7" class="tableTitleTh">@Messages("lang.site.unDetected.page.title")</th>
                                     </tr>
                                     <tr>
-                                        <th class="tableTh ">Tag ID</th>
-                                        <th class="tableTh ">フロア</th>
-                                        <th class="tableTh ">検知位置</th>
-                                        <th class="tableTh ">最終受信日時</th>
-                                        <th class="tableTh ">当日予約業者</th>
-                                        <th class="tableTh ">種別</th>
-                                        <th class="tableTh ">名称</th>
+                                        <th class="tableTh ">@Messages("lang.site.unDetected.tx")</th>
+                                        <th class="tableTh ">@Messages("lang.site.unDetected.floor")</th>
+                                        <th class="tableTh ">@Messages("lang.site.unDetected.detectedPos")</th>
+                                        <th class="tableTh ">@Messages("lang.site.unDetected.detectedTime")</th>
+                                        <th class="tableTh ">@Messages("lang.site.unDetected.reserveCompany")</th>
+                                        <th class="tableTh ">@Messages("lang.site.unDetected.itemType")</th>
+                                        <th class="tableTh ">@Messages("lang.site.unDetected.itemName")</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @unDetectedList.zipWithIndex.map { case(unDetected, i) =>
-                                        @if(i == 0 || (i > 0 && unDetectedList(i-1).item_btx_id != unDetectedList(i).item_btx_id)){
-                                            <tr class="rowColor rowHover" data-carId="@unDetected.item_id" id="@unDetected.item_id">
-                                                <td class="itemTd text-center ">@unDetected.item_btx_id</td>
-                                                <td class="itemTd text-center ">@unDetected.finish_floor_name</td>
-                                                <td class="itemTd text-center ">@unDetected.finish_exb_name</td>
-                                                @if(unDetected.finish_detected_time == "0001-01-01 00:00:00"){
-                                                    <td class="itemTd text-center ">未検知</td>
-                                                }else{
-                                                    <td class="itemTd text-center ">@unDetected.finish_detected_time</td>
-                                                }
-                                                <td class="itemTd text-center ">@unDetected.company_name</td>
-                                                <td class="itemTd text-center ">@unDetected.item_type_name</td>
-                                                <td class="itemTd text-center ">@unDetected.item_name</td>
-                                            </tr>
-                                        }
+                                        <tr class="rowColor rowHover" data-carId="@unDetected.item_id" id="@unDetected.item_id">
+                                            <td class="itemTd text-center ">@unDetected.item_btx_id</td>
+                                            <td class="itemTd text-center ">@unDetected.finish_floor_name</td>
+                                            <td class="itemTd text-center ">@unDetected.finish_exb_name</td>
+                                            @if(unDetected.finish_detected_time == "0001-01-01 00:00:00"){
+                                                <td class="itemTd text-center ">@Messages("lang.site.unDetected.undetectd")</td>
+                                            }else{
+                                                <td class="itemTd text-center ">@unDetected.finish_detected_time</td>
+                                            }
+                                            <td class="itemTd text-center ">@unDetected.company_name</td>
+                                            <td class="itemTd text-center ">@unDetected.item_type_name</td>
+                                            <td class="itemTd text-center ">@unDetected.item_name</td>
+                                        </tr>
                                     }
                                 </tbody>
                             </table>
