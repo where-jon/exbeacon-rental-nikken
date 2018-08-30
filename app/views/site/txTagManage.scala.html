@@ -12,7 +12,7 @@
 <!doctype html>
 <html lang="ja">
 <head>
-@templates.htmlHead(title = Messages("lang.cms.carManage.title"))
+@templates.htmlHead(title = Messages("lang.site.txTagManage.title"))
 <link rel="stylesheet" href="@routes.MyAssets.css("cms/itemCarManage.css")"/>
 <script></script>
 </head>
@@ -53,7 +53,7 @@
                             @Messages("lang.search.type")
                             <select id="ITEM_TYPE_FILTER" style="width: 120px;">
                                 <!--仮設材種別テーブルから検索フィルタを設置-->
-                                <option value="0">すべて</option>
+                                <option value="0"></option>
                                 @itemTypeList.zipWithIndex.map { case(itemType, i) =>
                                     <option value="@itemType.item_type_id">@itemType.item_type_name</option>
                                 }
@@ -63,7 +63,7 @@
                     </div>
                     <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1" style="padding:0;">
                         <div id = "viewBtn" class="text-center btn btn__view--frame" style="width:100%">
-                            表示
+                            @Messages("lang.btn.show")
                         </div>
                     </div>
                     @CSRF.formField
