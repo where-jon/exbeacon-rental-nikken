@@ -42,7 +42,7 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
                 <div class="row tableRow" style="margin-top: 10px;">
                     <div class="text-left col-xs-10 col-sm-10 col-md-10 col-lg-10" style="padding:0;">
                         <div style="margin-right:10px;float:left;">
-                            現在フロア :
+                            @Messages("lang.search.curFloor")
                             <select id="FLOOR_NAME_FILTER" style="width: 120px;">
                                 <!--仮設材種別テーブルから検索フィルタを設置-->
                                 <option value=""></option>
@@ -53,7 +53,7 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
                             <input class="hidden form-control input-sm" type="text" id="floorName" name="floorName" value="@FLOOR_NAME_FILTER" />
                         </div>
                         <div style="margin-right:10px;float:left;">
-                            種別 :
+                            @Messages("lang.search.type")
                             <select id="ITEM_TYPE_FILTER" style="width: 120px;">
                                 <!--仮設材種別テーブルから検索フィルタを設置-->
                                 <option value="0"></option>
@@ -64,7 +64,7 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
                             <input class="hidden form-control input-sm" type="text" id="itemTypeId" name="itemTypeId" value="@ITEM_TYPE_FILTER" />
                         </div>
                         <div style="margin-right:10px;float:left;">
-                            業者 :
+                            @Messages("lang.search.company")
                             <select id="COMPANY_NAME_FILTER" style="width: 120px;">
                                 <!--業者マスターから検索フィルタを設置-->
                                 <option value=""></option>
@@ -75,7 +75,7 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
                             <input class="hidden form-control input-sm" type="text" id="companyName" name="companyName" value="@COMPANY_NAME_FILTER" />
                         </div>
                         <div style="margin-right:10px;float:left;">
-                            期間 :
+                            @Messages("lang.search.term")
                             <select id="WORK_TYPE_FILTER" style="width: 120px;">
                                 <!--期間Enumから検索フィルタを設置-->
                                 <!--<option value="0"></option>-->

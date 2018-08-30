@@ -621,6 +621,7 @@ class BeaconService @Inject() (config: Configuration,
       var vStatus = "未検知"
       var vUpdated = "未検知"
 
+      if(v.updated != 0){
         val vCurrentEpochTime = System.currentTimeMillis()
         if (v.updated < vCurrentEpochTime - 60*60*24*1000) { // 24時間以上前
           vStatus = "受信不良"
@@ -632,8 +633,9 @@ class BeaconService @Inject() (config: Configuration,
           }
         }
         // epochを現在時間へ
-      vTimeStamp = mSimpleDateFormat.format(new Timestamp(v.timestamp))
-      vUpdated = mSimpleDateFormat.format(new Timestamp(v.updated))
+        vTimeStamp = mSimpleDateFormat.format(new Timestamp(v.timestamp))
+        vUpdated = mSimpleDateFormat.format(new Timestamp(v.updated))
+      }
       GwTelemetryData(
         v.num
         ,v.deviceid

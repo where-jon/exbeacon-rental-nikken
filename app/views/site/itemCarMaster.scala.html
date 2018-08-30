@@ -52,8 +52,8 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
                             <input class="hidden form-control input-sm" type="text" id="floorName" name="floorName" value="@FLOOR_NAME_FILTER" />
                         </div>
                         <div style="margin-right:10px;float:left;">
-                            種別 :
-                            <select id="ITEM_TYPE_FILTER" style="width:120px;">
+                            @Messages("lang.search.type")
+                            <select id="ITEM_TYPE_FILTER" style="width: 100px;">
                                 <!--仮設材種別テーブルから検索フィルタを設置-->
                                 <option value="0"></option>
                                 @itemTypeList.zipWithIndex.map { case(itemType, i) =>
@@ -63,8 +63,8 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
                             <input class="hidden form-control input-sm" type="text" id="itemTypeId" name="itemTypeId" value="@ITEM_TYPE_FILTER" />
                         </div>
                         <div style="margin-right:10px;float:left;">
-                            業者 :
-                            <select id="COMPANY_NAME_FILTER" style="width: 120px;">
+                            @Messages("lang.search.company")
+                            <select id="COMPANY_NAME_FILTER" style="width: 100px;">
                                 <!--業者マスターから検索フィルタを設置-->
                                 <option value=""></option>
                                 @companyNameList.zipWithIndex.map { case(company, i) =>
@@ -74,8 +74,8 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
                             <input class="hidden form-control input-sm" type="text" id="companyName" name="companyName" value="@COMPANY_NAME_FILTER" />
                         </div>
                         <div style="margin-right:10px;float:left;">
-                            期間 :
-                            <select id="WORK_TYPE_FILTER" style="width: 120px;">
+                            @Messages("lang.search.term")
+                            <select id="WORK_TYPE_FILTER" style="width: 100px;">
                                 <!--期間Enumから検索フィルタを設置-->
                                 <!--<option value="0"></option>-->
                                 <!--@workTypeMap.map{case (key, value) =>-->

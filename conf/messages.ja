@@ -582,6 +582,22 @@ lang.manage.exbViewerManager = EXB設置管理
 dialog.db.result  = 処理結果
 
 
+#search
+lang.search.company = 業者 :
+lang.search.term = 期間 :
+lang.search.type = 種別 :
+lang.search.curFloor = 現在フロア :
+lang.search.reserveFloor = 予約フロア :
+lang.search.detectedFloor = 検知位置 :
+lang.search.absence = 不在
+lang.search.undetected = 未検知
+lang.search.floor = 検知フロア :
+lang.search.reserveDate = 予約希望日：
+lang.search.reserveDate2 = 希望日：
+lang.search.powerlevel = 電池残量 :
+lang.search.detectedDate = 検出日：
+
+
 #button
 lang.btn.addRow = 行追加
 lang.btn.update = 更新
@@ -589,6 +605,7 @@ lang.btn.delete = 削除
 lang.btn.reload = 再表示
 lang.btn.show = 表示
 lang.btn.csv.export = CSV
+lang.btn.empty.check = 空き情報確認
 
 
 lang.deviceID = 端末ID
@@ -603,6 +620,15 @@ lang.site.workPlace.page.maxDevice=3個以上
 
 # 未検出の仮設材
 lang.site.unDetected.page.title=未検出の仮設材
+lang.site.unDetected.tx=Tag ID
+lang.site.unDetected.floor=検知フロア
+lang.site.unDetected.detectedPos=最終検知位置
+lang.site.unDetected.detectedTime=最終受信日時
+lang.site.unDetected.reserveCompany=当日予約業者
+lang.site.unDetected.itemType=種別
+lang.site.unDetected.itemName=名称
+lang.site.unDetected.undetectd=未検知
+
 
 
 # 作業車稼働状況分析（分析）
@@ -633,18 +659,106 @@ success.site.carReserve.update=作業車・立馬予約を完了しました。
 error.site.carReserve.update=作業車・立馬予約に問題が発生しました。<br/>
 error.site.carReserve.noselect=予約対象未選択
 
-# 作業車・立馬予約文字列
-lang.cms.itemCarManage.select=選択
-lang.cms.itemCarManage.floor=現在フロア
-lang.cms.itemCarManage.pos=現在位置
-lang.cms.itemCarManage.itemId=実ID
-lang.cms.itemCarManage.txId=Tag ID
-lang.cms.itemCarManage.typeId=種別ID
-lang.cms.itemCarManage.typeName=種別
-lang.cms.itemCarManage.name=名称
-lang.cms.itemCarManage.reserveDate=予約日
-lang.cms.itemCarManage.reserveTerm=予約期間
-lang.cms.itemCarManage.reserveId=予約ID
+
+# 作業車・立馬一覧
+lang.site.itemCarMaster.page.title=作業車・立馬一覧
+lang.site.itemCarMaster.curFloor=現在フロア
+lang.site.itemCarMaster.curPos=現在位置
+lang.site.itemCarMaster.txId=Tag ID
+lang.site.itemCarMaster.type=種別
+lang.site.itemCarMaster.name=名称
+lang.site.itemCarMaster.company=業者
+lang.site.itemCarMaster.reserveFloor=予約フロア
+lang.site.itemCarMaster.term=期間
+lang.site.itemCarMaster.reserveId=予約ID
+
+
+# 作業車・立馬予約
+lang.site.itemCarReserve.page.title=作業車・立馬予約
+lang.site.itemCarReserve.select=選択
+lang.site.itemCarReserve.floor=現在フロア
+lang.site.itemCarReserve.pos=現在位置
+lang.site.itemCarReserve.itemId=実ID
+lang.site.itemCarReserve.txId=Tag ID
+lang.site.itemCarReserve.typeId=種別ID
+lang.site.itemCarReserve.typeName=種別
+lang.site.itemCarReserve.name=名称
+lang.site.itemCarReserve.reserveDate=予約日
+lang.site.itemCarReserve.reserveTerm=予約期間
+lang.site.itemCarReserve.reserveId=予約ID
+
+# 予約もダル系
+lang.site.item.reserveDate=予約希望日
+lang.site.item.reserveStartDate=予約希望最初日
+lang.site.item.reserveEndDate=予約希望最終日
+lang.site.item.type=種別
+lang.site.item.term=期間
+lang.site.item.company=業者
+lang.site.item.reserveFloor=予約フロア
+lang.site.item.noselect=未設定
+
+# 作業車・立馬予約取消
+lang.site.itemCarCancel.page.title=作業車・立馬予約取消
+lang.site.itemCarCancel.select=選択
+lang.site.itemCarCancel.floor=現在フロア
+lang.site.itemCarCancel.pos=現在位置
+lang.site.itemCarCancel.itemId=実ID
+lang.site.itemCarCancel.txId=Tag ID
+lang.site.itemCarCancel.typeId=種別ID
+lang.site.itemCarCancel.typeName=種別
+lang.site.itemCarCancel.name=名称
+lang.site.itemCarCancel.reserveCompany=予約業者
+lang.site.itemCarCancel.reserveDate=予約日
+lang.site.itemCarCancel.reserveTerm=予約期間
+lang.site.itemCarCancel.reserveId=予約ID
+
+
+# その他仮設材一覧
+lang.site.itemOtherMaster.page.title=その他仮設材一覧
+lang.site.itemOtherMaster.curFloor=現在フロア
+lang.site.itemOtherMaster.curPos=現在位置
+lang.site.itemOtherMaster.txId=Tag ID
+lang.site.itemOtherMaster.type=種別
+lang.site.itemOtherMaster.name=名称
+lang.site.itemOtherMaster.company=業者
+lang.site.itemOtherMaster.reserveFloor=予約フロア
+lang.site.itemOtherMaster.term=期間
+lang.site.itemOtherMaster.reserveId=予約ID
+
+# その他仮設材取消
+lang.site.itemOtherCancel.page.title=その他仮設材予約取消
+lang.site.itemOtherCancel.select=選択
+lang.site.itemOtherCancel.floor=現在フロア
+lang.site.itemOtherCancel.pos=現在位置
+lang.site.itemOtherCancel.itemId=実ID
+lang.site.itemOtherCancel.txId=Tag ID
+lang.site.itemOtherCancel.typeId=種別ID
+lang.site.itemOtherCancel.typeName=種別
+lang.site.itemOtherCancel.name=名称
+lang.site.itemOtherCancel.reserveCompany=予約業者
+lang.site.itemOtherCancel.reserveStartDate=予約最初日
+lang.site.itemOtherCancel.reserveEndDate=予約最終日
+lang.site.itemOtherCancel.reserveTerm=予約期間
+lang.site.itemOtherCancel.reserveId=予約ID
+lang.site.itemOtherCancel.page.delete=選択されたその他仮設材予約を取消します。
+
+# その他仮設材予約
+lang.site.itemOtherReserve.page.title=その他仮設材予約
+lang.site.itemOtherReserve.select=選択
+lang.site.itemOtherReserve.floor=現在フロア
+lang.site.itemOtherReserve.pos=現在位置
+lang.site.itemOtherReserve.itemId=実ID
+lang.site.itemOtherReserve.txId=Tag ID
+lang.site.itemOtherReserve.typeId=種別ID
+lang.site.itemOtherReserve.typeName=種別
+lang.site.itemOtherReserve.name=名称
+lang.site.itemOtherReserve.reserveStartDate=予約最初日
+lang.site.itemOtherReserve.reserveEndDate=予約最終日
+lang.site.itemOtherReserve.reserveTerm=予約期間
+lang.site.itemOtherReserve.reserveId=予約ID
+
+
+
 
 # 予約画面共通
 error.site.reserve.overtime=現在時刻「{0}」は「{1}」予約可能時間を過ぎてるので本日内予約はできません。
@@ -667,8 +781,6 @@ success.site.carCancel.remove=作業車・立馬取消を完了しました。
 # 仮設材管理文字列（その他仮設材）
 lang.site.otherMaster.page.title=その他仮設材一覧
 lang.site.otherReserve.page.title=その他仮設材予約
-lang.site.otherCancel.page.title=その他仮設材予約取消
-lang.site.otherCancel.page.delete=選択されたその他仮設材予約を取消します。
 success.site.otherReserve.update=その他仮設材予約を完了しました。
 error.site.otherReserve.noselect=予約対象未選択
 error.site.otherReserve.update=その他仮設材予約に問題が発生しました。
@@ -684,3 +796,8 @@ error.site.otherCancel.noselect=予約取消対象未選択
 # BTN仮設材　
 lang.site.carCancel.cancelBtn=取消
 lang.site.otherCancel.cancelBtn=取消
+lang.btn.cancel=取消
+lang.btn.reserve.list=予約情報を確認
+lang.btn.move.cancel=取消へ
+lang.btn.reserve=予約
+lang.btn.move.reserve=予約へ
