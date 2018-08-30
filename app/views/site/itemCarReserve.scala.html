@@ -54,7 +54,7 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
                         </div>
                         <div style="margin-right:10px;float:left;">
                             種別 :
-                            <select id="ITEM_TYPE_FILTER" style="width: 100px;">
+                            <select id="ITEM_TYPE_FILTER" style="width: 120px;">
                                 <!--仮設材種別テーブルから検索フィルタを設置-->
                                 <option value="0"></option>
                                 @itemTypeList.zipWithIndex.map { case(itemType, i) =>
@@ -65,7 +65,7 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
                         </div>
                         <div style="margin-right:10px;float:left;">
                             期間 :
-                            <select id="WORK_TYPE_FILTER" style="width: 100px;">
+                            <select id="WORK_TYPE_FILTER" style="width: 120px;">
                                 <option value=""></option>
                                 @workTypeList.zipWithIndex.map { case(workType, i) =>
                                     <option value="@workType.work_type_name">@workType.work_type_name</option>
@@ -142,31 +142,35 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
                 </div>
                 <!--footer 更新部-->
                 <div class="row tableRow" style="margin-top: 30px;">
-                    <div class="text-center col-xs-3 col-sm-3 col-md-3" style="padding:0;">
-                        業者 :
-                        <select id="COMPANY_NAME_FILTER" style="width: 100px;">
-                            <!--業者マスターから検索フィルタを設置-->
-                            <option value=""></option>
-                            @companyNameList.zipWithIndex.map { case(company, i) =>
-                                <option value="@company.companyName">@company.companyName</option>
-                            }
-                        </select>
-                        <input class="hidden  form-control input-sm" type="text" id="companyName" name="companyName" value="" />
-                    </div>
-                    <div class="text-center col-xs-4 col-sm-4 col-md-4">
-                        予約フロア：
-                        <select id="FLOOR_NAME_FILTER" style="width: 100px;">
-                            <!--仮設材種別テーブルから検索フィルタを設置-->
-                            <option value=""></option>
-                            @floorNameList.zipWithIndex.map { case(floor, i) =>
-                                <option value="@floor.floor_name">@floor.floor_name</option>
-                            }
-                        </select>
-                        <input class="hidden  form-control input-sm" type="text" id="floorName" name="floorName" value="" />
+                    <div class="text-left col-xs-10 col-sm-10 col-md-10 col-lg-10" style="padding:0;">
+                        <div style="margin-right:10px;float:left;">
+                            業者 :
+                            <select id="COMPANY_NAME_FILTER" style="width: 120px;">
+                                <!--業者マスターから検索フィルタを設置-->
+                                <option value=""></option>
+                                @companyNameList.zipWithIndex.map { case(company, i) =>
+                                    <option value="@company.companyName">@company.companyName</option>
+                                }
+                            </select>
+                            <input class="hidden  form-control input-sm" type="text" id="companyName" name="companyName" value="" />
+                        </div>
+                        <div style="margin-right:10px;float:left;">
+                            予約フロア：
+                            <select id="FLOOR_NAME_FILTER" style="width: 120px;">
+                                <!--仮設材種別テーブルから検索フィルタを設置-->
+                                <option value=""></option>
+                                @floorNameList.zipWithIndex.map { case(floor, i) =>
+                                    <option value="@floor.floor_name">@floor.floor_name</option>
+                                }
+                            </select>
+                            <input class="hidden  form-control input-sm" type="text" id="floorName" name="floorName" value="" />
+                        </div>
                     </div>
                     <!--表示ボタン-->
-                    <div id ="reserveBtn" class="text-center btn btn__view--frame">
-                        予約へ
+                    <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2" style="padding:0;">
+                        <div id ="reserveBtn" class="text-center btn btn__view--frame">
+                            予約へ
+                        </div>
                     </div>
                 </div>
                 @CSRF.formField
