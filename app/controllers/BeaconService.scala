@@ -148,6 +148,7 @@ class BeaconService @Inject() (config: Configuration,
             posList.find(_.btx_id == v.item_car_btx_id)
           case None => return null
         }
+        var vUpdateTime = ""
         val exbDatas =exbDao.selectExbApiInfo(placeId,bpd.get.pos_id)
         val blankTargetMode =
           if (blankInclude && bpd.get.pos_id != -1) true else false
@@ -163,7 +164,7 @@ class BeaconService @Inject() (config: Configuration,
           }
 
           // jsonからiso時間変換
-          val vUpdateTime = this.setUpdateTime(bpd.get.updatetime)
+          vUpdateTime = this.setUpdateTime(bpd.get.updatetime)
 
           itemCarBeaconPositionData(
             vExbName,
@@ -234,6 +235,7 @@ class BeaconService @Inject() (config: Configuration,
             posList.find(_.btx_id == v.item_other_btx_id)
           case None => return null
         }
+        var vUpdateTime = ""
         val exbDatas =exbDao.selectExbApiInfo(placeId,bpd.get.pos_id)
         val blankTargetMode =
           if (blankInclude && bpd.get.pos_id != -1) true else false
@@ -246,7 +248,7 @@ class BeaconService @Inject() (config: Configuration,
             vFloorName = if (vExbName == "不在" ) "不在" else index.cur_floor_name
             vExbName =  index.exb_pos_name
           }
-          val vUpdateTime = this.setUpdateTime(bpd.get.updatetime)
+          vUpdateTime = this.setUpdateTime(bpd.get.updatetime)
           itemOtherBeaconPositionData(
             vExbName,
             vFloorName,
@@ -316,6 +318,7 @@ class BeaconService @Inject() (config: Configuration,
               posList.find(_.btx_id == v.item_btx_id)
             case None => return null
         }
+        var vUpdateTime = ""
         val exbDatas =exbDao.selectExbApiInfo(placeId,bpd.get.pos_id)
         var vExbName = this.getCurrentPositionStatus(bpd.get.pos_id,bpd.get.updatetime)
         var vFloorName = vExbName
@@ -328,7 +331,7 @@ class BeaconService @Inject() (config: Configuration,
             vFloorName = if (vExbName == "不在" ) "不在" else index.cur_floor_name
             vExbName = index.exb_pos_name
           }
-          val vUpdateTime = this.setUpdateTime(bpd.get.updatetime)
+          vUpdateTime = this.setUpdateTime(bpd.get.updatetime)
           itemBeaconPositionData(
             vExbName,
             vFloorName,
@@ -398,10 +401,11 @@ class BeaconService @Inject() (config: Configuration,
             posList.find(_.btx_id == v.item_btx_id)
           case None => return null
         }
+        var vUpdateTime = ""
         val exbDatas =exbDao.selectExbApiInfo(placeId,bpd.get.pos_id)
         var vExbName = this.getCurrentPositionStatus(bpd.get.pos_id,bpd.get.updatetime)
         var vFloorName = vExbName
-        val vUpdateTime = this.setUpdateTime(bpd.get.updatetime)
+        vUpdateTime = this.setUpdateTime(bpd.get.updatetime)
         val vPosId =
           if (vExbName != "不在" ) bpd.get.pos_id else -1
         exbDatas.map { index =>
@@ -463,6 +467,7 @@ class BeaconService @Inject() (config: Configuration,
         var vFloorName = vExbName
         var vKeyFloorName = ""
         var vWorkFlg = false
+        var vUpdateTime = ""
         val blankTargetMode =
           if (blankInclude && bpd.get.pos_id != -1) true else false
         if (bpd.isDefined && blankTargetMode) {
@@ -483,7 +488,7 @@ class BeaconService @Inject() (config: Configuration,
             }
           }
           // jsonからiso時間変換
-          val vUpdateTime = this.setUpdateTime(bpd.get.updatetime)
+          vUpdateTime = this.setUpdateTime(bpd.get.updatetime)
 
           itemLogPositionData(
             vExbName,
