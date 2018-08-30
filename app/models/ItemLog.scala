@@ -218,29 +218,31 @@ class ItemLogDAO @Inject() (dbapi: DBApi) {
     db.withConnection { implicit connection =>
       val sql = SQL(
         """
-           select
-              item.item_id
-              ,item.item_btx_id
-              ,item.finish_floor_name
-              ,max(item.finish_exb_name) as finish_exb_name
-              ,to_char(max(item.finish_updatetime), 'YYYY-MM-DD HH24:MI:SS') as finish_detected_time
-              ,item.company_name
-              ,itemType.item_type_id
-              ,itemType.item_type_name
-              ,item.item_name
-              from item_log as item
-              inner join item_type as itemType on itemType.item_type_id = item.item_type_id
-              where item.place_id = {place_id}
-              and not item.finish_updatetime >= to_date({finish_updatetime}, 'YYYY-MM-DD') - 1
-              group by
-              item.item_id
-              ,item.item_btx_id
-              ,item.finish_floor_name
-              ,item.company_name
-              ,itemType.item_type_id
-              ,itemType.item_type_name
-              ,item.item_name
-              order by item.item_btx_id,finish_detected_time desc
+          select
+          T1.item_id
+          ,T1.item_btx_id
+          ,T1.finish_floor_name
+          ,T1.finish_exb_name
+          ,to_char(T1.finish_updatetime, 'YYYY-MM-DD HH24:MI:SS') as finish_detected_time
+          ,T1.company_name
+          ,itemType.item_type_id
+          ,itemType.item_type_name
+          ,T1.item_name
+          from item_log as T1
+              INNER JOIN item_type as itemType on itemType.item_type_id = T1.item_type_id
+            INNER JOIN (
+             select
+              item_btx_id as F1
+              ,MAX(finish_updatetime) AS F2
+             FROM
+              item_log
+              where not finish_updatetime >= to_date({finish_updatetime}, 'YYYY-MM-DD') - 1
+              GROUP BY item_btx_id ) AS T2
+            ON T2.F1=T1.item_btx_id AND T2.F2=T1.finish_updatetime
+            where t1.place_id = {place_id}
+        ORDER BY
+        item_btx_id
+
         """
       ).on(
         'place_id -> placeId,

@@ -34,6 +34,16 @@ case class Company(
   placeId: Int
 )
 
+/*作業車・立馬管理予約検索用*/
+case class ReserveMasterCompanyCheck(
+  itemId: Int
+  , workTypeId: Int
+  , companyId: Int
+  , companyName: String
+  , reserveStartDate: String
+  , reserveEndDate: String
+)
+
 @javax.inject.Singleton
 class companyDAO @Inject() (dbapi: DBApi) {
 
@@ -84,6 +94,70 @@ class companyDAO @Inject() (dbapi: DBApi) {
     }
   }
 
+  val reserveMasterCompanyCheck = {
+    get[Int]("item_id") ~
+      get[Int]("work_type_id") ~
+      get[Int]("company_id") ~
+      get[String]("company_name")~
+      get[String]("reserve_start_date")~
+      get[String]("reserve_end_date") map {
+      case item_id ~ work_type_id ~ companyId ~ company_name ~ reserve_start_date ~ reserve_end_date =>
+        ReserveMasterCompanyCheck(item_id, work_type_id, companyId, company_name, reserve_start_date, reserve_end_date)
+    }
+  }
+  /*予約状況確認*/
+  def selectCarReserveCheck(
+                             placeId: Int,
+                             companyId: Int
+                           ): Seq[ReserveMasterCompanyCheck] = {
+
+    db.withConnection { implicit connection =>
+      val selectPh =
+        """
+         select
+            r.item_id
+          , r.work_type_id
+          , r.company_id
+          , c.company_name
+          , r.reserve_start_date
+          , r.reserve_end_date
+         from
+            (select
+                rr.item_id
+              , rr.work_type_id
+              , rr.company_id
+              , to_char(rr.reserve_start_date, 'YYYYMMDD') as reserve_start_date
+              , to_char(rr.reserve_end_date, 'YYYYMMDD') as reserve_end_date
+              , rr.place_id
+            from
+              place_master p
+              inner join reserve_table rr
+              on p.place_id = rr.place_id
+                and p.active_flg = true
+                and rr.active_flg = true
+            where
+                  rr.active_flg = true
+              and rr.place_id = """  + {placeId} + """
+              and rr.company_id = """  + {companyId} + """) r
+            inner join company_master c
+            on r.place_id = c.place_id
+              and c.active_flg = true
+          where
+            r.company_id = c.company_id
+        """
+      // 追加検索条件
+      var wherePh = ""
+//      wherePh += s""" and r.company_id = {companyId} """
+
+      // 表示順を設定
+      val orderPh =
+        """
+          order by
+            r.item_id
+        """
+      SQL(selectPh + wherePh + orderPh).on('placeId -> placeId, 'companyId -> companyId).as(reserveMasterCompanyCheck.*)
+    }
+  }
 
   /**
     * 業者の削除
