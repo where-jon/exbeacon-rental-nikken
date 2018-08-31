@@ -367,7 +367,7 @@ error.cms.exbManage.exbUpdate.inputDeviceNo.empty=デバイスNOは半角数字�
 error.cms.exbManage.exbUpdate.inputDeviceName.empty=デバイス名を入力してください。
 error.cms.exbManage.exbUpdate.inputPosName.empty=場所名を入力してください。
 error.cms.exbManage.exbUpdate.setupFloorId.empty=設置フロアIDは半角数字で入力してください。
-error.cms.exbManage.exbUpdate.setupNumCheck.duplicate=設置場所番号「{0}」はすでに登録されてます。
+error.cms.exbManage.exbUpdate.setupNumCheck.duplicate=EXBデバイスID「{0}」はすでに登録されてます。
 success.cms.exbManage.exbUpdate=EXB情報を更新しました。
 
 # CMS文字列（作業車・立馬管理）
