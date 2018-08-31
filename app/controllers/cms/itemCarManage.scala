@@ -95,7 +95,12 @@ class ItemCarManage @Inject()(
       // 鍵Tag IDが「無」の場合の対処
       var carKeyBtxId = f.inputCarKeyBtxId
       if (carKeyBtxId == "無" || carKeyBtxId.isEmpty) {
-        carKeyBtxId = "-1"
+        if(f.inputCarTypeId == "1"){
+          // 作業車・立馬の場合
+          errMsg :+= Messages("error.cms.CarManage.update.inputCarKeyBtxId.empty")
+        }else{
+          carKeyBtxId = "-1"
+        }
       } else {
         if (!carKeyBtxId.matches("^[-0-9]+$")) {
           errMsg :+= Messages("error.cms.CarManage.update.inputCarKeyBtxId.empty")
