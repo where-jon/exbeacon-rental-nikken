@@ -97,7 +97,7 @@ error.cms.CarManage.update.inputCarNo.empty=作業車・立馬番号を入力し
 error.cms.CarManage.update.inputCarBtxId.empty=作業車TxタグNoを半角数字で入力してください。
 error.cms.CarManage.update.inputCarKeyBtxId.empty=鍵TxタグNoを半角数字で入力してください。
 error.cms.CarManage.update.inputCarTypeName.empty=種別を入力してください。
-error.cms.CarManage.update.inputCarTypeId.empty=種別Idを入力してください。
+error.cms.CarManage.update.inputCarTypeId.empty=種別を入力してください。
 error.cms.CarManage.update.inputCarName.empty=名称を入力してください。
 error.cms.CarManage.update.inputCarBtxId.inputCarKeyBtxId.duplicate=作業車TxタグNoと鍵TxタグNoが重複しています。
 error.cms.CarManage.update.inputCarBtxId.use=作業車TagIDは既に使用されています。(作業車Tag ID：{0})
@@ -119,7 +119,6 @@ error.cms.CarManage.update.NotTypeName=種別が存在しません。
 error.cms.ItemOtherManage.update.inputItemOtherNo.empty=仮設材番号を入力してください。
 error.cms.ItemOtherManage.update.inputItemOtherBtxId.empty=TxタグNoを半角数字で入力してください。
 error.cms.ItemOtherManage.update.inputItemTypeName.empty=種別を入力してください。
-error.cms.ItemOtherManage.update.inputItemTypeName.empty=種別Idを入力してください。
 error.cms.ItemOtherManage.update.inputItemOtherName.empty=名称を入力してください。
 error.cms.ItemOtherManage.update.inputItemKindName.empty=仮設材名称を入力してください。
 error.cms.ItemOtherManage.update.inputItemKindName.duplicate=仮設材名称が重複しています。
@@ -367,7 +366,7 @@ error.cms.exbManage.exbUpdate.inputDeviceNo.empty=デバイスNOは半角数字�
 error.cms.exbManage.exbUpdate.inputDeviceName.empty=デバイス名を入力してください。
 error.cms.exbManage.exbUpdate.inputPosName.empty=場所名を入力してください。
 error.cms.exbManage.exbUpdate.setupFloorId.empty=設置フロアIDは半角数字で入力してください。
-error.cms.exbManage.exbUpdate.setupNumCheck.duplicate=設置場所番号「{0}」はすでに登録されてます。
+error.cms.exbManage.exbUpdate.setupNumCheck.duplicate=EXBデバイスID「{0}」はすでに登録されてます。
 success.cms.exbManage.exbUpdate=EXB情報を更新しました。
 
 # CMS文字列（作業車・立馬管理）
