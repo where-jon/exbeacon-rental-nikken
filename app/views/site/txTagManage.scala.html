@@ -94,7 +94,7 @@
                                         <td class="itemTd text-center" class="item preview_frame">
                                             <!-- 色表示 -->
                                             @{
-                                                if(data.power_level < 20){
+                                                if(data.power_level <= 20){
                                                     if(data.power_level == -1){
                                                         <div id="batteryDanger" class="preview_icon" style="background: #c00; color: #fff;">未検知</div>
                                                     }else{
