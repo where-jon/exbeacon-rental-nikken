@@ -15,6 +15,7 @@ import play.api.db._
 case class ItemOtherCancelData(
   itemTypeIdList: List[Int]
   , itemId: List[Int]
+  , itemReserveIdList: List[Int]
   , workTypeNameList: List[String]
   , reserveStartDateList: List[String]
   , checkVal: List[Int]
@@ -800,8 +801,7 @@ class itemOtherDAO @Inject()(dbapi: DBApi) {
       cancelItem.zipWithIndex.map { case (item, i) =>
         val sql = SQL("""
          delete from reserve_table where
-         item_id =  """ + {item.item_id} + """
-         and item_type_id = """ + {item.item_type_id} + """
+         reserve_id =  """ + {item.item_reserve_id} + """
          and active_flg = """ + {item.active_flg} + """
          and place_id = """ + {item.place_id} + """
                                                 """)
