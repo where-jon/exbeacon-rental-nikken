@@ -69,22 +69,28 @@ class TxTagManage @Inject()(config: Configuration
     val placeId = super.getCurrentPlaceId
     //検索側データ取得
     getSearchData(placeId)
+    // ①仮設材すべてを取得
     val dbDatas = beaconDAO.selectBeaconViewer(placeId)
-    var beaconListApi = beaconService.getBeaconPosition(dbDatas,true,placeId)
+    // ②仮設材種別作業車の鍵をものとして取得
+    val dbDatasKeyData = beaconDAO.selectCarKeyViewer(placeId)
+    // ①、②を結合
+    val totalDbDatas = dbDatas union  dbDatasKeyData
+    var beaconListApi = beaconService.getTxData(totalDbDatas,true,placeId)
 
     if (ITEM_TYPE_FILTER != 0) {
       beaconListApi = beaconListApi.filter(_.item_type_id == ITEM_TYPE_FILTER)
     }
 
+    val POWER_ENUM = PowerEnum().map;
     if (POWER_FILTER != -1) {
-      if(POWER_FILTER > 30){
-        beaconListApi = beaconListApi.filter(_.power_level >= POWER_FILTER)
-      }else{
+      if(POWER_FILTER <= POWER_ENUM.toList(2)._1){  //交換,注意
         beaconListApi = beaconListApi.filter(_.power_level <= POWER_FILTER)
+      }else if ( POWER_FILTER <= POWER_ENUM.toList(1)._1){
+        beaconListApi = beaconListApi.filter(_.power_level <= POWER_FILTER).filter(_.power_level > POWER_ENUM.toList(2)._1)
+      }else{
+        beaconListApi = beaconListApi.filter(_.power_level >= POWER_FILTER)
       }
     }
-
-    val POWER_ENUM = PowerEnum().map;
     Ok(views.html.site.txTagManage(POWER_ENUM,POWER_FILTER,ITEM_TYPE_FILTER,itemTypeList,beaconListApi))
   }
 
