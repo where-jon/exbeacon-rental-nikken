@@ -54,6 +54,7 @@ class ItemOtherCancel @Inject()(config: Configuration
   val itemOtherCancelForm = Form(mapping(
     "itemTypeIdList" -> list(number.verifying("仮設材TypeIDが異常", { itemTypeIdList => itemTypeIdList != null })),
     "itemId" -> list(number.verifying("仮設材IDが異常", { itemId => itemId != null })),
+    "itemReserveIdList" -> list(number.verifying("予約IDが異常", { itemReserveIdList => itemReserveIdList != null })),
     "workTypeNameList" -> list(text.verifying("期間異常", { workTypeNameList => !workTypeNameList.isEmpty})),
     "reserveStartDateList" -> list(text.verifying("予約期間異常", { reserveStartDateList => !reserveStartDateList.isEmpty})),
     "checkVal" -> list(number.verifying("checkVal", { checkVal => checkVal != null }))
@@ -116,13 +117,14 @@ class ItemOtherCancel @Inject()(config: Configuration
             ItemOtherReserveData.checkVal.zipWithIndex.map { case (check, j) =>
                 if(i == check){
                   val vItemTypeId = ItemOtherReserveData.itemTypeIdList(i)
+                  val vItemReserveId = ItemOtherReserveData.itemReserveIdList(i)
                   val vReserveStartDate = ItemOtherReserveData.reserveStartDateList(i)
                   val vWorkTypeName = ItemOtherReserveData.workTypeNameList(i)
                   val vCheckValue = beaconService.currentTimeCancelCheck(vReserveStartDate,vWorkTypeName)
                   if(vCheckValue != "OK"){
                     vCancelCheck = vCheckValue
                   }
-                  setData = setData :+ CancelItem(vItemTypeId,itemId,placeId,true)
+                  setData = setData :+ CancelItem(vItemTypeId,itemId,vItemReserveId,placeId,true)
                 }
               }
             }

@@ -15,6 +15,7 @@ import utils.silhouette.MyEnv
 case class CancelItem(
  item_type_id :Int,
  item_id :Int,
+ item_reserve_id:Int,
  place_id :Int,
  active_flg:Boolean
 )
@@ -60,6 +61,7 @@ class ItemCarCancel @Inject()(config: Configuration
   val itemCarCancelForm = Form(mapping(
     "itemTypeIdList" -> list(number.verifying("仮設材TypeIDが異常", { itemTypeIdList => itemTypeIdList != null })),
     "itemId" -> list(number.verifying("仮設材IDが異常", { itemId => itemId != null })),
+    "itemReserveIdList" -> list(number.verifying("予約IDが異常", { itemReserveIdList => itemReserveIdList != null })),
     "workTypeNameList" -> list(text.verifying("期間異常", { workTypeNameList => !workTypeNameList.isEmpty})),
     "reserveStartDateList" -> list(text.verifying("予約期間異常", { reserveStartDateList => !reserveStartDateList.isEmpty})),
     "checkVal" -> list(number.verifying("checkVal", { checkVal => checkVal != null }))
@@ -122,13 +124,14 @@ class ItemCarCancel @Inject()(config: Configuration
             ItemCarReserveData.checkVal.zipWithIndex.map { case (check, j) =>
                 if(i == check){
                   val vItemTypeId = ItemCarReserveData.itemTypeIdList(i)
+                  val vItemReserveId = ItemCarReserveData.itemReserveIdList(i)
                   val vReserveStartDate = ItemCarReserveData.reserveStartDateList(i)
                   val vWorkTypeName = ItemCarReserveData.workTypeNameList(i)
                   val vCheckValue = beaconService.currentTimeCancelCheck(vReserveStartDate,vWorkTypeName)
                   if(vCheckValue != "OK"){
                     vCancelCheck = vCheckValue
                   }
-                  setData = setData :+ CancelItem(vItemTypeId,itemId,placeId,true)
+                  setData = setData :+ CancelItem(vItemTypeId,itemId,vItemReserveId,placeId,true)
                 }
               }
             }

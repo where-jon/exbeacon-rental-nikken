@@ -134,9 +134,11 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
                                                 <input class="hidden form-control input-sm" type="text" id="reserveStartDateList-@i" name="reserveStartDateList[@i]" value="@car.reserve_start_date" />
                                             </td>
                                             <td class="itemTd text-center ">@car.work_type_name
-                                                <input class="hidden form-control input-sm" type="text" id="workTypeNameList-@i" name="workTypeNameList[@i]" value="@car.work_type_name" />
+                                                <input class="hidden form-control input-sm" type="text" id="Id-@i" name="workTypeNameList[@i]" value="@car.work_type_name" />
                                             </td>
-                                            <td class="itemTd text-center hidden">@car.reserve_id</td>
+                                            <td class="hidden itemTd text-center ">
+                                                <input class=" form-control input-sm" type="text" id="reserveList-@i" name="itemReserveIdList[@i]" value="@car.reserve_id" />
+                                            </td>
                                         </tr>
                                     }
                                 </tbody>
