@@ -334,6 +334,15 @@ error.cms.floorManage.floorUpdate.inputDisplayOrder.duplicate=表示順「{0}」
 # CMS文字列（EXB管理）
 lang.cms.exbManage.title=EXB管理
 lang.cms.exbManage.exbId =EXB設置番号（固定）
+lang.cms.exbManage.show =表示
+lang.cms.exbManage.floor =フロア
+lang.cms.exbManage.type =表示種別
+lang.cms.exbManage.count =表示数
+lang.cms.exbManage.x =X座標
+lang.cms.exbManage.y =Y座標
+lang.cms.exbManage.size =サイズ
+lang.cms.exbManage.margin =幅間隔
+
 lang.cms.exbManage.deviceId=EXBデバイスID
 lang.cms.exbManage.deviceId.popup.placeholder=1
 lang.cms.exbManage.deviceNo=デバイス番号

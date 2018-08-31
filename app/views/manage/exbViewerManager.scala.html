@@ -22,6 +22,7 @@ viewType: Seq[ViewType]
         margin:0px;
     }
 </style>
+	<link rel="stylesheet" href="@routes.MyAssets.css("cms/itemCarManage.css")"/>
 <script></script>
 </head>
 
@@ -73,113 +74,101 @@ viewType: Seq[ViewType]
 	<div class="manager__data--frame">
 
 		<form id="viewForm" method="post" action="">
-			<table width="100%" border="1" cellspacing="0" cellpadding="0">
-				<thead class="scrollHead">
-				<tr>
-					<div class = "alert__result--frame">
-						@tags.alertFromRequestDbResult(request, "resultOK")
-						@tags.alertFromRequestDbResult(request, "resultNG")
+
+			<div class="row tableRow">
+				<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="padding:0;">
+					<div class="table-responsive-body">
+						<table class="table table-bordered table-condensed itemTable">
+							<thead>
+							<div class = "alert__result--frame">
+								@tags.alertFromRequestDbResult(request, "resultOK")
+								@tags.alertFromRequestDbResult(request, "resultNG")
+							</div>
+
+							<tr>
+								<th colspan="8" class="hidden tableTitleTh">@Messages("lang.site.itemCarMaster.page.title")</th>
+							</tr>
+							<tr>
+								<th class="tableTh" style="width: 10%;text-align:  center;">@Messages("lang.cms.exbManage.exbId")</th>
+								<th class="tableTh" style="width: 10%;text-align:  center;">@Messages("lang.cms.exbManage.show")</th>
+								<th class="tableTh" style="width: 10%;text-align:  center;">@Messages("lang.cms.exbManage.floor")</th>
+								<th class="tableTh" style="width: 10%;text-align:  center;">@Messages("lang.cms.exbManage.type")</th>
+								<th class="tableTh" style="width: 10%;text-align:  center;">@Messages("lang.cms.exbManage.count")</th>
+								<th class="tableTh" style="width: 10%;text-align:  center;">@Messages("lang.cms.exbManage.x")</th>
+								<th class="tableTh" style="width: 10%;text-align:  center;">@Messages("lang.cms.exbManage.y")</th>
+								<th class="tableTh" style="width: 10%;text-align:  center;">@Messages("lang.cms.exbManage.size")</th>
+								<th class="tableTh" style="width: 10%;text-align:  center;">@Messages("lang.cms.exbManage.margin")</th>
+							</tr>
+							</thead>
+							<tbody>
+							@exbViewer.zipWithIndex.map { case(viewer, i) =>
+							<tr class="rowColor rowHover pos-search hidden" id = "viewer-list-@viewer.exb_id" style="display:table-row;">
+								<td class="hidden itemTd text-center ">
+									<input class="hidden form-control input-sm" type="text" id="input_viewer_id-@viewer.exb_id" value="@viewer.exb_id" name="viewerId[@i]" >
+								</td>
+								<!-- viewer_pos_num  -->
+								<td class="itemTd text-center ">
+									<input class="hidden form-control input-sm" type="text" id="input_viewer_pos_num-@viewer.exb_id" value="@viewer.exb_id" name="viewerPosNum[@i]" >
+									<select id="input-num-category-@viewer.exb_id" class="exb__select--category inputNum">
+										@exbViewer.zipWithIndex.map { case(viewer2, j) =>
+										<option class ="" value="@viewer2.exb_id"  @{if(viewer2.exb_id == viewer.exb_id) "selected" else ""}>@viewer2.exb_id</option>
+										}
+									</select>
+								</td>
+								<!-- viewer_visible  -->
+								<td class="itemTd text-center ">
+									<input class="hidden form-control input-sm" type="text"　data-type = "visible-form" id="input_viewer_visible-@viewer.exb_id" value="@viewer.exb_view_flag" name="viewerVisible[@i]">
+									<select id="input-visible-category-@i" class="exb__select--category inputVisible">
+										<option value="true" @{if(viewer.exb_view_flag) "selected" else ""}>表示</option>
+										<option value="false"  @{if(!viewer.exb_view_flag) "selected" else ""}>非表示</option>
+									</select>
+								</td>
+								<!-- viewer_pos_floor  -->
+								<td class="itemTd text-center ">
+									<input class="hidden form-control input-sm" type="text" data-type = "floor-form" id="input_viewer_pos_floor-@viewer.exb_id" value="@viewer.floor_id" name="viewerPosFloor[@i]">
+									<select id="input-floor-category-@viewer.exb_id" class="exb__select--category inputFloor">
+										@mapViewer.zipWithIndex.map { case(map, i) =>
+										<option class="dataFloorId-@map.display_order" data-floorId="@map.floor_id" value="@map.display_order"  @{if(map.display_order == viewer.floor_id.toInt) "selected" else ""}>@map.floor_name</option>
+										}
+									</select>
+								</td>
+								<!-- viewer_pos_type  -->
+								<td class="itemTd text-center ">
+									<input class="hidden form-control input-sm" type="text" data-type = "type-form" id="input_viewer_pos_type-@viewer.exb_id" value="@viewer.view_type_id" name="viewerPosType[@i]">
+									<input class="hidden form-control input-sm " type="text" data-type = "type-form" id="input_viewer_pos_type_name-@viewer.exb_id" value="@viewer.view_type_name">
+									<select id="input-view-category-@i" class="exb__select--category inputPosType">
+										@viewType.zipWithIndex.map { case(view, i) =>
+										<option value="@view.view_type_id" data-typename="@view.view_type_name"  @{if(view.view_type_name == viewer.view_type_name) "selected" else ""}>@view.view_type_name</option>
+										}
+									</select>
+								</td>
+								<!-- viewer_pos_count  -->
+								<td class="itemTd text-center ">
+									<input class="form-control input-sm" type="text" data-type = "count-form" id="input_viewer_pos_count-@viewer.exb_id" value="@viewer.view_tx_count" name="viewerPosCount[@i]">
+								</td>
+								<!-- viewer_pos_x  -->
+								<td class="itemTd text-center ">
+									<input class="form-control input-sm" type="text" id="input_viewer_pos_x-@viewer.exb_id" value="@viewer.exb_pos_x" name="viewerPosX[@i]">
+								</td>
+								<!-- viewer_pos_y  -->
+								<td class="itemTd text-center ">
+									<input class="form-control input-sm" type="text" id="input_viewer_pos_y-@viewer.exb_id" value="@viewer.exb_pos_y" name="viewerPosY[@i]">
+								</td>
+								<!-- viewer_pos_size  -->
+								<td class="itemTd text-center ">
+									<input class="form-control input-sm" type="text" id="input_viewer_pos_size-@viewer.exb_id" value="@viewer.view_tx_size" name="viewerPosSize[@i]">
+								</td>
+								<!-- viewer_pos_margin  -->
+								<td class="itemTd text-center ">
+									<input class="form-control input-sm" type="text" id="input_viewer_pos_margin-@viewer.exb_id" value="@viewer.view_tx_margin" name="viewerPosMargin[@i]">
+								</td>
+							</tr>
+							}
+							</tbody>
+						</table>
 					</div>
-					<!--
-                    <th class="table__flame--title viewer__id--frame" >Id</th>
-                    -->
-					<th class="tableTh" style="width: 10%;text-align:  center;">@Messages("lang.cms.exbManage.exbId")</th>
-					<th class="tableTh" style="width: 10%;text-align:  center;">表示</th>
-					<th class="tableTh" style="width: 10%;text-align:  center;">フロア</th>
-					<th class="tableTh" style="width: 10%;text-align:  center;">表示種別</th>
-					<th class="tableTh" style="width: 10%;text-align:  center;">表示数</th>
-					<th class="tableTh" style="width: 10%;text-align:  center;">X座標</th>
-					<th class="tableTh" style="width: 10%;text-align:  center;">Y座標</th>
-					<th class="tableTh" style="width: 10%;text-align:  center;">サイズ</th>
-					<th class="tableTh" style="width: 10%;text-align:  center;">幅間隔</th>
-
-				</tr>
-				</thead>
-			</table>
-			<table width="100%" border="1" cellspacing="0" cellpadding="0">
-
-					<tbody class="scrollBodyT" id = "tBody">
-					@exbViewer.zipWithIndex.map { case(viewer, i) =>
-					<tr class = "hidden pos-search" id = "viewer-list-@viewer.exb_id">
-						<td class="item viewer__posId--frame hidden">
-							<input class="hidden form-control input-sm" type="text" id="input_viewer_id-@viewer.exb_id" value="@viewer.exb_id" name="viewerId[@i]" >
-						</td>
-						<!-- viewer_pos_num  -->
-                        <td class="item viewer__posNum--frame" style="width: 10%;text-align:  center;">
-							<input class="hidden form-control input-sm" type="text" id="input_viewer_pos_num-@viewer.exb_id" value="@viewer.exb_id" name="viewerPosNum[@i]" >
-
-							<select id="input-num-category-@viewer.exb_id" class="exb__select--category inputNum">
-								@exbViewer.zipWithIndex.map { case(viewer2, j) =>
-								<option class ="" value="@viewer2.exb_id"  @{if(viewer2.exb_id == viewer.exb_id) "selected" else ""}>@viewer2.exb_id</option>
-								}
-							</select>
-						</td>
-
-
-						<!-- viewer_visible  -->
-						<td class="item viewer__visible--frame" style="width: 10%;text-align:  center;">
-							<input class="hidden form-control input-sm" type="text"　data-type = "visible-form" id="input_viewer_visible-@viewer.exb_id" value="@viewer.exb_view_flag" name="viewerVisible[@i]">
-							<select id="input-visible-category-@i" class="exb__select--category inputVisible">
-								<option value="true" @{if(viewer.exb_view_flag) "selected" else ""}>表示</option>
-								<option value="false"  @{if(!viewer.exb_view_flag) "selected" else ""}>非表示</option>
-							</select>
-						</td>
-
-						<!-- viewer_pos_floor  -->
-						<td class="item viewer__posFloor--frame" style="width: 10%;text-align:  center;">
-							<input class="hidden form-control input-sm" type="text" data-type = "floor-form" id="input_viewer_pos_floor-@viewer.exb_id" value="@viewer.floor_id" name="viewerPosFloor[@i]">
-
-							<select id="input-floor-category-@viewer.exb_id" class="exb__select--category inputFloor">
-								@mapViewer.zipWithIndex.map { case(map, i) =>
-								<option class="dataFloorId-@map.display_order" data-floorId="@map.floor_id" value="@map.display_order"  @{if(map.display_order == viewer.floor_id.toInt) "selected" else ""}>@map.floor_name</option>
-								}
-							</select>
-						</td>
-
-						<!-- viewer_pos_type  -->
-						<td class="item viewer__posType--frame" style="width: 10%;text-align:  center;">
-							<input class="hidden form-control input-sm" type="text" data-type = "type-form" id="input_viewer_pos_type-@viewer.exb_id" value="@viewer.view_type_id" name="viewerPosType[@i]">
-							<input class="hidden form-control input-sm " type="text" data-type = "type-form" id="input_viewer_pos_type_name-@viewer.exb_id" value="@viewer.view_type_name">
-							<select id="input-view-category-@i" class="exb__select--category inputPosType">
-								@viewType.zipWithIndex.map { case(view, i) =>
-								<option value="@view.view_type_id" data-typename="@view.view_type_name"  @{if(view.view_type_name == viewer.view_type_name) "selected" else ""}>@view.view_type_name</option>
-								}
-							</select>
-						</td>
-
-						<!-- viewer_pos_count  -->
-						<td class="item viewer__posCount--frame" style="width: 10%;text-align:  center;">
-							<input class="form-control input-sm" type="text" data-type = "count-form" id="input_viewer_pos_count-@viewer.exb_id" value="@viewer.view_tx_count" name="viewerPosCount[@i]">
-						</td>
-
-						<!-- viewer_pos_x  -->
-						<td class="item viewer__posX--frame" style="width: 10%;text-align:  center;">
-							<input class="form-control input-sm" type="text" id="input_viewer_pos_x-@viewer.exb_id" value="@viewer.exb_pos_x" name="viewerPosX[@i]">
-						</td>
-
-						<!-- viewer_pos_y  -->
-						<td class="item viewer__posY--frame" style="width: 10%;text-align:  center;">
-							<input class="form-control input-sm" type="text" id="input_viewer_pos_y-@viewer.exb_id" value="@viewer.exb_pos_y" name="viewerPosY[@i]">
-						</td>
-
-
-						<!-- viewer_pos_size  -->
-						<td class="item viewer__posSize--frame" style="width: 10%;text-align:  center;">
-							<input class="form-control input-sm" type="text" id="input_viewer_pos_size-@viewer.exb_id" value="@viewer.view_tx_size" name="viewerPosSize[@i]">
-						</td>
-
-
-						<!-- viewer_pos_margin  -->
-						<td class="item viewer__margin--frame" style="width: 10%;text-align:  center;">
-							<input class="form-control input-sm" type="text" id="input_viewer_pos_margin-@viewer.exb_id" value="@viewer.view_tx_margin" name="viewerPosMargin[@i]">
-						</td>
-
-
-					</tr>
-					}
-
-					</tbody>
-			</table>
+				</div>
+			</div>
 
 			@CSRF.formField
 		</form>
