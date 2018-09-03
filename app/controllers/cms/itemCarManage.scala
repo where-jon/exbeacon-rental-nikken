@@ -26,6 +26,7 @@ case class CarUpdateForm(
    , inputCarId: String
    , inputCarNo: String
    , inputCarBtxId: String
+   , inputCarKeyBtxIdDsp: String
    , inputCarKeyBtxId: String
    , inputCarTypeName: String
    , inputCarTypeId: String
@@ -78,6 +79,7 @@ class ItemCarManage @Inject()(
       , "inputCarId" -> text
       , "inputCarNo" -> text.verifying(Messages("error.cms.CarManage.update.inputCarNo.empty"), {!_.isEmpty})
       , "inputCarBtxId" -> text.verifying(Messages("error.cms.CarManage.update.inputCarBtxId.empty"), {_.matches("^[0-9]+$")})
+      , "inputCarKeyBtxIdDsp" -> text
       , "inputCarKeyBtxId" -> text.verifying(Messages("error.cms.CarManage.update.inputCarKeyBtxId.empty"), {_.matches("^[0-9]+$")})
       , "inputCarTypeName" -> text
       , "inputCarTypeId" -> text.verifying(Messages("error.cms.CarManage.update.inputCarTypeId.empty"), {_.matches("^[0-9]+$")})
@@ -109,13 +111,11 @@ class ItemCarManage @Inject()(
 
       }else{
         // Tag IDチェック
-        if (carKeyBtxId == "9999999999"){
+        if (carBtxId.toInt > "2147483647".toInt || carBtxId.toInt <= "0".toInt) {
+          // 立馬の場合
+          errMsg :+= Messages("error.cms.CarManage.update.inputCarBtxId.empty")
+        }else{
           carKeyBtxId = "-1"
-        }else {
-          if (carBtxId.toInt > "2147483647".toInt || carBtxId.toInt <= "0".toInt) {
-            // 立馬の場合
-            errMsg :+= Messages("error.cms.CarManage.update.inputCarBtxId.empty")
-          }
         }
       }
       // 種別存在チェック
