@@ -90,7 +90,7 @@ class ItemOtherManage @Inject()(
       var errMsg = Seq[String]()
       val f = form.get
       // Tag IDチェック
-      if (f.inputItemOtherBtxId.toInt > "2147483647".toInt || f.inputItemOtherBtxId.toInt <= "0".toInt) {
+      if (f.inputItemOtherBtxId.toInt <= "0".toInt) {
         // 作業車の場合
         errMsg :+= Messages("error.cms.CarManage.update.inputCarBtxId.empty")
       }

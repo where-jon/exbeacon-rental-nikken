@@ -99,19 +99,19 @@ class ItemCarManage @Inject()(
       var carKeyBtxId = f.inputCarKeyBtxId
       if(f.inputCarTypeId == "1"){
         // Tag IDチェック
-        if (carBtxId.toInt > "2147483647".toInt || carBtxId.toInt <= "0".toInt) {
+        if (carBtxId.toInt <= "0".toInt) {
           // 作業車の場合
           errMsg :+= Messages("error.cms.CarManage.update.inputCarBtxId.empty")
         }
         // 鍵Tag IDチェック
-        if (carKeyBtxId.toInt > "2147483647".toInt || carKeyBtxId.toInt <= "0".toInt) {
+        if (carKeyBtxId.toInt <= "0".toInt) {
           // 作業車の場合
           errMsg :+= Messages("error.cms.CarManage.update.inputCarKeyBtxId.empty")
         }
 
       }else{
         // Tag IDチェック
-        if (carBtxId.toInt > "2147483647".toInt || carBtxId.toInt <= "0".toInt) {
+        if (carBtxId.toInt <= "0".toInt) {
           // 立馬の場合
           errMsg :+= Messages("error.cms.CarManage.update.inputCarBtxId.empty")
         }else{
