@@ -587,7 +587,7 @@ function itemTypeRemoveHidden(vFloor) {
     var viewTextElement = [].slice.call(document.querySelectorAll(".line__view--text"));
     var vSelectFloor = Number(vFloor)
     TotalBeaconsData.forEach(function(beaconData, i) {
-        if(beaconData.pos.floor == vSelectFloor){
+        if(beaconData.pos.posId != -1 && beaconData.pos.floor == vSelectFloor){
             if(beaconData.overCheck){
                 document.getElementById("viewStyle").style.display = ""
                 document.getElementById("viewCount").style.display = ""
