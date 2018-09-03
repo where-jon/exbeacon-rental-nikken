@@ -77,6 +77,7 @@ function showInputModal(isRegister){
         $('#inputCarId').val('');
         $('#inputCarNo').val('');
         $('#inputCarBtxId').val('');
+        $('#inputCarKeyBtxIdDsp').val('');
         $('#inputCarKeyBtxId').val('');
         $('#inputCarTypeName').val('');
         $('#inputCarTypeId').val('');
@@ -101,15 +102,15 @@ function showInputModal(isRegister){
             $('#inputCarTypeName').val($('#'+carId).find('.carTypeName').text());
             $('#car_type').val($('#'+carId).find('.carTypeId').text());
             $('#inputCarTypeId').val($('#car_type').val());
-            var ele = document.getElementById("inputCarKeyBtxId");
+            var ele = document.getElementById("inputCarKeyBtxIdDsp");
             // 立馬の場合は鍵TagIDは入力不可
             var categoryid = parseInt($('#'+carId).find('.itemTypeCategoryid').text());
             if(categoryid == 1){
-               $('#inputCarKeyBtxId').val("無");
+               $('#inputCarKeyBtxIdDsp').val("無");
                 ele.readOnly = true;
             }else{
-                if($('#inputCarKeyBtxId').val() == "無"){
-                    $('#inputCarKeyBtxId').val("");
+                if($('#inputCarKeyBtxIdDsp').val() == "無"){
+                    $('#inputCarKeyBtxIdDsp').val("");
                 }
                 ele.readOnly = false;
             }
@@ -153,10 +154,11 @@ var floorFrame = $('#car_type');
             // 管理者用selectbox value取得
             $('#car_type').change(function() {
             var itemType = $("#car_type option:selected").data();
-            var ele = document.getElementById("inputCarKeyBtxId");
+            var ele = document.getElementById("inputCarKeyBtxIdDsp");
             // 立馬の場合は鍵TagIDは入力不可
             if(itemType.categoryid == 1){
-               $('#inputCarKeyBtxId').val("無");
+               $('#inputCarKeyBtxIdDsp').val("無");
+               $('#inputCarKeyBtxId').val("9999999999");
                 ele.readOnly = true;
             }else{
                 $('#inputCarKeyBtxId').val("");
@@ -190,6 +192,16 @@ $(function(){
 
     // 表示ボタンをクリック
     viewBtnEvent();
+
+    // 鍵TagID 設定
+    $('#inputCarKeyBtxIdDsp').on('change', function(e) {
+        if($('#inputCarTypeId').val() == "1"){
+            $('#inputCarKeyBtxId').val("無");
+            $('#inputCarKeyBtxId').val("9999999999");
+        }else{
+            $('#inputCarKeyBtxId').val($('#inputCarKeyBtxIdDsp').val());
+        }
+    });
 
     // テーブルを固定
     fixTable();
