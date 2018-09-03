@@ -78,7 +78,7 @@ class ItemCarManage @Inject()(
       , "inputCarId" -> text
       , "inputCarNo" -> text.verifying(Messages("error.cms.CarManage.update.inputCarNo.empty"), {!_.isEmpty})
       , "inputCarBtxId" -> text.verifying(Messages("error.cms.CarManage.update.inputCarBtxId.empty"), {_.matches("^[0-9]+$")})
-      , "inputCarKeyBtxId" -> text
+      , "inputCarKeyBtxId" -> text.verifying(Messages("error.cms.CarManage.update.inputCarKeyBtxId.empty"), {_.matches("^[0-9]+$")})
       , "inputCarTypeName" -> text
       , "inputCarTypeId" -> text.verifying(Messages("error.cms.CarManage.update.inputCarTypeId.empty"), {_.matches("^[0-9]+$")})
       , "inputCarName" -> text.verifying(Messages("error.cms.CarManage.update.inputCarName.empty"), {!_.isEmpty})
@@ -93,20 +93,28 @@ class ItemCarManage @Inject()(
       var errMsg = Seq[String]()
       val f = form.get
       // 鍵Tag IDが「無」の場合の対処
+      var carBtxId = f.inputCarBtxId
       var carKeyBtxId = f.inputCarKeyBtxId
-      if (carKeyBtxId == "無" || carKeyBtxId.isEmpty) {
-        if(f.inputCarTypeId == "1"){
-          // 作業車・立馬の場合
-          errMsg :+= Messages("error.cms.CarManage.update.inputCarKeyBtxId.empty")
-        }else{
-          carKeyBtxId = "-1"
+      if(f.inputCarTypeId == "1"){
+        // Tag IDチェック
+        if (carBtxId.toInt > "2147483647".toInt || carBtxId.toInt <= "0".toInt) {
+          // 作業車の場合
+          errMsg :+= Messages("error.cms.CarManage.update.inputCarBtxId.empty")
         }
-      } else {
-        if (!carKeyBtxId.matches("^[-0-9]+$")) {
+        // 鍵Tag IDチェック
+        if (carKeyBtxId.toInt > "2147483647".toInt || carKeyBtxId.toInt <= "0".toInt) {
+          // 作業車の場合
           errMsg :+= Messages("error.cms.CarManage.update.inputCarKeyBtxId.empty")
-        } else {
-          if (f.inputCarBtxId == carKeyBtxId) {
-            errMsg :+= Messages("error.cms.CarManage.update.inputCarBtxId.inputCarKeyBtxId.duplicate", f.inputCarNo)
+        }
+
+      }else{
+        // Tag IDチェック
+        if (carKeyBtxId == "9999999999"){
+          carKeyBtxId = "-1"
+        }else {
+          if (carBtxId.toInt > "2147483647".toInt || carBtxId.toInt <= "0".toInt) {
+            // 立馬の場合
+            errMsg :+= Messages("error.cms.CarManage.update.inputCarBtxId.empty")
           }
         }
       }
