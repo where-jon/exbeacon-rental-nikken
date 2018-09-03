@@ -699,6 +699,11 @@ lang.site.itemCarReserve.name=名称
 lang.site.itemCarReserve.reserveDate=予約日
 lang.site.itemCarReserve.reserveTerm=予約期間
 lang.site.itemCarReserve.reserveId=予約ID
+lang.site.itemCarReserve.reserveId=予約ID
+
+error.site.itemCarReserve.reserve = 作業車・立馬予約に問題が発生しました。
+error.site.itemCarReserve.id =「Id」「{0}」
+
 
 # 予約もダル系
 lang.site.item.reserveDate=予約希望日

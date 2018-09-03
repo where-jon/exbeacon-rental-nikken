@@ -144,6 +144,8 @@ class ItemCarReserve @Inject()(config: Configuration
                 }
               }
             }
+            var errMsg = Seq[String]()
+
             // 検索ロジック追加あるかどうかを判断する
             val vAlerdyReserveData = reserveMasterDAO.selectCarReserve(placeId,idListData,idTypeListData,vWorkTypeId,vReserveDate,vReserveDate)
             System.out.println("vCount :" + vAlerdyReserveData)
@@ -157,12 +159,14 @@ class ItemCarReserve @Inject()(config: Configuration
                   .flashing(ERROR_MSG_KEY -> Messages("error.site.carReserve.update"))
               }
             }else { // 予約されたものがある
+              errMsg :+= Messages("error.site.itemCarReserve.reserve")
+              errMsg :+= Messages("error.site.itemCarReserve.id" ,vAlerdyReserveData.last.itemId)
+              errMsg :+= Messages("「作業期間」" + vAlerdyReserveData.last.reserveStartDate)
+              errMsg :+= Messages("「予約日」" + vAlerdyReserveData.last.reserveStartDate)
+              errMsg :+= Messages("すでに予約されてます" )
+
               Redirect(routes.ItemCarReserve.index())
-                .flashing(ERROR_MSG_KEY -> Messages("作業車・立馬予約に問題が発生しました。" + "<br>"
-                  + "「Id」" + vAlerdyReserveData.last.itemId
-                  + "「作業期間」" + ItemCarReserveData.workTypeName
-                  + "「予約日」" + vAlerdyReserveData.last.reserveStartDate
-                  + "すでに予約されてます"))
+                .flashing(ERROR_MSG_KEY -> errMsg.mkString(HTML_BR))
             }
           }else{  // 現在時刻から予約可能かを判定でエラーの場合
             if(vCurrentTimeCheck == "当日"){
