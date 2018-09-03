@@ -68,13 +68,13 @@ class ItemCarReserve @Inject()(config: Configuration
   /*転送form*/
   val itemCarForm = Form(mapping(
     "itemTypeId" -> number,
-    "workTypeName" -> text.verifying("作業期間 未設定", { workTypeName => !workTypeName.isEmpty() }),
-    "inputDate" -> text.verifying("予約日 未設定", { inputDate => !inputDate.isEmpty() }),
-    "companyName" -> text.verifying("予約会社 未設定", { companyName => !companyName.isEmpty() }),
-    "floorName" -> text.verifying("予約フロア 未設定", { floorName => !floorName.isEmpty() }),
-    "itemId" -> list(number.verifying("仮設材ID 異常", { itemId => itemId != null })),
-    "itemTypeIdList" -> list(number.verifying("仮設材種別 異常", { itemTypeIdList => itemTypeIdList != null })),
-    "checkVal" -> list(number.verifying("選択", { checkVal => checkVal != null }))
+    "workTypeName" -> text.verifying(Messages("error.site.itemReserve.form.workType"), { workTypeName => !workTypeName.isEmpty() }),
+    "inputDate" -> text.verifying(Messages("error.site.itemReserve.form.reserveDate"), { inputDate => !inputDate.isEmpty() }),
+    "companyName" -> text.verifying(Messages("error.site.itemReserve.form.company"), { companyName => !companyName.isEmpty() }),
+    "floorName" -> text.verifying(Messages("error.site.itemReserve.form.floor"), { floorName => !floorName.isEmpty() }),
+    "itemId" -> list(number.verifying(Messages("error.site.itemReserve.form.id"), { itemId => itemId != null })),
+    "itemTypeIdList" -> list(number.verifying(Messages("error.site.itemReserve.form.type"), { itemTypeIdList => itemTypeIdList != null })),
+    "checkVal" -> list(number.verifying(Messages("error.site.itemReserve.form.select"), { checkVal => checkVal != null }))
   )(ItemCarReserveData.apply)(ItemCarReserveData.unapply))
 
 
@@ -160,10 +160,10 @@ class ItemCarReserve @Inject()(config: Configuration
               }
             }else { // 予約されたものがある
               errMsg :+= Messages("error.site.itemCarReserve.reserve")
-              errMsg :+= Messages("error.site.itemCarReserve.id" ,vAlerdyReserveData.last.itemId)
-              errMsg :+= Messages("「作業期間」" + vAlerdyReserveData.last.reserveStartDate)
-              errMsg :+= Messages("「予約日」" + vAlerdyReserveData.last.reserveStartDate)
-              errMsg :+= Messages("すでに予約されてます" )
+              errMsg :+= Messages("error.site.itemCarReserve.id" ,vAlerdyReserveData.last.txId)
+              errMsg :+= Messages("error.site.itemCarReserve.workType" ,vAlerdyReserveData.last.workTypeName)
+              errMsg :+= Messages("error.site.itemCarReserve.reserveDate"  ,vAlerdyReserveData.last.reserveStartDate)
+              errMsg :+= Messages("error.site.itemCarReserve.already" )
 
               Redirect(routes.ItemCarReserve.index())
                 .flashing(ERROR_MSG_KEY -> errMsg.mkString(HTML_BR))

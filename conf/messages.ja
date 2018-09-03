@@ -602,8 +602,8 @@ lang.search.detectedFloor = 検知位置 :
 lang.search.absence = 不在
 lang.search.undetected = 未検知
 lang.search.floor = 検知フロア :
-lang.search.reserveDate = 予約希望日：
-lang.search.reserveDate2 = 希望日：
+lang.search.reserveDate = 予約日：
+lang.search.reserveDate2 = 予約日：
 lang.search.powerlevel = 電池残量 :
 lang.search.detectedDate = 検出日：
 
@@ -701,14 +701,28 @@ lang.site.itemCarReserve.reserveTerm=予約期間
 lang.site.itemCarReserve.reserveId=予約ID
 lang.site.itemCarReserve.reserveId=予約ID
 
+
+# 仮設材予約共通
+error.site.itemReserve.form.workType = 期間 未設定
+error.site.itemReserve.form.reserveDate = 予約日 未設定
+error.site.itemReserve.form.reserveStartDate = 予約最初日 未設定
+error.site.itemReserve.form.reserveEndDate = 予約最終日 未設定
+error.site.itemReserve.form.company = 業者 未設定
+error.site.itemReserve.form.floor = 予約フロア 未設定
+error.site.itemReserve.form.id = 仮設材ID 異常
+error.site.itemReserve.form.type = 仮設材種別 異常
+error.site.itemReserve.form.select = 選択 異常
+
 error.site.itemCarReserve.reserve = 作業車・立馬予約に問題が発生しました。
-error.site.itemCarReserve.id =「Id」「{0}」
+error.site.itemCarReserve.id =「Tag ID」{0}
+error.site.itemCarReserve.workType =「期間」{0}
+error.site.itemCarReserve.reserveDate =「予約日 」{0}
+error.site.itemCarReserve.already = すでに予約されてます。
 
-
-# 予約もダル系
-lang.site.item.reserveDate=予約希望日
-lang.site.item.reserveStartDate=予約希望最初日
-lang.site.item.reserveEndDate=予約希望最終日
+# 予約modal系
+lang.site.item.reserveDate=予約日
+lang.site.item.reserveStartDate=予約最初日
+lang.site.item.reserveEndDate=予約最終日
 lang.site.item.type=種別
 lang.site.item.term=期間
 lang.site.item.company=業者
@@ -776,6 +790,11 @@ lang.site.itemOtherReserve.reserveTerm=予約期間
 lang.site.itemOtherReserve.reserveId=予約ID
 
 
+error.site.itemOtherReserve.reserve = その他仮設材予約に問題が発生しました。
+error.site.itemOtherReserve.id =「Tag ID」{0}
+error.site.itemOtherReserve.workType =「期間」{0}
+error.site.itemOtherReserve.reserveDate =「予約日 」{0} ~ {1}
+error.site.itemOtherReserve.already = すでに予約されてます。
 
 
 # 予約画面共通
