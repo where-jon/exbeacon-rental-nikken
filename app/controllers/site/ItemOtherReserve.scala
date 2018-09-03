@@ -60,14 +60,14 @@ class ItemOtherReserve @Inject()(config: Configuration
   /*転送form*/
   val itemOtherForm = Form(mapping(
     "itemTypeId" -> number,
-    "workTypeName" -> text.verifying("作業期間 未設定", { workTypeName => !workTypeName.isEmpty() }),
-    "inputStartDate" -> text.verifying("予約最初日 未設定", { inputStartDate => !inputStartDate.isEmpty() }),
-    "inputEndDate" -> text.verifying("予約最終日 未設定", { inputEndDate => !inputEndDate.isEmpty() }),
-    "companyName" -> text.verifying("予約会社 未設定", { companyName => !companyName.isEmpty() }),
-    "floorName" -> text.verifying("予約フロア 未設定", { floorName => !floorName.isEmpty() }),
-    "itemId" -> list(number.verifying("仮設材ID 異常", { itemId => itemId != null })),
-    "itemTypeIdList" -> list(number.verifying("仮設材種別 異常", { itemTypeIdList => itemTypeIdList != null })),
-    "checkVal" -> list(number.verifying("選択", { checkVal => checkVal != null }))
+    "workTypeName" -> text.verifying(Messages("error.site.itemReserve.form.workType"), { workTypeName => !workTypeName.isEmpty() }),
+    "inputStartDate" -> text.verifying(Messages("error.site.itemReserve.form.reserveStartDate"), { inputStartDate => !inputStartDate.isEmpty() }),
+    "inputEndDate" -> text.verifying(Messages("error.site.itemReserve.form.reserveEndDate"), { inputEndDate => !inputEndDate.isEmpty() }),
+    "companyName" -> text.verifying(Messages("error.site.itemReserve.form.company"), { companyName => !companyName.isEmpty() }),
+    "floorName" -> text.verifying(Messages("error.site.itemReserve.form.floor"), { floorName => !floorName.isEmpty() }),
+    "itemId" -> list(number.verifying(Messages("error.site.itemReserve.form.id"), { itemId => itemId != null })),
+    "itemTypeIdList" -> list(number.verifying(Messages("error.site.itemReserve.form.type"), { itemTypeIdList => itemTypeIdList != null })),
+    "checkVal" -> list(number.verifying(Messages("error.site.itemReserve.form.select"), { checkVal => checkVal != null }))
   )(ItemOtherReserveData.apply)(ItemOtherReserveData.unapply))
 
 
@@ -145,6 +145,9 @@ class ItemOtherReserve @Inject()(config: Configuration
                   }
                 }
               }
+
+              var errMsg = Seq[String]()
+
               // 検索ロジック追加あるかどうかを判断する
               val vAlerdyReserveData = reserveMasterDAO.selectOtherReserve(placeId,idListData,idTypeListData,vWorkTypeId,vReserveStartDate,vReserveEndDate)
               System.out.println("vCount :" + vAlerdyReserveData)
@@ -158,13 +161,14 @@ class ItemOtherReserve @Inject()(config: Configuration
                     .flashing(ERROR_MSG_KEY -> Messages("error.site.otherReserve.update" ))
                 }
               }else{ // 予約されたものがある
+                errMsg :+= Messages("error.site.itemOtherReserve.reserve")
+                errMsg :+= Messages("error.site.itemOtherReserve.id" ,vAlerdyReserveData.last.txId)
+                errMsg :+= Messages("error.site.itemOtherReserve.workType" ,vAlerdyReserveData.last.workTypeName)
+                errMsg :+= Messages("error.site.itemOtherReserve.reserveDate"  ,vAlerdyReserveData.last.reserveStartDate,vAlerdyReserveData.last.reserveEndDate)
+                errMsg :+= Messages("error.site.itemCarReserve.already" )
+
                 Redirect(routes.ItemOtherReserve.index())
-                  .flashing(ERROR_MSG_KEY -> Messages("その他仮設材予約に問題が発生しました。" + "<br>"
-                    + "「Id」" + vAlerdyReserveData.last.itemId
-                    + "「作業期間」" + ItemOtherReserveData.workTypeName
-                    + "「予約日」" + vAlerdyReserveData.last.reserveStartDate
-                    + " ~ " + vAlerdyReserveData.last.reserveEndDate
-                    + "すでに予約されてます"))
+                  .flashing(ERROR_MSG_KEY -> errMsg.mkString(HTML_BR))
               }
             }else{ // 現在時刻から予約可能かを判定でエラーの場合
               if(vCurrentTimeCheck == "当日"){
