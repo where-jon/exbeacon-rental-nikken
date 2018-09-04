@@ -313,7 +313,7 @@ lang.cms.floorManage.title=フロア管理
 lang.cms.floorManage.displayOrder=表示順
 lang.cms.floorManage.name=フロア名
 lang.cms.floorManage.display=現場状況画面表示
-lang.cms.floorManage.floorId=フロア管理番号（固定）
+lang.cms.floorManage.floorId=ID
 
 lang.cms.floorManage.floorUpdate.popup.displayOrder=表示順
 lang.cms.floorManage.floorUpdate.popup.displayOrder.placeholder=1
