@@ -42,11 +42,11 @@
                                         <th colspan="7" class="tableTitleTh">@Messages("lang.cms.itemCarManage.car.list.header.title")</th>
                                     </tr>
                                     <tr>
+                                        <th class="tableTh carIdTh">@Messages("lang.cms.itemCarManage.car.list.header.carId")</th>
                                         <th class="tableTh carTagIdTh">@Messages("lang.cms.itemCarManage.car.list.header.carTagId")</th>
                                         <th class="tableTh carKeyTagIdTh">@Messages("lang.cms.itemCarManage.car.list.header.carKeyTagId")</th>
                                         <th class="tableTh carTypeNameTh">@Messages("lang.cms.itemCarManage.car.list.header.carType")</th>
                                         <th class="tableTh carNameTh">@Messages("lang.cms.itemCarManage.car.list.header.carName")</th>
-                                        <th class="tableTh carIdTh">@Messages("lang.cms.itemCarManage.car.list.header.carId")</th>
                                         <th class="tableTh carNoTh">@Messages("lang.cms.itemCarManage.car.list.header.carNo")</th>
                                         <th class="tableTh carNoteTh">@Messages("lang.cms.itemCarManage.car.list.header.carNote")</th>
                                     </tr>
@@ -54,6 +54,7 @@
                                 <tbody>
                                     @for(car <- carList){
                                         <tr class="rowColor rowHover" data-carId="@car.itemCarId" id="@car.itemCarId">
+                                            <td class="itemTd text-center carId">@car.itemCarId</td>
                                             <td class="itemTd text-center carBtxId">@car.itemCarBtxId</td>
                                             @if(car.itemCarKeyBtxId == -1){
                                                 <td class="itemTd text-center carKeyBtxId">無</td>
@@ -69,7 +70,6 @@
                                                 }
                                             }
                                             <td class="itemTd text-center carName">@car.itemCarName</td>
-                                            <td class="itemTd text-center carId">@car.itemCarId</td>
                                             <td class="itemTd text-center carNo">@car.itemCarNo</td>
                                             <td class="itemTd text-center carNote">@car.itemCarNote</td>
                                         </tr>
