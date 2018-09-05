@@ -30,6 +30,7 @@ case class CarUpdateForm(
    , inputCarKeyBtxId: String
    , inputCarTypeName: String
    , inputCarTypeId: String
+   , inputCarTypeCategoryId: Int
    , inputCarName: String
    , inputCarNote: String
 )
@@ -85,6 +86,7 @@ class ItemCarManage @Inject()(
                                        .verifying(Messages("error.cms.CarManage.update.inputCarKeyBtxId.empty"), {inputCarKeyBtxId => inputCarKeyBtxId != "0"})
       , "inputCarTypeName" -> text
       , "inputCarTypeId" -> text.verifying(Messages("error.cms.CarManage.update.inputCarTypeId.empty"), {_.matches("^[0-9]+$")})
+      , "inputCarTypeCategoryId" -> number
       , "inputCarName" -> text.verifying(Messages("error.cms.CarManage.update.inputCarName.empty"), {!_.isEmpty})
       , "inputCarNote" -> text
     )(CarUpdateForm.apply)(CarUpdateForm.unapply))
@@ -98,7 +100,8 @@ class ItemCarManage @Inject()(
       val f = form.get
       // 鍵Tag IDが「無」の場合の対処
       var carKeyBtxId = f.inputCarKeyBtxId
-      if(f.inputCarTypeId == "2"){
+      // カテゴリーが立馬(1)の場合、鍵TagIDに-1をセット
+      if(f.inputCarTypeCategoryId == 1){
           carKeyBtxId = "-1"
       }
       // 種別存在チェック
