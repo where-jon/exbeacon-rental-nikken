@@ -115,6 +115,7 @@ error.cms.CarManage.delete.inputCarIdReserve.use=IDは既に予約されてい�
 error.cms.CarManage.delete.inputCarIdReserve.use.noChange=IDは予約履歴があるので更新と削除ができません。予約状況をご確認ください。(ID：{0})
 error.cms.CarManage.delete.inputCarId.empty=IDは登録されていません。(ID：{0})
 error.cms.CarManage.update.NotTypeName=種別が存在しません。
+error.cms.CarManage.update.inputCarKey.duplicate=TagIDと鍵TagIDに同一のIDが入力されています。
 
 error.cms.ItemOtherManage.update.inputItemOtherNo.empty=仮設材番号を入力してください。
 error.cms.ItemOtherManage.update.inputItemOtherBtxId.empty=TagIDを半角数字で入力してください。
