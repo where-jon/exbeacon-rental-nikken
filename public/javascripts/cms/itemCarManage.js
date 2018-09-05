@@ -79,6 +79,9 @@ function showInputModal(isRegister){
         $('#inputCarBtxId').val('');
         $('#inputCarKeyBtxIdDsp').val('');
         $('#inputCarKeyBtxId').val('');
+        var ele = document.getElementById("inputCarKeyBtxIdDsp");
+        ele.readOnly = false;
+        btxIdBack = "";
         $('#inputCarTypeName').val('');
         $('#inputCarTypeId').val('');
         $('#car_type').val("0");
@@ -107,12 +110,11 @@ function showInputModal(isRegister){
             var categoryid = parseInt($('#'+carId).find('.itemTypeCategoryid').text());
             if(categoryid == 1){
                $('#inputCarKeyBtxIdDsp').val("無");
-                ele.readOnly = true;
+               $('#inputCarKeyBtxId').val("9999999999");
+               ele.readOnly = true;
             }else{
-                if($('#inputCarKeyBtxIdDsp').val() == "無"){
-                    $('#inputCarKeyBtxIdDsp').val("");
-                }
-                ele.readOnly = false;
+               $('#inputCarKeyBtxIdDsp').val($('#'+carId).find('.carKeyBtxId').text());
+               ele.readOnly = false;
             }
             $('#inputCarName').val($('#'+carId).find('.carName').text());
             $('#inputCarNote').val($('#'+carId).find('.carNote').text());
@@ -161,7 +163,8 @@ var floorFrame = $('#car_type');
                $('#inputCarKeyBtxId').val("9999999999");
                 ele.readOnly = true;
             }else{
-                $('#inputCarKeyBtxId').val("");
+                $('#inputCarKeyBtxIdDsp').val(btxIdBack);
+                $('#inputCarKeyBtxId').val(btxIdBack);
                 ele.readOnly = false;
             }
         });
@@ -195,12 +198,7 @@ $(function(){
 
     // 鍵TagID 設定
     $('#inputCarKeyBtxIdDsp').on('change', function(e) {
-        if($('#inputCarTypeId').val() == "1"){
-            $('#inputCarKeyBtxId').val("無");
-            $('#inputCarKeyBtxId').val("9999999999");
-        }else{
-            $('#inputCarKeyBtxId').val($('#inputCarKeyBtxIdDsp').val());
-        }
+        $('#inputCarKeyBtxId').val($('#inputCarKeyBtxIdDsp').val());
     });
 
     // テーブルを固定
