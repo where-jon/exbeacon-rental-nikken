@@ -82,7 +82,7 @@ class ReserveMasterDAO @Inject() (dbapi: DBApi) {
 
       if(workTypeId!=null){
         if(workTypeId == 3){  // 終日の場合
-          wherePh += s""" and r.work_type_id in  (1,2) """
+          wherePh += s""" and r.work_type_id in  (1,2,3) """
         }else {
           wherePh += s""" and (r.work_type_id  =  ${workTypeId} or r.work_type_id =  3) """
         }
@@ -153,7 +153,7 @@ class ReserveMasterDAO @Inject() (dbapi: DBApi) {
 
       if(workTypeId!=null){
         if(workTypeId == 3){  // 終日の場合
-          wherePh += s""" and r.work_type_id in  (1,2) """
+          wherePh += s""" and r.work_type_id in  (1,2,3) """
         }else{
           wherePh += s""" and (r.work_type_id  =  ${workTypeId} or r.work_type_id =  3) """
         }
