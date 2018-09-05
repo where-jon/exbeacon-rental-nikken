@@ -6,10 +6,12 @@
 <!doctype html>
 <html lang="ja">
 <head>
-    @templates.htmlHead(title = Messages("lang.cms.itemTypeManage.title"))
-    <link rel="stylesheet" href="@routes.MyAssets.css("cms/itemTypeManage.css")"/>
-    <script type="text/javascript" src="@routes.MyAssets.lib("jquery.tablefix_1.0.1.js")"></script>
-    <script></script>
+@templates.htmlHead(title = Messages("lang.cms.itemTypeManage.title"))
+<link rel="stylesheet" href='@routes.MyAssets.lib("bootstrap-colorpickersliders/bootstrap.colorpickersliders.min.css")'/>
+<link rel="stylesheet" href='@routes.MyAssets.css("cms/itemTypeManage.css")'/>
+<script type="text/javascript" src='@routes.MyAssets.lib("jquery.tablefix_1.0.1.js")'></script>
+<script type="text/javascript" src='@routes.MyAssets.lib("TinyColor/tinycolor-min.js")'></script>
+<script type="text/javascript" src='@routes.MyAssets.lib("bootstrap-colorpickersliders/bootstrap.colorpickersliders.min.js")'></script>
 </head>
 <body>
 <!-- content -->
@@ -93,8 +95,7 @@
         </div>
     </div>
 </div>
-<script type="text/javascript" src="@routes.MyAssets.js("cms/itemTypeManage.js")"></script>
-    <script></script>
+<script type="text/javascript" src='@routes.MyAssets.js("cms/itemTypeManage.js")'></script>
 
 <!-- 更新モーダル画面 -->
 <div class="modal" id="inputModal" tabindex="-1" role="dialog" aria-labelledby="inputModalLabel" aria-hidden="true" data-show="true" data-keyboard="false" data-backdrop="static">
@@ -103,9 +104,9 @@
             <form id="itemTypeForm" name="itemTypeForm" enctype="multipart/form-data" class="form-horizontal" method="post" action="@controllers.cms.routes.ItemTypeManage.update.path">
                 @CSRF.formField
                 <!-- 現場ID -->
-                <input type="hidden" name="inputPlaceId" value="@placeId">
+                <input type="hidden" name="inputPlaceId" value="@placeId" />
                 <!-- 仮設材種別ID -->
-                <input type="hidden" id="inputItemTypeId" name="inputItemTypeId">
+                <input type="hidden" id="inputItemTypeId" name="inputItemTypeId" />
 
                 <div class="modal-header">@Messages("lang.cms.itemTypeManage.itemTypeUpdate.popup.title")</div>
                 <div class="modal-body">
@@ -113,7 +114,7 @@
                     <div class="form-group">
                         <label class="control-label col-xs-4">@Messages("lang.cms.itemTypeManage.itemTypeUpdate.popup.itemName")</label>
                         <div class="col-xs-3" style="padding-left: 0px;padding-right: 0px;">
-                            <input type="text" id="inputItemTypeName" name="inputItemTypeName" class="form-control" placeholder="@Messages("lang.cms.itemTypeManage.itemTypeUpdate.popup.itemName")">
+                            <input type="text" id="inputItemTypeName" name="inputItemTypeName" class="form-control" placeholder='@Messages("lang.cms.itemTypeManage.itemTypeUpdate.popup.itemName")' />
                         </div>
                     </div>
                     <!-- 仮設材カテゴリー名 -->
@@ -125,37 +126,39 @@
                             <option value="@(key+1)">@value</option>
                             }
                         </select>
-                        <input class="hidden form-control input-sm" type="text" id="inputItemTypeCategory" name="inputItemTypeCategory" value="@ITEM_TYPE_FILTER">
+                        <input class="hidden form-control input-sm" type="text" id="inputItemTypeCategory" name="inputItemTypeCategory" value="@ITEM_TYPE_FILTER" />
                     </div>
                     <!-- 仮設材種別アイコンカラー(RGB) -->
                     <div class="form-group">
                         <label class="control-label col-xs-4">@Messages("lang.cms.itemTypeManage.itemTypeUpdate.popup.icon.color")</label>
-                        <div class="col-xs-3" style="padding-left: 0px;padding-right: 0px; background-color: hsl(0, 80%, 70%);">
-                            <input id="background-color" class="form-control" type="color">
-                            <input type="hidden" name="inputItemTypeIconColor" id="inputItemTypeIconColor">
+                        <div class="col-xs-3" style="padding-left: 0px;padding-right: 0px;">
+                            <!-- <input id="background-color" class="form-control" type="color" /> -->
+                            <input type="text" id="background-color" value="" />
+                            <input type="hidden" name="inputItemTypeIconColor" id="inputItemTypeIconColor" />
                         </div>
                     </div>
                     <!-- 仮設材種別文字カラー(RGB) -->
                     <div class="form-group">
                         <label class="control-label col-xs-4">@Messages("lang.cms.itemTypeManage.itemTypeUpdate.popup.font.color")</label>
                         <div class="col-xs-3" style="padding-left: 0px;padding-right: 0px;">
-                            <input id="text-color" class="form-control" type="color">
-                            <input type="hidden" name="inputItemTypeTextColor" id="inputItemTypeTextColor">
+                            <!-- <input id="text-color" class="form-control" type="color" /> -->
+                            <input type="text" id="text-color" value="" />
+                            <input type="hidden" name="inputItemTypeTextColor" id="inputItemTypeTextColor" />
                         </div>
                     </div>
                     <!-- 仮設材種別行カラー(RGB) 未使用-->
                     <div class="hidden">
                         <label class="control-label col-xs-4">@Messages("lang.cms.itemTypeManage.itemTypeUpdate.popup.row.color")</label>
                         <div class="col-xs-3" style="padding-left: 0px;padding-right: 0px;">
-                            <input id="row-color" class="form-control" type="color">
-                            <input type="hidden" name="inputItemTypeRowColor" id="inputItemTypeRowColor">
+                            <input id="row-color" class="form-control" type="color" />
+                            <input type="hidden" name="inputItemTypeRowColor" id="inputItemTypeRowColor" />
                         </div>
                     </div>
                     <!-- 備考(DB項目) -->
                     <div class="form-group">
                         <label class="control-label col-xs-4">@Messages("lang.cms.itemTypeManage.itemTypeUpdate.popup.biko")</label>
                         <div class="col-xs-5" style="padding-left: 0px;padding-right: 0px;">
-                            <input type="text" id="inputNote" name="inputNote" class="form-control" placeholder="@Messages("lang.cms.itemTypeManage.itemTypeUpdate.popup.biko")">
+                            <input type="text" id="inputNote" name="inputNote" class="form-control" placeholder='@Messages("lang.cms.itemTypeManage.itemTypeUpdate.popup.biko")' />
                         </div>
                     </div>
 
@@ -179,7 +182,7 @@
         <div class="modal-content">
             <form id="deleteForm" name="deleteForm" enctype="multipart/form-data" class="form-horizontal" method="post" action="@controllers.cms.routes.ItemTypeManage.delete.path">
                 @CSRF.formField
-                <input type="hidden" id="deleteItemTypeId" name="deleteItemTypeId">
+                <input type="hidden" id="deleteItemTypeId" name="deleteItemTypeId" />
                 <div class="modal-header">@Messages("lang.cms.itemTypeManage.itemTypeDelete.popup.title")</div>
                 <div class="modal-body">
                     <div class="text-center">
