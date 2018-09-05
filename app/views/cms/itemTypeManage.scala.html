@@ -49,11 +49,11 @@
                             <tbody>
                             @for(itemType <- itemTypeList){
                             <tr class="rowColor rowHover" id="@itemType.item_type_id">
-                                <td class="itemTd text-right itemTypeId">@itemType.item_type_id</td>
-                                <td class="itemTd text-left itemTypeName">@itemType.item_type_name</td>
+                                <td class="itemTd text-center itemTypeId">@itemType.item_type_id</td>
+                                <td class="itemTd text-center itemTypeName">@itemType.item_type_name</td>
 
-                                <td class="hidden text-left itemTypeCategoryId">@itemType.item_type_category_id</td>
-                                <td class="itemTd text-left itemTypeCategory">@itemTypeMap(itemType.item_type_category_id)</td>
+                                <td class="hidden itemTypeCategoryId">@itemType.item_type_category_id</td>
+                                <td class="itemTd text-center itemTypeCategory">@itemTypeMap(itemType.item_type_category_id)</td>
 
                                 <!-- 色表示 -->
                                 <td id ="previewBackgroundId" class="item preview_frame" style="background: @itemType.item_type_row_color;" >
@@ -70,7 +70,7 @@
                                 <!-- 仮設材種別行カラー(RGB) -->
                                 <td class="hidden itemTypeRowColor">@itemType.item_type_row_color</td>
                                 <!-- 備考 -->
-                                <td class="itemTd text-left itemNote">@itemType.note</td>
+                                <td class="itemTd text-center itemNote">@itemType.note</td>
                             </tr>
                             }
                             </tbody>

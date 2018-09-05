@@ -75,6 +75,7 @@ class ItemOtherManage @Inject()(
         "inputPlaceId" -> text
       , "inputItemOtherId" -> text
       , "inputItemOtherBtxId" -> text.verifying(Messages("error.cms.ItemOtherManage.update.inputItemOtherBtxId.empty"), {_.matches("^[0-9]+$")})
+                                          .verifying(Messages("error.cms.ItemOtherManage.update.inputItemOtherBtxId.empty"), {inputItemOtherBtxId => inputItemOtherBtxId != "0"})
       , "inputItemOtherNo" -> text.verifying(Messages("error.cms.ItemOtherManage.update.inputItemOtherNo.empty"), {!_.isEmpty})
       , "inputItemOtherName" -> text.verifying(Messages("error.cms.ItemOtherManage.update.inputItemOtherName.empty"), {!_.isEmpty})
       , "inputItemNote" -> text
@@ -89,11 +90,6 @@ class ItemOtherManage @Inject()(
     }else{
       var errMsg = Seq[String]()
       val f = form.get
-      // Tag IDチェック
-      if (f.inputItemOtherBtxId.toInt <= "0".toInt) {
-        // 作業車の場合
-        errMsg :+= Messages("error.cms.CarManage.update.inputCarBtxId.empty")
-      }
       // 種別存在チェック
       val itemTypeList = itemTypeDAO.selectItemTypeCheck(f.inputItemTypeName, f.inputPlaceId.toInt)
       if(itemTypeList.isEmpty){
