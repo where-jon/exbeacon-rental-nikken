@@ -84,6 +84,7 @@ function showInputModal(isRegister){
         btxIdBack = "";
         $('#inputCarTypeName').val('');
         $('#inputCarTypeId').val('');
+        $('#inputCarTypeCategoryId').val(0);
         $('#car_type').val("0");
         $('#inputCarName').val('');
         $('#inputCarNote').val('');
