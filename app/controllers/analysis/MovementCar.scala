@@ -147,7 +147,7 @@ class MovementCar @Inject()(config: Configuration
         val vReserveWofkFlgDetectCount = getReserveWorkFlgSqlData.last.detected_count
         val vReserveOperatingRate = this.getDetectedCount(vReserveWofkFlgDetectCount,vRealWorkTime,bRealWorkDayCheck)
 
-        WorkRate(car.item_car_id,car.item_car_btx_id,car.item_car_key_btx_id,car.item_car_name,vOperatingRate,vReserveOperatingRate,vWofkFlgDetectCount,vReserveWofkFlgDetectCount)
+        WorkRate(car.item_car_id,car.item_car_btx_id,car.item_car_key_btx_id,car.item_car_no,car.item_car_name,vOperatingRate,vReserveOperatingRate,vWofkFlgDetectCount,vReserveWofkFlgDetectCount)
 
       }
     }
@@ -328,6 +328,7 @@ class MovementCar @Inject()(config: Configuration
       pw.println("")
       pw.print("Tag ID,")
       pw.print("鍵Tag ID,")
+      pw.print("番号,")
       pw.print("名称,")
       calendarList.foreach { calendar =>
         pw.print(s"稼働率," +
@@ -338,6 +339,7 @@ class MovementCar @Inject()(config: Configuration
       logItemAllList.foreach { item =>
         pw.print(s"${item.last.itemTagId},")
         pw.print(s"${item.last.itemKeyTagId},")
+        pw.print(s"${item.last.itemNo},")
         pw.print(s"${item.last.itemName},")
         item.map{ v =>
           pw.print(s"${v.operatingRate}%," +

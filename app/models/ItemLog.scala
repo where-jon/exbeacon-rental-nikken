@@ -16,6 +16,7 @@ case class WorkRate(
 itemId:Int,
 itemTagId:Int,
 itemKeyTagId:Int,
+itemNo:String,
 itemName:String
 ,operatingRate : Float
 ,reserveOperatingRate :Float
