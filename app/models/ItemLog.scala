@@ -14,6 +14,8 @@ import play.api.libs.json.{JsPath, Json, Reads}
 /*作業車稼働状況分析用クラス*/
 case class WorkRate(
 itemId:Int,
+itemTagId:Int,
+itemKeyTagId:Int,
 itemName:String
 ,operatingRate : Float
 ,reserveOperatingRate :Float
