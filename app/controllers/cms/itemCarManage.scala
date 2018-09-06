@@ -104,6 +104,10 @@ class ItemCarManage @Inject()(
       if(f.inputCarTypeCategoryId == 1){
           carKeyBtxId = "-1"
       }
+      // TagIDと鍵TagIDが同じIDを指定していないかチェック[
+      if (f.inputCarBtxId.toInt == carKeyBtxId.toInt) {
+        errMsg :+= Messages("error.cms.CarManage.update.inputCarKey.duplicate", f.inputCarNo)
+      }
       // 種別存在チェック
       val itemTypeList = itemTypeDAO.selectItemTypeCheck(f.inputCarTypeName, f.inputPlaceId.toInt)
       if (itemTypeList.isEmpty) {
