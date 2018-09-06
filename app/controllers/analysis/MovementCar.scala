@@ -320,6 +320,8 @@ class MovementCar @Inject()(config: Configuration
       pw.print(s"${DETECT_MONTH} 作業車稼働状況分析")
       pw.println("")
       pw.print("作業車,")
+      pw.print("作業車,")
+      pw.print("作業車,")
       calendarList.foreach { calendar =>
         pw.print(s"${calendar.szYobi}の週," +
           s"実${calendar.iWeekRealWorkDay}/${calendar.iWeekTotalWorkDay}日,"
@@ -339,7 +341,10 @@ class MovementCar @Inject()(config: Configuration
       logItemAllList.foreach { item =>
         pw.print(s"${item.last.itemTagId},")
         pw.print(s"${item.last.itemKeyTagId},")
-        pw.print(s"${item.last.itemNo},")
+        pw.print("=\"")
+        pw.print(s"${item.last.itemNo}")
+        pw.print("\"")
+        pw.print(",")
         pw.print(s"${item.last.itemName},")
         item.map{ v =>
           pw.print(s"${v.operatingRate}%," +

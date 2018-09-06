@@ -205,29 +205,54 @@ var gInitView = {
 
     },
     fixTableNoBtn : function() {
-            // テーブルの固定
-            var h = $(window).height()*0.85;
-            // テーブルの調整
-            var ua = navigator.userAgent;
-            if (ua.indexOf('iPad') > 0 || ua.indexOf('Android') > 0 || ua.indexOf('iPhone') > 0 || ua.indexOf('iPod') > 0){
-                // タッチデバイス
-                if ($('.mainSpace').height() > h) {
-                    var w = $('.mainSpace').width()*0.99;
-                    $('.itemTable').tablefix({width:w, height: h, fixRows: 2});
-                } else {
-                    var w = $('.mainSpace').width();
-                    $('.itemTable').tablefix({width:w, fixRows: 2});
-                }
-            }else{
-                // PCブラウザ
+        // テーブルの固定
+        var h = $(window).height()*0.85;
+        // テーブルの調整
+        var ua = navigator.userAgent;
+        if (ua.indexOf('iPad') > 0 || ua.indexOf('Android') > 0 || ua.indexOf('iPhone') > 0 || ua.indexOf('iPod') > 0){
+            // タッチデバイス
+            if ($('.mainSpace').height() > h) {
+                var w = $('.mainSpace').width()*0.99;
+                $('.itemTable').tablefix({width:w, height: h, fixRows: 2});
+            } else {
                 var w = $('.mainSpace').width();
-                $('.itemTable').tablefix({height: h, fixRows: 2});
-                $('.rowTableDiv').width(w);
+                $('.itemTable').tablefix({width:w, fixRows: 2});
             }
-            $('.bodyTableDiv').find('.itemTable').css('margin-bottom','0');
-            $('.colTableDiv').css("width","");
+        }else{
+            // PCブラウザ
+            var w = $('.mainSpace').width();
+            $('.itemTable').tablefix({height: h, fixRows: 2});
+            $('.rowTableDiv').width(w);
+        }
+        $('.bodyTableDiv').find('.itemTable').css('margin-bottom','0');
+        $('.colTableDiv').css("width","");
 
-        },
+    },
+
+    fixTableNoBtnOther : function() {
+        // テーブルの固定
+        var h = $(window).height()*0.85;
+        // テーブルの調整
+        var ua = navigator.userAgent;
+        if (ua.indexOf('iPad') > 0 || ua.indexOf('Android') > 0 || ua.indexOf('iPhone') > 0 || ua.indexOf('iPod') > 0){
+            // タッチデバイス
+            if ($('.mainSpace').height() > h) {
+                var w = $('.mainSpace').width()*0.99;
+                $('.itemTable').tablefix({width:w, height: h, fixRows: 3});
+            } else {
+                var w = $('.mainSpace').width();
+                $('.itemTable').tablefix({width:w, fixRows: 3});
+            }
+        }else{
+            // PCブラウザ
+            var w = $('.mainSpace').width();
+            $('.itemTable').tablefix({height: h, fixRows: 3});
+            $('.rowTableDiv').width(w);
+        }
+        $('.bodyTableDiv').find('.itemTable').css('margin-bottom','0');
+        $('.colTableDiv').css("width","");
+
+    },
 
     bindMouseAndTouch : function() {
         var ua = navigator.userAgent;
