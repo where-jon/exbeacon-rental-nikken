@@ -322,6 +322,7 @@ class MovementCar @Inject()(config: Configuration
       pw.print("作業車,")
       pw.print("作業車,")
       pw.print("作業車,")
+      pw.print("作業車,")
       calendarList.foreach { calendar =>
         pw.print(s"${calendar.szYobi}の週," +
           s"実${calendar.iWeekRealWorkDay}/${calendar.iWeekTotalWorkDay}日,"
