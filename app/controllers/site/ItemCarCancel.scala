@@ -145,8 +145,22 @@ class ItemCarCancel @Inject()(config: Configuration
                 .flashing(ERROR_MSG_KEY -> Messages("error.site.carCancel.cancel"))
             }
           }else{  // 現在時刻から予約取消可能かを判定でエラーの場合
-            Redirect(routes.ItemCarCancel.index())
-              .flashing(ERROR_MSG_KEY -> Messages(vCancelCheck))
+              if((Messages("error.site.cancel.pretime") == vCancelCheck ||
+                "error.site.cancel.pretime" == vCancelCheck) && request.identity.level >= 3){
+                // 過去の予約だけどシステム権限
+                val result = carDAO.cancelItemCar(setData)
+                if (result == "success") {
+                  Redirect(routes.ItemCarCancel.index())
+                    .flashing(SUCCESS_MSG_KEY -> Messages("success.site.carCancel.cancel"))
+                }else {
+                  Redirect(routes.ItemCarCancel.index())
+                    .flashing(ERROR_MSG_KEY -> Messages("error.site.carCancel.cancel"))
+                }
+              }
+              else{
+                Redirect(routes.ItemCarCancel.index())
+                  .flashing(ERROR_MSG_KEY -> Messages(vCancelCheck))
+              }
           }
         }else{
           Redirect(routes.ItemCarCancel.index())

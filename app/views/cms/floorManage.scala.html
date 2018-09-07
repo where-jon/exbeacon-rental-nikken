@@ -39,6 +39,7 @@ floorInfoList: Seq[FloorInfoData]
                                         <th colspan="6" class="tableTitleTh">@Messages("lang.cms.floorManage.title")</th>
                                     </tr>
                                     <tr>
+                                        <th class="hidden tableTh deviceTh">@Messages("lang.cms.floorManage.floorId")</th>
                                         <th class="tableTh deviceTh">@Messages("lang.cms.floorManage.displayOrder")</th>
                                         <th class="tableTh deviceTh">@Messages("lang.cms.floorManage.display")</th>
                                         <th class="tableTh floorTh">@Messages("lang.cms.floorManage.name")</th>
@@ -48,6 +49,7 @@ floorInfoList: Seq[FloorInfoData]
                                 <tbody class="sortable">
                                     @for(floor <- floorInfoList){
                                         <tr class="rowColor rowHover" id="@floor.floor_id" data-floorId="@floor.floor_id">
+                                            <td class="hidden itemTd text-center">@floor.floor_id</td>
                                             <td class="itemTd text-center displayOrder">@floor.display_order</td>
                                             @if(floor.active_flg){
                                                 <td class="itemTd text-center activeFlg">表示</td>

@@ -129,9 +129,9 @@ class MovementCar @Inject()(config: Configuration
         // 検知フラグがtrue
         val getWorkFlgSqlData =itemlogDAO.selectWorkingOn(true,car.item_car_id,placeId,calendar.iWeekStartDay,calendar.iWeekEndDay,itemIdList)
         val vWofkFlgDetectCount = getWorkFlgSqlData.last.detected_count
-        if(vWofkFlgDetectCount>0){
-          System.out.println(vWofkFlgDetectCount)
-        }
+//        if(vWofkFlgDetectCount>0){
+//          System.out.println(vWofkFlgDetectCount)
+//        }
         var bRealWorkDayCheck = true
         // 実際働く時間（土、日だけの場合もある）
         val vRealWorkTime = if(calendar.iWeekRealWorkDay == 0 ){
@@ -147,7 +147,7 @@ class MovementCar @Inject()(config: Configuration
         val vReserveWofkFlgDetectCount = getReserveWorkFlgSqlData.last.detected_count
         val vReserveOperatingRate = this.getDetectedCount(vReserveWofkFlgDetectCount,vRealWorkTime,bRealWorkDayCheck)
 
-        WorkRate(car.item_car_id,car.item_car_name,vOperatingRate,vReserveOperatingRate,vWofkFlgDetectCount,vReserveWofkFlgDetectCount)
+        WorkRate(car.item_car_id,car.item_car_btx_id,car.item_car_key_btx_id,car.item_car_no,car.item_car_name,vOperatingRate,vReserveOperatingRate,vWofkFlgDetectCount,vReserveWofkFlgDetectCount)
 
       }
     }
@@ -320,12 +320,18 @@ class MovementCar @Inject()(config: Configuration
       pw.print(s"${DETECT_MONTH} 作業車稼働状況分析")
       pw.println("")
       pw.print("作業車,")
+      pw.print("作業車,")
+      pw.print("作業車,")
+      pw.print("作業車,")
       calendarList.foreach { calendar =>
         pw.print(s"${calendar.szYobi}の週," +
           s"実${calendar.iWeekRealWorkDay}/${calendar.iWeekTotalWorkDay}日,"
         )
       }
       pw.println("")
+      pw.print("Tag ID,")
+      pw.print("鍵Tag ID,")
+      pw.print("番号,")
       pw.print("名称,")
       calendarList.foreach { calendar =>
         pw.print(s"稼働率," +
@@ -334,6 +340,12 @@ class MovementCar @Inject()(config: Configuration
       }
       pw.println("")
       logItemAllList.foreach { item =>
+        pw.print(s"${item.last.itemTagId},")
+        pw.print(s"${item.last.itemKeyTagId},")
+        pw.print("=\"")
+        pw.print(s"${item.last.itemNo}")
+        pw.print("\"")
+        pw.print(",")
         pw.print(s"${item.last.itemName},")
         item.map{ v =>
           pw.print(s"${v.operatingRate}%," +
