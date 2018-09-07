@@ -804,7 +804,7 @@ error.site.reserve.overtime.define=「午前」「終日」は 当日「8時」�
 error.site.reserve.pretime=現在時刻より過去の方は予約できません。
 error.site.reserve.other=例外NGで予約できません。
 error.site.cancel.overtime=選択されたもの中、現在時刻13時過ぎてるので本日内予約取消はできません。
-error.site.cancel.pretime=選択されたもの中、現在時刻より過去があるので予約取消はできません。
+error.site.cancel.pretime=選択されたもの中、現在時刻より過去の予約がある為、予約取消はできません。<br/>取消には「システム管理者」権限以上が必要になります。
 error.site.cancel.other=選択されたもの中、例外NGで予約取消はできません。
 
 lang.site.carCancel.page.title=作業車・立馬予約取消
