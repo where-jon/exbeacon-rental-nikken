@@ -105,9 +105,6 @@ class ItemOtherMaster @Inject()(config: Configuration
     if (COMPANY_NAME_FILTER != "") {
       otherListApi = otherListApi.filter(_.company_name == COMPANY_NAME_FILTER)
     }
-    if (WORK_TYPE_FILTER != "") {
-      otherListApi = otherListApi.filter(_.work_type_name == WORK_TYPE_FILTER)
-    }
 
     Ok(views.html.site.itemOtherMaster(ITEM_TYPE_FILTER,COMPANY_NAME_FILTER,FLOOR_NAME_FILTER,WORK_TYPE_FILTER
       ,otherListApi,itemTypeList,companyNameList,floorNameList,workTypeList,WORK_TYPE))
