@@ -26,9 +26,11 @@ case class CarUpdateForm(
    , inputCarId: String
    , inputCarNo: String
    , inputCarBtxId: String
+   , inputCarKeyBtxIdDsp: String
    , inputCarKeyBtxId: String
    , inputCarTypeName: String
    , inputCarTypeId: String
+   , inputCarTypeCategoryId: Int
    , inputCarName: String
    , inputCarNote: String
 )
@@ -78,9 +80,13 @@ class ItemCarManage @Inject()(
       , "inputCarId" -> text
       , "inputCarNo" -> text.verifying(Messages("error.cms.CarManage.update.inputCarNo.empty"), {!_.isEmpty})
       , "inputCarBtxId" -> text.verifying(Messages("error.cms.CarManage.update.inputCarBtxId.empty"), {_.matches("^[0-9]+$")})
-      , "inputCarKeyBtxId" -> text
+                                    .verifying(Messages("error.cms.CarManage.update.inputCarBtxId.empty"), {inputCarBtxId => inputCarBtxId != "0"})
+      , "inputCarKeyBtxIdDsp" -> text
+      , "inputCarKeyBtxId" -> text.verifying(Messages("error.cms.CarManage.update.inputCarKeyBtxId.empty"), {_.matches("^[0-9]+$")})
+                                       .verifying(Messages("error.cms.CarManage.update.inputCarKeyBtxId.empty"), {inputCarKeyBtxId => inputCarKeyBtxId != "0"})
       , "inputCarTypeName" -> text
       , "inputCarTypeId" -> text.verifying(Messages("error.cms.CarManage.update.inputCarTypeId.empty"), {_.matches("^[0-9]+$")})
+      , "inputCarTypeCategoryId" -> number
       , "inputCarName" -> text.verifying(Messages("error.cms.CarManage.update.inputCarName.empty"), {!_.isEmpty})
       , "inputCarNote" -> text
     )(CarUpdateForm.apply)(CarUpdateForm.unapply))
@@ -94,21 +100,13 @@ class ItemCarManage @Inject()(
       val f = form.get
       // 鍵Tag IDが「無」の場合の対処
       var carKeyBtxId = f.inputCarKeyBtxId
-      if (carKeyBtxId == "無" || carKeyBtxId.isEmpty) {
-        if(f.inputCarTypeId == "1"){
-          // 作業車・立馬の場合
-          errMsg :+= Messages("error.cms.CarManage.update.inputCarKeyBtxId.empty")
-        }else{
+      // カテゴリーが立馬(1)の場合、鍵TagIDに-1をセット
+      if(f.inputCarTypeCategoryId == 1){
           carKeyBtxId = "-1"
-        }
-      } else {
-        if (!carKeyBtxId.matches("^[-0-9]+$")) {
-          errMsg :+= Messages("error.cms.CarManage.update.inputCarKeyBtxId.empty")
-        } else {
-          if (f.inputCarBtxId == carKeyBtxId) {
-            errMsg :+= Messages("error.cms.CarManage.update.inputCarBtxId.inputCarKeyBtxId.duplicate", f.inputCarNo)
-          }
-        }
+      }
+      // TagIDと鍵TagIDが同じIDを指定していないかチェック[
+      if (f.inputCarBtxId.toInt == carKeyBtxId.toInt) {
+        errMsg :+= Messages("error.cms.CarManage.update.inputCarKey.duplicate", f.inputCarNo)
       }
       // 種別存在チェック
       val itemTypeList = itemTypeDAO.selectItemTypeCheck(f.inputCarTypeName, f.inputPlaceId.toInt)

@@ -44,10 +44,10 @@ placeId: Int
                                         <th colspan="6" class="tableTitleTh">@Messages("lang.cms.itemOtherManage.item.list.header.title")</th>
                                     </tr>
                                     <tr>
+                                        <th class="tableTh itemOtherIdTh">@Messages("lang.cms.itemOtherManage.item.list.header.otherId")</th>
                                         <th class="tableTh noTh text-center">@Messages("lang.cms.itemOtherManage.item.list.header.tagId")</th>
                                         <th class="tableTh itemTypeTh">@Messages("lang.cms.itemOtherManage.item.list.header.type")</th>
                                         <th class="tableTh itemNameTh">@Messages("lang.cms.itemOtherManage.item.list.header.name")</th>
-                                        <th class="tableTh itemOtherIdTh">@Messages("lang.cms.itemOtherManage.item.list.header.otherId")</th>
                                         <th class="tableTh itemOtherNoTh">@Messages("lang.cms.itemOtherManage.item.list.header.otherNo")</th>
                                         <th class="tableTh itemOtherNoteTh">@Messages("lang.cms.itemOtherManage.item.list.header.otherNote")</th>
                                     </tr>
@@ -55,6 +55,7 @@ placeId: Int
                                 <tbody>
                                     @for(item <- itemList){
                                         <tr class="rowColor rowHover" data-itemOtherId="@item.itemOtherId" id="@item.itemOtherId">
+                                            <td class="itemTd text-center itemOtherId">@{item.itemOtherId}</td>
                                             <td class="itemTd text-center itemOtherBtxId">@{item.itemOtherBtxId}</td>
                                             <td class="itemTd text-center itemTypeName">@{item.itemTypeName}</td>
                                             <td hidden class="itemTd text-center itemTypeId">@item.itemTypeId</td>
@@ -64,7 +65,6 @@ placeId: Int
                                                 }
                                             }
                                             <td class="itemTd text-center itemOtherName">@{item.itemOtherName}</td>
-                                            <td class="itemTd text-center itemOtherId">@{item.itemOtherId}</td>
                                             <td class="itemTd text-center itemOtherNo">@{item.itemOtherNo}</td>
                                             <td class="itemTd text-center itemOtherNote">@{item.itemOtherNote}</td>
                                         </tr>

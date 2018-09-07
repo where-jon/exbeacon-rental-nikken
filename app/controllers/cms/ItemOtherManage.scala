@@ -75,6 +75,7 @@ class ItemOtherManage @Inject()(
         "inputPlaceId" -> text
       , "inputItemOtherId" -> text
       , "inputItemOtherBtxId" -> text.verifying(Messages("error.cms.ItemOtherManage.update.inputItemOtherBtxId.empty"), {_.matches("^[0-9]+$")})
+                                          .verifying(Messages("error.cms.ItemOtherManage.update.inputItemOtherBtxId.empty"), {inputItemOtherBtxId => inputItemOtherBtxId != "0"})
       , "inputItemOtherNo" -> text.verifying(Messages("error.cms.ItemOtherManage.update.inputItemOtherNo.empty"), {!_.isEmpty})
       , "inputItemOtherName" -> text.verifying(Messages("error.cms.ItemOtherManage.update.inputItemOtherName.empty"), {!_.isEmpty})
       , "inputItemNote" -> text

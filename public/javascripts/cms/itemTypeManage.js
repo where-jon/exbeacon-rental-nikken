@@ -68,15 +68,15 @@ function fixTable(){
         }
     }else{
         // PCブラウザ
-//        var w = $('.mainSpace').width()*1.001; // ヘッダー右側ボーダーが切れる為*1.001
-//        if ($('.mainSpace').height() > h) {
-//            w = $('.mainSpace').width()-5;
-//            $('.itemTable').tablefix({width:w, height: h, fixRows: 2});
-//            w = $('.mainSpace').width()-14;
-//            $('.rowTableDiv').width(w);
-//        } else {
-//            $('.rowTableDiv').width(w);
-//        }
+        // var w = $('.mainSpace').width()*1.001; // ヘッダー右側ボーダーが切れる為*1.001
+        // if ($('.mainSpace').height() > h) {
+        //     w = $('.mainSpace').width()-5;
+        //     $('.itemTable').tablefix({width:w, height: h, fixRows: 2});
+        //     w = $('.mainSpace').width()-14;
+        //     $('.rowTableDiv').width(w);
+        // } else {
+        //     $('.rowTableDiv').width(w);
+        // }
         // PCブラウザ
         var w = $('.mainSpace').width();
         $('.itemTable').tablefix({height: h, fixRows: 2});
@@ -103,12 +103,24 @@ function showInputModal(isRegister){
         $('#item_type').val('0');
         $('#inputItemTypeIconColor').val('rgb(106,106,106)');
         $('#background-color').val('#6a6a6a');
+        $("#background-color").ColorPickerSliders({
+            color: '#6a6a6a',
+            placement: 'right',
+            sliders: true,
+            swatches: false,
+            hsvpanel: true
+        });
         $('#inputItemTypeTextColor').val('rgb(106,106,106)');
         $('#text-color').val('#6a6a6a');
+        $("#text-color").ColorPickerSliders({
+            color: '#6a6a6a',
+            placement: 'right',
+            sliders: true,
+            swatches: false,
+            hsvpanel: true
+        });
         $('#inputItemTypeRowColor').val('rgb(255,255,255)');
-        $('#row-color').val('#ffffff');
         $('#inputNote').val('');
-
         $('#itemTypeUpdateFooter').addClass('hidden');
         $('#itemTypeRegisterFooter').removeClass('hidden');
         $('#inputModal').modal();
@@ -119,18 +131,29 @@ function showInputModal(isRegister){
             $('#inputItemTypeName').val($('#'+itemTypeId).find('.itemTypeName').text());
             $('#inputItemTypeCategory').val($('#'+itemTypeId).find('.itemTypeCategoryId').text());
             $('#item_type').val((parseInt($('#'+itemTypeId).find('.itemTypeCategoryId').text()) + 1).toString());
-
             $('#inputItemTypeIconColor').val($('#'+itemTypeId).find('.itemTypeIconColor').text());
             var rgbEditIcon = colorEdit($('#'+itemTypeId).find('.itemTypeIconColor').text());
             $('#background-color').val(rgbEditIcon);
+            $('#background-color').ColorPickerSliders({
+                color: rgbEditIcon,
+                placement: 'right',
+                sliders: true,
+                swatches: false,
+                hsvpanel: true
+            });
             $('#inputItemTypeTextColor').val($('#'+itemTypeId).find('.itemTypeTextColor').text());
             var rgbEditText = colorEdit($('#'+itemTypeId).find('.itemTypeTextColor').text());
             $('#text-color').val(rgbEditText);
+            $('#text-color').ColorPickerSliders({
+                color: rgbEditText,
+                placement: 'right',
+                sliders: true,
+                swatches: false,
+                hsvpanel: true
+            });
             $('#inputItemTypeRowColor').val($('#'+itemTypeId).find('.itemTypeRowColor').text());
             var rgbEditRow = colorEdit($('#'+itemTypeId).find('.itemTypeRowColor').text());
-            $('#row-color').val(rgbEditRow);
             $('#inputNote').val($('#'+itemTypeId).find('.itemNote').text());
-
             $('#itemTypeUpdateFooter').removeClass('hidden');
             $('#itemTypeRegisterFooter').addClass('hidden');
             $('#inputModal').modal();
@@ -170,19 +193,22 @@ function colorEdit(rgbColor) {
 
 // 表示ボタンをクリックする時に発生するイベント
 function viewBtnEvent(){
-    var viewBtnElement = document.getElementById("itemTypeUpdateFooter")
-        viewBtnElement.addEventListener('click', function(event) {
-            // itemTypeId結果をfromへ設定
-            var itemTypeFilterResult = $('#item_type option:selected').val() - 1;
-            $('#inputItemTypeCategory').val(itemTypeFilterResult);
-        });
-
-    var viewBtnElement = document.getElementById("itemTypeRegisterFooter")
-        viewBtnElement.addEventListener('click', function(event) {
-            // itemTypeId結果をfromへ設定
-            var itemTypeFilterResult = $('#item_type option:selected').val() - 1;
-            $('#inputItemTypeCategory').val(itemTypeFilterResult);
-        });
+    var viewBtnElement = document.getElementById("itemTypeUpdateFooter");
+    viewBtnElement.addEventListener('click', function(event) {
+        // itemTypeId結果をfromへ設定
+        var itemTypeFilterResult = $('#item_type option:selected').val() - 1;
+        $('#inputItemTypeCategory').val(itemTypeFilterResult);
+        $('#inputItemTypeIconColor').val($('#background-color').val());
+        $('#inputItemTypeTextColor').val($('#text-color').val());
+    });
+    var viewBtnElement = document.getElementById("itemTypeRegisterFooter");
+    viewBtnElement.addEventListener('click', function(event) {
+        // itemTypeId結果をfromへ設定
+        var itemTypeFilterResult = $('#item_type option:selected').val() - 1;
+        $('#inputItemTypeCategory').val(itemTypeFilterResult);
+        $('#inputItemTypeIconColor').val($('#background-color').val());
+        $('#inputItemTypeTextColor').val($('#text-color').val());
+    });
 }
 
 $(function(){
@@ -192,34 +218,6 @@ $(function(){
     viewBtnEvent();
     // マウス操作とタップ操作をバインド
     bindMouseAndTouch();
-
-    $('#background-color').on('change', function(e) {
-        var colorEdit = $(this).val();
-        colorEdit = colorEdit.slice(1);
-        var r = parseInt(colorEdit.substring(0, 2), 16);
-        var g = parseInt(colorEdit.substring(2, 4), 16);
-        var b = parseInt(colorEdit.substring(4, 6), 16);
-        var colorRgb = "rgb(" + r + "," + g + "," + b + ")";
-        $('#inputItemTypeIconColor').val(colorRgb);
-      });
-      $('#text-color').on('change', function(e) {
-        var colorEdit = $(this).val();
-        colorEdit = colorEdit.slice(1);
-        var r = parseInt(colorEdit.substring(0, 2), 16);
-        var g = parseInt(colorEdit.substring(2, 4), 16);
-        var b = parseInt(colorEdit.substring(4, 6), 16);
-        var colorRgb = "rgb(" + r + "," + g + "," + b + ")";
-        $('#inputItemTypeTextColor').val(colorRgb);
-      });
-      $('#row-color').on('change', function(e) {
-        var colorEdit = $(this).val();
-        colorEdit = colorEdit.slice(1);
-        var r = parseInt(colorEdit.substring(0, 2), 16);
-        var g = parseInt(colorEdit.substring(2, 4), 16);
-        var b = parseInt(colorEdit.substring(4, 6), 16);
-        var colorRgb = "rgb(" + r + "," + g + "," + b + ")";
-        $('#inputItemTypeRowColor').val(colorRgb);
-      });
 
     // リサイズ対応
     var timer = false;
