@@ -129,9 +129,9 @@ class MovementCar @Inject()(config: Configuration
         // 検知フラグがtrue
         val getWorkFlgSqlData =itemlogDAO.selectWorkingOn(true,car.item_car_id,placeId,calendar.iWeekStartDay,calendar.iWeekEndDay,itemIdList)
         val vWofkFlgDetectCount = getWorkFlgSqlData.last.detected_count
-        if(vWofkFlgDetectCount>0){
-          System.out.println(vWofkFlgDetectCount)
-        }
+//        if(vWofkFlgDetectCount>0){
+//          System.out.println(vWofkFlgDetectCount)
+//        }
         var bRealWorkDayCheck = true
         // 実際働く時間（土、日だけの場合もある）
         val vRealWorkTime = if(calendar.iWeekRealWorkDay == 0 ){
