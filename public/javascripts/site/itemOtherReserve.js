@@ -65,9 +65,8 @@ function btnEvent(){
             inputFloorName.value = floorNameFilterResult
 
             // work_type_name結果をfromへ設定
-            var workTypeNameFilterResult = $('#WORK_TYPE_FILTER option:selected').val();
             var inputWorkTypeName = document.getElementById("workTypeName")
-            inputWorkTypeName.value = workTypeNameFilterResult
+            inputWorkTypeName.value = "終日"
 
             // inputDate結果をfromへ設定
             var inputDate = document.getElementById("inputDate")
@@ -132,11 +131,6 @@ function btnEvent(){
         var itemTypeFilterResult = $('#ITEM_TYPE_FILTER option:selected').val();
         var inputItemType = document.getElementById("itemTypeId")
         inputItemType.value = itemTypeFilterResult
-
-        // work_type_name結果をfromへ設定
-        var workTypeNameFilterResult = $('#WORK_TYPE_FILTER option:selected').val();
-        var inputWorkTypeName = document.getElementById("workTypeName")
-        inputWorkTypeName.value = workTypeNameFilterResult
 
         // inputDate結果をfromへ設定
         var inputDate = document.getElementById("inputDate")

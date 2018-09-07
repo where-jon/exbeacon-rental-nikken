@@ -81,7 +81,7 @@ class ItemOtherReserve @Inject()(config: Configuration
   /** 　初期化 */
   def init() {
     ITEM_TYPE_FILTER = 0
-    WORK_TYPE_FILTER = ""
+    WORK_TYPE_FILTER = "終日"
     RESERVE_START_DATE = ""
     RESERVE_START_DATE = ""
 
