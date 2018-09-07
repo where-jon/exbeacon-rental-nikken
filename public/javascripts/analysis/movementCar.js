@@ -53,4 +53,7 @@ $(function(){
     // マウス操作とタップ操作をバインド
     gInitView.bindMouseAndTouch();
 
+    // 画面リサイズ
+    gInitView.tableResizeOther();
+
 });

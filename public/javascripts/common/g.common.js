@@ -163,6 +163,22 @@ var gInitView = {
         $('.table-responsive-body').append(clonedTable.prop("outerHTML"));
 
     },
+    tableResizeOther : function(vType) {
+            // リサイズ対応
+        var timer = false;
+        $(window).resize(function() {
+            if (timer !== false) {
+                clearTimeout(timer);
+            }
+            timer = setTimeout(function() {
+                // 処理の再実行
+                gInitView.removeTable();
+                gInitView.fixTableNoBtnOther();
+                gInitView.bindMouseAndTouch();
+            }, 200);
+        });
+
+    },
     tableResize : function(vType) {
         // リサイズ対応
         var timer = false;
