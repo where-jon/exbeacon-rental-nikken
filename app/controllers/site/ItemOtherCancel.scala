@@ -138,7 +138,8 @@ class ItemOtherCancel @Inject()(config: Configuration
                 .flashing(ERROR_MSG_KEY -> Messages("error.site.otherCancel.cancel"))
             }
           }else{  // 現在時刻から予約取消可能かを判定でエラーの場合
-            if(Messages("error.site.cancel.pretime") == vCancelCheck && request.identity.level >= 3){
+            if((Messages("error.site.cancel.pretime") == vCancelCheck ||
+              "error.site.cancel.pretime" == vCancelCheck) && request.identity.level >= 3){
               // 過去の予約だけどシステム権限
               val result = otherDAO.cancelItemOther(setData)
               if (result == "success") {

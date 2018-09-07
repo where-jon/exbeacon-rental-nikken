@@ -145,12 +145,8 @@ class ItemCarCancel @Inject()(config: Configuration
                 .flashing(ERROR_MSG_KEY -> Messages("error.site.carCancel.cancel"))
             }
           }else{  // 現在時刻から予約取消可能かを判定でエラーの場合
-            System.out.println("==Messages(error.site.cancel.pretime)==")
-            System.out.println(Messages("error.site.cancel.pretime"))
-
-            System.out.println("==vCancelCheck")
-            System.out.println(vCancelCheck)
-              if(Messages("error.site.cancel.pretime") == vCancelCheck && request.identity.level >= 3){
+              if((Messages("error.site.cancel.pretime") == vCancelCheck ||
+                "error.site.cancel.pretime" == vCancelCheck) && request.identity.level >= 3){
                 // 過去の予約だけどシステム権限
                 val result = carDAO.cancelItemCar(setData)
                 if (result == "success") {
