@@ -42,7 +42,6 @@ floorInfoList: Seq[FloorInfoData]
                                         <th class="tableTh deviceTh">@Messages("lang.cms.floorManage.displayOrder")</th>
                                         <th class="tableTh deviceTh">@Messages("lang.cms.floorManage.display")</th>
                                         <th class="tableTh floorTh">@Messages("lang.cms.floorManage.name")</th>
-                                        <th class="tableTh deviceTh">@Messages("lang.cms.floorManage.floorId")</th>
                                         <th class="tableTh deviceTh">@Messages("lang.cms.exbManage.deviceId")</th>
                                     </tr>
                                 </thead>
@@ -56,7 +55,6 @@ floorInfoList: Seq[FloorInfoData]
                                                 <td class="itemTd text-center activeFlg">非表示</td>
                                             }
                                             <td class="itemTd text-center floorName">@floor.floor_name</td>
-                                            <td class="itemTd text-center">@floor.floor_id</td>
                                             <td class="itemTd text-center floor_name">
                                                 @for(exbDeviceId <- floor.exbDeviceIdList){
                                                 <span class="part">@exbDeviceId</span>

@@ -95,7 +95,7 @@ class floorDAO @Inject() (dbapi: DBApi) {
               from floor_master
               where place_id = {placeId}
               and active_flg = true
-              order by floor_id;
+              order by display_order;
               """).on(
         "placeId" -> placeId
       )
