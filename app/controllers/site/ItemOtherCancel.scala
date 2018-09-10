@@ -175,7 +175,6 @@ class ItemOtherCancel @Inject()(config: Configuration
     val otherFormSearchData = itemOtherSearchForm.bindFromRequest.get
     ITEM_TYPE_FILTER = otherFormSearchData.itemTypeId
     COMPANY_NAME_FILTER = otherFormSearchData.companyName
-    WORK_TYPE_FILTER = otherFormSearchData.workTypeName
     RESERVE_START_DATE = otherFormSearchData.inputStartDate
     RESERVE_END_DATE = otherFormSearchData.inputEndDate
 
@@ -191,9 +190,7 @@ class ItemOtherCancel @Inject()(config: Configuration
     if (ITEM_TYPE_FILTER != 0) {
       otherListApi = otherListApi.filter(_.item_type_id == ITEM_TYPE_FILTER)
     }
-    if (WORK_TYPE_FILTER != "") {
-      otherListApi = otherListApi.filter(_.work_type_name == WORK_TYPE_FILTER)
-    }
+
     if (COMPANY_NAME_FILTER != "") {
       otherListApi = otherListApi.filter(_.company_name == COMPANY_NAME_FILTER)
     }
