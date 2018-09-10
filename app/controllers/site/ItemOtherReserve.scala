@@ -116,7 +116,7 @@ class ItemOtherReserve @Inject()(config: Configuration
     itemOtherForm.bindFromRequest.fold(
       formWithErrors =>
       Redirect(routes.ItemOtherReserve.index())
-          .flashing(ERROR_MSG_KEY -> Messages(formWithErrors.errors.map(_.message +"<br>").mkString("\n"))),
+          .flashing(ERROR_MSG_KEY -> Messages(formWithErrors.errors.map(_.message).mkString(HTML_BR))),
 
       ItemOtherReserveData => {
         if(ItemOtherReserveData.inputStartDate > ItemOtherReserveData.inputEndDate){

@@ -120,7 +120,7 @@ class ItemCarReserve @Inject()(config: Configuration
     itemCarForm.bindFromRequest.fold(
       formWithErrors =>
       Redirect(routes.ItemCarReserve.index())
-          .flashing(ERROR_MSG_KEY -> Messages(formWithErrors.errors.map(_.message +"<br>").mkString("\n"))),
+          .flashing(ERROR_MSG_KEY -> Messages(formWithErrors.errors.map(_.message).mkString(HTML_BR))),
 
       ItemCarReserveData => {
         if(ItemCarReserveData.checkVal.zipWithIndex.length > 0){
