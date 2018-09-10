@@ -94,18 +94,18 @@ error.cms.CompanyManage.delete.inputCompanyName.use.noChange=業者は現在予�
 error.cms.CompanyManage.delete.inputCompanyName.use.exceed=対象の業者は予約履歴が有ります。システム管理権限以上をお持ちの方が更新と削除ができます。(業者名：{0})
 
 error.cms.CarManage.update.inputCarNo.empty=作業車・立馬番号を入力してください。
-error.cms.CarManage.update.inputCarBtxId.empty=作業車TxタグNoを半角数字で入力してください。
-error.cms.CarManage.update.inputCarKeyBtxId.empty=鍵TxタグNoを半角数字で入力してください。
+error.cms.CarManage.update.inputCarBtxId.empty=作業車TagIDを半角数字で入力してください。
+error.cms.CarManage.update.inputCarKeyBtxId.empty=鍵TagIDを半角数字で入力してください。
 error.cms.CarManage.update.inputCarTypeName.empty=種別を入力してください。
 error.cms.CarManage.update.inputCarTypeId.empty=種別を入力してください。
 error.cms.CarManage.update.inputCarName.empty=名称を入力してください。
-error.cms.CarManage.update.inputCarBtxId.inputCarKeyBtxId.duplicate=作業車TxタグNoと鍵TxタグNoが重複しています。
-error.cms.CarManage.update.inputCarBtxId.use=作業車TagIDは既に使用されています。(作業車Tag ID：{0})
+error.cms.CarManage.update.inputCarBtxId.inputCarKeyBtxId.duplicate=作業車TagIDと鍵TagIDが重複しています。
+error.cms.CarManage.update.inputCarBtxId.use=作業車TagIDは既に使用されています。(作業車TagID：{0})
 error.cms.CarManage.update.inputCarBtxId.useOther=作業車TagIDはその他仮設材で既に使用されています。(作業車TagID：{0})
 error.cms.CarManage.update.inputCarKeyBtxId.use=鍵TagIDは既に使用されています。(鍵TagID：{0})
 error.cms.CarManage.update.inputCarKeyBtxId.useOther=鍵TagIDはその他仮設材で既に使用されています。(鍵TagID：{0})
-error.cms.CarManage.update.inputCarIdReserve.use=作業車・立馬IDは既に予約されています。(作業車・立馬ID：{0})
-error.cms.CarManage.update.inputCarBtxId.duplicate=作業車TagIDが重複しています。(作業車:{0})
+error.cms.CarManage.update.inputCarIdReserve.use=IDは既に予約されています。(ID：{0})
+error.cms.CarManage.update.inputCarBtxId.duplicate=作業車TagIDが重複しています。(作業車TagID:{0})
 error.cms.CarManage.update.inputCarKeyBtxId.duplicate=鍵TagIDが重複しています。(鍵TagID:{0})
 error.cms.CarManage.update.inputBtxId.duplicate=作業車・立馬番号が重複しています。(作業車番号：{0})
 error.cms.CarManage.update.inputCarIdReserve.use.noChange=作業車・立馬IDは現在予約されている為、更新と削除ができません。(作業車・立馬ID：{0})
@@ -116,9 +116,10 @@ error.cms.CarManage.delete.inputCarIdReserve.use.noChange=作業車・立馬ID�
 error.cms.CarManage.delete.inputCarIdReserve.use.exceed=対象の作業車・立馬IDは予約履歴が有ります。システム管理権限以上をお持ちの方が更新と削除ができます。(作業車・立馬ID：{0})
 error.cms.CarManage.delete.inputCarId.empty=作業車・立馬IDは登録されていません。(作業車・立馬ID：{0})
 error.cms.CarManage.update.NotTypeName=種別が存在しません。
+error.cms.CarManage.update.inputCarKey.duplicate=TagIDと鍵TagIDに同一のIDが入力されています。
 
 error.cms.ItemOtherManage.update.inputItemOtherNo.empty=仮設材番号を入力してください。
-error.cms.ItemOtherManage.update.inputItemOtherBtxId.empty=TxタグNoを半角数字で入力してください。
+error.cms.ItemOtherManage.update.inputItemOtherBtxId.empty=TagIDを半角数字で入力してください。
 error.cms.ItemOtherManage.update.inputItemTypeName.empty=種別を入力してください。
 error.cms.ItemOtherManage.update.inputItemOtherName.empty=名称を入力してください。
 error.cms.ItemOtherManage.update.inputItemKindName.empty=仮設材名称を入力してください。
@@ -318,7 +319,7 @@ lang.cms.floorManage.title=フロア管理
 lang.cms.floorManage.displayOrder=表示順
 lang.cms.floorManage.name=フロア名
 lang.cms.floorManage.display=現場状況画面表示
-lang.cms.floorManage.floorId=フロア管理番号（固定）
+lang.cms.floorManage.floorId=ID
 
 lang.cms.floorManage.floorUpdate.popup.displayOrder=表示順
 lang.cms.floorManage.floorUpdate.popup.displayOrder.placeholder=1
@@ -411,7 +412,7 @@ lang.cms.itemOtherManage.item.list.header.title=その他仮設材管理
 lang.cms.itemOtherManage.item.list.header.tagId=Tag ID
 lang.cms.itemOtherManage.item.list.header.type=種別
 lang.cms.itemOtherManage.item.list.header.name=名称
-lang.cms.itemOtherManage.item.list.header.otherId=その他仮設材ID
+lang.cms.itemOtherManage.item.list.header.otherId=ID
 lang.cms.itemOtherManage.item.list.header.otherNo=その他仮設材番号
 lang.cms.itemOtherManage.item.list.header.otherNote=備考
 lang.cms.itemOtherManage.item.list.header.count=個数
@@ -435,7 +436,7 @@ lang.cms.itemOtherManage.itemDelete.popup.message=仮設材情報を削除しま
 lang.cms.itemTypeManage.title=仮設材種別管理
 lang.cms.itemTypeManage.page.title=仮設材種別管理
 lang.cms.itemTypeManage.itemType.list.header.title=仮設材種別管理
-lang.cms.itemTypeManage.itemType.list.header.id=種別ID
+lang.cms.itemTypeManage.itemType.list.header.id=ID
 lang.cms.itemTypeManage.itemType.list.header.name=名称
 lang.cms.itemTypeManage.itemType.list.header.category=カテゴリー名
 lang.cms.itemTypeManage.itemType.list.header.biko=備考
@@ -607,8 +608,8 @@ lang.search.detectedFloor = 検知位置 :
 lang.search.absence = 不在
 lang.search.undetected = 未検知
 lang.search.floor = 検知フロア :
-lang.search.reserveDate = 予約希望日：
-lang.search.reserveDate2 = 希望日：
+lang.search.reserveDate = 予約日：
+lang.search.reserveDate2 = 予約日：
 lang.search.powerlevel = 電池残量 :
 lang.search.detectedDate = 検出日：
 
@@ -704,11 +705,30 @@ lang.site.itemCarReserve.name=名称
 lang.site.itemCarReserve.reserveDate=予約日
 lang.site.itemCarReserve.reserveTerm=予約期間
 lang.site.itemCarReserve.reserveId=予約ID
+lang.site.itemCarReserve.reserveId=予約ID
 
-# 予約もダル系
-lang.site.item.reserveDate=予約希望日
-lang.site.item.reserveStartDate=予約希望最初日
-lang.site.item.reserveEndDate=予約希望最終日
+
+# 仮設材予約共通
+error.site.itemReserve.form.workType = 期間 未設定
+error.site.itemReserve.form.reserveDate = 予約日 未設定
+error.site.itemReserve.form.reserveStartDate = 予約最初日 未設定
+error.site.itemReserve.form.reserveEndDate = 予約最終日 未設定
+error.site.itemReserve.form.company = 業者 未設定
+error.site.itemReserve.form.floor = 予約フロア 未設定
+error.site.itemReserve.form.id = 仮設材ID 異常
+error.site.itemReserve.form.type = 仮設材種別 異常
+error.site.itemReserve.form.select = 選択 異常
+
+error.site.itemCarReserve.reserve = 作業車・立馬予約に問題が発生しました。
+error.site.itemCarReserve.id =「Tag ID」{0}
+error.site.itemCarReserve.workType =「期間」{0}
+error.site.itemCarReserve.reserveDate =「予約日 」{0}
+error.site.itemCarReserve.already = すでに予約されてます。
+
+# 予約modal系
+lang.site.item.reserveDate=予約日
+lang.site.item.reserveStartDate=予約最初日
+lang.site.item.reserveEndDate=予約最終日
 lang.site.item.type=種別
 lang.site.item.term=期間
 lang.site.item.company=業者
@@ -776,6 +796,11 @@ lang.site.itemOtherReserve.reserveTerm=予約期間
 lang.site.itemOtherReserve.reserveId=予約ID
 
 
+error.site.itemOtherReserve.reserve = その他仮設材予約に問題が発生しました。
+error.site.itemOtherReserve.id =「Tag ID」{0}
+error.site.itemOtherReserve.workType =「期間」{0}
+error.site.itemOtherReserve.reserveDate =「予約日 」{0} ~ {1}
+error.site.itemOtherReserve.already = すでに予約されてます。
 
 
 # 予約画面共通
@@ -784,7 +809,7 @@ error.site.reserve.overtime.define=「午前」「終日」は 当日「8時」�
 error.site.reserve.pretime=現在時刻より過去の方は予約できません。
 error.site.reserve.other=例外NGで予約できません。
 error.site.cancel.overtime=選択されたもの中、現在時刻13時過ぎてるので本日内予約取消はできません。
-error.site.cancel.pretime=選択されたもの中、現在時刻より過去があるので予約取消はできません。
+error.site.cancel.pretime=選択されたもの中、現在時刻より過去の予約がある為、予約取消はできません。<br/>取消には「システム管理者」権限以上が必要になります。
 error.site.cancel.other=選択されたもの中、例外NGで予約取消はできません。
 
 lang.site.carCancel.page.title=作業車・立馬予約取消
