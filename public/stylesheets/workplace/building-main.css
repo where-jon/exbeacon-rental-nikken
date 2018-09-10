@@ -711,7 +711,7 @@ height:100%;
 
 .user__tag--pic--text--1 {
     font-weight: bolder;
-    font-size: 3.0vmin;
+    font-size: 2.5vmin;
     vertical-align: top;
     margin-left: 6.5vmin;
     position: absolute;
@@ -726,10 +726,22 @@ height:100%;
     vertical-align: top;
     margin-left: 6.5vmin;
     position: absolute;
-    top: 12.0vmin;
+    top: 10.0vmin;
     text-align: center;
     width: 40vmin;
 }
+
+.user__tag--pic--text--no {
+	font-weight: bolder;
+    font-size: 3.0vmin;
+    vertical-align: top;
+    margin-left: 6.5vmin;
+    position: absolute;
+    top: 15.0vmin;
+    text-align: center;
+    width: 40vmin;
+}
+
 .user__tag--pic--text--3 {
     font-weight: bolder;
     font-size: 2.5vmin;

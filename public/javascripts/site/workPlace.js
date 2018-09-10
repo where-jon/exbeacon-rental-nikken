@@ -223,6 +223,10 @@ function setFrame() {
         picText2.className = "user__tag--pic--text--2"
         picText2.textContent = "Tag番号："　+ beaconData.btxId;
 
+        var picTextNo = document.createElement('div');
+        picTextNo.className = "user__tag--pic--text--no"
+        picTextNo.textContent = "番号："　+ beaconData.itemNo;
+
         var picText3 = document.createElement('div');
         picText3.className = "user__tag--pic--text--3"
         picText3.textContent =  "予約業者："+beaconData.companyName;
@@ -271,8 +275,9 @@ function setFrame() {
              contentTag.appendChild(picText1);
              contentTag.appendChild(picTextHuri);
              contentTag.appendChild(picText2);
+             contentTag.appendChild(picTextNo);
              contentTag.appendChild(picText3);
-             spanFrame.textContent = beaconData.btxId;
+             spanFrame.textContent = beaconData.itemNo;
         }
         userTag.push(infoTag);
         setTagNamePosition(pinFrame,vFloor,beaconData,infoTag);
