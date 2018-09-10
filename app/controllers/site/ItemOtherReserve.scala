@@ -8,7 +8,7 @@ import com.mohiva.play.silhouette.api.Silhouette
 import controllers.errors
 import controllers.site
 import controllers.{BaseController, BeaconService}
-import models._
+import models.{ItemOtherReserveData, _}
 import play.api._
 import play.api.data.Form
 import play.api.data.Forms._
@@ -113,87 +113,80 @@ class ItemOtherReserve @Inject()(config: Configuration
     val placeId = super.getCurrentPlaceId
     getSearchData(placeId)
 
-    itemOtherForm.bindFromRequest.fold(
-      formWithErrors =>
-      Redirect(routes.ItemOtherReserve.index())
-          .flashing(ERROR_MSG_KEY -> Messages(formWithErrors.errors.map(_.message).mkString(HTML_BR))),
+    val form = itemOtherForm.bindFromRequest
 
-      ItemOtherReserveData => {
-        if(ItemOtherReserveData.inputStartDate > ItemOtherReserveData.inputEndDate){
-          Redirect(routes.ItemOtherReserve.index())
-            .flashing(ERROR_MSG_KEY -> Messages("予約最初日より予約最終日が前日になってます"))
-        }else{
-          if(ItemOtherReserveData.checkVal.zipWithIndex.length > 0){
-            val vCurrentTimeCheck =
-              beaconService.currentTimeReserveCheck(ItemOtherReserveData.inputStartDate,ItemOtherReserveData.workTypeName)
-            if(vCurrentTimeCheck == "OK"){
-              var setData = List[ReserveItem]()
-              val vCompanyId = companyNameList.filter(_.companyName == ItemOtherReserveData.companyName).last.companyId
-              val vFloorId = floorNameList.filter(_.floor_name == ItemOtherReserveData.floorName).last.floor_Id
-              val vWorkTypeId = workTypeList.filter(_.work_type_name == ItemOtherReserveData.workTypeName).last.work_type_id
-              val vReserveStartDate = ItemOtherReserveData.inputStartDate
-              val vReserveEndDate = ItemOtherReserveData.inputEndDate
-              var idListData = List[Int]()
-              var idTypeListData = List[Int]()
-              ItemOtherReserveData.itemId.zipWithIndex.map { case (itemId, i) =>
-                ItemOtherReserveData.checkVal.zipWithIndex.map { case (check, j) =>
-                  if(i == check){
-                    val vItemTypeId = ItemOtherReserveData.itemTypeIdList(i)
-                    idListData = idListData :+itemId
-                    idTypeListData = idTypeListData :+vItemTypeId
-                    setData = setData :+ ReserveItem(vItemTypeId,itemId,vFloorId,placeId,vCompanyId,vReserveStartDate,vReserveEndDate,true,vWorkTypeId)
-                  }
-                }
-              }
-
-              var errMsg = Seq[String]()
-
-              // 検索ロジック追加あるかどうかを判断する
-              val vAlerdyReserveData = reserveMasterDAO.selectOtherReserve(placeId,idListData,idTypeListData,vWorkTypeId,vReserveStartDate,vReserveEndDate)
-              System.out.println("vCount :" + vAlerdyReserveData)
-              if(vAlerdyReserveData.isEmpty) { // 予約されたものがない
-                val result = otherDAO.reserveItemOther(setData)
-                if (result == "success") {
-                  Redirect(routes.ItemOtherReserve.index())
-                    .flashing(SUCCESS_MSG_KEY -> Messages("success.site.otherReserve.update"))
-                }else {
-                  Redirect(routes.ItemOtherReserve.index())
-                    .flashing(ERROR_MSG_KEY -> Messages("error.site.otherReserve.update" ))
-                }
-              }else{ // 予約されたものがある
-                errMsg :+= Messages("error.site.itemOtherReserve.reserve")
-                errMsg :+= Messages("error.site.itemOtherReserve.id" ,vAlerdyReserveData.last.txId)
-                errMsg :+= Messages("error.site.itemOtherReserve.workType" ,vAlerdyReserveData.last.workTypeName)
-                errMsg :+= Messages("error.site.itemOtherReserve.reserveDate"  ,vAlerdyReserveData.last.reserveStartDate,vAlerdyReserveData.last.reserveEndDate)
-                errMsg :+= Messages("error.site.itemCarReserve.already" )
-
-                Redirect(routes.ItemOtherReserve.index())
-                  .flashing(ERROR_MSG_KEY -> errMsg.mkString(HTML_BR))
-              }
-            }else{ // 現在時刻から予約可能かを判定でエラーの場合
-              if(vCurrentTimeCheck == "当日"){
-                val currentTime = new Date();
-                val mSimpleDateFormatHour = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.JAPAN)
-                val mCurrentTime = mSimpleDateFormatHour.format(currentTime)
-                var errMsg = Seq[String]()
-                errMsg :+= vCurrentTimeCheck
-                errMsg :+= Messages("error.site.reserve.overtime", mCurrentTime,ItemOtherReserveData.workTypeName)
-                errMsg :+= Messages("error.site.reserve.overtime.define")
-                Redirect(routes.ItemOtherReserve.index())
-                  .flashing(ERROR_MSG_KEY -> errMsg.mkString(HTML_BR))
-              }else{
-                Redirect(routes.ItemOtherReserve.index())
-                  .flashing(ERROR_MSG_KEY -> Messages(vCurrentTimeCheck))
+    if (form.hasErrors){
+      // エラーでリダイレクト遷移
+      Redirect(routes.ItemOtherReserve.index()).flashing(ERROR_MSG_KEY -> form.errors.map(_.message).mkString(HTML_BR))
+    }else{
+      val ItemOtherReserveData = form.get
+      if(ItemOtherReserveData.checkVal.zipWithIndex.length > 0){
+        val vCurrentTimeCheck =
+          beaconService.currentTimeReserveCheck(ItemOtherReserveData.inputStartDate,ItemOtherReserveData.workTypeName)
+        if(vCurrentTimeCheck == "OK"){
+          var setData = List[ReserveItem]()
+          val vCompanyId = companyNameList.filter(_.companyName == ItemOtherReserveData.companyName).last.companyId
+          val vFloorId = floorNameList.filter(_.floor_name == ItemOtherReserveData.floorName).last.floor_Id
+          val vWorkTypeId = workTypeList.filter(_.work_type_name == ItemOtherReserveData.workTypeName).last.work_type_id
+          val vReserveStartDate = ItemOtherReserveData.inputStartDate
+          val vReserveEndDate = ItemOtherReserveData.inputEndDate
+          var idListData = List[Int]()
+          var idTypeListData = List[Int]()
+          ItemOtherReserveData.itemId.zipWithIndex.map { case (itemId, i) =>
+            ItemOtherReserveData.checkVal.zipWithIndex.map { case (check, j) =>
+              if(i == check){
+                val vItemTypeId = ItemOtherReserveData.itemTypeIdList(i)
+                idListData = idListData :+itemId
+                idTypeListData = idTypeListData :+vItemTypeId
+                setData = setData :+ ReserveItem(vItemTypeId,itemId,vFloorId,placeId,vCompanyId,vReserveStartDate,vReserveEndDate,true,vWorkTypeId)
               }
             }
+          }
+
+          var errMsg = Seq[String]()
+          // 検索ロジック追加あるかどうかを判断する
+          val vAlerdyReserveData = reserveMasterDAO.selectOtherReserve(placeId,idListData,idTypeListData,vWorkTypeId,vReserveStartDate,vReserveEndDate)
+          System.out.println("vCount :" + vAlerdyReserveData)
+          if(vAlerdyReserveData.isEmpty) { // 予約されたものがない
+            val result = otherDAO.reserveItemOther(setData)
+            if (result == "success") {
+              Redirect(routes.ItemOtherReserve.index())
+                .flashing(SUCCESS_MSG_KEY -> Messages("success.site.otherReserve.update"))
+            }else {
+              Redirect(routes.ItemOtherReserve.index())
+                .flashing(ERROR_MSG_KEY -> Messages("error.site.otherReserve.update" ))
+            }
+          }else{ // 予約されたものがある
+            errMsg :+= Messages("error.site.itemOtherReserve.reserve")
+            errMsg :+= Messages("error.site.itemOtherReserve.id" ,vAlerdyReserveData.last.txId)
+            errMsg :+= Messages("error.site.itemOtherReserve.workType" ,vAlerdyReserveData.last.workTypeName)
+            errMsg :+= Messages("error.site.itemOtherReserve.reserveDate"  ,vAlerdyReserveData.last.reserveStartDate,vAlerdyReserveData.last.reserveEndDate)
+            errMsg :+= Messages("error.site.itemCarReserve.already" )
+
+            Redirect(routes.ItemOtherReserve.index())
+              .flashing(ERROR_MSG_KEY -> errMsg.mkString(HTML_BR))
+          }
+        }else{ // 現在時刻から予約可能かを判定でエラーの場合
+          if(vCurrentTimeCheck == "当日"){
+            val currentTime = new Date();
+            val mSimpleDateFormatHour = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.JAPAN)
+            val mCurrentTime = mSimpleDateFormatHour.format(currentTime)
+            var errMsg = Seq[String]()
+            errMsg :+= vCurrentTimeCheck
+            errMsg :+= Messages("error.site.reserve.overtime", mCurrentTime,ItemOtherReserveData.workTypeName)
+            errMsg :+= Messages("error.site.reserve.overtime.define")
+            Redirect(routes.ItemOtherReserve.index())
+              .flashing(ERROR_MSG_KEY -> errMsg.mkString(HTML_BR))
           }else{
             Redirect(routes.ItemOtherReserve.index())
-              .flashing(ERROR_MSG_KEY -> Messages("error.site.otherReserve.noselect"))
+              .flashing(ERROR_MSG_KEY -> Messages(vCurrentTimeCheck))
           }
         }
+      }else{
+        Redirect(routes.ItemOtherReserve.index())
+          .flashing(ERROR_MSG_KEY -> Messages("error.site.otherReserve.noselect"))
       }
-    )
-
+    }
   }
   /** 　検索ロジック */
   def search = SecuredAction { implicit request =>
