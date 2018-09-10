@@ -74,7 +74,7 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
                             </select>
                             <input class="hidden form-control input-sm" type="text" id="companyName" name="companyName" value="@COMPANY_NAME_FILTER" />
                         </div>
-                        <div style="margin-right:10px;float:left;">
+                        <div class = "hidden" style="margin-right:10px;float:left;">
                             @Messages("lang.search.term")
                             <select id="WORK_TYPE_FILTER" style="width: 120px;">
                                 <!--期間Enumから検索フィルタを設置-->
