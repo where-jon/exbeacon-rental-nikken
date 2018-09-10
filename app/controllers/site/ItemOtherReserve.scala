@@ -57,19 +57,6 @@ class ItemOtherReserve @Inject()(config: Configuration
   /*enum形*/
   val WORK_TYPE = WorkTypeEnum().map;
 
-  /*転送form*/
-  val itemOtherForm = Form(mapping(
-    "itemTypeId" -> number,
-    "workTypeName" -> text.verifying(Messages("error.site.itemReserve.form.workType"), { workTypeName => !workTypeName.isEmpty() }),
-    "inputStartDate" -> text.verifying(Messages("error.site.itemReserve.form.reserveStartDate"), { inputStartDate => !inputStartDate.isEmpty() }),
-    "inputEndDate" -> text.verifying(Messages("error.site.itemReserve.form.reserveEndDate"), { inputEndDate => !inputEndDate.isEmpty() }),
-    "companyName" -> text.verifying(Messages("error.site.itemReserve.form.company"), { companyName => !companyName.isEmpty() }),
-    "floorName" -> text.verifying(Messages("error.site.itemReserve.form.floor"), { floorName => !floorName.isEmpty() }),
-    "itemId" -> list(number.verifying(Messages("error.site.itemReserve.form.id"), { itemId => itemId != null })),
-    "itemTypeIdList" -> list(number.verifying(Messages("error.site.itemReserve.form.type"), { itemTypeIdList => itemTypeIdList != null })),
-    "checkVal" -> list(number.verifying(Messages("error.site.itemReserve.form.select"), { checkVal => checkVal != null }))
-  )(ItemOtherReserveData.apply)(ItemOtherReserveData.unapply))
-
 
     val itemOtherSearchForm = Form(mapping(
     "itemTypeId" ->number,
@@ -113,8 +100,20 @@ class ItemOtherReserve @Inject()(config: Configuration
     val placeId = super.getCurrentPlaceId
     getSearchData(placeId)
 
-    val form = itemOtherForm.bindFromRequest
+    /*転送form*/
+    val itemOtherForm = Form(mapping(
+      "itemTypeId" -> number,
+      "workTypeName" -> text.verifying(Messages("error.site.itemReserve.form.workType"), { workTypeName => !workTypeName.isEmpty() }),
+      "inputStartDate" -> text.verifying(Messages("error.site.itemReserve.form.reserveStartDate"), { inputStartDate => !inputStartDate.isEmpty() }),
+      "inputEndDate" -> text.verifying(Messages("error.site.itemReserve.form.reserveEndDate"), { inputEndDate => !inputEndDate.isEmpty() }),
+      "companyName" -> text.verifying(Messages("error.site.itemReserve.form.company"), { companyName => !companyName.isEmpty() }),
+      "floorName" -> text.verifying(Messages("error.site.itemReserve.form.floor"), { floorName => !floorName.isEmpty() }),
+      "itemId" -> list(number.verifying(Messages("error.site.itemReserve.form.id"), { itemId => itemId != null })),
+      "itemTypeIdList" -> list(number.verifying(Messages("error.site.itemReserve.form.type"), { itemTypeIdList => itemTypeIdList != null })),
+      "checkVal" -> list(number.verifying(Messages("error.site.itemReserve.form.select"), { checkVal => checkVal != null }))
+    )(ItemOtherReserveData.apply)(ItemOtherReserveData.unapply))
 
+    val form = itemOtherForm.bindFromRequest
     if (form.hasErrors){
       // エラーでリダイレクト遷移
       Redirect(routes.ItemOtherReserve.index()).flashing(ERROR_MSG_KEY -> form.errors.map(_.message).mkString(HTML_BR))

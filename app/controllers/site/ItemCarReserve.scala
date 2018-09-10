@@ -6,7 +6,7 @@ import javax.inject.{Inject, Singleton}
 
 import com.mohiva.play.silhouette.api.Silhouette
 import controllers.{BaseController, BeaconService, errors}
-import models._
+import models.{ItemCarReserveData, _}
 import play.api._
 import play.api.data.Form
 import play.api.data.Forms._
@@ -65,20 +65,7 @@ class ItemCarReserve @Inject()(config: Configuration
   /*enum形*/
   val WORK_TYPE = WorkTypeEnum().map;
 
-  /*転送form*/
-  val itemCarForm = Form(mapping(
-    "itemTypeId" -> number,
-    "workTypeName" -> text.verifying(Messages("error.site.itemReserve.form.workType"), { workTypeName => !workTypeName.isEmpty() }),
-    "inputDate" -> text.verifying(Messages("error.site.itemReserve.form.reserveDate"), { inputDate => !inputDate.isEmpty() }),
-    "companyName" -> text.verifying(Messages("error.site.itemReserve.form.company"), { companyName => !companyName.isEmpty() }),
-    "floorName" -> text.verifying(Messages("error.site.itemReserve.form.floor"), { floorName => !floorName.isEmpty() }),
-    "itemId" -> list(number.verifying(Messages("error.site.itemReserve.form.id"), { itemId => itemId != null })),
-    "itemTypeIdList" -> list(number.verifying(Messages("error.site.itemReserve.form.type"), { itemTypeIdList => itemTypeIdList != null })),
-    "checkVal" -> list(number.verifying(Messages("error.site.itemReserve.form.select"), { checkVal => checkVal != null }))
-  )(ItemCarReserveData.apply)(ItemCarReserveData.unapply))
-
-
-    val itemCarSearchForm = Form(mapping(
+  val itemCarSearchForm = Form(mapping(
     "itemTypeId" ->number,
     "workTypeName" -> text,
     "inputDate" -> text
@@ -117,78 +104,90 @@ class ItemCarReserve @Inject()(config: Configuration
     // dbデータ取得
     val placeId = super.getCurrentPlaceId
     getSearchData(placeId)
-    itemCarForm.bindFromRequest.fold(
-      formWithErrors =>
-      Redirect(routes.ItemCarReserve.index())
-          .flashing(ERROR_MSG_KEY -> Messages(formWithErrors.errors.map(_.message).mkString(HTML_BR))),
 
-      ItemCarReserveData => {
-        if(ItemCarReserveData.checkVal.zipWithIndex.length > 0){
-          val vCurrentTimeCheck =
-            beaconService.currentTimeReserveCheck(ItemCarReserveData.inputDate,ItemCarReserveData.workTypeName)
-          if(vCurrentTimeCheck == "OK"){  // 現在時刻から予約可能かを判定
-            var setData = List[ReserveItem]()
-            val vCompanyId = companyNameList.filter(_.companyName == ItemCarReserveData.companyName).last.companyId
-            val vFloorId = floorNameList.filter(_.floor_name == ItemCarReserveData.floorName).last.floor_Id
-            val vWorkTypeId = workTypeList.filter(_.work_type_name == ItemCarReserveData.workTypeName).last.work_type_id
-            val vReserveDate = ItemCarReserveData.inputDate
-            var idListData = List[Int]()
-            var idTypeListData = List[Int]()
-            ItemCarReserveData.itemId.zipWithIndex.map { case (itemId, i) =>
-              ItemCarReserveData.checkVal.zipWithIndex.map { case (check, j) =>
-                if(i == check){
-                  val vItemTypeId = ItemCarReserveData.itemTypeIdList(i)
-                  idListData = idListData :+itemId
-                  idTypeListData = idTypeListData :+vItemTypeId
-                  setData = setData :+ ReserveItem(vItemTypeId,itemId,vFloorId,placeId,vCompanyId,vReserveDate,vReserveDate,true,vWorkTypeId)
-                }
+    /*転送form*/
+    val itemCarForm = Form(mapping(
+      "itemTypeId" -> number,
+      "workTypeName" -> text.verifying(Messages("error.site.itemReserve.form.workType"), { workTypeName => !workTypeName.isEmpty() }),
+      "inputDate" -> text.verifying(Messages("error.site.itemReserve.form.reserveDate"), { inputDate => !inputDate.isEmpty() }),
+      "companyName" -> text.verifying(Messages("error.site.itemReserve.form.company"), { companyName => !companyName.isEmpty() }),
+      "floorName" -> text.verifying(Messages("error.site.itemReserve.form.floor"), { floorName => !floorName.isEmpty() }),
+      "itemId" -> list(number.verifying(Messages("error.site.itemReserve.form.id"), { itemId => itemId != null })),
+      "itemTypeIdList" -> list(number.verifying(Messages("error.site.itemReserve.form.type"), { itemTypeIdList => itemTypeIdList != null })),
+      "checkVal" -> list(number.verifying(Messages("error.site.itemReserve.form.select"), { checkVal => checkVal != null }))
+    )(ItemCarReserveData.apply)(ItemCarReserveData.unapply))
+
+    val form = itemCarForm.bindFromRequest
+    if (form.hasErrors){
+      // エラーでリダイレクト遷移
+      Redirect(routes.ItemCarReserve.index()).flashing(ERROR_MSG_KEY -> form.errors.map(_.message).mkString(HTML_BR))
+    }else{
+      val ItemCarReserveData = form.get
+      if(ItemCarReserveData.checkVal.zipWithIndex.length > 0){
+        val vCurrentTimeCheck =
+          beaconService.currentTimeReserveCheck(ItemCarReserveData.inputDate,ItemCarReserveData.workTypeName)
+        if(vCurrentTimeCheck == "OK"){  // 現在時刻から予約可能かを判定
+          var setData = List[ReserveItem]()
+          val vCompanyId = companyNameList.filter(_.companyName == ItemCarReserveData.companyName).last.companyId
+          val vFloorId = floorNameList.filter(_.floor_name == ItemCarReserveData.floorName).last.floor_Id
+          val vWorkTypeId = workTypeList.filter(_.work_type_name == ItemCarReserveData.workTypeName).last.work_type_id
+          val vReserveDate = ItemCarReserveData.inputDate
+          var idListData = List[Int]()
+          var idTypeListData = List[Int]()
+          ItemCarReserveData.itemId.zipWithIndex.map { case (itemId, i) =>
+            ItemCarReserveData.checkVal.zipWithIndex.map { case (check, j) =>
+              if(i == check){
+                val vItemTypeId = ItemCarReserveData.itemTypeIdList(i)
+                idListData = idListData :+itemId
+                idTypeListData = idTypeListData :+vItemTypeId
+                setData = setData :+ ReserveItem(vItemTypeId,itemId,vFloorId,placeId,vCompanyId,vReserveDate,vReserveDate,true,vWorkTypeId)
               }
-            }
-            var errMsg = Seq[String]()
-
-            // 検索ロジック追加あるかどうかを判断する
-            val vAlerdyReserveData = reserveMasterDAO.selectCarReserve(placeId,idListData,idTypeListData,vWorkTypeId,vReserveDate,vReserveDate)
-            System.out.println("vCount :" + vAlerdyReserveData)
-            if(vAlerdyReserveData.isEmpty){ // 予約されたものがない
-              val result = carDAO.reserveItemCar(setData)
-              if (result == "success") {
-                Redirect(routes.ItemCarReserve.index())
-                  .flashing(SUCCESS_MSG_KEY -> Messages("success.site.carReserve.update"))
-              }else {
-                Redirect(routes.ItemCarReserve.index())
-                  .flashing(ERROR_MSG_KEY -> Messages("error.site.carReserve.update"))
-              }
-            }else { // 予約されたものがある
-              errMsg :+= Messages("error.site.itemCarReserve.reserve")
-              errMsg :+= Messages("error.site.itemCarReserve.id" ,vAlerdyReserveData.last.txId)
-              errMsg :+= Messages("error.site.itemCarReserve.workType" ,vAlerdyReserveData.last.workTypeName)
-              errMsg :+= Messages("error.site.itemCarReserve.reserveDate"  ,vAlerdyReserveData.last.reserveStartDate)
-              errMsg :+= Messages("error.site.itemCarReserve.already" )
-
-              Redirect(routes.ItemCarReserve.index())
-                .flashing(ERROR_MSG_KEY -> errMsg.mkString(HTML_BR))
-            }
-          }else{  // 現在時刻から予約可能かを判定でエラーの場合
-            if(vCurrentTimeCheck == "当日"){
-              val currentTime = new Date();
-              val mSimpleDateFormatHour = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.JAPAN)
-              val mCurrentTime = mSimpleDateFormatHour.format(currentTime)
-              var errMsg = Seq[String]()
-              errMsg :+= Messages("error.site.reserve.overtime", mCurrentTime,ItemCarReserveData.workTypeName)
-              errMsg :+= Messages("error.site.reserve.overtime.define")
-              Redirect(routes.ItemCarReserve.index())
-                .flashing(ERROR_MSG_KEY -> errMsg.mkString(HTML_BR))
-            } else {
-              Redirect(routes.ItemCarReserve.index())
-                .flashing(ERROR_MSG_KEY -> Messages(vCurrentTimeCheck))
             }
           }
-        }else{
-          Redirect(routes.ItemCarReserve.index())
-            .flashing(ERROR_MSG_KEY -> Messages("error.site.carReserve.noselect"))
+          var errMsg = Seq[String]()
+
+          // 検索ロジック追加あるかどうかを判断する
+          val vAlerdyReserveData = reserveMasterDAO.selectCarReserve(placeId,idListData,idTypeListData,vWorkTypeId,vReserveDate,vReserveDate)
+          System.out.println("vCount :" + vAlerdyReserveData)
+          if(vAlerdyReserveData.isEmpty){ // 予約されたものがない
+            val result = carDAO.reserveItemCar(setData)
+            if (result == "success") {
+              Redirect(routes.ItemCarReserve.index())
+                .flashing(SUCCESS_MSG_KEY -> Messages("success.site.carReserve.update"))
+            }else {
+              Redirect(routes.ItemCarReserve.index())
+                .flashing(ERROR_MSG_KEY -> Messages("error.site.carReserve.update"))
+            }
+          }else { // 予約されたものがある
+            errMsg :+= Messages("error.site.itemCarReserve.reserve")
+            errMsg :+= Messages("error.site.itemCarReserve.id" ,vAlerdyReserveData.last.txId)
+            errMsg :+= Messages("error.site.itemCarReserve.workType" ,vAlerdyReserveData.last.workTypeName)
+            errMsg :+= Messages("error.site.itemCarReserve.reserveDate"  ,vAlerdyReserveData.last.reserveStartDate)
+            errMsg :+= Messages("error.site.itemCarReserve.already" )
+
+            Redirect(routes.ItemCarReserve.index())
+              .flashing(ERROR_MSG_KEY -> errMsg.mkString(HTML_BR))
+          }
+        }else{  // 現在時刻から予約可能かを判定でエラーの場合
+          if(vCurrentTimeCheck == "当日"){
+            val currentTime = new Date();
+            val mSimpleDateFormatHour = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.JAPAN)
+            val mCurrentTime = mSimpleDateFormatHour.format(currentTime)
+            var errMsg = Seq[String]()
+            errMsg :+= Messages("error.site.reserve.overtime", mCurrentTime,ItemCarReserveData.workTypeName)
+            errMsg :+= Messages("error.site.reserve.overtime.define")
+            Redirect(routes.ItemCarReserve.index())
+              .flashing(ERROR_MSG_KEY -> errMsg.mkString(HTML_BR))
+          } else {
+            Redirect(routes.ItemCarReserve.index())
+              .flashing(ERROR_MSG_KEY -> Messages(vCurrentTimeCheck))
+          }
         }
+      }else{
+        Redirect(routes.ItemCarReserve.index())
+          .flashing(ERROR_MSG_KEY -> Messages("error.site.carReserve.noselect"))
       }
-    )
+    }
 
   }
   /** 　検索ロジック */
