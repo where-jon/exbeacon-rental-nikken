@@ -297,13 +297,14 @@ class ReserveMasterDAO @Inject() (dbapi: DBApi) {
           select
               r.item_id
             , r.work_type_id
-            , car.item_car_btx_id as item_tx
+            , 0 as item_tx
             , w.work_type_name
             , to_char(r.reserve_start_date, 'YYYYMMDD') as reserve_start_date
             , to_char(r.reserve_end_date, 'YYYYMMDD') as reserve_end_date
           from
               reserve_table as r
               left JOIN item_car_master as car on car.item_car_id = r.item_id
+              left JOIN item_other_master as other on other.item_other_id = r.item_id
               left JOIN work_type as w on w.work_type_id = r.work_type_id
           where
             r.active_flg = true
