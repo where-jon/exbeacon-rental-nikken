@@ -37,6 +37,11 @@ var BASE_ASPECT = 2.67;
 var VIEW_COUNT = -1
 
 var gResizeCheck = false;
+
+var DEFAULT_HEIGHT_RAITO = 0.65;
+var DEFAULT_WIDTH_RAITO = 0.99;
+var DEFAULT_ROW_RAITO = 2;
+
 var gResize = {
     /* 文字サイズを再調整するロジック*/
     textResize : function(vElement,motoSize) {
@@ -196,73 +201,47 @@ var gInitView = {
         });
 
     },
-    fixTable : function() {
-        // テーブルの固定
-        var h = $(window).height()*0.65;
-        // テーブルの調整
-        var ua = navigator.userAgent;
-        if (ua.indexOf('iPad') > 0 || ua.indexOf('Android') > 0 || ua.indexOf('iPhone') > 0 || ua.indexOf('iPod') > 0){
-            // タッチデバイス
-            if ($('.mainSpace').height() > h) {
-                var w = $('.mainSpace').width()*0.99;
-                $('.itemTable').tablefix({width:w, height: h, fixRows: 2});
-            } else {
-                var w = $('.mainSpace').width();
-                $('.itemTable').tablefix({width:w, fixRows: 2});
+
+    // 縦の縮率：hRaito
+    // 横の縮率：wRaito
+    // タイトル行の固定行数：rows
+    fixTable : function(hRaito, wRaito, rows) {
+        var heightRaito = DEFAULT_HEIGHT_RAITO;
+        var widthRaito = DEFAULT_WIDTH_RAITO;
+        var fRows = DEFAULT_ROW_RAITO;
+        if(hRaito !== undefined){
+            if(hRaito != null && hRaito.length > 0){
+                heightRaito = +hRaito;
             }
-        }else{
-            // PCブラウザ
-            var w = $('.mainSpace').width();
-            $('.itemTable').tablefix({height: h, fixRows: 2});
-            $('.rowTableDiv').width(w);
         }
-        $('.bodyTableDiv').find('.itemTable').css('margin-bottom','0');
-        $('.colTableDiv').css("width","");
-
-    },
-    fixTableNoBtn : function() {
-        // テーブルの固定
-        var h = $(window).height()*0.85;
-        // テーブルの調整
-        var ua = navigator.userAgent;
-        if (ua.indexOf('iPad') > 0 || ua.indexOf('Android') > 0 || ua.indexOf('iPhone') > 0 || ua.indexOf('iPod') > 0){
-            // タッチデバイス
-            if ($('.mainSpace').height() > h) {
-                var w = $('.mainSpace').width()*0.99;
-                $('.itemTable').tablefix({width:w, height: h, fixRows: 2});
-            } else {
-                var w = $('.mainSpace').width();
-                $('.itemTable').tablefix({width:w, fixRows: 2});
+        if(wRaito !== undefined){
+            if(wRaito != null && wRaito.length > 0){
+                widthRaito = +wRaito;
             }
-        }else{
-            // PCブラウザ
-            var w = $('.mainSpace').width();
-            $('.itemTable').tablefix({height: h, fixRows: 2});
-            $('.rowTableDiv').width(w);
         }
-        $('.bodyTableDiv').find('.itemTable').css('margin-bottom','0');
-        $('.colTableDiv').css("width","");
+        if(rows !== undefined){
+            if(rows != null && rows.length > 0){
+                fRows = +rows;
+            }
+        }
 
-    },
-
-    fixTableNoBtnOther : function() {
         // テーブルの固定
-        var h = $(window).height()*0.85;
+        var h = $(window).height()*heightRaito;
         // テーブルの調整
         var ua = navigator.userAgent;
         if (ua.indexOf('iPad') > 0 || ua.indexOf('Android') > 0 || ua.indexOf('iPhone') > 0 || ua.indexOf('iPod') > 0){
             // タッチデバイス
             if ($('.mainSpace').height() > h) {
-                var w = $('.mainSpace').width()*0.99;
-                $('.itemTable').tablefix({width:w, height: h, fixRows: 3});
+                var w = $('.mainSpace').width()*widthRaito;
+                $('.itemTable').tablefix({width:w, height: h, fixRows: fRows});
             } else {
                 var w = $('.mainSpace').width();
-                $('.itemTable').tablefix({width:w, fixRows: 3});
+                $('.itemTable').tablefix({width:w, fixRows: fRows});
             }
         }else{
             // PCブラウザ
             var w = $('.mainSpace').width();
-            $('.itemTable').tablefix({height: h, fixRows: 3});
+            $('.itemTable').tablefix({height: h, fixRows: fRows});
             $('.rowTableDiv').width(w);
         }
         $('.bodyTableDiv').find('.itemTable').css('margin-bottom','0');
