@@ -38,10 +38,6 @@ var VIEW_COUNT = -1
 
 var gResizeCheck = false;
 
-var DEFAULT_HEIGHT_RAITO = 0.65;
-var DEFAULT_WIDTH_RAITO = 0.99;
-var DEFAULT_ROW_RAITO = 2;
-
 var gResize = {
     /* 文字サイズを再調整するロジック*/
     textResize : function(vElement,motoSize) {
@@ -178,7 +174,7 @@ var gInitView = {
             timer = setTimeout(function() {
                 // 処理の再実行
                 gInitView.removeTable();
-                gInitView.fixTableNoBtnOther();
+                gInitView.fixTable("NoBtnOther");
                 gInitView.bindMouseAndTouch();
             }, 200);
         });
@@ -194,34 +190,38 @@ var gInitView = {
             timer = setTimeout(function() {
                 // 処理の再実行
                 gInitView.removeTable();
-                if(vType == "NoBtn") gInitView.fixTableNoBtn();
-                else gInitView.fixTable();
+                if(vType == "NoBtn"){
+                    gInitView.fixTable("NoBtn");
+                } else{
+                    gInitView.fixTable();
+                }
                 gInitView.bindMouseAndTouch();
             }, 200);
         });
 
     },
 
-    // 縦の縮率：hRaito
-    // 横の縮率：wRaito
-    // タイトル行の固定行数：rows
-    fixTable : function(hRaito, wRaito, rows) {
-        var heightRaito = DEFAULT_HEIGHT_RAITO;
-        var widthRaito = DEFAULT_WIDTH_RAITO;
-        var fRows = DEFAULT_ROW_RAITO;
-        if(hRaito !== undefined){
-            if(hRaito != null && hRaito.length > 0){
-                heightRaito = +hRaito;
-            }
-        }
-        if(wRaito !== undefined){
-            if(wRaito != null && wRaito.length > 0){
-                widthRaito = +wRaito;
-            }
-        }
-        if(rows !== undefined){
-            if(rows != null && rows.length > 0){
-                fRows = +rows;
+    // テーブルの固定
+    // screenPattern：テーブル固定パターン
+    // 　パターン１（画面下部にボタン有り）："Btn"、未設定、該当なしの場合
+    // 　パターン２（画面下部にボタン無し）："NoBtn"
+    // 　パターン３（画面下部にボタン無しでパターン２以外）："NoBtnOther"
+    fixTable : function(screenPattern) {
+        // 初期値はパターン１の画面下部にボタン有りのデフォルト値を設定
+        var heightRaito = 0.65;
+        var widthRaito = 0.99;
+        var fRows = 2;
+
+        if(screenPattern !== undefined){
+            if(screenPattern == "Btn"){
+                // パターン１　初期値と同じ
+            }else if(screenPattern == "NoBtn"){
+                // パターン２
+                heightRaito = 0.85;
+            }else if(screenPattern == "NoBtnOther"){
+                // パターン３
+                heightRaito = 0.85;
+                fRows = 3;
             }
         }
 
