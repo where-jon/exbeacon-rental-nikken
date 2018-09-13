@@ -208,7 +208,7 @@ var gInitView = {
     // 　パターン３（画面下部にボタン無しでパターン２以外）："NoBtnOther"
     fixTable : function(screenPattern) {
         // 初期値はパターン１の画面下部にボタン有りのデフォルト値を設定
-        var heightRaito = 0.65;
+        var heightRaito = 0.70;
         var widthRaito = 0.99;
         var fRows = 2;
 
