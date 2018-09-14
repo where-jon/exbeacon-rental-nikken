@@ -38,6 +38,19 @@ var VIEW_COUNT = -1
 
 var gResizeCheck = false;
 
+// ボタン有り（基本）
+var BTN_HEIGHT_RAITO = 0.70;
+var BTN_WIDTH_RAITO = 0.99;
+var BTN_ROWS = 2;
+// 画面下部にボタン無し
+var NOBTN_HEIGHT_RAITO = 0.85;
+var NOBTN_WIDTH_RAITO = 0.99;
+var NOBTN_ROWS = 2;
+// 画面下部にボタン無し（その他）
+var NOBTN_OTHER_HEIGHT_RAITO = 0.85;
+var NOBTN_OTHER_WIDTH_RAITO = 0.99;
+var NOBTN_OTHER_ROWS = 3;
+
 var gResize = {
     /* 文字サイズを再調整するロジック*/
     textResize : function(vElement,motoSize) {
@@ -208,20 +221,20 @@ var gInitView = {
     // 　パターン３（画面下部にボタン無しでパターン２以外）："NoBtnOther"
     fixTable : function(screenPattern) {
         // 初期値はパターン１の画面下部にボタン有りのデフォルト値を設定
-        var heightRaito = 0.70;
-        var widthRaito = 0.99;
-        var fRows = 2;
+        var heightRaito = BTN_HEIGHT_RAITO;
+        var widthRaito = BTN_WIDTH_RAITO;
+        var fRows = BTN_ROWS;
 
         if(screenPattern !== undefined){
             if(screenPattern == "Btn"){
                 // パターン１　初期値と同じ
             }else if(screenPattern == "NoBtn"){
                 // パターン２
-                heightRaito = 0.85;
+                heightRaito = NOBTN_HEIGHT_RAITO;
             }else if(screenPattern == "NoBtnOther"){
                 // パターン３
-                heightRaito = 0.85;
-                fRows = 3;
+                heightRaito = NOBTN_OTHER_HEIGHT_RAITO;
+                fRows = NOBTN_OTHER_ROWS;
             }
         }
 
