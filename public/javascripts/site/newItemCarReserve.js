@@ -141,7 +141,7 @@ function btnEvent(){
         // inputDate結果をfromへ設定
         var inputDate = document.getElementById("inputDate")
         inputDate.value = gDatePicker.startSqlTime
-        dbExecuteManager("../site/itemCarReserve")
+        dbExecuteManager("../site/newItemCarReserve")
     });
 
 }

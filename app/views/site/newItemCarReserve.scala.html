@@ -56,7 +56,7 @@ ITEM_TYPE_FILTER: Int
                                 <input type='text' class="form-control inputClass" id="inputDate" name="inputDate" value="@DETECT_DATE" style="width: 100px;"/>
                             </div>
                         </div>
-                        <div style="margin-right:10px;float:left;">
+                        <div class="hidden" style="margin-right:10px;float:left;">
                             @Messages("lang.search.type")
                             <select id="ITEM_TYPE_FILTER" style="width: 120px;">
                                 <!--仮設材種別テーブルから検索フィルタを設置-->
@@ -67,7 +67,7 @@ ITEM_TYPE_FILTER: Int
                             </select>
                             <input class="hidden form-control input-sm" type="text" id="itemTypeId" name="itemTypeId" value="@ITEM_TYPE_FILTER" />
                         </div>
-                        <div style="margin-right:10px;float:left;">
+                        <div class="hidden" style="margin-right:10px;float:left;">
                             @Messages("lang.search.term")
                             <select id="WORK_TYPE_FILTER" style="width: 120px;">
                                 <option value=""></option>
@@ -80,7 +80,7 @@ ITEM_TYPE_FILTER: Int
                     </div>
                     <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2" style="padding:0;">
                         <div id = "viewBtn" class="text-center btn btn__view--frame">
-                            @Messages("lang.btn.empty.check")
+                            @Messages("lang.btn.reserve.search")
                         </div>
                     </div>
                 </div>
@@ -101,11 +101,7 @@ ITEM_TYPE_FILTER: Int
                                         <th rowspan="3" class="tableTh ">@Messages("lang.site.itemCarReserve.pos")</th>
                                         <!--日付-->
                                         @arReserveDays.zipWithIndex.map { case(day, i) =>
-                                            @if(i == 0){
-                                                <th colspan="2" class="tableTh">本日</th>
-                                            }else{
                                                 <th colspan="2" class="tableTh">@day.getDay</th>
-                                            }
                                         }
                                     </tr>
                                     <tr>

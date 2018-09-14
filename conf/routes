@@ -54,6 +54,8 @@ POST   /site/itemCarMaster                 controllers.site.ItemCarMaster.search
 
 # 新作業車・立馬予約
 GET    /site/newItemCarReserve             controllers.site.NewItemCarReserve.index
+POST   /site/newItemCarReserve             controllers.site.NewItemCarReserve.search
+
 # 作業車・立馬予約
 GET    /site/itemCarReserve                 controllers.site.ItemCarReserve.index
 POST   /site/itemCarReserve                 controllers.site.ItemCarReserve.search

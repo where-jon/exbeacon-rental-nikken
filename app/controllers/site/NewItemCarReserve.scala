@@ -188,45 +188,43 @@ class NewItemCarReserve @Inject()(config: Configuration
 //    }
 //
 //  }
-//  /** 　検索ロジック */
-//  def search = SecuredAction { implicit request =>
-//    System.out.println("start search:")
-//    val placeId = super.getCurrentPlaceId
-//    //検索側データ取得
-//    getSearchData(placeId)
-//
-//    // 部署情報
-//    val carFormSearchData = itemCarSearchForm.bindFromRequest.get
+  /** 　検索ロジック */
+  def search = SecuredAction { implicit request =>
+    System.out.println("start search:")
+    val placeId = super.getCurrentPlaceId
+    //検索側データ取得
+    getSearchData(placeId)
+
+    // 部署情報
+    val carFormSearchData = itemCarSearchForm.bindFromRequest.get
 //    ITEM_TYPE_FILTER = carFormSearchData.itemTypeId
 //    WORK_TYPE_FILTER = carFormSearchData.workTypeName
-//    RESERVE_DATE = carFormSearchData.inputDate
-//
-//    var dbDatas : Seq[CarViewer] = null;
-//    // dbデータ取得
-//    if(RESERVE_DATE!=""){
-//      dbDatas = carDAO.selectCarMasterSearch(placeId,ITEM_TYPE_FILTER,WORK_TYPE_FILTER,RESERVE_DATE,itemIdList)
-//      // 午前午後両方予約の場合
-//      if( WORK_TYPE_FILTER != "終日" && WORK_TYPE_FILTER != ""){
-//        val vWorkTypeCountData = reserveMasterDAO.getCarMasterWorkTypeCount(placeId,RESERVE_DATE,itemIdList)
-//        vWorkTypeCountData.map { v =>
-//          if(v.item_count>1){
-//            dbDatas = dbDatas.filter(_.item_car_id != v.item_id)
-//          }
-//        }
-//      }
-//    }else{
-//      dbDatas = carDAO.selectCarMasterReserve(placeId,itemIdList)
-//    }
-//    var carListApi = beaconService.getItemCarBeaconPosition(dbDatas,true,placeId)
-//
-//    if (ITEM_TYPE_FILTER != 0) {
-//      carListApi = carListApi.filter(_.item_type_id == ITEM_TYPE_FILTER)
-//    }
-//
-//
-//    Ok(views.html.site.itemCarReserve(ITEM_TYPE_FILTER,WORK_TYPE_FILTER,RESERVE_DATE
-//      ,carListApi,itemTypeList,companyNameList,floorNameList,workTypeList,WORK_TYPE))
-//  }
+    RESERVE_DATE = carFormSearchData.inputDate
+    DETECT_DATE = RESERVE_DATE
+
+    // dbデータ取得
+    // 設定日ロジック
+    val arReserveDays = calendarDAO.selectGetDayOfWeek(RESERVE_DATE,TERM_DAY)
+    TOTAL_LENGTH = arReserveDays.size
+    val vStartDate = arReserveDays(0).getDay
+    val vEndDate = arReserveDays((arReserveDays.size-1)).getDay
+    val dbReserveDatas = carDAO.selectCarMasterCalendarType(placeId,itemIdList,vStartDate,vEndDate)
+    val carListApi = beaconService.getItemCarReserveBeaconPosition(dbReserveDatas,arReserveDays,true,placeId)
+
+    arReserveDays.zipWithIndex.foreach { case (reserveDay, index) =>
+      val vTempYobi= calendarDAO.getYobi(reserveDay.getDay)
+      reserveDay.getYobi = vTempYobi
+    }
+
+    if(carListApi!=null){
+      Ok(views.html.site.newItemCarReserve(ITEM_TYPE_FILTER,WORK_TYPE_FILTER,RESERVE_DATE
+        ,carListApi,itemTypeList,companyNameList,floorNameList,workTypeList,WORK_TYPE,DETECT_DATE,arReserveDays,TOTAL_LENGTH))
+    }else{
+      // apiと登録データが違う場合
+      Redirect(errors.routes.UnDetectedApi.indexSite)
+        .flashing(ERROR_MSG_KEY -> Messages("error.unmatched.data"))
+    }
+  }
 
   /** 初期表示 */
   def index = SecuredAction { implicit request =>
@@ -236,6 +234,7 @@ class NewItemCarReserve @Inject()(config: Configuration
       init();
       //検索側データ取得
       getSearchData(placeId)
+
 
       // dbデータ取得
       // 設定日ロジック

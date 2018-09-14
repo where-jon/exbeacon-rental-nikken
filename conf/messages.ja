@@ -846,6 +846,7 @@ lang.site.carCancel.cancelBtn=取消
 lang.site.otherCancel.cancelBtn=取消
 lang.btn.cancel=取消
 lang.btn.reserve.list=予約情報を確認
+lang.btn.reserve.search=検索
 lang.btn.move.cancel=取消へ
 lang.btn.reserve=予約
 lang.btn.move.reserve=予約へ
