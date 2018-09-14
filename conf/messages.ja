@@ -693,6 +693,9 @@ lang.site.itemCarMaster.term=期間
 lang.site.itemCarMaster.reserveId=予約ID
 
 
+# 新作業車・立馬予約
+lang.site.newItemCarReserve.page.title=新作業車・立馬予約
+
 # 作業車・立馬予約
 lang.site.itemCarReserve.page.title=作業車・立馬予約
 lang.site.itemCarReserve.select=選択
@@ -703,6 +706,7 @@ lang.site.itemCarReserve.txId=Tag ID
 lang.site.itemCarReserve.typeId=種別ID
 lang.site.itemCarReserve.typeName=種別
 lang.site.itemCarReserve.name=名称
+lang.site.itemCarReserve.no=番号
 lang.site.itemCarReserve.reserveDate=予約日
 lang.site.itemCarReserve.reserveTerm=予約期間
 lang.site.itemCarReserve.reserveId=予約ID

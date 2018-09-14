@@ -1,0 +1,241 @@
+@(
+ITEM_TYPE_FILTER: Int
+,WORK_TYPE_FILTER:String
+,RESERVE_DATE:String
+,carList: Seq[itemCarReserveBeaconPositionData]
+,itemTypeList: Seq[ItemType]
+,companyNameList :Seq[Company]
+,floorNameList :Seq[Floor]
+,workTypeList :Seq[WorkType]
+,workTypeMap: Map[Int,String]
+,DETECT_DATE:String
+,arReserveDays :Seq[GetOneWeekData]
+,TOTAL_LENGTH: Int
+)(implicit user: User, messages: Messages, request: RequestHeader, flash: Flash)
+@import b3.vertical.fieldConstructor
+@import controllers.routes
+@import helper._
+
+<!doctype html>
+<html lang="ja">
+<head>
+@templates.htmlHead(title = Messages("lang.site.newItemCarReserve.page.title"))
+<link rel="stylesheet" href="@routes.MyAssets.css("cms/itemCarManage.css")"/>
+<script></script>
+</head>
+<body>
+<!-- content -->
+<div class="container">
+    <!-- ナビバー  -->
+    @views.html.templates.navBar()
+    <div class="row">
+        <!-- サイドメニュー -->
+        @views.html.templates.sideMenu()
+        <span class="col-xs-10 col-sm-10 col-md-10 col-lg-10">
+            <!-- メッセージ -->
+            @views.html.templates.msgDiv()
+        </span>
+        <!-- メイン -->
+        <div class="mainSpace col-xs-10 col-sm-10 col-md-10 col-lg-10">
+            <!-- 画面題字 -->
+            <div class="form-group" style="font-weight:bold;font-size:19px;margin:25px 0px;">
+                <!--タイトル-->
+                @Messages("lang.site.newItemCarReserve.page.title")
+            </div>
+            <!-- ボタン-->
+            <form id="viewForm" method="post" action="">
+                <!--header 検索部-->
+                <div class="row tableRow" style="margin-top: 10px;">
+                    <div class="text-left col-xs-10 col-sm-10 col-md-10 col-lg-10" style="padding:0;">
+                        <div style="margin-right:10px;float:left;">
+                            <div style="float:left">@Messages("lang.search.reserveDate")</div>
+                            <div class='input-group date' id='datetimepicker' style="margin-top:-5px;">
+                                <span class="input-group-addon" style="float:left;width:40px;height:34px;">
+                                    <span class="glyphicon glyphicon-calendar"></span>
+                                </span>
+                                <input type='text' class="form-control inputClass" id="inputDate" name="inputDate" value="@DETECT_DATE" style="width: 100px;"/>
+                            </div>
+                        </div>
+                        <div style="margin-right:10px;float:left;">
+                            @Messages("lang.search.type")
+                            <select id="ITEM_TYPE_FILTER" style="width: 120px;">
+                                <!--仮設材種別テーブルから検索フィルタを設置-->
+                                <option value="0"></option>
+                                @itemTypeList.zipWithIndex.map { case(itemType, i) =>
+                                    <option value="@itemType.item_type_id">@itemType.item_type_name</option>
+                                }
+                            </select>
+                            <input class="hidden form-control input-sm" type="text" id="itemTypeId" name="itemTypeId" value="@ITEM_TYPE_FILTER" />
+                        </div>
+                        <div style="margin-right:10px;float:left;">
+                            @Messages("lang.search.term")
+                            <select id="WORK_TYPE_FILTER" style="width: 120px;">
+                                <option value=""></option>
+                                @workTypeList.zipWithIndex.map { case(workType, i) =>
+                                    <option value="@workType.work_type_name">@workType.work_type_name</option>
+                                }
+                            </select>
+                            <input class="hidden form-control input-sm" type="text" id="workTypeName" name="workTypeName" value="@WORK_TYPE_FILTER" />
+                        </div>
+                    </div>
+                    <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2" style="padding:0;">
+                        <div id = "viewBtn" class="text-center btn btn__view--frame">
+                            @Messages("lang.btn.empty.check")
+                        </div>
+                    </div>
+                </div>
+                <!-- テーブルのROW -->
+                <div class="row tableRow">
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="padding:0;">
+                        <div class="table-responsive-body">
+                            <table class="table table-bordered table-condensed itemTable">
+                                <thead>
+                                    <tr>
+                                        <th colspan="@(TOTAL_LENGTH*2+5)" class="tableTitleTh">@Messages("lang.site.newItemCarReserve.page.title")</th>
+                                    </tr>
+                                    <tr>
+                                        <th rowspan="3" class="tableTh ">@Messages("lang.site.itemCarReserve.txId")</th>
+                                        <th rowspan="3" class="tableTh ">@Messages("lang.site.itemCarReserve.name")</th>
+                                        <th rowspan="3" class="tableTh ">@Messages("lang.site.itemCarReserve.no")</th>
+                                        <th rowspan="3"class="tableTh ">@Messages("lang.site.itemCarReserve.floor")</th>
+                                        <th rowspan="3" class="tableTh ">@Messages("lang.site.itemCarReserve.pos")</th>
+                                        <!--日付-->
+                                        @arReserveDays.zipWithIndex.map { case(day, i) =>
+                                            @if(i == 0){
+                                                <th colspan="2" class="tableTh">本日</th>
+                                            }else{
+                                                <th colspan="2" class="tableTh">@day.getDay</th>
+                                            }
+                                        }
+                                    </tr>
+                                    <tr>
+                                        <!--曜日-->
+                                        @arReserveDays.zipWithIndex.map { case(day, i) =>
+                                            @if(day.getYobi == "日"){
+                                                <th colspan="2" class="tableTh" style="color:red;">@day.getYobi</th>
+                                            }else{
+                                                <th colspan="2" class="tableTh">@day.getYobi</th>
+                                            }
+                                        }
+                                    </tr>
+                                    <tr>
+                                        <!--AM/PM-->
+                                        @arReserveDays.zipWithIndex.map { case(day, i) =>
+                                            <th class="tableTh ">AM</th>
+                                            <th class="tableTh ">PM</th>
+                                        }
+                                    </tr>
+
+                                </thead>
+                                <tbody>
+                                    @carList.zipWithIndex.map { case(car, carIndex) =>
+                                        <tr class="rowColor rowHover" data-carId="@car.item_car_id" id="@car.item_car_id">
+                                            <td class="itemTd text-center ">@car.btx_id</td>
+                                            <td class="itemTd text-center ">@car.item_car_name</td>
+                                            <td class="itemTd text-center ">@car.item_car_no</td>
+                                            <td class="itemTd text-center ">@car.cur_pos_name</td>
+                                            <td class="itemTd text-center modalSelect">@car.cur_exb_name</td>
+                                                @car.reserveData.zipWithIndex.map { case(day, dayIndex) =>
+                                                    @if(day.reserveDate!= "noDate" ){
+                                                        <td class="itemTd text-center">@day.reserveAmCompany</td>
+                                                        <td class="itemTd text-center">@day.reservePmCompany</td>
+                                                    }else{
+                                                        <td class="itemTd text-center">無</td>
+                                                        <td class="itemTd text-center">無</td>
+                                                    }
+                                            }
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <!--footer 更新部-->
+                <div class="row tableRow" style="margin-top: 30px;">
+                    <div class="text-left col-xs-10 col-sm-10 col-md-10 col-lg-10" style="padding:0;">
+                        <div style="margin-right:10px;float:left;">
+                            @Messages("lang.search.company")
+                            <select id="COMPANY_NAME_FILTER" style="width: 120px;">
+                                <!--業者マスターから検索フィルタを設置-->
+                                <option value=""></option>
+                                @companyNameList.zipWithIndex.map { case(company, i) =>
+                                    <option value="@company.companyName">@company.companyName</option>
+                                }
+                            </select>
+                            <input class="hidden  form-control input-sm" type="text" id="companyName" name="companyName" value="" />
+                        </div>
+                        <div style="margin-right:10px;float:left;">
+                            @Messages("lang.search.reserveFloor")
+                            <select id="FLOOR_NAME_FILTER" style="width: 120px;">
+                                <!--仮設材種別テーブルから検索フィルタを設置-->
+                                <option value=""></option>
+                                @floorNameList.zipWithIndex.map { case(floor, i) =>
+                                    <option value="@floor.floor_name">@floor.floor_name</option>
+                                }
+                            </select>
+                            <input class="hidden  form-control input-sm" type="text" id="floorName" name="floorName" value="" />
+                        </div>
+                    </div>
+                    <!--表示ボタン-->
+                    <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2" style="padding:0;">
+                        <div id ="reserveBtn" class="text-center btn btn__view--frame">
+                            @Messages("lang.btn.move.reserve")
+                        </div>
+                    </div>
+                </div>
+                @CSRF.formField
+            </form>
+            <!-- モーダル画面 -->
+            <div class="modal" id="inputModal" tabindex="-1" role="dialog" aria-labelledby="InputModalLabel" aria-hidden="true" data-show="true" data-keyboard="false" data-backdrop="static">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        @CSRF.formField
+                        <input type="hidden" name="inputPlaceId" value="" />
+                        <input type="hidden" id="inputItemKindId" name="inputItemKindId" />
+                        <input type="hidden" id="actualItemInfoStr" name="actualItemInfoStr" />
+                        <div class="modal-header" style="">@Messages("lang.site.newItemCarReserve.page.title")</div>
+                        <div class="modal-body">
+                            <div class="form-group" style="margin-bottom: 5px;">
+                                <label class="text-right  control-label col-xs-6">@Messages("lang.site.item.reserveDate")</label>
+                                <label id="mReserveDate" class="modalClass control-label">@Messages("lang.site.item.noselect")</label>
+                            </div>
+                            <div class="hidden form-group" style="margin-bottom: 5px;">
+                                <label class="text-right control-label col-xs-6">@Messages("lang.site.item.type")</label>
+                                <label id="mItemTypeName" class="modalClass control-label">@Messages("lang.site.item.noselect")</label>
+                            </div>
+                            <div class="form-group" style="margin-bottom: 5px;">
+                                <label class="text-right control-label col-xs-6">@Messages("lang.site.item.term")</label>
+                                <label id="mWorkTypeName" class="modalClass control-label">@Messages("lang.site.item.noselect")</label>
+                            </div>
+                            <div class="form-group" style="margin-bottom: 5px;">
+                                <label class="text-right control-label col-xs-6">@Messages("lang.site.item.company")</label>
+                                <label id="mCompanyName" class="modalClass control-label">@Messages("lang.site.item.noselect")</label>
+                            </div>
+                            <div class="form-group" style="margin-bottom: 5px;">
+                                <label class="text-right control-label col-xs-6">@Messages("lang.site.item.reserveFloor")</label>
+                                <label id="mReserveFloorName" class="modalClass control-label">@Messages("lang.site.item.noselect")</label>
+                            </div>
+                            <!--<div class="form-group" style="margin-bottom: 5px;">-->
+                            <!--<label class="text-right control-label col-xs-6">選択</label>-->
+                            <!--<label id="mArSelectId" class="modalClass control-label">未設定</label>-->
+                            <!--</div>-->
+                        </div>
+                        <div class="modal-footer">
+                            <div class="col-xs-6 text-center">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">@Messages("cancel")</button>
+                            </div>
+                            <div class="col-xs-6 text-center">
+                                <button id="itemRegisterFooter"  type="" class="text-center btn btn-primary">@Messages("lang.btn.reserve")</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="@routes.MyAssets.js("site/newItemCarReserve.js")"></script>
+<script></script>
+</body>
+</html>
