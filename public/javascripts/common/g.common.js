@@ -37,6 +37,20 @@ var BASE_ASPECT = 2.67;
 var VIEW_COUNT = -1
 
 var gResizeCheck = false;
+
+// ボタン有り（基本）
+var BTN_HEIGHT_RAITO = 0.70;
+var BTN_WIDTH_RAITO = 0.99;
+var BTN_ROWS = 2;
+// 画面下部にボタン無し
+var NOBTN_HEIGHT_RAITO = 0.85;
+var NOBTN_WIDTH_RAITO = 0.99;
+var NOBTN_ROWS = 2;
+// 画面下部にボタン無し（その他）
+var NOBTN_OTHER_HEIGHT_RAITO = 0.85;
+var NOBTN_OTHER_WIDTH_RAITO = 0.99;
+var NOBTN_OTHER_ROWS = 3;
+
 var gResize = {
     /* 文字サイズを再調整するロジック*/
     textResize : function(vElement,motoSize) {
@@ -163,6 +177,22 @@ var gInitView = {
         $('.table-responsive-body').append(clonedTable.prop("outerHTML"));
 
     },
+    tableResizeOther : function(vType) {
+            // リサイズ対応
+        var timer = false;
+        $(window).resize(function() {
+            if (timer !== false) {
+                clearTimeout(timer);
+            }
+            timer = setTimeout(function() {
+                // 処理の再実行
+                gInitView.removeTable();
+                gInitView.fixTable("NoBtnOther");
+                gInitView.bindMouseAndTouch();
+            }, 200);
+        });
+
+    },
     tableResize : function(vType) {
         // リサイズ対応
         var timer = false;
@@ -173,61 +203,64 @@ var gInitView = {
             timer = setTimeout(function() {
                 // 処理の再実行
                 gInitView.removeTable();
-                if(vType == "NoBtn") gInitView.fixTableNoBtn();
-                else gInitView.fixTable();
+                if(vType == "NoBtn"){
+                    gInitView.fixTable("NoBtn");
+                } else{
+                    gInitView.fixTable();
+                }
                 gInitView.bindMouseAndTouch();
             }, 200);
         });
 
     },
-    fixTable : function() {
+
+    // テーブルの固定
+    // screenPattern：テーブル固定パターン
+    // 　パターン１（画面下部にボタン有り）："Btn"、未設定、該当なしの場合
+    // 　パターン２（画面下部にボタン無し）："NoBtn"
+    // 　パターン３（画面下部にボタン無しでパターン２以外）："NoBtnOther"
+    fixTable : function(screenPattern) {
+        // 初期値はパターン１の画面下部にボタン有りのデフォルト値を設定
+        var heightRaito = BTN_HEIGHT_RAITO;
+        var widthRaito = BTN_WIDTH_RAITO;
+        var fRows = BTN_ROWS;
+
+        if(screenPattern !== undefined){
+            if(screenPattern == "Btn"){
+                // パターン１　初期値と同じ
+            }else if(screenPattern == "NoBtn"){
+                // パターン２
+                heightRaito = NOBTN_HEIGHT_RAITO;
+            }else if(screenPattern == "NoBtnOther"){
+                // パターン３
+                heightRaito = NOBTN_OTHER_HEIGHT_RAITO;
+                fRows = NOBTN_OTHER_ROWS;
+            }
+        }
+
         // テーブルの固定
-        var h = $(window).height()*0.65;
+        var h = $(window).height()*heightRaito;
         // テーブルの調整
         var ua = navigator.userAgent;
         if (ua.indexOf('iPad') > 0 || ua.indexOf('Android') > 0 || ua.indexOf('iPhone') > 0 || ua.indexOf('iPod') > 0){
             // タッチデバイス
             if ($('.mainSpace').height() > h) {
-                var w = $('.mainSpace').width()*0.99;
-                $('.itemTable').tablefix({width:w, height: h, fixRows: 2});
+                var w = $('.mainSpace').width()*widthRaito;
+                $('.itemTable').tablefix({width:w, height: h, fixRows: fRows});
             } else {
                 var w = $('.mainSpace').width();
-                $('.itemTable').tablefix({width:w, fixRows: 2});
+                $('.itemTable').tablefix({width:w, fixRows: fRows});
             }
         }else{
             // PCブラウザ
             var w = $('.mainSpace').width();
-            $('.itemTable').tablefix({height: h, fixRows: 2});
+            $('.itemTable').tablefix({height: h, fixRows: fRows});
             $('.rowTableDiv').width(w);
         }
         $('.bodyTableDiv').find('.itemTable').css('margin-bottom','0');
         $('.colTableDiv').css("width","");
 
     },
-    fixTableNoBtn : function() {
-            // テーブルの固定
-            var h = $(window).height()*0.85;
-            // テーブルの調整
-            var ua = navigator.userAgent;
-            if (ua.indexOf('iPad') > 0 || ua.indexOf('Android') > 0 || ua.indexOf('iPhone') > 0 || ua.indexOf('iPod') > 0){
-                // タッチデバイス
-                if ($('.mainSpace').height() > h) {
-                    var w = $('.mainSpace').width()*0.99;
-                    $('.itemTable').tablefix({width:w, height: h, fixRows: 2});
-                } else {
-                    var w = $('.mainSpace').width();
-                    $('.itemTable').tablefix({width:w, fixRows: 2});
-                }
-            }else{
-                // PCブラウザ
-                var w = $('.mainSpace').width();
-                $('.itemTable').tablefix({height: h, fixRows: 2});
-                $('.rowTableDiv').width(w);
-            }
-            $('.bodyTableDiv').find('.itemTable').css('margin-bottom','0');
-            $('.colTableDiv').css("width","");
-
-        },
 
     bindMouseAndTouch : function() {
         var ua = navigator.userAgent;

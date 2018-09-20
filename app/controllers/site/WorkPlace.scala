@@ -50,7 +50,8 @@ class WorkPlace @Inject()(config: Configuration
       /*仮設材種別取得*/
       val itemTypeList = itemTypeDAO.selectItemTypeInfo(placeId);
       // map情報
-      val mapViewer = floorDAO.selectFloorAll(placeId)
+//      val mapViewer = floorDAO.selectFloorAll(placeId)
+      val mapViewer = floorDAO.selectFloorValidData(placeId)
       val exbData = exbDAO.selectExbAll(placeId)
 
       // ①仮設材すべてを取得

@@ -75,12 +75,15 @@ class ItemOtherManage @Inject()(
         "inputPlaceId" -> text
       , "inputItemOtherId" -> text
       , "inputItemOtherBtxId" -> text.verifying(Messages("error.cms.ItemOtherManage.update.inputItemOtherBtxId.empty"), {_.matches("^[0-9]+$")})
+                                          .verifying(Messages("error.cms.ItemOtherManage.update.inputItemOtherBtxId.empty"), {inputItemOtherBtxId => inputItemOtherBtxId != "0"})
       , "inputItemOtherNo" -> text.verifying(Messages("error.cms.ItemOtherManage.update.inputItemOtherNo.empty"), {!_.isEmpty})
       , "inputItemOtherName" -> text.verifying(Messages("error.cms.ItemOtherManage.update.inputItemOtherName.empty"), {!_.isEmpty})
       , "inputItemNote" -> text
       , "inputItemTypeName" -> text.verifying(Messages("error.cms.ItemOtherManage.update.inputItemTypeName.empty"), {!_.isEmpty})
       , "inputItemTypeId" -> text
     )(ItemUpdateForm.apply)(ItemUpdateForm.unapply))
+    // 権限レベルを取得
+    val reqIdentity = request.identity
     // フォームの取得
     val form = inputForm.bindFromRequest
     if (form.hasErrors){
@@ -129,16 +132,17 @@ class ItemOtherManage @Inject()(
         var dbItemNoList = itemOtherDAO.selectOtherInfo(super.getCurrentPlaceId, f.inputItemOtherNo)
         dbItemNoList = dbItemNoList.filter(_.itemOtherId != f.inputItemOtherId.toInt)
                                    .filter(_.itemOtherNo == f.inputItemOtherNo)
+
         // 予約情報テーブルに作業車・立馬IDが存在していないか
         val itemOtherReserveList = itemOtherDAO.selectCarReserveCheck(super.getCurrentPlaceId, f.inputItemOtherId.toInt)
-        if(itemOtherReserveList.length > 0){
-          var chkFlg : Int = 0
+        if (itemOtherReserveList.length > 0) {
+          var chkFlg: Int = 0
           // 現在時刻設定
           val mSimpleDateFormat = new SimpleDateFormat("yyyyMMdd", Locale.JAPAN)
           val currentTime = new Date();
           val mTime = mSimpleDateFormat.format(currentTime)
           val mHour = new SimpleDateFormat("HH").format(Calendar.getInstance().getTime()).toInt
-          for(itemCarReserve <- itemOtherReserveList) {
+          for (itemCarReserve <- itemOtherReserveList) {
             if (itemCarReserve.reserveEndDate.toInt < mTime.toInt) {
               // 予約期間が前日の場合、または期間が終日の場合
               if (chkFlg != 1) {
@@ -159,7 +163,7 @@ class ItemOtherManage @Inject()(
                       chkFlg = 2
                     }
                   }
-                }else{
+                } else {
                   // 予約済み（使用中）
                   chkFlg = 1
                 }
@@ -175,7 +179,7 @@ class ItemOtherManage @Inject()(
                       chkFlg = 2
                     }
                   }
-                }else{
+                } else {
                   // 予約済み（使用中）
                   chkFlg = 1
                 }
@@ -185,10 +189,13 @@ class ItemOtherManage @Inject()(
               }
             }
           }
-          if(chkFlg == 1){
+          if (chkFlg == 1) {
             errMsg :+= Messages("error.cms.ItemOtherManage.update.inputItemOtherIdReserve.use.noChange", f.inputItemOtherId);
-          }else if(chkFlg == 2){
-            errMsg :+= Messages("error.cms.ItemOtherManage.update.inputItemOtherIdReserve.use.exceed", f.inputItemOtherId);
+          } else if (chkFlg == 2) {
+            if(reqIdentity.level < 3) {
+              // 権限がレベル３以下のみ予約情報が有る場合エラーにする
+              errMsg :+= Messages("error.cms.ItemOtherManage.update.inputItemOtherIdReserve.use.exceed", f.inputItemOtherId);
+            }
           }
         }
         // 同じIDが作業車・立馬に存在してはダメ
@@ -238,6 +245,8 @@ class ItemOtherManage @Inject()(
 
   /** その他仮設材削除 */
   def delete = SecuredAction { implicit request =>
+    // 権限レベルを取得
+    val reqIdentity = request.identity
     // フォームの準備
     var errMsg = Seq[String]()
     val inputForm = Form(mapping(
@@ -258,14 +267,14 @@ class ItemOtherManage @Inject()(
 
       // 予約情報テーブルに作業車・立馬IDが存在していないか
       val itemOtherReserveList = itemOtherDAO.selectCarReserveCheck(super.getCurrentPlaceId, f.deleteItemOtherId.toInt)
-      if(itemOtherReserveList.length > 0){
-        var chkFlg : Int = 0
+      if (itemOtherReserveList.length > 0) {
+        var chkFlg: Int = 0
         // 現在時刻設定
         val mSimpleDateFormat = new SimpleDateFormat("yyyyMMdd", Locale.JAPAN)
         val currentTime = new Date();
         val mTime = mSimpleDateFormat.format(currentTime)
         val mHour = new SimpleDateFormat("HH").format(Calendar.getInstance().getTime()).toInt
-        for(itemCarReserve <- itemOtherReserveList) {
+        for (itemCarReserve <- itemOtherReserveList) {
           if (itemCarReserve.reserveEndDate.toInt < mTime.toInt) {
             // 予約期間が前日の場合、または期間が終日の場合
             if (chkFlg != 1) {
@@ -286,7 +295,7 @@ class ItemOtherManage @Inject()(
                     chkFlg = 2
                   }
                 }
-              }else{
+              } else {
                 // 予約済み（使用中）
                 chkFlg = 1
               }
@@ -302,7 +311,7 @@ class ItemOtherManage @Inject()(
                     chkFlg = 2
                   }
                 }
-              }else{
+              } else {
                 // 予約済み（使用中）
                 chkFlg = 1
               }
@@ -312,10 +321,13 @@ class ItemOtherManage @Inject()(
             }
           }
         }
-        if(chkFlg == 1){
+        if (chkFlg == 1) {
           errMsg :+= Messages("error.cms.ItemOtherManage.delete.inputItemOtherIdReserve.use.noChange", f.deleteItemOtherId);
-        }else if(chkFlg == 2){
-          errMsg :+= Messages("error.cms.ItemOtherManage.update.inputItemOtherIdReserve.use.exceed", f.deleteItemOtherId);
+        } else if (chkFlg == 2) {
+          if(reqIdentity.level < 3) {
+            // 権限がレベル３以下のみ予約情報が有る場合エラーにする
+            errMsg :+= Messages("error.cms.ItemOtherManage.delete.inputItemOtherIdReserve.use.exceed", f.deleteItemOtherId);
+          }
         }
       }
 

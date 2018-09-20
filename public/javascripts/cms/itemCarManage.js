@@ -1,70 +1,6 @@
 // 鍵TagID 一時保存用
 var btxIdBack = "-1";
 
-// マウス・タッチの動作のバインド
-function bindMouseAndTouch(){
-    var ua = navigator.userAgent;
-    if (ua.indexOf('iPad') > 0 || ua.indexOf('Android') > 0 || ua.indexOf('iPhone') > 0 || ua.indexOf('iPod') > 0){
-        // タッチデバイスの場合
-        $(".rowHover").bind({
-            'touchstart': function(e) {
-                if(e.originalEvent.touches.length > 1){
-                }else if(e.originalEvent.touches.length == 1){
-                    $(".rowHoverSelectedColor").removeClass('rowHoverSelectedColor');
-                    $(this).addClass('rowHoverSelectedColor');
-                }
-            },
-        });
-    }else{
-        // PCブラウザの場合
-        $(".rowHover").bind({
-            'mouseover': function(e) {
-                $(this).addClass('rowHoverColor');
-            },
-            'mouseout': function(e) {
-                $(this).removeClass('rowHoverColor');
-            },
-            'click': function(e) {
-                $(".rowHoverSelectedColor").removeClass('rowHoverSelectedColor');
-                $(this).addClass('rowHoverSelectedColor');
-            },
-        });
-    }
-}
-
-// テーブルの固定
-function fixTable(){
-    // テーブルの固定
-    var h = $(window).height()*0.7;
-    // テーブルの調整
-    var ua = navigator.userAgent;
-    if (ua.indexOf('iPad') > 0 || ua.indexOf('Android') > 0 || ua.indexOf('iPhone') > 0 || ua.indexOf('iPod') > 0){
-        // タッチデバイス
-        if ($('.mainSpace').height() > h) {
-            var w = $('.mainSpace').width()*0.99;
-            $('.itemTable').tablefix({width:w, height: h, fixRows: 2});
-        } else {
-            var w = $('.mainSpace').width();
-            $('.itemTable').tablefix({width:w, fixRows: 2});
-        }
-    }else{
-        // PCブラウザ
-        var w = $('.mainSpace').width();
-        $('.itemTable').tablefix({height: h, fixRows: 2});
-        $('.rowTableDiv').width(w);
-    }
-    $('.bodyTableDiv').find('.itemTable').css('margin-bottom','0');
-    $('.colTableDiv').css("width","");
-
-}
-// テーブルのクリア
-function removeTable(){
-    var clonedTable = $('.bodyTableDiv').find('table').clone();
-    $(clonedTable).attr('style', '');
-    $('.baseDiv').remove();
-    $('.table-responsive-body').append(clonedTable.prop("outerHTML"));
-}
-
 // サブミット
 function doSubmit(formId, action){
     $('#' + formId).attr('action', action)
@@ -77,9 +13,14 @@ function showInputModal(isRegister){
         $('#inputCarId').val('');
         $('#inputCarNo').val('');
         $('#inputCarBtxId').val('');
+        $('#inputCarKeyBtxIdDsp').val('');
         $('#inputCarKeyBtxId').val('');
+        var ele = document.getElementById("inputCarKeyBtxIdDsp");
+        ele.readOnly = false;
+        btxIdBack = "";
         $('#inputCarTypeName').val('');
         $('#inputCarTypeId').val('');
+        $('#inputCarTypeCategoryId').val(0);
         $('#car_type').val("0");
         $('#inputCarName').val('');
         $('#inputCarNote').val('');
@@ -101,17 +42,17 @@ function showInputModal(isRegister){
             $('#inputCarTypeName').val($('#'+carId).find('.carTypeName').text());
             $('#car_type').val($('#'+carId).find('.carTypeId').text());
             $('#inputCarTypeId').val($('#car_type').val());
-            var ele = document.getElementById("inputCarKeyBtxId");
+            var ele = document.getElementById("inputCarKeyBtxIdDsp");
             // 立馬の場合は鍵TagIDは入力不可
             var categoryid = parseInt($('#'+carId).find('.itemTypeCategoryid').text());
+            $('#inputCarTypeCategoryId').val(categoryid);
             if(categoryid == 1){
-               $('#inputCarKeyBtxId').val("無");
-                ele.readOnly = true;
+               $('#inputCarKeyBtxIdDsp').val("無");
+               $('#inputCarKeyBtxId').val("9999999999");
+               ele.readOnly = true;
             }else{
-                if($('#inputCarKeyBtxId').val() == "無"){
-                    $('#inputCarKeyBtxId').val("");
-                }
-                ele.readOnly = false;
+               $('#inputCarKeyBtxIdDsp').val($('#'+carId).find('.carKeyBtxId').text());
+               ele.readOnly = false;
             }
             $('#inputCarName').val($('#'+carId).find('.carName').text());
             $('#inputCarNote').val($('#'+carId).find('.carNote').text());
@@ -153,13 +94,17 @@ var floorFrame = $('#car_type');
             // 管理者用selectbox value取得
             $('#car_type').change(function() {
             var itemType = $("#car_type option:selected").data();
-            var ele = document.getElementById("inputCarKeyBtxId");
+            var ele = document.getElementById("inputCarKeyBtxIdDsp");
+            // カテゴリID設定
+            $('#inputCarTypeCategoryId').val(itemType.categoryid);
             // 立馬の場合は鍵TagIDは入力不可
             if(itemType.categoryid == 1){
-               $('#inputCarKeyBtxId').val("無");
+               $('#inputCarKeyBtxIdDsp').val("無");
+               $('#inputCarKeyBtxId').val("9999999999");
                 ele.readOnly = true;
             }else{
-                $('#inputCarKeyBtxId').val("");
+                $('#inputCarKeyBtxIdDsp').val(btxIdBack);
+                $('#inputCarKeyBtxId').val(btxIdBack);
                 ele.readOnly = false;
             }
         });
@@ -191,24 +136,20 @@ $(function(){
     // 表示ボタンをクリック
     viewBtnEvent();
 
+    // 鍵TagID 設定
+    $('#inputCarKeyBtxIdDsp').on('change', function(e) {
+        $('#inputCarKeyBtxId').val($('#inputCarKeyBtxIdDsp').val());
+    });
+
     // テーブルを固定
-    fixTable();
+    gInitView.fixTable();
+
     // 表示ボタンをクリック
     viewBtnEvent();
-    // マウス操作とタップ操作をバインド
-    bindMouseAndTouch();
 
-    // リサイズ対応
-    var timer = false;
-    $(window).resize(function() {
-        if (timer !== false) {
-            clearTimeout(timer);
-        }
-        timer = setTimeout(function() {
-            // 処理の再実行
-            removeTable();
-            fixTable();
-            bindMouseAndTouch();
-        }, 200);
-    });
+    // マウス操作とタップ操作をバインド
+    gInitView.bindMouseAndTouch();
+
+    // 画面サイズ変更による再調整
+    gInitView.tableResize();
 });

@@ -27,7 +27,7 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
     <div class="row">
         <!-- サイドメニュー -->
         @views.html.templates.sideMenu()
-        <span class="mainSpace col-xs-10 col-sm-10 col-md-10 col-lg-10">
+        <span class="col-xs-10 col-sm-10 col-md-10 col-lg-10">
             <!-- メッセージ -->
             @views.html.templates.msgDiv()
         </span>
@@ -74,7 +74,7 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
                             </select>
                             <input class="hidden form-control input-sm" type="text" id="companyName" name="companyName" value="@COMPANY_NAME_FILTER" />
                         </div>
-                        <div style="margin-right:10px;float:left;">
+                        <div class = "hidden" style="margin-right:10px;float:left;">
                             @Messages("lang.search.term")
                             <select id="WORK_TYPE_FILTER" style="width: 120px;">
                                 <!--期間Enumから検索フィルタを設置-->
@@ -103,7 +103,7 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
                         <table class="table table-bordered table-condensed itemTable">
                             <thead>
                                 <tr>
-                                    <th colspan="8" class="tableTitleTh">@Messages("lang.site.itemOtherMaster.page.title")</th>
+                                    <th colspan="7" class="tableTitleTh">@Messages("lang.site.itemOtherMaster.page.title")</th>
                                 </tr>
                                 <tr>
                                     <th class="tableTh ">@Messages("lang.site.itemOtherMaster.curFloor")</th>
@@ -113,7 +113,7 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
                                     <th class="tableTh ">@Messages("lang.site.itemOtherMaster.name")</th>
                                     <th class="tableTh ">@Messages("lang.site.itemOtherMaster.company")</th>
                                     <th class="tableTh ">@Messages("lang.site.itemOtherMaster.reserveFloor")</th>
-                                    <th class="tableTh ">@Messages("lang.site.itemOtherMaster.term")</th>
+                                    <th class="hidden tableTh ">@Messages("lang.site.itemOtherMaster.term")</th>
                                     <th class="tableTh hidden">@Messages("lang.site.itemOtherMaster.reserveId")</th>
                                 </tr>
                             </thead>
@@ -127,7 +127,7 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
                                         <td class="itemTd text-center ">@other.item_other_name</td>
                                         <td class="itemTd text-center ">@other.company_name</td>
                                         <td class="itemTd text-center ">@other.reserve_floor_name</td>
-                                        <td class="itemTd text-center ">@other.work_type_name</td>
+                                        <td class="hidden itemTd text-center ">@other.work_type_name</td>
                                         <td class="itemTd text-center hidden">@other.reserve_id</td>
                                     </tr>
                                 }

@@ -20,7 +20,7 @@
         <div class="row">
             <!-- 左サイドバー -->
             @views.html.templates.sideMenu()
-            <span class="mainSpace col-xs-10 col-sm-10 col-md-10 col-lg-10">
+            <span class="col-xs-10 col-sm-10 col-md-10 col-lg-10">
                 <!-- メッセージ -->
                 @views.html.templates.msgDiv()
             </span>
@@ -33,31 +33,31 @@
                 <!-- テーブルのROW -->
                 <div class="row tableRow">
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="padding:0;">
-                        <div class="floorTable-responsive-body">
+                        <div class="table-responsive-body">
                             <table class="table table-bordered table-condensed itemTable floorTable">
                                 <thead>
                                     <tr>
                                         <th colspan="7" class="tableTitleTh">@Messages("lang.cms.exbManage.title")</th>
                                     </tr>
                                     <tr>
+                                        <th class="tableTh deviceTh">@Messages("lang.cms.exbManage.exbId")</th>
                                         <th class="tableTh floorTh">@Messages("lang.cms.exbManage.deviceId")</th>
                                         <th class="tableTh deviceTh">@Messages("lang.cms.exbManage.posName")</th>
                                         <th class="tableTh deviceTh">@Messages("lang.cms.exbManage.setupFloorName")</th>
                                         <th class="tableTh deviceTh">@Messages("lang.cms.exbManage.deviceNo")</th>
                                         <th class="tableTh deviceTh">@Messages("lang.cms.exbManage.deviceName")</th>
-                                        <th class="tableTh deviceTh">@Messages("lang.cms.exbManage.exbId")</th>
                                         <th class="tableTh deviceTh hidden">@Messages("lang.cms.exbManage.setupFloorId")</th>
                                     </tr>
                                 </thead>
                                 <tbody class="sortable">
                                     @for(exb <- exbInfoList){
                                         <tr class="rowColor rowHover" id="@exb.exb_id" data-exbId="@exb.exb_id" data-floorId="@exb.floor_id">
+                                            <td class="itemTd text-center ">@exb.exb_id</td>
                                             <td class="itemTd text-center deviceId">@exb.exb_device_id</td>
                                             <td class="itemTd text-center posName">@exb.exb_pos_name</td>
                                             <td class="itemTd text-center ">@exb.floor_name</td>
                                             <td class="itemTd text-center deviceNo">@exb.exb_device_no</td>
                                             <td class="itemTd text-center deviceName">@exb.exb_device_name</td>
-                                            <td class="itemTd text-center ">@exb.exb_id</td>
                                             @if(exb.floor_id == -1){
                                             <td class="hidden itemTd text-center setupFloorId">未設置</td>
                                             }else{

@@ -50,7 +50,7 @@ itemTypeList: Seq[ItemType]
                 <select id="floor-category" class=" manager__data--floor">
                     @mapViewer.zipWithIndex.map { case(map, i) =>
                     <!--<option value="@map.floor_id" @{if(map.floor_id == 1) "selected" else ""}>@map.floor_name</option>-->
-                    <option class= @{if(map.active_flg) "visible" else "hidden"}  value="@map.display_order" @{if(i == 0) "selected" else ""} >@map.floor_name</option>
+                    <option class= "visible" value="@map.display_order" @{if(i == 0) "selected" else ""} >@map.floor_name</option>
                     }
                 </select>
             </div>
@@ -83,7 +83,7 @@ itemTypeList: Seq[ItemType]
                 <thead>
                 <tr>
                     <td class = "td__title--frame">仮設材種別</td>
-                    <td class = "td__title--frame">仮設材名</td>
+                    <td class = "td__title--frame">仮設材番号</td>
                     <td class = "td__title--frame">業者</td>
                     <td class = "hidden td__title--frame">posId</td>
                 </tr>

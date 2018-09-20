@@ -50,6 +50,8 @@ class CompanyManage @Inject()(config: Configuration
 
   /** 更新 */
   def update = SecuredAction { implicit request =>
+    // 権限レベルを取得
+    val reqIdentity = request.identity
     // フォームの準備
     val inputForm = Form(mapping(
       "inputPlaceId" -> text
@@ -157,7 +159,10 @@ class CompanyManage @Inject()(config: Configuration
           if(chkFlg == 1){
             errMsg :+= Messages("error.cms.CompanyManage.update.inputCompanyName.use.noChange", companyNm);
           }else if(chkFlg == 2){
-            errMsg :+= Messages("error.cms.CompanyManage.update.inputCompanyName.use.exceed", companyNm);
+            if(reqIdentity.level < 3) {
+              // 権限がレベル３以下のみ予約情報が有る場合エラーにする
+              errMsg :+= Messages("error.cms.CompanyManage.update.inputCompanyName.use.exceed", companyNm);
+            }
           }
         }
 
@@ -179,6 +184,8 @@ class CompanyManage @Inject()(config: Configuration
 
   /** 削除 */
   def delete = SecuredAction { implicit request =>
+    // 権限レベルを取得
+    val reqIdentity = request.identity
     var errMsg = Seq[String]()
     // フォームの準備
     val inputForm = Form(mapping(
@@ -255,7 +262,10 @@ class CompanyManage @Inject()(config: Configuration
         if(chkFlg == 1){
           errMsg :+= Messages("error.cms.CompanyManage.delete.inputCompanyName.use.noChange", companyNm);
         }else if(chkFlg == 2){
-          errMsg :+= Messages("error.cms.CompanyManage.delete.inputCompanyName.use.exceed", companyNm);
+          if(reqIdentity.level < 3) {
+            // 権限がレベル３以下のみ予約情報が有る場合エラーにする
+            errMsg :+= Messages("error.cms.CompanyManage.delete.inputCompanyName.use.exceed", companyNm);
+          }
         }
       }
       if(errMsg.nonEmpty){

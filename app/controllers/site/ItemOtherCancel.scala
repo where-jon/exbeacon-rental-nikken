@@ -138,8 +138,22 @@ class ItemOtherCancel @Inject()(config: Configuration
                 .flashing(ERROR_MSG_KEY -> Messages("error.site.otherCancel.cancel"))
             }
           }else{  // 現在時刻から予約取消可能かを判定でエラーの場合
-            Redirect(routes.ItemOtherCancel.index())
-              .flashing(ERROR_MSG_KEY -> Messages(vCancelCheck))
+            if((Messages("error.site.cancel.pretime") == vCancelCheck ||
+              "error.site.cancel.pretime" == vCancelCheck) && request.identity.level >= 3){
+              // 過去の予約だけどシステム権限
+              val result = otherDAO.cancelItemOther(setData)
+              if (result == "success") {
+                Redirect(routes.ItemOtherCancel.index())
+                  .flashing(SUCCESS_MSG_KEY -> Messages("success.site.otherCancel.cancel"))
+              }else {
+                Redirect(routes.ItemOtherCancel.index())
+                  .flashing(ERROR_MSG_KEY -> Messages("error.site.otherCancel.cancel"))
+              }
+
+            }else{
+              Redirect(routes.ItemOtherCancel.index())
+                .flashing(ERROR_MSG_KEY -> Messages(vCancelCheck))
+            }
           }
 
         }else{
@@ -161,7 +175,6 @@ class ItemOtherCancel @Inject()(config: Configuration
     val otherFormSearchData = itemOtherSearchForm.bindFromRequest.get
     ITEM_TYPE_FILTER = otherFormSearchData.itemTypeId
     COMPANY_NAME_FILTER = otherFormSearchData.companyName
-    WORK_TYPE_FILTER = otherFormSearchData.workTypeName
     RESERVE_START_DATE = otherFormSearchData.inputStartDate
     RESERVE_END_DATE = otherFormSearchData.inputEndDate
 
@@ -177,9 +190,7 @@ class ItemOtherCancel @Inject()(config: Configuration
     if (ITEM_TYPE_FILTER != 0) {
       otherListApi = otherListApi.filter(_.item_type_id == ITEM_TYPE_FILTER)
     }
-    if (WORK_TYPE_FILTER != "") {
-      otherListApi = otherListApi.filter(_.work_type_name == WORK_TYPE_FILTER)
-    }
+
     if (COMPANY_NAME_FILTER != "") {
       otherListApi = otherListApi.filter(_.company_name == COMPANY_NAME_FILTER)
     }

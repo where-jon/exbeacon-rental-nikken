@@ -17,6 +17,8 @@ item_id: Int
 case class ReserveMasterInfo(
 itemId: Int
 , workTypeId: Int
+, txId: Int
+, workTypeName: String
 , reserveStartDate: String
 , reserveEndDate: String
 )
@@ -42,10 +44,12 @@ class ReserveMasterDAO @Inject() (dbapi: DBApi) {
     val simple = {
       get[Int]("item_id") ~
         get[Int]("work_type_id") ~
+        get[Int]("item_tx") ~
+        get[String]("work_type_name") ~
         get[String]("reserve_start_date")~
         get[String]("reserve_end_date") map {
-        case item_id ~ work_type_id ~ reserve_start_date ~ reserve_end_date  =>
-          ReserveMasterInfo(item_id, work_type_id, reserve_start_date, reserve_end_date)
+        case item_id ~ work_type_id ~ item_tx ~ work_type_name ~ reserve_start_date ~ reserve_end_date  =>
+          ReserveMasterInfo(item_id, work_type_id,item_tx,work_type_name, reserve_start_date, reserve_end_date)
       }
     }
 
@@ -55,10 +59,14 @@ class ReserveMasterDAO @Inject() (dbapi: DBApi) {
           select
               r.item_id
             , r.work_type_id
+            , car.item_car_btx_id as item_tx
+            , w.work_type_name
             , to_char(r.reserve_start_date, 'YYYYMMDD') as reserve_start_date
             , to_char(r.reserve_end_date, 'YYYYMMDD') as reserve_end_date
           from
               reserve_table as r
+              left JOIN item_car_master as car on car.item_car_id = r.item_id
+              left JOIN work_type as w on w.work_type_id = r.work_type_id
           where
             r.active_flg = true
         """
@@ -113,10 +121,12 @@ class ReserveMasterDAO @Inject() (dbapi: DBApi) {
     val simple = {
       get[Int]("item_id") ~
         get[Int]("work_type_id") ~
+        get[Int]("item_tx") ~
+        get[String]("work_type_name") ~
         get[String]("reserve_start_date")~
         get[String]("reserve_end_date") map {
-        case item_id ~ work_type_id ~ reserve_start_date ~ reserve_end_date  =>
-          ReserveMasterInfo(item_id, work_type_id, reserve_start_date, reserve_end_date)
+        case item_id ~ work_type_id ~ item_tx ~ work_type_name ~ reserve_start_date ~ reserve_end_date  =>
+          ReserveMasterInfo(item_id, work_type_id,item_tx ,work_type_name,  reserve_start_date, reserve_end_date)
       }
     }
 
@@ -128,8 +138,12 @@ class ReserveMasterDAO @Inject() (dbapi: DBApi) {
             , r.work_type_id
             , to_char(r.reserve_start_date, 'YYYYMMDD') as reserve_start_date
             , to_char(r.reserve_end_date, 'YYYYMMDD') as reserve_end_date
+              , other.item_other_btx_id as item_tx
+              , w.work_type_name
           from
               reserve_table as r
+              left JOIN item_other_master as other on other.item_other_id = r.item_id
+              left JOIN work_type as w on w.work_type_id = r.work_type_id
           where
             r.active_flg = true
         """
@@ -268,10 +282,12 @@ class ReserveMasterDAO @Inject() (dbapi: DBApi) {
     val simple = {
       get[Int]("item_id") ~
         get[Int]("work_type_id") ~
+        get[Int]("item_tx") ~
+        get[String]("work_type_name") ~
         get[String]("reserve_start_date")~
         get[String]("reserve_end_date") map {
-        case item_id ~ work_type_id ~ reserve_start_date ~ reserve_end_date  =>
-          ReserveMasterInfo(item_id, work_type_id, reserve_start_date, reserve_end_date)
+        case item_id ~ work_type_id ~ item_tx ~ work_type_name ~ reserve_start_date ~ reserve_end_date  =>
+          ReserveMasterInfo(item_id, work_type_id, item_tx, work_type_name,reserve_start_date, reserve_end_date)
       }
     }
 
@@ -281,10 +297,15 @@ class ReserveMasterDAO @Inject() (dbapi: DBApi) {
           select
               r.item_id
             , r.work_type_id
+            , 0 as item_tx
+            , w.work_type_name
             , to_char(r.reserve_start_date, 'YYYYMMDD') as reserve_start_date
             , to_char(r.reserve_end_date, 'YYYYMMDD') as reserve_end_date
           from
               reserve_table as r
+              left JOIN item_car_master as car on car.item_car_id = r.item_id
+              left JOIN item_other_master as other on other.item_other_id = r.item_id
+              left JOIN work_type as w on w.work_type_id = r.work_type_id
           where
             r.active_flg = true
         """

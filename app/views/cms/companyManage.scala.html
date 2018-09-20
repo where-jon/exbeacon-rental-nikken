@@ -18,12 +18,12 @@
         <div class="row">
             <!-- 左サイドバー -->
             @views.html.templates.sideMenu()
-            <span class="mainSpace col-xs-10 col-sm-10 col-md-10 col-lg-10">
+            <span class="col-xs-10 col-sm-10 col-md-10 col-lg-10">
               <!-- メッセージ -->
               @views.html.templates.msgDiv()
             </span>
             <!-- メイン -->
-            <div class="col-xs-9 col-sm-9 col-md-10 col-lg-10 mainSpace">
+            <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10 mainSpace">
                 <!-- 画面題字 -->
                 <div class="form-group" style="font-weight:bold;font-size:19px;margin:15px 0px;">
                     @Messages("lang.cms.companyManage.page.title")
@@ -46,7 +46,7 @@
                                 <tbody>
                                     @for(company <- companyList){
                                         <tr class="rowColor rowHover" id="@company.companyId">
-                                            <td class="itemTd text-right companyId">@company.companyId</td>
+                                            <td class="itemTd text-center companyId">@company.companyId</td>
                                             <td class="itemTd text-left companyName">@company.companyName</td>
                                             <td class="itemTd text-left note">@company.note</td>
                                         </tr>

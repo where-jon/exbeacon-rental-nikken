@@ -26,9 +26,11 @@ case class CarUpdateForm(
    , inputCarId: String
    , inputCarNo: String
    , inputCarBtxId: String
+   , inputCarKeyBtxIdDsp: String
    , inputCarKeyBtxId: String
    , inputCarTypeName: String
    , inputCarTypeId: String
+   , inputCarTypeCategoryId: Int
    , inputCarName: String
    , inputCarNote: String
 )
@@ -78,12 +80,18 @@ class ItemCarManage @Inject()(
       , "inputCarId" -> text
       , "inputCarNo" -> text.verifying(Messages("error.cms.CarManage.update.inputCarNo.empty"), {!_.isEmpty})
       , "inputCarBtxId" -> text.verifying(Messages("error.cms.CarManage.update.inputCarBtxId.empty"), {_.matches("^[0-9]+$")})
-      , "inputCarKeyBtxId" -> text
+                                    .verifying(Messages("error.cms.CarManage.update.inputCarBtxId.empty"), {inputCarBtxId => inputCarBtxId != "0"})
+      , "inputCarKeyBtxIdDsp" -> text
+      , "inputCarKeyBtxId" -> text.verifying(Messages("error.cms.CarManage.update.inputCarKeyBtxId.empty"), {_.matches("^[0-9]+$")})
+                                       .verifying(Messages("error.cms.CarManage.update.inputCarKeyBtxId.empty"), {inputCarKeyBtxId => inputCarKeyBtxId != "0"})
       , "inputCarTypeName" -> text
       , "inputCarTypeId" -> text.verifying(Messages("error.cms.CarManage.update.inputCarTypeId.empty"), {_.matches("^[0-9]+$")})
+      , "inputCarTypeCategoryId" -> number
       , "inputCarName" -> text.verifying(Messages("error.cms.CarManage.update.inputCarName.empty"), {!_.isEmpty})
       , "inputCarNote" -> text
     )(CarUpdateForm.apply)(CarUpdateForm.unapply))
+    // 権限レベルを取得
+    val reqIdentity = request.identity
     // フォームの取得
     val form = inputForm.bindFromRequest
     if (form.hasErrors){
@@ -94,21 +102,13 @@ class ItemCarManage @Inject()(
       val f = form.get
       // 鍵Tag IDが「無」の場合の対処
       var carKeyBtxId = f.inputCarKeyBtxId
-      if (carKeyBtxId == "無" || carKeyBtxId.isEmpty) {
-        if(f.inputCarTypeId == "1"){
-          // 作業車・立馬の場合
-          errMsg :+= Messages("error.cms.CarManage.update.inputCarKeyBtxId.empty")
-        }else{
+      // カテゴリーが立馬(1)の場合、鍵TagIDに-1をセット
+      if(f.inputCarTypeCategoryId == 1){
           carKeyBtxId = "-1"
-        }
-      } else {
-        if (!carKeyBtxId.matches("^[-0-9]+$")) {
-          errMsg :+= Messages("error.cms.CarManage.update.inputCarKeyBtxId.empty")
-        } else {
-          if (f.inputCarBtxId == carKeyBtxId) {
-            errMsg :+= Messages("error.cms.CarManage.update.inputCarBtxId.inputCarKeyBtxId.duplicate", f.inputCarNo)
-          }
-        }
+      }
+      // TagIDと鍵TagIDが同じIDを指定していないかチェック[
+      if (f.inputCarBtxId.toInt == carKeyBtxId.toInt) {
+        errMsg :+= Messages("error.cms.CarManage.update.inputCarKey.duplicate", f.inputCarNo)
       }
       // 種別存在チェック
       val itemTypeList = itemTypeDAO.selectItemTypeCheck(f.inputCarTypeName, f.inputPlaceId.toInt)
@@ -165,20 +165,20 @@ class ItemCarManage @Inject()(
           // 予約情報テーブルに作業車・立馬IDが存在していないか
           val itemCarReserveList = carDAO.selectCarReserveCheck(super.getCurrentPlaceId, f.inputCarId.toInt)
           if (itemCarReserveList.length > 0) {
-            var chkFlg : Int = 0
+            var chkFlg: Int = 0
             // 現在時刻設定
             val mSimpleDateFormat = new SimpleDateFormat("yyyyMMdd", Locale.JAPAN)
             val currentTime = new Date();
             val mTime = mSimpleDateFormat.format(currentTime)
             val mHour = new SimpleDateFormat("HH").format(Calendar.getInstance().getTime()).toInt
-            for(itemCarReserve <- itemCarReserveList){
-              if(itemCarReserve.reserveEndDate.toInt < mTime.toInt) {
+            for (itemCarReserve <- itemCarReserveList) {
+              if (itemCarReserve.reserveEndDate.toInt < mTime.toInt) {
                 // 予約期間が前日の場合、または期間が終日の場合
                 if (chkFlg != 1) {
                   chkFlg = 2
                 }
 
-              }else{
+              } else {
                 // 当日以降
                 if (itemCarReserve.workTypeId == 1) {
                   // 午前予約の場合
@@ -186,13 +186,13 @@ class ItemCarManage @Inject()(
                     if (mHour < 13) {
                       // 予約済み（使用中）
                       chkFlg = 1
-                    }else{
+                    } else {
                       // 現在時刻が13時を過ぎていた場合
-                      if(chkFlg != 1){
+                      if (chkFlg != 1) {
                         chkFlg = 2
                       }
                     }
-                  }else{
+                  } else {
                     // 予約済み（使用中）
                     chkFlg = 1
                   }
@@ -202,26 +202,29 @@ class ItemCarManage @Inject()(
                     if (mHour < 17) {
                       // 予約済み（使用中）
                       chkFlg = 1
-                    }else{
+                    } else {
                       // 現在時刻が17時を過ぎていた場合
-                      if(chkFlg != 1){
+                      if (chkFlg != 1) {
                         chkFlg = 2
                       }
                     }
-                  }else{
+                  } else {
                     // 予約済み（使用中）
                     chkFlg = 1
                   }
-                }else{
+                } else {
                   // 未来で予約済み
                   chkFlg = 1
                 }
               }
             }
-            if(chkFlg == 1){
+            if (chkFlg == 1) {
               errMsg :+= Messages("error.cms.CarManage.update.inputCarIdReserve.use.noChange", f.inputCarId);
-            }else if(chkFlg == 2){
-              errMsg :+= Messages("error.cms.CarManage.update.inputCarIdReserve.use.exceed", f.inputCarId);
+            } else if (chkFlg == 2) {
+              if(reqIdentity.level < 3) {
+                // 権限がレベル３以下のみ過去の予約情報が有る場合エラーにする
+                errMsg :+= Messages("error.cms.CarManage.update.inputCarIdReserve.use.exceed", f.inputCarId);
+              }
             }
           }
           // TagIDがその他仮設材管理に存在してはいけない
@@ -315,6 +318,8 @@ class ItemCarManage @Inject()(
 
   /** 削除 */
   def delete = SecuredAction { implicit request =>
+    // 権限レベルを取得
+    val reqIdentity = request.identity
     // フォームの準備
     var errMsg = Seq[String]()
     val inputForm = Form(mapping(
@@ -335,14 +340,14 @@ class ItemCarManage @Inject()(
 
       // 予約情報テーブルに作業車・立馬IDが存在していないか
       val carReserveList = carDAO.selectCarReserveCheck(super.getCurrentPlaceId, f.deleteCarId.toInt)
-      if(carReserveList.length > 0){
-        var chkFlg : Int = 0
+      if (carReserveList.length > 0) {
+        var chkFlg: Int = 0
         // 現在時刻設定
         val mSimpleDateFormat = new SimpleDateFormat("yyyyMMdd", Locale.JAPAN)
         val currentTime = new Date();
         val mTime = mSimpleDateFormat.format(currentTime)
         val mHour = new SimpleDateFormat("HH").format(Calendar.getInstance().getTime()).toInt
-        for(itemCarReserve <- carReserveList) {
+        for (itemCarReserve <- carReserveList) {
           if (itemCarReserve.reserveEndDate.toInt < mTime.toInt) {
             // 予約期間が前日の場合、または期間が終日の場合
             if (chkFlg != 1) {
@@ -363,7 +368,7 @@ class ItemCarManage @Inject()(
                     chkFlg = 2
                   }
                 }
-              }else{
+              } else {
                 // 予約済み（使用中）
                 chkFlg = 1
               }
@@ -379,7 +384,7 @@ class ItemCarManage @Inject()(
                     chkFlg = 2
                   }
                 }
-              }else{
+              } else {
                 // 予約済み（使用中）
                 chkFlg = 1
               }
@@ -389,10 +394,13 @@ class ItemCarManage @Inject()(
             }
           }
         }
-        if(chkFlg == 1){
+        if (chkFlg == 1) {
           errMsg :+= Messages("error.cms.CarManage.delete.inputCarIdReserve.use.noChange", f.deleteCarId);
-        }else if(chkFlg == 2){
-          errMsg :+= Messages("error.cms.CarManage.update.inputCarIdReserve.use.exceed", f.deleteCarId);
+        } else if (chkFlg == 2) {
+          if(reqIdentity.level < 3) {
+            // 権限がレベル３以下のみ予約情報が有る場合エラーにする
+            errMsg :+= Messages("error.cms.CarManage.delete.inputCarIdReserve.use.exceed", f.deleteCarId);
+          }
         }
       }
 
