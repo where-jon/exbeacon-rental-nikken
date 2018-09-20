@@ -103,12 +103,13 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
                         <table class="table table-bordered table-condensed itemTable">
                             <thead>
                                 <tr>
-                                    <th colspan="7" class="tableTitleTh">@Messages("lang.site.itemOtherMaster.page.title")</th>
+                                    <th colspan="8" class="tableTitleTh">@Messages("lang.site.itemOtherMaster.page.title")</th>
                                 </tr>
                                 <tr>
+                                    <th class="tableTh ">@Messages("lang.site.itemOtherMaster.txId")</th>
+                                    <th class="tableTh ">@Messages("lang.site.itemOtherMaster.no")</th>
                                     <th class="tableTh ">@Messages("lang.site.itemOtherMaster.curFloor")</th>
                                     <th class="tableTh ">@Messages("lang.site.itemOtherMaster.curPos")</th>
-                                    <th class="tableTh ">@Messages("lang.site.itemOtherMaster.txId")</th>
                                     <th class="tableTh ">@Messages("lang.site.itemOtherMaster.type")</th>
                                     <th class="tableTh ">@Messages("lang.site.itemOtherMaster.name")</th>
                                     <th class="tableTh ">@Messages("lang.site.itemOtherMaster.company")</th>
@@ -120,9 +121,10 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
                             <tbody>
                                 @otherList.zipWithIndex.map { case(other, i) =>
                                     <tr class="rowColor rowHover" data-otherId="@other.item_other_id" id="@other.item_other_id">
+                                        <td class="itemTd text-center ">@other.item_other_btx_id</td>
+                                        <td class="itemTd text-center ">@other.item_other_no</td>
                                         <td class="itemTd text-center ">@other.cur_pos_name</td>
                                         <td class="itemTd text-center ">@other.cur_exb_name</td>
-                                        <td class="itemTd text-center ">@other.item_other_btx_id</td>
                                         <td class="itemTd text-center ">@other.item_type_name</td>
                                         <td class="itemTd text-center ">@other.item_other_name</td>
                                         <td class="itemTd text-center ">@other.company_name</td>
