@@ -329,8 +329,6 @@ class MovementCar @Inject()(config: Configuration
         )
       }
       pw.println("")
-      pw.print("Tag ID,")
-      pw.print("鍵Tag ID,")
       pw.print("番号,")
       pw.print("名称,")
       calendarList.foreach { calendar =>
@@ -340,8 +338,6 @@ class MovementCar @Inject()(config: Configuration
       }
       pw.println("")
       logItemAllList.foreach { item =>
-        pw.print(s"${item.last.itemTagId},")
-        pw.print(s"${item.last.itemKeyTagId},")
         pw.print("=\"")
         pw.print(s"${item.last.itemNo}")
         pw.print("\"")
