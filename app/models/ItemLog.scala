@@ -1,11 +1,12 @@
 package models
 
 import java.text.SimpleDateFormat
-import java.util.{Calendar,Date, Locale}
-import javax.inject.Inject
+import java.util.{Calendar, Date, Locale}
 
+import javax.inject.Inject
 import anorm.SqlParser._
 import anorm.{~, _}
+import play.api.Logger
 import play.api.db._
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, Json, Reads}
@@ -97,6 +98,11 @@ object ItemLog {
 
   implicit def jsonWrites = Json.writes[ItemLog]
 }
+
+case class ItemLogDeleteDate(
+  place_id: Int,
+  updatetime: String
+)
 
 @javax.inject.Singleton
 class ItemLogDAO @Inject() (dbapi: DBApi) {
@@ -341,5 +347,63 @@ class ItemLogDAO @Inject() (dbapi: DBApi) {
     }
   }
 
+  // ログ削除処理用　最古のレコードを取得
+  object DeleteWorkingLog {
+    implicit val jsonReads: Reads[ItemLogDeleteDate] = (
+      (JsPath \ "place_id").read[Int] ~
+        ((JsPath \ "updatetime").read[String])
+      )(ItemLogDeleteDate.apply _)
+
+    implicit def jsonWrites = Json.writes[ItemLogDeleteDate]
+  }
+
+  // Parser
+  val DeleteworkingSimple = {
+    get[Int]("place_id") ~
+      get[String]("updatetime")  map {
+      case place_id ~ updatetime=>
+        ItemLogDeleteDate(place_id, updatetime)
+    }
+  }
+
+  def selectOldestRow(placeId: Int, deltedate: String): Seq[ItemLogDeleteDate] = {
+    db.withConnection { implicit connection =>
+      val sql = SQL(
+        """
+          select
+            log.place_id as place_id,
+            to_char(max(log.updatetime), 'YYYY-MM-DD HH24:MI:SS') as updatetime
+          from
+            item_log as log
+          where
+            log.place_id = """ + {placeId}+ """
+            and log.updatetime < TO_TIMESTAMP('""" + {deltedate}+ """', 'YYYY/MM/DD HH24:MI:SS')
+          group by log.place_id
+        """
+      )
+      sql.as(DeleteworkingSimple.*)
+    }
+  }
+
+  /**
+    * 仮設材ログ削除
+    * @return
+    */
+  def delete(placeId: Int, deltedate: String): Unit = {
+    db.withTransaction { implicit connection =>
+
+      // 作業車の削除
+      SQL(
+        """
+           delete from item_log
+           where place_id = {placeId}
+           and updatetime < TO_TIMESTAMP({deltedate}, 'YYYY/MM/DD HH24:MI:SS');
+        """
+        .stripMargin).on('placeId -> placeId, 'deltedate -> deltedate).executeUpdate()
+
+      // コミット
+      connection.commit()
+    }
+  }
 }
 
