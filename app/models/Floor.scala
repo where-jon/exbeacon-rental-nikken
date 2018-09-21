@@ -400,6 +400,35 @@ Logger.debug(s"""EXBマスタを更新""")
   }
 
   /**
+    * フロア情報の取得(active_flg=True)
+    * @return
+    */
+  def selectFloorValidData(placeId: Int): Seq[FloorAll] = {
+
+    db.withConnection { implicit connection =>
+      val sql = SQL("""
+        select
+          floor_id,
+          floor_name ,
+          display_order,
+          place_id ,
+          active_flg,
+          floor_map_width,
+          floor_map_height,
+          floor_map_image
+          from floor_master as floor
+          where floor.place_id = {placeId}
+          and floor.active_flg = true
+          order by display_order;
+       """).on(
+        "placeId" -> placeId
+      )
+
+      sql.as(simpleFloorAll.*)
+    }
+  }
+
+  /**
     * フロア管理画面表示データ取得
     * @return
     */

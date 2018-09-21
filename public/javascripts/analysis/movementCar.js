@@ -48,7 +48,7 @@ $(function(){
     btnEvent();
 
     // テーブルを固定
-    gInitView.fixTableNoBtnOther();
+    gInitView.fixTable("NoBtnOther");
 
     // マウス操作とタップ操作をバインド
     gInitView.bindMouseAndTouch();

@@ -306,16 +306,12 @@ class MovementCar @Inject()(config: Configuration
       pw.println("")
       pw.print("作業車,")
       pw.print("作業車,")
-      pw.print("作業車,")
-      pw.print("作業車,")
       calendarList.foreach { calendar =>
         pw.print(s"${calendar.szYobi}の週," +
           s"実${calendar.iWeekRealWorkDay}/${calendar.iWeekTotalWorkDay}日,"
         )
       }
       pw.println("")
-      pw.print("Tag ID,")
-      pw.print("鍵Tag ID,")
       pw.print("番号,")
       pw.print("名称,")
       calendarList.foreach { calendar =>
@@ -325,8 +321,6 @@ class MovementCar @Inject()(config: Configuration
       }
       pw.println("")
       logItemAllList.foreach { item =>
-        pw.print(s"${item.last.itemTagId},")
-        pw.print(s"${item.last.itemKeyTagId},")
         pw.print("=\"")
         pw.print(s"${item.last.itemNo}")
         pw.print("\"")
@@ -384,7 +378,7 @@ class MovementCar @Inject()(config: Configuration
       val logItemAllList =  getAllItemLogData(placeId,itemIdList,calendarList)
       Ok(views.html.analysis.movementCar(logItemAllList,calendarList,DETECT_MONTH,TOTAL_LENGTH))
     }else{
-      Redirect(site.routes.WorkPlace.index)
+      Redirect(site.routes.ItemCarMaster.index)
     }
   }
 

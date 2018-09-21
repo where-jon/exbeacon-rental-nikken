@@ -95,14 +95,15 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
                             <table class="table table-bordered table-condensed itemTable">
                                 <thead>
                                     <tr>
-                                        <th colspan="9" class="tableTitleTh">@Messages("lang.site.itemCarCancel.page.title")</th>
+                                        <th colspan="10" class="tableTitleTh">@Messages("lang.site.itemCarCancel.page.title")</th>
                                     </tr>
                                     <tr>
                                         <th class="tableTh ">@Messages("lang.site.itemCarCancel.select")</th>
+                                        <th class="tableTh ">@Messages("lang.site.itemCarCancel.txId")</th>
+                                        <th class="tableTh ">@Messages("lang.site.itemCarCancel.carNo")</th>
                                         <th class="tableTh ">@Messages("lang.site.itemCarCancel.floor")</th>
                                         <th class="tableTh col-xs-2 col-sm-2 col-md-2 col-lg-2">@Messages("lang.site.itemCarCancel.pos")</th>
                                         <th class="tableTh hidden">@Messages("lang.site.itemCarCancel.itemId")</th>
-                                        <th class="tableTh ">@Messages("lang.site.itemCarCancel.txId")</th>
                                         <th class="tableTh hidden">@Messages("lang.site.itemCarCancel.typeId")</th>
                                         <th class="tableTh ">@Messages("lang.site.itemCarCancel.typeName")</th>
                                         <th class="tableTh ">@Messages("lang.site.itemCarCancel.name")</th>
@@ -118,12 +119,13 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
                                             <td class="item common__check--frame" id="check-@i">
                                                 <input class= "checkTotal" type="checkbox" id="isCheckBox-@i" name="checkVal[@i]" value=@i />
                                             </td>
+                                            <td class="itemTd text-center ">@car.item_car_btx_id</td>
+                                            <td class="itemTd text-center ">@car.item_car_no</td>
                                             <td class="itemTd text-center ">@car.cur_pos_name</td>
                                             <td class="itemTd text-center modalSelect">@car.cur_exb_name</td>
                                             <td class="itemTd text-center hidden">@car.item_car_id
                                                 <input class="hidden form-control input-sm" type="text" id="itemId-@i" name="itemId[@i]" value="@car.item_car_id" />
                                             </td>
-                                            <td class="itemTd text-center ">@car.item_car_btx_id</td>
                                             <td class="itemTd text-center hidden">@car.item_type_id
                                                 <input class="hidden form-control input-sm" type="text" id="itemTypeIdList-@i" name="itemTypeIdList[@i]" value="@car.item_type_id" />
                                             </td>

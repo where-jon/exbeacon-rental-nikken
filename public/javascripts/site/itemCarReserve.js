@@ -149,6 +149,7 @@ function btnEvent(){
 $(function(){
     // filter値確認
     getFilterCheck();
+
     // 表示ボタンをクリック
     btnEvent();
 

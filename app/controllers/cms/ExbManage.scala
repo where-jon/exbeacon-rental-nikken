@@ -134,7 +134,7 @@ class ExbManage @Inject()(config: Configuration
 
       Ok(views.html.cms.exbManage(exbInfoList,floorInfoList))
     }else {
-      Redirect(site.routes.WorkPlace.index)
+      Redirect(site.routes.ItemCarMaster.index)
     }
 
   }
