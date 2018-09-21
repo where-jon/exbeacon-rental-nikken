@@ -73,7 +73,7 @@ class AccountManage @Inject()(
       )
     }else {
       // 権限無いとき退場
-      Redirect(site.routes.WorkPlace.index)
+      Redirect(site.routes.ItemCarMaster.index)
     }
   }
 

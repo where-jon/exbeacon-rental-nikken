@@ -84,7 +84,7 @@ class ExbViewerManager @Inject()(config: Configuration
 
       Ok(views.html.manage.exbViewerManager(exbViewerForm, exbViewer,mapViewer,viewType))
     }else{
-      Redirect(site.routes.WorkPlace.index)
+      Redirect(site.routes.ItemCarMaster.index)
     }
   }
 

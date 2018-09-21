@@ -48,7 +48,7 @@ class Gateway @Inject()(
           .flashing(ERROR_MSG_KEY -> Messages("error.undetected.api"))
       }
     }else{
-      Redirect(site.routes.WorkPlace.index)
+      Redirect(site.routes.ItemCarMaster.index)
     }
   }
 }
