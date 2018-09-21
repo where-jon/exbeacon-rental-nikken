@@ -321,8 +321,6 @@ class MovementCar @Inject()(config: Configuration
       pw.println("")
       pw.print("作業車,")
       pw.print("作業車,")
-      pw.print("作業車,")
-      pw.print("作業車,")
       calendarList.foreach { calendar =>
         pw.print(s"${calendar.szYobi}の週," +
           s"実${calendar.iWeekRealWorkDay}/${calendar.iWeekTotalWorkDay}日,"
@@ -395,7 +393,7 @@ class MovementCar @Inject()(config: Configuration
       val logItemAllList =  getAllItemLogData(placeId,itemIdList,calendarList)
       Ok(views.html.analysis.movementCar(logItemAllList,calendarList,DETECT_MONTH,TOTAL_LENGTH))
     }else{
-      Redirect(site.routes.WorkPlace.index)
+      Redirect(site.routes.ItemCarMaster.index)
     }
   }
 
