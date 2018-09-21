@@ -91,17 +91,15 @@ ITEM_TYPE_FILTER: Int
                             <table class="table table-bordered table-condensed itemTable">
                                 <thead>
                                     <tr>
-                                        <th colspan="@(TOTAL_LENGTH*2+5)" class="tableTitleTh">@Messages("lang.site.newItemCarReserve.page.title")</th>
+                                        <th colspan="@(TOTAL_LENGTH*2+3)" class="tableTitleTh">@Messages("lang.site.newItemCarReserve.page.title")</th>
                                     </tr>
                                     <tr>
-                                        <th rowspan="3" class="tableTh ">@Messages("lang.site.itemCarReserve.txId")</th>
-                                        <th rowspan="3" class="tableTh ">@Messages("lang.site.itemCarReserve.name")</th>
                                         <th rowspan="3" class="tableTh ">@Messages("lang.site.itemCarReserve.no")</th>
-                                        <th rowspan="3"class="tableTh ">@Messages("lang.site.itemCarReserve.floor")</th>
+                                        <th rowspan="3" class="tableTh ">@Messages("lang.site.itemCarReserve.name")</th>
                                         <th rowspan="3" class="tableTh ">@Messages("lang.site.itemCarReserve.pos")</th>
                                         <!--日付-->
                                         @arReserveDays.zipWithIndex.map { case(day, i) =>
-                                                <th colspan="2" class="tableTh">@day.getDay</th>
+                                                <th colspan="2" class="tableTh">@day.getDay.substring(5)</th>
                                         }
                                     </tr>
                                     <tr>
@@ -126,19 +124,17 @@ ITEM_TYPE_FILTER: Int
                                 <tbody>
                                     @carList.zipWithIndex.map { case(car, carIndex) =>
                                         <tr class="rowColor rowHover" data-carId="@car.item_car_id" id="@car.item_car_id">
-                                            <td class="itemTd text-center ">@car.btx_id</td>
-                                            <td class="itemTd text-center ">@car.item_car_name</td>
                                             <td class="itemTd text-center ">@car.item_car_no</td>
-                                            <td class="itemTd text-center ">@car.cur_pos_name</td>
+                                            <td class="itemTd text-center ">@car.item_car_name</td>
                                             <td class="itemTd text-center modalSelect">@car.cur_exb_name</td>
-                                                @car.reserveData.zipWithIndex.map { case(day, dayIndex) =>
-                                                    @if(day.reserveDate!= "noDate" ){
-                                                        <td class="itemTd text-center">@day.reserveAmCompany</td>
-                                                        <td class="itemTd text-center">@day.reservePmCompany</td>
-                                                    }else{
-                                                        <td class="itemTd text-center">無</td>
-                                                        <td class="itemTd text-center">無</td>
-                                                    }
+                                            @car.reserveData.zipWithIndex.map { case(day, dayIndex) =>
+                                                @if(day.reserveDate!= "noDate" ){
+                                                    <td class="itemTd text-center">@day.reserveAmCompany</td>
+                                                    <td class="itemTd text-center">@day.reservePmCompany</td>
+                                                }else{
+                                                    <td class="itemTd text-center">無</td>
+                                                    <td class="itemTd text-center">無</td>
+                                                }
                                             }
                                         </tr>
                                     }
