@@ -30,7 +30,7 @@
                         @if(request.path contains "/site/") {
                         <a class="text-center tabSelected menu-title"><i class="fa fa-eye"></i>&nbsp;@Messages("lang.navbar.tab.temporaryMaterialManagement")</a>
                         }else{
-                        <a href="/site/workPlace" class="text-center tab menu-title"><i class="fa fa-eye"></i>&nbsp;@Messages("lang.navbar.tab.temporaryMaterialManagement")</a>
+                        <a href="/site/itemCarMaster" class="text-center tab menu-title"><i class="fa fa-eye"></i>&nbsp;@Messages("lang.navbar.tab.temporaryMaterialManagement")</a>
                         }
                     </li>
                     @if(user.services.contains("level2") || user.services.contains("level3") || user.services.contains("master") ) {
@@ -38,7 +38,7 @@
                         @if(request.path contains "/analysis/") {
                         <a class="text-center tabSelected"><i class="fa fa-bar-chart"></i>&nbsp;@Messages("lang.navbar.tab.analysis")</a>
                         }else{
-                        <a href="/analysis/movementCar" class="text-center tab"><i class="fa fa-bar-chart"></i>&nbsp;@Messages("lang.navbar.tab.analysis")</a>
+                        <a href="/analysis/telemetry" class="text-center tab"><i class="fa fa-bar-chart"></i>&nbsp;@Messages("lang.navbar.tab.analysis")</a>
                         }
                     </li>
                     <li class="pull-left" style="margin-left:2px">

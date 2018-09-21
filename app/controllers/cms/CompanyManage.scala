@@ -43,7 +43,7 @@ class CompanyManage @Inject()(config: Configuration
       val companyList = companyDAO.selectCompany(placeId)
       Ok(views.html.cms.companyManage(companyList, placeId))
     }else {
-      Redirect(site.routes.WorkPlace.index)
+      Redirect(site.routes.ItemCarMaster.index)
     }
   }
 

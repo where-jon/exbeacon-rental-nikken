@@ -82,7 +82,7 @@ class PlaceManage @Inject() (
         }
       }
     } else {
-      Redirect(site.routes.WorkPlace.index)
+      Redirect(site.routes.ItemCarMaster.index)
     }
   }
 
@@ -103,7 +103,7 @@ class PlaceManage @Inject() (
         }
       }
     }else {
-      Redirect(site.routes.WorkPlace.index)
+      Redirect(site.routes.ItemCarMaster.index)
     }
   }
 

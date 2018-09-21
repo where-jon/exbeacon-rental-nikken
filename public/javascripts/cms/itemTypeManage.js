@@ -33,8 +33,8 @@ function showInputModal(isRegister){
         $("#background-color").ColorPickerSliders({
             color: '#6a6a6a',
             placement: 'right',
-            sliders: true,
-            swatches: false,
+            sliders: false,
+            swatches:false,
             hsvpanel: true
         });
         $('#inputItemTypeTextColor').val('rgb(106,106,106)');
@@ -42,7 +42,7 @@ function showInputModal(isRegister){
         $("#text-color").ColorPickerSliders({
             color: '#6a6a6a',
             placement: 'right',
-            sliders: true,
+            sliders: false,
             swatches: false,
             hsvpanel: true
         });
