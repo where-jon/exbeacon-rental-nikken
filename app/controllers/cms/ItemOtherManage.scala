@@ -64,7 +64,7 @@ class ItemOtherManage @Inject()(
       val itemOtherList = itemOtherDAO.selectOtherMasterInfo(placeId)
       Ok(views.html.cms.itemOtherManage(ITEM_TYPE_FILTER, ITEM_TYPE, itemOtherList, itemTypeList, placeId))
     }else {
-      Redirect(site.routes.WorkPlace.index)
+      Redirect(site.routes.ItemCarMaster.index)
     }
   }
 

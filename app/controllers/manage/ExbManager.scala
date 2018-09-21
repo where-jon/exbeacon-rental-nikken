@@ -90,7 +90,7 @@ class ExbManager @Inject()(config: Configuration
       //val vExb = exbDAO.selectAll()
       Ok(views.html.manage.exbManager(exbForm, vExb))
     }else{
-      Redirect(site.routes.WorkPlace.index)
+      Redirect(site.routes.ItemCarMaster.index)
     }
   }
 
