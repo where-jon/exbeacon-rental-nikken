@@ -605,6 +605,7 @@ lang.search.term = 期間 :
 lang.search.type = 種別 :
 lang.search.curFloor = 現在フロア :
 lang.search.reserveFloor = 予約フロア :
+lang.search.reserveCompany = 予約業者 :
 lang.search.detectedFloor = 検知位置 :
 lang.search.absence = 不在
 lang.search.undetected = 未検知
