@@ -20,7 +20,7 @@ class ItemLogDataDeleteActor @Inject()(config: Configuration
                                        , placeDAO: placeDAO
   ) extends Actor {
   val BATCH_NAME = "仮設材削除"
-  private val enableLogging = config.getBoolean("akka.quartz.schedules.ItemLogDataDeleteActor.loggingStart").getOrElse(false)
+  private val enableLogging = config.getBoolean("akka.quartz.schedules.ItemLogDataDeleteActor.logDeleteStart").getOrElse(false)
 
   def receive = {
     case msg:String => {
