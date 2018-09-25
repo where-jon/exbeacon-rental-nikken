@@ -48,6 +48,12 @@ case class ItemCarSearchData(
    , inputDate: String
  )
 
+/*作業車・立馬予約検索用formクラス*/
+case class NewItemCarSearchData(
+    inputSearchDate: String
+  , inputDate: String
+)
+
 case class ItemCar(
   itemCarId: Int
   , itemTypeId: Int

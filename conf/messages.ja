@@ -610,6 +610,7 @@ lang.search.absence = 不在
 lang.search.undetected = 未検知
 lang.search.floor = 検知フロア :
 lang.search.reserveDate = 予約日：
+lang.search.searchDate = 検索日数：
 lang.search.reserveDate2 = 予約日：
 lang.search.powerlevel = 電池残量 :
 lang.search.detectedDate = 検出日：
@@ -695,7 +696,9 @@ lang.site.itemCarMaster.reserveId=予約ID
 
 
 # 新作業車・立馬予約
-lang.site.newItemCarReserve.page.title=新作業車・立馬予約
+lang.site.newItemCarReserve.page.title=作業車・立馬予約
+
+error.site.newItemCarReserve.searchDate.empty=「-1」以上数字で検索お願いします。
 
 # 作業車・立馬予約
 lang.site.itemCarReserve.page.title=作業車・立馬予約

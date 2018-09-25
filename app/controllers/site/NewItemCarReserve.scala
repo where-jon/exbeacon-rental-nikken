@@ -9,7 +9,7 @@ import controllers.{BaseController, BeaconService, errors}
 import models._
 import play.api._
 import play.api.data.Form
-import play.api.data.Forms._
+import play.api.data.Forms.{text, _}
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import utils.silhouette.MyEnv
 
@@ -58,10 +58,9 @@ class NewItemCarReserve @Inject()(config: Configuration
   var TOTAL_LENGTH = 0;
 
   val itemCarSearchForm = Form(mapping(
-    "itemTypeId" ->number,
-    "workTypeName" -> text,
+    "inputSearchDate" -> text.verifying(Messages("error.site.newItemCarReserve.searchDate.empty"), {_.matches("^[0-9]+$")}),
     "inputDate" -> text
-  )(ItemCarSearchData.apply)(ItemCarSearchData.unapply))
+  )(NewItemCarSearchData.apply)(NewItemCarSearchData.unapply))
 
   /** 　初期化 */
   def init() {
@@ -195,35 +194,43 @@ class NewItemCarReserve @Inject()(config: Configuration
     //検索側データ取得
     getSearchData(placeId)
 
-    // 部署情報
-    val carFormSearchData = itemCarSearchForm.bindFromRequest.get
-//    ITEM_TYPE_FILTER = carFormSearchData.itemTypeId
-//    WORK_TYPE_FILTER = carFormSearchData.workTypeName
-    RESERVE_DATE = carFormSearchData.inputDate
-    DETECT_DATE = RESERVE_DATE
-
-    // dbデータ取得
-    // 設定日ロジック
-    val arReserveDays = calendarDAO.selectGetDayOfWeek(RESERVE_DATE,TERM_DAY)
-    TOTAL_LENGTH = arReserveDays.size
-    val vStartDate = arReserveDays(0).getDay
-    val vEndDate = arReserveDays((arReserveDays.size-1)).getDay
-    val dbReserveDatas = carDAO.selectCarMasterCalendarType(placeId,itemIdList,vStartDate,vEndDate)
-    val carListApi = beaconService.getItemCarReserveBeaconPosition(dbReserveDatas,arReserveDays,true,placeId)
-
-    arReserveDays.zipWithIndex.foreach { case (reserveDay, index) =>
-      val vTempYobi= calendarDAO.getYobi(reserveDay.getDay)
-      reserveDay.getYobi = vTempYobi
-    }
-
-    if(carListApi!=null){
-      Ok(views.html.site.newItemCarReserve(ITEM_TYPE_FILTER,WORK_TYPE_FILTER,RESERVE_DATE
-        ,carListApi,itemTypeList,companyNameList,floorNameList,workTypeList,WORK_TYPE,DETECT_DATE,arReserveDays,TOTAL_LENGTH))
+    val form = itemCarSearchForm.bindFromRequest
+    if (form.hasErrors){
+      val errMsg = form.errors.map(_.message).mkString(HTML_BR)
+      Redirect(routes.NewItemCarReserve.index()).flashing(ERROR_MSG_KEY -> errMsg)
     }else{
-      // apiと登録データが違う場合
-      Redirect(errors.routes.UnDetectedApi.indexSite)
-        .flashing(ERROR_MSG_KEY -> Messages("error.unmatched.data"))
+      // 部署情報
+      val carFormSearchData = itemCarSearchForm.bindFromRequest.get
+      //    ITEM_TYPE_FILTER = carFormSearchData.itemTypeId
+      //    WORK_TYPE_FILTER = carFormSearchData.workTypeName
+      RESERVE_DATE = carFormSearchData.inputDate
+      DETECT_DATE = RESERVE_DATE
+      TERM_DAY = carFormSearchData.inputSearchDate.toInt
+
+      // dbデータ取得
+      // 設定日ロジック
+      val arReserveDays = calendarDAO.selectGetDayOfWeek(RESERVE_DATE,TERM_DAY)
+      TOTAL_LENGTH = arReserveDays.size
+      val vStartDate = arReserveDays(0).getDay
+      val vEndDate = arReserveDays((arReserveDays.size-1)).getDay
+      val dbReserveDatas = carDAO.selectCarMasterCalendarType(placeId,itemIdList,vStartDate,vEndDate)
+      val carListApi = beaconService.getItemCarReserveBeaconPosition(dbReserveDatas,arReserveDays,true,placeId)
+
+      arReserveDays.zipWithIndex.foreach { case (reserveDay, index) =>
+        val vTempYobi= calendarDAO.getYobi(reserveDay.getDay)
+        reserveDay.getYobi = vTempYobi
+      }
+
+      if(carListApi!=null){
+        Ok(views.html.site.newItemCarReserve(ITEM_TYPE_FILTER,WORK_TYPE_FILTER,RESERVE_DATE
+          ,carListApi,itemTypeList,companyNameList,floorNameList,workTypeList,WORK_TYPE,DETECT_DATE,TERM_DAY,arReserveDays,TOTAL_LENGTH))
+      }else{
+        // apiと登録データが違う場合
+        Redirect(errors.routes.UnDetectedApi.indexSite)
+          .flashing(ERROR_MSG_KEY -> Messages("error.unmatched.data"))
+      }
     }
+
   }
 
   /** 初期表示 */
@@ -252,7 +259,7 @@ class NewItemCarReserve @Inject()(config: Configuration
 
       if(carListApi!=null){
         Ok(views.html.site.newItemCarReserve(ITEM_TYPE_FILTER,WORK_TYPE_FILTER,RESERVE_DATE
-          ,carListApi,itemTypeList,companyNameList,floorNameList,workTypeList,WORK_TYPE,DETECT_DATE,arReserveDays,TOTAL_LENGTH))
+          ,carListApi,itemTypeList,companyNameList,floorNameList,workTypeList,WORK_TYPE,DETECT_DATE,TERM_DAY,arReserveDays,TOTAL_LENGTH))
       }else{
         // apiと登録データが違う場合
         Redirect(errors.routes.UnDetectedApi.indexSite)

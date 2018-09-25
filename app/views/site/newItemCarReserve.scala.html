@@ -9,6 +9,7 @@ ITEM_TYPE_FILTER: Int
 ,workTypeList :Seq[WorkType]
 ,workTypeMap: Map[Int,String]
 ,DETECT_DATE:String
+,TERM_DAY:Int
 ,arReserveDays :Seq[GetOneWeekData]
 ,TOTAL_LENGTH: Int
 )(implicit user: User, messages: Messages, request: RequestHeader, flash: Flash)
@@ -56,29 +57,24 @@ ITEM_TYPE_FILTER: Int
                                 <input type='text' class="form-control inputClass" id="inputDate" name="inputDate" value="@DETECT_DATE" style="width: 100px;"/>
                             </div>
                         </div>
-                        <div class="hidden" style="margin-right:10px;float:left;">
-                            @Messages("lang.search.type")
-                            <select id="ITEM_TYPE_FILTER" style="width: 120px;">
-                                <!--仮設材種別テーブルから検索フィルタを設置-->
-                                <option value="0"></option>
-                                @itemTypeList.zipWithIndex.map { case(itemType, i) =>
-                                    <option value="@itemType.item_type_id">@itemType.item_type_name</option>
-                                }
-                            </select>
-                            <input class="hidden form-control input-sm" type="text" id="itemTypeId" name="itemTypeId" value="@ITEM_TYPE_FILTER" />
-                        </div>
-                        <div class="hidden" style="margin-right:10px;float:left;">
-                            @Messages("lang.search.term")
-                            <select id="WORK_TYPE_FILTER" style="width: 120px;">
-                                <option value=""></option>
-                                @workTypeList.zipWithIndex.map { case(workType, i) =>
-                                    <option value="@workType.work_type_name">@workType.work_type_name</option>
-                                }
-                            </select>
-                            <input class="hidden form-control input-sm" type="text" id="workTypeName" name="workTypeName" value="@WORK_TYPE_FILTER" />
+
+                        <!--検索日数-->
+                        <div style="margin-right:10px;float:left;">
+                            <div style="float:left">@Messages("lang.search.searchDate")</div>
+                            <div class='input-group' style="margin-top:-5px;">
+                                <input type='number' class="form-control" id="inputSearchDate" name="inputSearchDate" value="@TERM_DAY" style="width: 100px;"/>
+                            </div>
                         </div>
 
-                        <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2" style="padding:0;">
+                        <!--名称-->
+                        <div style="margin-right:10px;float:left;">
+                            <div style="float:left">名称：</div>
+                            <div class='input-group' style="margin-top:-5px;">
+                                <input type='text' class="form-control" id="inputName" name="inputName" value="" style="width: 100px;"/>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2" style="padding:0; margin-top: 5px;" >
                             <div id = "viewBtn" class="text-center btn btn__view--frame">
                                 @Messages("lang.btn.reserve.search")
                             </div>
@@ -102,6 +98,7 @@ ITEM_TYPE_FILTER: Int
                                         <th colspan="@(TOTAL_LENGTH*2+3)" class="tableTitleTh">@Messages("lang.site.newItemCarReserve.page.title")</th>
                                     </tr>
                                     <tr>
+                                        <th rowspan="3" class="hidden tableTh ">@Messages("lang.site.itemCarReserve.txId")</th>
                                         <th rowspan="3" class="tableTh ">@Messages("lang.site.itemCarReserve.no")</th>
                                         <th rowspan="3" class="tableTh ">@Messages("lang.site.itemCarReserve.name")</th>
                                         <th rowspan="3" class="tableTh ">@Messages("lang.site.itemCarReserve.pos")</th>
@@ -132,16 +129,25 @@ ITEM_TYPE_FILTER: Int
                                 <tbody>
                                     @carList.zipWithIndex.map { case(car, carIndex) =>
                                         <tr class="rowColor rowHover" data-carId="@car.item_car_id" id="@car.item_car_id">
+                                            <td class="itemTd text-center hidden">@car.item_car_btx_id</td>
                                             <td class="itemTd text-center ">@car.item_car_no</td>
                                             <td class="itemTd text-center ">@car.item_car_name</td>
                                             <td class="itemTd text-center modalSelect">@car.cur_exb_name</td>
                                             @car.reserveData.zipWithIndex.map { case(day, dayIndex) =>
-                                                @if(day.reserveDate!= "noDate" ){
-                                                    <td class=" itemTd text-center reserve__already--frame">@day.reserveAmCompany</td>
-                                                    <td class=" itemTd text-center reserve__already--frame">@day.reservePmCompany</td>
+                                                @if(day.reserveDate!= "noDate"){
+                                                    @if(day.reserveAmCompany!= "noAmCompany"){
+                                                    <td class="reserveTdHover itemTd text-center reserve__already--frame">@day.reserveAmCompany</td>
+                                                    }else{
+                                                    <td class="reserveTdHover itemTd text-center reserve__none--frame"></td>
+                                                    }
+                                                    @if(day.reservePmCompany!= "noPmCompany"){
+                                                    <td class="reserveTdHover itemTd text-center reserve__already--frame">@day.reservePmCompany</td>
+                                                    }else{
+                                                    <td class="reserveTdHover itemTd text-center reserve__none--frame"></td>
+                                                    }
                                                 }else{
-                                                    <td class=" itemTd text-center reserve__none--frame"></td>
-                                                    <td class=" itemTd text-center reserve__none--frame"></td>
+                                                    <td class="reserveTdHover itemTd text-center reserve__none--frame"></td>
+                                                    <td class="reserveTdHover itemTd text-center reserve__none--frame"></td>
                                                 }
                                             }
                                         </tr>
@@ -196,30 +202,29 @@ ITEM_TYPE_FILTER: Int
                         <input type="hidden" id="actualItemInfoStr" name="actualItemInfoStr" />
                         <div class="modal-header" style="">@Messages("lang.site.newItemCarReserve.page.title")</div>
                         <div class="modal-body">
+
                             <div class="form-group" style="margin-bottom: 5px;">
-                                <label class="text-right  control-label col-xs-6">@Messages("lang.site.item.reserveDate")</label>
-                                <label id="mReserveDate" class="modalClass control-label">@Messages("lang.site.item.noselect")</label>
-                            </div>
-                            <div class="hidden form-group" style="margin-bottom: 5px;">
-                                <label class="text-right control-label col-xs-6">@Messages("lang.site.item.type")</label>
-                                <label id="mItemTypeName" class="modalClass control-label">@Messages("lang.site.item.noselect")</label>
-                            </div>
-                            <div class="form-group" style="margin-bottom: 5px;">
-                                <label class="text-right control-label col-xs-6">@Messages("lang.site.item.term")</label>
-                                <label id="mWorkTypeName" class="modalClass control-label">@Messages("lang.site.item.noselect")</label>
-                            </div>
-                            <div class="form-group" style="margin-bottom: 5px;">
-                                <label class="text-right control-label col-xs-6">@Messages("lang.site.item.company")</label>
-                                <label id="mCompanyName" class="modalClass control-label">@Messages("lang.site.item.noselect")</label>
+                                <label class="text-right  control-label col-xs-6" style="margin-top: 5px;">@Messages("lang.search.company")</label>
+                                <select id="COMPANY_NAME_FILTER" style="width: 120px;">
+                                    <!--業者マスターから検索フィルタを設置-->
+                                    <option value=""></option>
+                                    @companyNameList.zipWithIndex.map { case(company, i) =>
+                                    <option value="@company.companyName">@company.companyName</option>
+                                    }
+                                </select>
+                                <input class="hidden  form-control input-sm" type="text" id="companyName" name="companyName" value="" />
                             </div>
                             <div class="form-group" style="margin-bottom: 5px;">
-                                <label class="text-right control-label col-xs-6">@Messages("lang.site.item.reserveFloor")</label>
-                                <label id="mReserveFloorName" class="modalClass control-label">@Messages("lang.site.item.noselect")</label>
+                                <label class="text-right  control-label col-xs-6" style="margin-top: 5px;">@Messages("lang.site.item.reserveFloor")</label>
+                                <select id="FLOOR_NAME_FILTER" style="width: 120px;">-
+                                     <!--仮設材種別テーブルから検索フィルタを設置-->
+                                    <option value=""></option>
+                                    @floorNameList.zipWithIndex.map { case(floor, i) =>
+                                    <option value="@floor.floor_name">@floor.floor_name</option>
+                                    }
+                                </select>
+                                <input class="hidden  form-control input-sm" type="text" id="floorName" name="floorName" value="" />
                             </div>
-                            <!--<div class="form-group" style="margin-bottom: 5px;">-->
-                            <!--<label class="text-right control-label col-xs-6">選択</label>-->
-                            <!--<label id="mArSelectId" class="modalClass control-label">未設定</label>-->
-                            <!--</div>-->
                         </div>
                         <div class="modal-footer">
                             <div class="col-xs-6 text-center">

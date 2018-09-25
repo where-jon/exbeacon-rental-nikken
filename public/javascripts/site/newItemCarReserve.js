@@ -128,15 +128,6 @@ function btnEvent(){
 
     var viewBtnElement = document.getElementById("viewBtn")
     viewBtnElement.addEventListener('click', function(event) {
-        // itemTypeId結果をfromへ設定
-        var itemTypeFilterResult = $('#ITEM_TYPE_FILTER option:selected').val();
-        var inputItemType = document.getElementById("itemTypeId")
-        inputItemType.value = itemTypeFilterResult
-
-        // work_type_name結果をfromへ設定
-        var workTypeNameFilterResult = $('#WORK_TYPE_FILTER option:selected').val();
-        var inputWorkTypeName = document.getElementById("workTypeName")
-        inputWorkTypeName.value = workTypeNameFilterResult
 
         // inputDate結果をfromへ設定
         var inputDate = document.getElementById("inputDate")
