@@ -30,7 +30,7 @@ class TxTagManage @Inject()(config: Configuration
 
   /*検索用*/
   var ITEM_TYPE_FILTER = 0
-  var POWER_FILTER = -1
+  var POWER_FILTER = 0
 
   var itemTypeList :Seq[ItemType] = null // 仮設材種別
   var itemIdList :Seq[Int] = null // 仮設材種別id
@@ -39,7 +39,7 @@ class TxTagManage @Inject()(config: Configuration
   /** 　初期化 */
   def init() {
     ITEM_TYPE_FILTER = 0
-    POWER_FILTER = -1
+    POWER_FILTER = 0
   }
 
 
