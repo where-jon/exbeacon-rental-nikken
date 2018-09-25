@@ -41,6 +41,7 @@
                     <div class="text-left col-xs-11 col-sm-11 col-md-11 col-lg-11" style="padding:0;">
                         <div style="margin-right:20px;float:left;">
                             @Messages("lang.search.powerlevel")
+                            <!--電池残量検索フィルタを設置-->
                             <select id="POWER_FILTER" style="width: 120px;">
                                 <option value="-1"></option>
                                 @POWER_ENUM.zipWithIndex.map { case(power, i) =>
@@ -96,9 +97,9 @@
                                             @{
                                                 if(data.power_level <= 20){
                                                     if(data.power_level == -1){
-                                                        <div id="batteryDanger" class="preview_icon" style="background: #c00; color: #fff;">未検知</div>
+                                                        <div id="batteryDanger" class="preview_icon" style="background: #808080; color: #fff;">未検知</div>
                                                     }else{
-                                                        <div id="batteryDanger" class="preview_icon" style="background: #c00; color: #fff;">交換</div>
+                                                        <div id="batteryExchange" class="preview_icon" style="background: #c00; color: #fff;">交換</div>
                                                     }
                                                 }else if(data.power_level <= 30){
                                                     <div id="batteryWarn" class="preview_icon" style="background: #ed7d31; color: #fff;">注意</div>
