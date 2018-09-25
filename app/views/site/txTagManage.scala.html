@@ -43,7 +43,7 @@
                             @Messages("lang.search.powerlevel")
                             <!--電池残量検索フィルタを設置-->
                             <select id="POWER_FILTER" style="width: 120px;">
-                                <option value="-1"></option>
+                                <option value="0"></option>
                                 @POWER_ENUM.zipWithIndex.map { case(power, i) =>
                                     <option value="@power._1">@power._2</option>
                                 }

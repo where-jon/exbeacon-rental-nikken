@@ -82,10 +82,10 @@ class TxTagManage @Inject()(config: Configuration
     }
 
     val POWER_ENUM = PowerEnum().map;
-    if (POWER_FILTER != -1) {
+    if (POWER_FILTER != 0) {
       if(POWER_FILTER == POWER_ENUM.toList(3)._1) {
         // 未検出
-        beaconListApi = beaconListApi.filter(_.power_level <= -1)
+        beaconListApi = beaconListApi.filter(_.power_level == POWER_FILTER)
       }else if(POWER_FILTER <= POWER_ENUM.toList(2)._1){
         // 交換
         beaconListApi = beaconListApi.filter(_.power_level <= POWER_FILTER).filter(_.power_level >= 0)
