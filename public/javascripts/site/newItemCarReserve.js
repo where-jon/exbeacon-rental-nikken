@@ -150,7 +150,7 @@ function btnEvent(){
 // テーブルの固定
 function fixTable(){
     // テーブルの固定
-    var h = $(window).height()*0.7;
+    var h = $(window).height()*0.85;
     // テーブルの調整
     var ua = navigator.userAgent;
     if (ua.indexOf('iPad') > 0 || ua.indexOf('Android') > 0 || ua.indexOf('iPhone') > 0 || ua.indexOf('iPod') > 0){
@@ -178,27 +178,58 @@ function bindMouseAndTouch(){
     var ua = navigator.userAgent;
     if (ua.indexOf('iPad') > 0 || ua.indexOf('Android') > 0 || ua.indexOf('iPhone') > 0 || ua.indexOf('iPod') > 0){
         // タッチデバイスの場合
-        $(".rowHover").bind({
+        var touched = false;
+        var touch_time = 0;
+        $(".reserveTdHover").bind({
             'touchstart': function(e) {
                 if(e.originalEvent.touches.length > 1){
+                    touch_time = 0;
+                    touched = false;
+                    clearInterval(document.interval);
                 }else if(e.originalEvent.touches.length == 1){
-                    $(".rowHoverSelectedColor").removeClass('rowHoverSelectedColor');
-                    $(this).addClass('rowHoverSelectedColor');
+                    $(this).addClass('reserveTdHoverColor');
+                    var targetTd = $(this);
+                    touched = true;
+                    touch_time = 0;
+                    document.interval = setInterval(function(){
+                        touch_time += 500;
+                        if (touch_time == 500) {
+                            // ロングタップ時の処理
+                            showInputModal($(targetTd));
+                            touch_time = 0;
+                            clearInterval(document.interval);
+                        }
+                    }, 500);
                 }
             },
+            'touchend': function(e) {
+                $(this).removeClass('reserveTdHoverColor');
+                touched = false;
+                touch_time = 0;
+                clearInterval(document.interval);
+            },
+            'touchmove': function(e) {
+                $(this).removeClass('reserveTdHoverColor');
+                touched = false;
+                touch_time = 0;
+                clearInterval(document.interval);
+            }
         });
     }else{
         // PCブラウザの場合
-        $(".rowHover").bind({
+        $(".reserveTdHover").bind({
             'mouseover': function(e) {
-                $(this).addClass('rowHoverColor');
+                $(this).addClass('reserveTdHoverColor');
             },
             'mouseout': function(e) {
-                $(this).removeClass('rowHoverColor');
+                $(this).removeClass('reserveTdHoverColor');
+            },
+            'drag': function(e) {
+                $(this).removeClass('reserveTdHoverColor');
             },
             'click': function(e) {
-                $(".rowHoverSelectedColor").removeClass('rowHoverSelectedColor');
-                $(this).addClass('rowHoverSelectedColor');
+                $(this).removeClass('reserveTdHoverColor');
+                showInputModal($(this));
             },
         });
     }
@@ -221,7 +252,7 @@ $(function(){
 
     fixTable();
 
-bindMouseAndTouch();
+    bindMouseAndTouch();
 
  // リサイズ対応
     var timer = false;
