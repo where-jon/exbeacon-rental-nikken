@@ -385,6 +385,25 @@ class ItemLogDAO @Inject() (dbapi: DBApi) {
     }
   }
 
+
+  def selectOldestRow(placeId: Int): Seq[ItemLogDeleteDate] = {
+    db.withConnection { implicit connection =>
+      val sql = SQL(
+        """
+          select
+            log.place_id as place_id,
+            to_char(min(log.updatetime), 'YYYY-MM-DD HH24:MI:SS') as updatetime
+          from
+            item_log as log
+          where
+            log.place_id = """ + {placeId}+ """
+          group by log.place_id
+        """
+      )
+      sql.as(DeleteworkingSimple.*)
+    }
+  }
+
   /**
     * 仮設材ログ削除
     * @return
