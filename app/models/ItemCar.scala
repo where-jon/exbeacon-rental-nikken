@@ -9,6 +9,21 @@ import controllers.site.{CancelItem, ReserveItem}
 import play.api.Logger
 import play.api.db._
 
+
+/*作業車・立馬予約用formクラス*/
+case class NewItemCarReserveData(
+  inputDate: String
+  ,inputSearchDate: String
+  , inputName: String
+  ,  checkList: List[String]
+  , itemId: List[Int]
+  , itemTypeIdList: List[Int]
+  , dayList: List[String]
+  , workTypeList: List[Int]
+  , companyName: String
+  , floorName: String
+)
+
 /*作業車・立馬予約用formクラス*/
 case class ItemCarReserveData(
   itemTypeId: Int
@@ -50,8 +65,9 @@ case class ItemCarSearchData(
 
 /*作業車・立馬予約検索用formクラス*/
 case class NewItemCarSearchData(
-    inputSearchDate: String
-  , inputDate: String
+  inputDate: String
+  ,inputSearchDate: String
+  , inputName: String
 )
 
 case class ItemCar(
@@ -878,7 +894,7 @@ class itemCarDAO @Inject()(dbapi: DBApi) {
     var vResult = "exception"
     db.withTransaction { implicit connection =>
       //reserveItemCar(1).itemTypeId
-      reserveItemCar.zipWithIndex.map { case (item, num) =>
+      reserveItemCar.zipWithIndex.foreach { case (item, num) =>
         val sql = SQL("""
 
             insert into reserve_table

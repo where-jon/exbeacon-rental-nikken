@@ -16,6 +16,11 @@ function getFilterCheck(){
     if(inputDate!=null){
          $('#RESERVE_DATE').val(inputDate.value)
     }
+
+    var inputName = document.getElementById("inputName")
+    if(inputName!=null){
+         $('#ITEM_NAME_FILTER').val(inputName.value)
+    }
 }
 
 function dbExecuteManager(routeUrl){
@@ -35,7 +40,6 @@ function btnEvent(){
 
     // DatePickerの設定 start---------------------------------------
      gDatePicker.dayClickEvent();
-     gDatePicker.htmlDayClickEvent();
     // DatePickerの設定 end-----------------------------------------
 
 
@@ -44,12 +48,6 @@ function btnEvent(){
     registerBtnElement.addEventListener('click', function(event) {
         if(gReserveCheck){
             gReserveCheck = false;
-
-            // itemTypeId結果をfromへ設定
-            var itemTypeFilterResult = $('#ITEM_TYPE_FILTER option:selected').val();
-            var inputItemType = document.getElementById("itemTypeId")
-            inputItemType.value = itemTypeFilterResult
-
             // companyName結果をfromへ設定
             var companyNameFilterResult = $('#COMPANY_NAME_FILTER option:selected').val();
             var inputCompanyName = document.getElementById("companyName")
@@ -60,70 +58,14 @@ function btnEvent(){
             var inputFloorName = document.getElementById("floorName")
             inputFloorName.value = floorNameFilterResult
 
-            // work_type_name結果をfromへ設定
-            var workTypeNameFilterResult = $('#WORK_TYPE_FILTER option:selected').val();
-            var inputWorkTypeName = document.getElementById("workTypeName")
-            inputWorkTypeName.value = workTypeNameFilterResult
-
-            // inputDate結果をfromへ設定
-            var inputDate = document.getElementById("inputDate")
-            inputDate.value = gDatePicker.startSqlTime
-
-            dbExecuteManager("../site/itemCarReserve/reserve")
+            dbExecuteManager("../site/newItemCarReserve/reserve")
         }
     });
 
     //　予約へボタン
     var reserveBtnElement = document.getElementById("reserveBtn")
     reserveBtnElement.addEventListener('click', function(event) {
-
          $('#inputModal').modal();
-         // modal値設定
-        // item種別
-        var itemTypeFilterResult = $('#ITEM_TYPE_FILTER option:selected')[0].text;
-        var mItemTypeName = document.getElementById("mItemTypeName")
-        if(itemTypeFilterResult != ""){
-            mItemTypeName.textContent = itemTypeFilterResult
-        }
-
-        // companyName結果をfromへ設定
-        var companyNameFilterResult = $('#COMPANY_NAME_FILTER option:selected').val();
-        var mCompanyName = document.getElementById("mCompanyName")
-        if(companyNameFilterResult != ""){
-            mCompanyName.textContent = companyNameFilterResult
-        }
-
-
-        // floorName結果をfromへ設定
-        var floorNameFilterResult = $('#FLOOR_NAME_FILTER option:selected').val();
-        var mReserveFloorName = document.getElementById("mReserveFloorName")
-        if(floorNameFilterResult != ""){
-            mReserveFloorName.textContent = floorNameFilterResult
-        }
-
-        // work_type_name結果をfromへ設定
-        var workTypeNameFilterResult = $('#WORK_TYPE_FILTER option:selected').val();
-        if(workTypeNameFilterResult != ""){
-            mWorkTypeName.textContent = workTypeNameFilterResult
-        }
-
-        // inputDate結果をfromへ設定
-        var mReserveDate = document.getElementById("mReserveDate")
-        var inputDate = document.getElementById("inputDate")
-        if(inputDate.value != ""){
-            mReserveDate.textContent = gDatePicker.startSqlTime
-        }
-
-
-        // 選択
-//        var mArSelectId = document.getElementById("mArSelectId")
-//        mArSelectId.textContent = "";
-//        $("input[name=current_proudct]:checked").each(function() {
-//          arCheckBoxIndex.push(this.value)
-//          mArSelectId.textContent += this.value
-//        });
-
-
     });
 
     var viewBtnElement = document.getElementById("viewBtn")
@@ -219,10 +161,22 @@ function bindMouseAndTouch(){
                 $(this).removeClass('reserveTdHoverColor');
             },
             'click': function(e) {
-                $(this).removeClass('reserveTdHoverColor');
-                showInputModal($(this));
+                reserveClickEvent(this);
             },
         });
+    }
+}
+
+function reserveClickEvent(vThis){
+    var vCheck = $(vThis).attr('data-check');
+    if(vCheck == "off"){
+        $(vThis).addClass('reserveTdClickColor');
+        vThis.setAttribute("data-check", "on");
+        $(vThis.children[0]).prop('checked', true);
+    }else{
+        $(vThis).removeClass('reserveTdClickColor');
+         vThis.setAttribute("data-check", "off");
+         $(vThis.children[0]).prop('checked', false);
     }
 }
 
@@ -242,7 +196,6 @@ $(function(){
 
 
     fixTable();
-
     bindMouseAndTouch();
 
  // リサイズ対応
@@ -258,14 +211,5 @@ $(function(){
             bindMouseAndTouch();
         }, 200);
     });
-
-    // テーブルを固定
-   // gInitView.fixTable();
-
-//    // マウス操作とタップ操作をバインド
-//    gInitView.bindMouseAndTouch();
-//
-//    // 画面サイズ変更による再調整
-//    gInitView.tableResize();
 
 });

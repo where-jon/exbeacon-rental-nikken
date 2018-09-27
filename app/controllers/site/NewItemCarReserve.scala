@@ -37,6 +37,7 @@ class NewItemCarReserve @Inject()(config: Configuration
 
    /*検索用*/
   var ITEM_TYPE_FILTER = 0;
+  var ITEM_NAME_FILTER = "";
   var RESERVE_DATE = "";
   var WORK_TYPE_FILTER = "";
   var TERM_DAY = 7; //(当日からからスタートし+END_DATEの形 例END_DATE = 7-> 当日+7 = 8日間)
@@ -56,15 +57,16 @@ class NewItemCarReserve @Inject()(config: Configuration
   val WORK_TYPE = WorkTypeEnum().map;
 
   var TOTAL_LENGTH = 0;
-
   val itemCarSearchForm = Form(mapping(
-    "inputSearchDate" -> text.verifying(Messages("error.site.newItemCarReserve.searchDate.empty"), {_.matches("^[0-9]+$")}),
-    "inputDate" -> text
+    "inputDate" -> text.verifying(Messages("error.site.newItemCarReserve.inputDate.empty"), {inputDate => !inputDate.isEmpty() && inputDate.length > 0})
+    ,"inputSearchDate" -> nonEmptyText.verifying(Messages("error.site.newItemCarReserve.searchDate.over"), {inputSearchDate => !inputSearchDate.isEmpty() && inputSearchDate.toInt >=0 && inputSearchDate.toInt <=10})
+    ,"inputName" -> text
   )(NewItemCarSearchData.apply)(NewItemCarSearchData.unapply))
 
   /** 　初期化 */
   def init() {
     ITEM_TYPE_FILTER = 0
+    ITEM_NAME_FILTER = ""
     WORK_TYPE_FILTER = ""
     RESERVE_DATE = ""
 
@@ -94,99 +96,133 @@ class NewItemCarReserve @Inject()(config: Configuration
     companyNameList = companyDAO.selectCompany(_placeId);
     /*フロア取得*/
     floorNameList = floorDAO.selectFloor(_placeId);
+
   }
 
   /** 　予約ロジック */
-//  def reserve = SecuredAction { implicit request =>
-//    // dbデータ取得
-//    val placeId = super.getCurrentPlaceId
-//    getSearchData(placeId)
+  def reserve = SecuredAction { implicit request =>
+    // dbデータ取得
+    val placeId = super.getCurrentPlaceId
+    getSearchData(placeId)
+
+    /*転送form*/
+    val itemCarForm = Form(mapping(
+      "inputDate" -> text.verifying(Messages("error.site.newItemCarReserve.inputDate.empty"), {inputDate => !inputDate.isEmpty() && inputDate.length > 0})
+      ,"inputSearchDate" -> nonEmptyText.verifying(Messages("error.site.newItemCarReserve.searchDate.over"), {inputSearchDate => !inputSearchDate.isEmpty() && inputSearchDate.toInt >=0 && inputSearchDate.toInt <=10})
+      ,"inputName" -> text
+      ,"checkList" -> list(text.verifying(Messages("checkList error"), { checkList => !checkList.isEmpty() }))
+      ,"itemId" -> list(number.verifying(Messages("error.site.itemReserve.form.id"), { itemId => itemId != null }))
+      ,"itemTypeIdList" -> list(number.verifying(Messages("error.site.itemReserve.form.type"), { itemTypeIdList => itemTypeIdList != null }))
+      ,"dayList" -> list(text.verifying(Messages("error.site.itemReserve.form.type"), { dayList => !dayList.isEmpty() }))
+      ,"workTypeList" ->list(number.verifying(Messages("error.site.itemReserve.form.workType"), { workTypeList => workTypeList!= null}))
+      ,"companyName" -> text.verifying(Messages("error.site.itemReserve.form.company"), { companyName => !companyName.isEmpty() })
+      ,"floorName" -> text.verifying(Messages("error.site.itemReserve.form.floor"), { floorName => !floorName.isEmpty() })
+    )(NewItemCarReserveData.apply)(NewItemCarReserveData.unapply))
 //
-//    /*転送form*/
-//    val itemCarForm = Form(mapping(
-//      "itemTypeId" -> number,
-//      "workTypeName" -> text.verifying(Messages("error.site.itemReserve.form.workType"), { workTypeName => !workTypeName.isEmpty() }),
-//      "inputDate" -> text.verifying(Messages("error.site.itemReserve.form.reserveDate"), { inputDate => !inputDate.isEmpty() }),
-//      "companyName" -> text.verifying(Messages("error.site.itemReserve.form.company"), { companyName => !companyName.isEmpty() }),
-//      "floorName" -> text.verifying(Messages("error.site.itemReserve.form.floor"), { floorName => !floorName.isEmpty() }),
-//      "itemId" -> list(number.verifying(Messages("error.site.itemReserve.form.id"), { itemId => itemId != null })),
-//      "itemTypeIdList" -> list(number.verifying(Messages("error.site.itemReserve.form.type"), { itemTypeIdList => itemTypeIdList != null })),
-//      "checkVal" -> list(number.verifying(Messages("error.site.itemReserve.form.select"), { checkVal => checkVal != null }))
-//    )(ItemCarReserveData.apply)(ItemCarReserveData.unapply))
+    val form = itemCarForm.bindFromRequest
+    if (form.hasErrors){
+      // エラーでリダイレクト遷移
+      Redirect(routes.NewItemCarReserve.index()).flashing(ERROR_MSG_KEY -> form.errors.map(_.message).mkString(HTML_BR))
+    }else{
+
+      var vTodayCheck = false
+      var vAlreadyCheck = false
+      var errMsg = Seq[String]()
+      val ItemCarReserveData = form.get
+      if(ItemCarReserveData.checkList.zipWithIndex.length > 0){
+          var setData = List[ReserveItem]()
+          val vCompanyId = companyNameList.filter(_.companyName == ItemCarReserveData.companyName).last.companyId
+          val vFloorId = floorNameList.filter(_.floor_name == ItemCarReserveData.floorName).last.floor_Id
+          //val vWorkTypeId = workTypeList.filter(_.work_type_name == ItemCarReserveData.workTypeList).last.work_type_id
+          var idListData = List[Int]()
+          var idTypeListData = List[Int]()
+          ItemCarReserveData.itemId.zipWithIndex.foreach { case (itemId, i) =>
+            ItemCarReserveData.checkList.zipWithIndex.foreach { case (check, j) =>
+              if(check.toInt == i){
+                val vReserveDate = ItemCarReserveData.dayList(i)
+                val vItemTypeId = ItemCarReserveData.itemTypeIdList(i)
+                val vWorkTypeId = ItemCarReserveData.workTypeList(i)
+                idListData = idListData :+itemId
+                idTypeListData = idTypeListData :+vItemTypeId
+                var vTemp = ""
+                if(vWorkTypeId == 1){
+                  vTemp = "午前"
+                }else if (vWorkTypeId == 2){
+                  vTemp = "午後"
+                }else if (vWorkTypeId == 3){
+                  vTemp = "終日"
+                }
+                val vCurrentTimeCheck =
+                beaconService.currentTimeReserveCheck(vReserveDate,vTemp)
+
+                if(vCurrentTimeCheck == "OK"){  // 現在時刻から予約可能かを判定
+                }else{
+                  if(vCurrentTimeCheck == "当日"){
+                    val currentTime = new Date();
+                    val mSimpleDateFormatHour = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.JAPAN)
+                    val mCurrentTime = mSimpleDateFormatHour.format(currentTime)
+                    errMsg :+= Messages("error.site.reserve.overtime", mCurrentTime,vTemp)
+                    errMsg :+= Messages("error.site.reserve.overtime.define")
+                  } else {
+                    errMsg :+= Messages("error.site.reserve.other")
+                  }
+                  vTodayCheck = true
+                }
+                val vAlerdyReserveData = reserveMasterDAO.selectCarReserve(placeId,idListData,idTypeListData,vWorkTypeId,vReserveDate,vReserveDate)
+                System.out.println("vCount :" + vAlerdyReserveData)
+
+                if(vAlerdyReserveData.isEmpty) { // 予約されたものがない
+                  setData = setData :+ ReserveItem(vItemTypeId,itemId,vFloorId,placeId,vCompanyId,vReserveDate,vReserveDate,true,vWorkTypeId)
+
+                }else{ // 予約されたものがある
+                  errMsg :+= Messages("error.site.itemCarReserve.reserve")
+                  errMsg :+= Messages("error.site.itemCarReserve.id" ,vAlerdyReserveData.last.txId)
+                  errMsg :+= Messages("error.site.itemCarReserve.workType" ,vAlerdyReserveData.last.workTypeName)
+                  errMsg :+= Messages("error.site.itemCarReserve.reserveDate"  ,vAlerdyReserveData.last.reserveStartDate)
+                  errMsg :+= Messages("error.site.itemCarReserve.already" )
+                  vAlreadyCheck = true
+                }
+              }
+            }
+          }
+          if(vTodayCheck||vAlreadyCheck){
+            Redirect(routes.NewItemCarReserve.index())
+              .flashing(ERROR_MSG_KEY -> errMsg.mkString(HTML_BR))
+          }else{
+            //　エラーチェック通ったら更新ロジック
+            val result = carDAO.reserveItemCar(setData)
+            if (result == "success") {
+
+//              ITEM_NAME_FILTER = ItemCarReserveData.inputName
+//              RESERVE_DATE = ItemCarReserveData.inputDate
+//              DETECT_DATE = RESERVE_DATE
+//              TERM_DAY = ItemCarReserveData.inputSearchDate.toInt
 //
-//    val form = itemCarForm.bindFromRequest
-//    if (form.hasErrors){
-//      // エラーでリダイレクト遷移
-//      Redirect(routes.ItemCarReserve.index()).flashing(ERROR_MSG_KEY -> form.errors.map(_.message).mkString(HTML_BR))
-//    }else{
-//      val ItemCarReserveData = form.get
-//      if(ItemCarReserveData.checkVal.zipWithIndex.length > 0){
-//        val vCurrentTimeCheck =
-//          beaconService.currentTimeReserveCheck(ItemCarReserveData.inputDate,ItemCarReserveData.workTypeName)
-//        if(vCurrentTimeCheck == "OK"){  // 現在時刻から予約可能かを判定
-//          var setData = List[ReserveItem]()
-//          val vCompanyId = companyNameList.filter(_.companyName == ItemCarReserveData.companyName).last.companyId
-//          val vFloorId = floorNameList.filter(_.floor_name == ItemCarReserveData.floorName).last.floor_Id
-//          val vWorkTypeId = workTypeList.filter(_.work_type_name == ItemCarReserveData.workTypeName).last.work_type_id
-//          val vReserveDate = ItemCarReserveData.inputDate
-//          var idListData = List[Int]()
-//          var idTypeListData = List[Int]()
-//          ItemCarReserveData.itemId.zipWithIndex.map { case (itemId, i) =>
-//            ItemCarReserveData.checkVal.zipWithIndex.map { case (check, j) =>
-//              if(i == check){
-//                val vItemTypeId = ItemCarReserveData.itemTypeIdList(i)
-//                idListData = idListData :+itemId
-//                idTypeListData = idTypeListData :+vItemTypeId
-//                setData = setData :+ ReserveItem(vItemTypeId,itemId,vFloorId,placeId,vCompanyId,vReserveDate,vReserveDate,true,vWorkTypeId)
-//              }
-//            }
-//          }
-//          var errMsg = Seq[String]()
+//              val arReserveDays = calendarDAO.selectGetDayOfWeek(RESERVE_DATE,TERM_DAY)
+//              TOTAL_LENGTH = arReserveDays.size
+//              val vStartDate = arReserveDays(0).getDay
+//              val vEndDate = arReserveDays((arReserveDays.size-1)).getDay
+//              val dbReserveDatas = carDAO.selectCarMasterCalendarType(placeId,itemIdList,vStartDate,vEndDate)
+//              var carListApi = beaconService.getItemCarReserveBeaconPosition(dbReserveDatas,arReserveDays,true,placeId)
 //
-//          // 検索ロジック追加あるかどうかを判断する
-//          val vAlerdyReserveData = reserveMasterDAO.selectCarReserve(placeId,idListData,idTypeListData,vWorkTypeId,vReserveDate,vReserveDate)
-//          System.out.println("vCount :" + vAlerdyReserveData)
-//          if(vAlerdyReserveData.isEmpty){ // 予約されたものがない
-//            val result = carDAO.reserveItemCar(setData)
-//            if (result == "success") {
-//              Redirect(routes.ItemCarReserve.index())
-//                .flashing(SUCCESS_MSG_KEY -> Messages("success.site.carReserve.update"))
-//            }else {
-//              Redirect(routes.ItemCarReserve.index())
-//                .flashing(ERROR_MSG_KEY -> Messages("error.site.carReserve.update"))
-//            }
-//          }else { // 予約されたものがある
-//            errMsg :+= Messages("error.site.itemCarReserve.reserve")
-//            errMsg :+= Messages("error.site.itemCarReserve.id" ,vAlerdyReserveData.last.txId)
-//            errMsg :+= Messages("error.site.itemCarReserve.workType" ,vAlerdyReserveData.last.workTypeName)
-//            errMsg :+= Messages("error.site.itemCarReserve.reserveDate"  ,vAlerdyReserveData.last.reserveStartDate)
-//            errMsg :+= Messages("error.site.itemCarReserve.already" )
-//
-//            Redirect(routes.ItemCarReserve.index())
-//              .flashing(ERROR_MSG_KEY -> errMsg.mkString(HTML_BR))
-//          }
-//        }else{  // 現在時刻から予約可能かを判定でエラーの場合
-//          if(vCurrentTimeCheck == "当日"){
-//            val currentTime = new Date();
-//            val mSimpleDateFormatHour = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.JAPAN)
-//            val mCurrentTime = mSimpleDateFormatHour.format(currentTime)
-//            var errMsg = Seq[String]()
-//            errMsg :+= Messages("error.site.reserve.overtime", mCurrentTime,ItemCarReserveData.workTypeName)
-//            errMsg :+= Messages("error.site.reserve.overtime.define")
-//            Redirect(routes.ItemCarReserve.index())
-//              .flashing(ERROR_MSG_KEY -> errMsg.mkString(HTML_BR))
-//          } else {
-//            Redirect(routes.ItemCarReserve.index())
-//              .flashing(ERROR_MSG_KEY -> Messages(vCurrentTimeCheck))
-//          }
-//        }
-//      }else{
-//        Redirect(routes.ItemCarReserve.index())
-//          .flashing(ERROR_MSG_KEY -> Messages("error.site.carReserve.noselect"))
-//      }
-//    }
-//
-//  }
+//              Ok(views.html.site.newItemCarReserve(ITEM_TYPE_FILTER,ITEM_NAME_FILTER,WORK_TYPE_FILTER,RESERVE_DATE
+//                ,carListApi,itemTypeList,companyNameList,floorNameList,workTypeList,WORK_TYPE,DETECT_DATE,TERM_DAY,arReserveDays,TOTAL_LENGTH))
+
+              Redirect(routes.NewItemCarReserve.index())
+                .flashing(SUCCESS_MSG_KEY -> Messages("success.site.carReserve.update"))
+            }else {
+              Redirect(routes.NewItemCarReserve.index())
+                .flashing(ERROR_MSG_KEY -> Messages("error.site.carReserve.update"))
+            }
+          }
+      }else{
+        Redirect(routes.NewItemCarReserve.index())
+          .flashing(ERROR_MSG_KEY -> Messages("error.site.carReserve.noselect"))
+      }
+
+    }
+
+  }
   /** 　検索ロジック */
   def search = SecuredAction { implicit request =>
     System.out.println("start search:")
@@ -201,8 +237,7 @@ class NewItemCarReserve @Inject()(config: Configuration
     }else{
       // 部署情報
       val carFormSearchData = itemCarSearchForm.bindFromRequest.get
-      //    ITEM_TYPE_FILTER = carFormSearchData.itemTypeId
-      //    WORK_TYPE_FILTER = carFormSearchData.workTypeName
+      ITEM_NAME_FILTER = carFormSearchData.inputName
       RESERVE_DATE = carFormSearchData.inputDate
       DETECT_DATE = RESERVE_DATE
       TERM_DAY = carFormSearchData.inputSearchDate.toInt
@@ -214,15 +249,20 @@ class NewItemCarReserve @Inject()(config: Configuration
       val vStartDate = arReserveDays(0).getDay
       val vEndDate = arReserveDays((arReserveDays.size-1)).getDay
       val dbReserveDatas = carDAO.selectCarMasterCalendarType(placeId,itemIdList,vStartDate,vEndDate)
-      val carListApi = beaconService.getItemCarReserveBeaconPosition(dbReserveDatas,arReserveDays,true,placeId)
+      var carListApi = beaconService.getItemCarReserveBeaconPosition(dbReserveDatas,arReserveDays,true,placeId)
 
       arReserveDays.zipWithIndex.foreach { case (reserveDay, index) =>
         val vTempYobi= calendarDAO.getYobi(reserveDay.getDay)
         reserveDay.getYobi = vTempYobi
       }
+      // 名称検索
+      if(ITEM_NAME_FILTER!=""){
+        carListApi = carListApi.filter(_.item_car_name.contains(ITEM_NAME_FILTER))
+      }
+
 
       if(carListApi!=null){
-        Ok(views.html.site.newItemCarReserve(ITEM_TYPE_FILTER,WORK_TYPE_FILTER,RESERVE_DATE
+        Ok(views.html.site.newItemCarReserve(ITEM_TYPE_FILTER,ITEM_NAME_FILTER,WORK_TYPE_FILTER,RESERVE_DATE
           ,carListApi,itemTypeList,companyNameList,floorNameList,workTypeList,WORK_TYPE,DETECT_DATE,TERM_DAY,arReserveDays,TOTAL_LENGTH))
       }else{
         // apiと登録データが違う場合
@@ -258,7 +298,7 @@ class NewItemCarReserve @Inject()(config: Configuration
       }
 
       if(carListApi!=null){
-        Ok(views.html.site.newItemCarReserve(ITEM_TYPE_FILTER,WORK_TYPE_FILTER,RESERVE_DATE
+        Ok(views.html.site.newItemCarReserve(ITEM_TYPE_FILTER,ITEM_NAME_FILTER,WORK_TYPE_FILTER,RESERVE_DATE
           ,carListApi,itemTypeList,companyNameList,floorNameList,workTypeList,WORK_TYPE,DETECT_DATE,TERM_DAY,arReserveDays,TOTAL_LENGTH))
       }else{
         // apiと登録データが違う場合

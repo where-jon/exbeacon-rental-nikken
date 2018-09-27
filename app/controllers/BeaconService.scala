@@ -20,7 +20,6 @@ import play.api.mvc._
 import scala.collection.immutable.List
 import scala.concurrent.Await
 import scala.concurrent.duration.Duration
-import scala.util.control.Breaks
 
 case class CReserveData(
   var reserveDate :String
@@ -28,6 +27,7 @@ case class CReserveData(
   ,var reservePmCompany :String
   ,var reserveAmWorkType :String
   ,var reservePmWorkType :String
+  ,var reserveRealDate :String
 )
 
 class BeaconService @Inject() (config: Configuration,
@@ -168,7 +168,7 @@ class BeaconService @Inject() (config: Configuration,
         var reserveData = List[CReserveData]()
         // 予約関連
         arReserveDays.zipWithIndex.foreach { case (day, dayIndex) =>
-          reserveData = reserveData :+ CReserveData("noDate","noAmCompany","noPmCompany","noAmWorkType","noPmWorkType")
+          reserveData = reserveData :+ CReserveData("noDate","noAmCompany","noPmCompany","noAmWorkType","noPmWorkType",day.getDay)
         }
 
         if(v.ar_reserve_date(0)!=""){
