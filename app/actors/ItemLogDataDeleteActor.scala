@@ -34,11 +34,11 @@ class ItemLogDataDeleteActor @Inject()(config: Configuration
     */
   private def execute():Unit = {
     if (enableLogging || deleteInterval != 0) {
-      val df = new SimpleDateFormat("yyyy-MM")
+      val df = new SimpleDateFormat("yyyy-MM-dd")
       // カレンダークラスのインスタンスを取得
       val cal = Calendar.getInstance
       var delateTime = new DateTime().toString(" HH:mm:ss")
-      var delateDate = df.format(cal.getTime()) + delateTime
+      var delateDate = df.format(cal.getTime()).toString + delateTime
 
       // 削除開始対象月取得
       // 環境変数（３カ月）を減算
@@ -55,10 +55,17 @@ class ItemLogDataDeleteActor @Inject()(config: Configuration
         // 削除開始対象月
         var targetMonth = ymdf.format(cal.getTime())
 
+        val sdf2 = new SimpleDateFormat("yyyy-MM-01 00:00:00")
+        var targetMonth2 = sdf2.format(cal.getTime())
+
         val placeData = placeDAO.selectPlaceAll()
         placeData.zipWithIndex.map { case (place, i) =>
           if(place.btxApiUrl != null && place.btxApiUrl != ""){
             val placeId = place.placeId
+
+            // 削除開始対象月以前のデータは全て削除(ゴミデータ対策)
+            itemlogDAO.delete(placeId, targetMonth2)
+
             val itemLogMinData = itemlogDAO.selectOldestRow(placeId)
             if(itemLogMinData != null && itemLogMinData.length > 0){
               // 最古のレコード　Date型変換
