@@ -134,14 +134,14 @@ class NewItemCarReserve @Inject()(config: Configuration
           val vCompanyId = companyNameList.filter(_.companyName == ItemCarReserveData.companyName).last.companyId
           val vFloorId = floorNameList.filter(_.floor_name == ItemCarReserveData.floorName).last.floor_Id
           //val vWorkTypeId = workTypeList.filter(_.work_type_name == ItemCarReserveData.workTypeList).last.work_type_id
-          var idListData = List[Int]()
-          var idTypeListData = List[Int]()
           ItemCarReserveData.itemId.zipWithIndex.foreach { case (itemId, i) =>
             ItemCarReserveData.checkList.zipWithIndex.foreach { case (check, j) =>
               if(check.toInt == i){
                 val vReserveDate = ItemCarReserveData.dayList(i)
                 val vItemTypeId = ItemCarReserveData.itemTypeIdList(i)
                 val vWorkTypeId = ItemCarReserveData.workTypeList(i)
+                var idListData = List[Int]()
+                var idTypeListData = List[Int]()
                 idListData = idListData :+itemId
                 idTypeListData = idTypeListData :+vItemTypeId
                 var vTemp = ""
@@ -169,11 +169,10 @@ class NewItemCarReserve @Inject()(config: Configuration
                   vTodayCheck = true
                 }
                 val vAlerdyReserveData = reserveMasterDAO.selectCarReserve(placeId,idListData,idTypeListData,vWorkTypeId,vReserveDate,vReserveDate)
-                System.out.println("vCount :" + vAlerdyReserveData)
+                //System.out.println("vCount :" + vAlerdyReserveData)
 
                 if(vAlerdyReserveData.isEmpty) { // 予約されたものがない
                   setData = setData :+ ReserveItem(vItemTypeId,itemId,vFloorId,placeId,vCompanyId,vReserveDate,vReserveDate,true,vWorkTypeId)
-
                 }else{ // 予約されたものがある
                   errMsg :+= Messages("error.site.itemCarReserve.reserve")
                   errMsg :+= Messages("error.site.itemCarReserve.id" ,vAlerdyReserveData.last.txId)
@@ -225,7 +224,7 @@ class NewItemCarReserve @Inject()(config: Configuration
   }
   /** 　検索ロジック */
   def search = SecuredAction { implicit request =>
-    System.out.println("start search:")
+    //System.out.println("start search:")
     val placeId = super.getCurrentPlaceId
     //検索側データ取得
     getSearchData(placeId)
