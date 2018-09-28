@@ -26,7 +26,6 @@ function getFilterCheck(){
 function dbExecuteManager(routeUrl){
     var formElement = $("#viewForm")
     formElement[0].action = routeUrl
-    //formElement[0].action = "../site/itemCarReserveUpdate"
     // 送信ボタン生成
     var vButton = document.createElement("button");
     vButton.id = "dbExecuteBtn"
@@ -47,6 +46,9 @@ function btnEvent(){
 　　var registerBtnElement = document.getElementById("itemRegisterFooter")
     registerBtnElement.addEventListener('click', function(event) {
         if(gReserveCheck){
+            $('#inputModal').loading({
+              message: '予約中...'
+            });
             gReserveCheck = false;
             // companyName結果をfromへ設定
             var companyNameFilterResult = $('#COMPANY_NAME_FILTER option:selected').val();
@@ -57,6 +59,21 @@ function btnEvent(){
             var floorNameFilterResult = $('#FLOOR_NAME_FILTER option:selected').val();
             var inputFloorName = document.getElementById("floorName")
             inputFloorName.value = floorNameFilterResult
+
+
+//            var vTargetElement = [].slice.call(document.querySelectorAll("reserveTdHover"));
+//            for(var i = 0 ; i < vTargetElement.length;i++ ){
+//                var vCheck = $(vTargetElement[i]).attr('data-check');
+//                if(vCheck == "off"){
+//                    while ( vCheck.hasChildNodes() )
+//                    {
+//                         vCheck.removeChild( vCheck.firstChild );
+//                    }
+//
+//                }else{
+//                }
+//
+//            }
 
             dbExecuteManager("../site/newItemCarReserve/reserve")
         }
@@ -189,13 +206,16 @@ function removeTable(){
 }
 
 $(function(){
+//    $('#inputModal').loading({
+//      message: '予約中...'
+//    });
     // filter値確認
     getFilterCheck();
     // 表示ボタンをクリック
     btnEvent();
 
 
-    fixTable();
+    //fixTable();
     bindMouseAndTouch();
 
  // リサイズ対応

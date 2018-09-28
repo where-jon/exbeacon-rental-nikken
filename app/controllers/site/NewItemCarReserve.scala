@@ -12,7 +12,7 @@ import play.api.data.Form
 import play.api.data.Forms.{text, _}
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import utils.silhouette.MyEnv
-
+import util.control.Breaks._
 
 /**
   * 作業車・立馬予約画面
@@ -134,15 +134,17 @@ class NewItemCarReserve @Inject()(config: Configuration
           val vCompanyId = companyNameList.filter(_.companyName == ItemCarReserveData.companyName).last.companyId
           val vFloorId = floorNameList.filter(_.floor_name == ItemCarReserveData.floorName).last.floor_Id
           //val vWorkTypeId = workTypeList.filter(_.work_type_name == ItemCarReserveData.workTypeList).last.work_type_id
-          ItemCarReserveData.itemId.zipWithIndex.foreach { case (itemId, i) =>
+          //ItemCarReserveData.itemId.zipWithIndex.foreach { case (itemId, i) =>
+        breakable {
             ItemCarReserveData.checkList.zipWithIndex.foreach { case (check, j) =>
-              if(check.toInt == i){
-                val vReserveDate = ItemCarReserveData.dayList(i)
-                val vItemTypeId = ItemCarReserveData.itemTypeIdList(i)
-                val vWorkTypeId = ItemCarReserveData.workTypeList(i)
+              val vIndex = check.toInt
+              val vId = ItemCarReserveData.itemId(vIndex)
+                val vReserveDate = ItemCarReserveData.dayList(vIndex)
+                val vItemTypeId = ItemCarReserveData.itemTypeIdList(vIndex)
+                val vWorkTypeId = ItemCarReserveData.workTypeList(vIndex)
                 var idListData = List[Int]()
                 var idTypeListData = List[Int]()
-                idListData = idListData :+itemId
+                idListData = idListData :+ vId
                 idTypeListData = idTypeListData :+vItemTypeId
                 var vTemp = ""
                 if(vWorkTypeId == 1){
@@ -167,23 +169,22 @@ class NewItemCarReserve @Inject()(config: Configuration
                     errMsg :+= Messages("error.site.reserve.other")
                   }
                   vTodayCheck = true
+                  break
                 }
-                val vAlerdyReserveData = reserveMasterDAO.selectCarReserve(placeId,idListData,idTypeListData,vWorkTypeId,vReserveDate,vReserveDate)
-                //System.out.println("vCount :" + vAlerdyReserveData)
-
-                if(vAlerdyReserveData.isEmpty) { // 予約されたものがない
-                  setData = setData :+ ReserveItem(vItemTypeId,itemId,vFloorId,placeId,vCompanyId,vReserveDate,vReserveDate,true,vWorkTypeId)
-                }else{ // 予約されたものがある
-                  errMsg :+= Messages("error.site.itemCarReserve.reserve")
-                  errMsg :+= Messages("error.site.itemCarReserve.id" ,vAlerdyReserveData.last.txId)
-                  errMsg :+= Messages("error.site.itemCarReserve.workType" ,vAlerdyReserveData.last.workTypeName)
-                  errMsg :+= Messages("error.site.itemCarReserve.reserveDate"  ,vAlerdyReserveData.last.reserveStartDate)
-                  errMsg :+= Messages("error.site.itemCarReserve.already" )
-                  vAlreadyCheck = true
-                }
+              val vAlerdyReserveData = reserveMasterDAO.selectCarReserve(placeId,idListData,idTypeListData,vWorkTypeId,vReserveDate,vReserveDate)
+              if(vAlerdyReserveData.isEmpty) { // 予約されたものがない
+                setData = setData :+ ReserveItem(vItemTypeId,vId,vFloorId,placeId,vCompanyId,vReserveDate,vReserveDate,true,vWorkTypeId)
+              }else{ // 予約されたものがある
+                errMsg :+= Messages("error.site.itemCarReserve.reserve")
+                errMsg :+= Messages("error.site.itemCarReserve.id" ,vAlerdyReserveData.last.txId)
+                errMsg :+= Messages("error.site.itemCarReserve.workType" ,vAlerdyReserveData.last.workTypeName)
+                errMsg :+= Messages("error.site.itemCarReserve.reserveDate"  ,vAlerdyReserveData.last.reserveStartDate)
+                errMsg :+= Messages("error.site.itemCarReserve.already" )
+                vAlreadyCheck = true
+                break
               }
             }
-          }
+        }
           if(vTodayCheck||vAlreadyCheck){
             Redirect(routes.NewItemCarReserve.index())
               .flashing(ERROR_MSG_KEY -> errMsg.mkString(HTML_BR))
