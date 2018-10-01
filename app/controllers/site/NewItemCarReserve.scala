@@ -158,7 +158,7 @@ class NewItemCarReserve @Inject()(config: Configuration
                     errMsg :+= Messages("error.site.reserve.overtime", mCurrentTime,vTemp)
                     errMsg :+= Messages("error.site.reserve.overtime.define")
                   } else {
-                    errMsg :+= vCurrentTimeCheck
+                    errMsg :+= Messages(vCurrentTimeCheck)
                   }
                   vTodayCheck = true
                   break
