@@ -57,11 +57,11 @@ class BeaconService @Inject() (config: Configuration,
       else if(mHour < 13 && vWorkType =="午後" ) "OK" // 現在時間が13時以前（午後はOK）
       else "当日"
     }else if (mTime > vStartDate){  // 現在時間より過去の方予約はNG
-      Messages("error.site.reserve.preTime")
+      "error.site.reserve.preTime"
     }else if (mTime < vStartDate) {  // 現在時間より未来の方+1day OK
       "OK"
     }else // 変な場合
-      Messages("error.site.reserve.other")
+      "error.site.reserve.other"
   }
 
   /** 予約取消の際現在時刻から予約取消に正しいかを判定する*/
