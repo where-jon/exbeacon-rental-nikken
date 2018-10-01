@@ -46,9 +46,8 @@ function btnEvent(){
 　　var registerBtnElement = document.getElementById("itemRegisterFooter")
     registerBtnElement.addEventListener('click', function(event) {
         if(gReserveCheck){
-            $('#inputModal').loading({
-              message: '予約中...'
-            });
+            console.log("loading....")
+            $('#load')[0].style.display = ""
             gReserveCheck = false;
             // companyName結果をfromへ設定
             var companyNameFilterResult = $('#COMPANY_NAME_FILTER option:selected').val();
@@ -59,22 +58,6 @@ function btnEvent(){
             var floorNameFilterResult = $('#FLOOR_NAME_FILTER option:selected').val();
             var inputFloorName = document.getElementById("floorName")
             inputFloorName.value = floorNameFilterResult
-
-
-//            var vTargetElement = [].slice.call(document.querySelectorAll("reserveTdHover"));
-//            for(var i = 0 ; i < vTargetElement.length;i++ ){
-//                var vCheck = $(vTargetElement[i]).attr('data-check');
-//                if(vCheck == "off"){
-//                    while ( vCheck.hasChildNodes() )
-//                    {
-//                         vCheck.removeChild( vCheck.firstChild );
-//                    }
-//
-//                }else{
-//                }
-//
-//            }
-
             dbExecuteManager("../site/newItemCarReserve/reserve")
         }
     });
@@ -87,7 +70,7 @@ function btnEvent(){
 
     var viewBtnElement = document.getElementById("viewBtn")
     viewBtnElement.addEventListener('click', function(event) {
-
+         $('#load')[0].style.display = ""
         // inputDate結果をfromへ設定
         var inputDate = document.getElementById("inputDate")
         inputDate.value = gDatePicker.startSqlTime
@@ -99,27 +82,43 @@ function btnEvent(){
 
 // テーブルの固定
 function fixTable(){
-    // テーブルの固定
-    var h = $(window).height()*0.85;
-    // テーブルの調整
-    var ua = navigator.userAgent;
-    if (ua.indexOf('iPad') > 0 || ua.indexOf('Android') > 0 || ua.indexOf('iPhone') > 0 || ua.indexOf('iPod') > 0){
-        // タッチデバイス
-        if ($('.mainSpace').height() > h) {
-            var w = $('.mainSpace').width()*0.99;
-            $('.itemTable').tablefix({width:w, height: h, fixRows: 4});
-        } else {
-            var w = $('.mainSpace').width();
-            $('.itemTable').tablefix({width:w, fixRows: 4});
-        }
-    }else{
-        // PCブラウザ
-        var w = $('.mainSpace').width();
-        $('.itemTable').tablefix({height: h, fixRows: 4});
-        $('.rowTableDiv').width(w);
-    }
-    $('.bodyTableDiv').find('.itemTable').css('margin-bottom','0');
-    $('.colTableDiv').css("width","");
+
+    var vHeight = $(window).height()*0.80;
+    $('#tableDiv')[0].style.height = vHeight + "px"
+
+
+    $('#myTable').stickyTable({overflowy: true});
+
+    $('#destroyBtn').click(function() {
+        //removes sticky table classes and elements
+        $('#myTable').stickyTable('destroy');
+    });
+
+    $('#initBtn').click(function() {
+        $('#myTable').stickyTable();
+    });
+
+//    // テーブルの固定
+//    var h = $(window).height()*0.85;
+//    // テーブルの調整
+//    var ua = navigator.userAgent;
+//    if (ua.indexOf('iPad') > 0 || ua.indexOf('Android') > 0 || ua.indexOf('iPhone') > 0 || ua.indexOf('iPod') > 0){
+//        // タッチデバイス
+//        if ($('.mainSpace').height() > h) {
+//            var w = $('.mainSpace').width()*0.99;
+//            $('.itemTable').tablefix({width:w, height: h, fixRows: 4});
+//        } else {
+//            var w = $('.mainSpace').width();
+//            $('.itemTable').tablefix({width:w, fixRows: 4});
+//        }
+//    }else{
+//        // PCブラウザ
+//        var w = $('.mainSpace').width();
+//        $('.itemTable').tablefix({height: h, fixRows: 4});
+//        $('.rowTableDiv').width(w);
+//    }
+//    $('.bodyTableDiv').find('.itemTable').css('margin-bottom','0');
+//    $('.colTableDiv').css("width","");
 
 }
 
@@ -206,16 +205,17 @@ function removeTable(){
 }
 
 $(function(){
-//    $('#inputModal').loading({
-//      message: '予約中...'
+
+//    $('#specialstam').loading({
+//        message: '読込中...'
 //    });
+
     // filter値確認
     getFilterCheck();
     // 表示ボタンをクリック
     btnEvent();
 
-
-    //fixTable();
+    fixTable();
     bindMouseAndTouch();
 
  // リサイズ対応
@@ -233,3 +233,9 @@ $(function(){
     });
 
 });
+
+$(window).load(function() {
+    $('#load').hide();
+});
+
+

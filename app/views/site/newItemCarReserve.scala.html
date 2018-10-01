@@ -22,12 +22,17 @@ ITEM_TYPE_FILTER: Int
 <html lang="ja">
 <head>
 @templates.htmlHead(title = Messages("lang.site.newItemCarReserve.page.title"))
+<link rel="stylesheet" href="@routes.MyAssets.css("common/jquery-stickytable.css")"/>
 <link rel="stylesheet" href="@routes.MyAssets.css("cms/itemCarManage.css")"/>
 <script></script>
 </head>
 <body>
 <!-- content -->
-<div class="container">
+<div class="container" id ="">
+    <div id="load">
+        <img src="@routes.MyAssets.img("loading.gif")" alt="loading">
+    </div>
+
     <!-- ナビバー  -->
     @views.html.templates.navBar()
     <div class="row">
@@ -64,7 +69,7 @@ ITEM_TYPE_FILTER: Int
                         <div style="margin-right:10px;float:left;">
                             <div style="float:left">@Messages("lang.search.searchDate")</div>
                             <div class='input-group' style="margin-top:-5px;">
-                                <input type='number' class="form-control" id="inputSearchDate" name="inputSearchDate" value="@TERM_DAY" style="width: 100px;"/>
+                                <input type='number' class="form-control" id="inputSearchDate" name="inputSearchDate" value="@TERM_DAY" style="width: 70px;"/>
                             </div>
                         </div>
 
@@ -90,106 +95,106 @@ ITEM_TYPE_FILTER: Int
                     </div>
 
                 </div>
-                <!-- テーブルのROW -->
-                <div class="row tableRow">
-                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="padding:0;">
-                        <div class="table-responsive-body">
-                            <table class="table table-bordered table-condensed itemTable">
-                                <thead>
-                                    <tr>
-                                        <th colspan="@(TOTAL_LENGTH*2+3)" class="tableTitleTh">@Messages("lang.site.newItemCarReserve.page.title")</th>
-                                    </tr>
-                                    <tr>
-                                        <th rowspan="3" class="hidden tableTh">@Messages("lang.site.itemCarReserve.txId")</th>
-                                        <th rowspan="3" class="tableTh ">@Messages("lang.site.itemCarReserve.no")</th>
-                                        <th rowspan="3" class="tableTh ">@Messages("lang.site.itemCarReserve.name")</th>
-                                        <th rowspan="3" class="tableTh ">@Messages("lang.site.itemCarReserve.pos")</th>
-                                        <!--日付-->
-                                        @arReserveDays.zipWithIndex.map { case(day, i) =>
-                                                <th colspan="2" class="tableTh">@day.getDay.substring(5)</th>
-                                        }
-                                    </tr>
-                                    <tr>
-                                        <!--曜日-->
-                                        @arReserveDays.zipWithIndex.map { case(day, i) =>
-                                            @if(day.getYobi == "日"){
-                                                <th colspan="2" class="tableTh" style="color:red;">@day.getYobi</th>
-                                            }else{
-                                                <th colspan="2" class="tableTh">@day.getYobi</th>
-                                            }
-                                        }
-                                    </tr>
-                                    <tr>
-                                        <!--AM/PM-->
-                                        @arReserveDays.zipWithIndex.map { case(day, i) =>
-                                            <th class="tableTh ">AM</th>
-                                            <th class="tableTh ">PM</th>
-                                        }
-                                    </tr>
+                <!--テーブル部-->
+                <!--<div class="row tableRow sticky-headers sticky-table sticky-ltr-cells">-->
+                <!--<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="padding:0;">-->
+                    <!--<div class="table-responsive-body">-->
+                <div id="tableDiv" class="row tableRow col-xs-12 col-sm-12 col-md-12 col-lg-12" style="height:800px;">
+                        <table id="myTable" class="table reserveTable">
+                            <thead class="">
+                                <tr class="">
+                                    <th colspan="@(TOTAL_LENGTH*2+3)" class="tableTitleBorder tableTitleTh ">@Messages("lang.site.newItemCarReserve.page.title")</th>
+                                </tr>
+                                <tr class="">
 
-                                </thead>
-                                <tbody>
-                                    @carList.zipWithIndex.map { case(car, carIndex) =>
-                                        <tr class="rowColor rowHover" data-carId="@car.item_car_id" id="@car.item_car_id">
-                                            <td class="hidden text-center ">@car.item_car_btx_id</td>
-                                            <td class="reserve__title--frame text-center ">@car.item_car_no</td>
-                                            <td class="reserve__title--frame text-center ">@car.item_car_name</td>
-                                            <td class="reserve__title--frame text-center modalSelect">@car.cur_exb_name</td>
-                                            @car.reserveData.zipWithIndex.map { case(day, dayIndex) =>
-                                                @if(day.reserveDate!= "noDate"){
-                                                    @if(day.reserveAmCompany!= "noAmCompany"){
-                                                    <td class="reserve__td--frame text-center reserve__already--frame">@day.reserveAmCompany</td>
-                                                    }else{
-                                                    <td data-check=off class="reserveTdHover reserve__td--frame text-center reserve__none--frame">
-                                                        <input class="hidden form-control input-sm" type="checkbox" id="checkList-@vFormIndex" name="checkList[@vFormIndex]" value="@vFormIndex" />
-                                                        <input class="hidden form-control input-sm" type="text" id="itemId-@vFormIndex" name="itemId[@vFormIndex]" value="@car.item_car_id" />
-                                                        <input class="hidden form-control input-sm" type="text" id="itemTypeIdList-@vFormIndex" name="itemTypeIdList[@vFormIndex]" value="@car.item_type_id" />
-                                                        <input class="hidden form-control input-sm" type="text" id="dayList-@vFormIndex" name="dayList[@vFormIndex]" value="@day.reserveRealDate" />
-                                                        <input class="hidden form-control input-sm" type="text" id="workTypeList-@vFormIndex" name="workTypeList[@vFormIndex]" value="1" />
-                                                        <input class="hidden form-control input-sm" type="text" id="arList-@vFormIndex" name="arList[@vFormIndex]" value =@vFormIndex />
-                                                        @(vFormIndex = vFormIndex+1)
-                                                    </td>
-                                                    }
-                                                    @if(day.reservePmCompany!= "noPmCompany"){
-                                                    <td class="reserve__td--frame text-center reserve__already--frame">@day.reservePmCompany</td>
-                                                    }else{
-                                                    <td data-check="off" class="reserveTdHover reserve__td--frame text-center reserve__none--frame">
-                                                        <input class="hidden form-control input-sm" type="checkbox" id="checkList-@vFormIndex" name="checkList[@vFormIndex]" value="@vFormIndex" />
-                                                        <input class="hidden form-control input-sm" type="text" id="itemId-@vFormIndex" name="itemId[@vFormIndex]" value="@car.item_car_id" />
-                                                        <input class="hidden form-control input-sm" type="text" id="itemTypeIdList-@vFormIndex" name="itemTypeIdList[@vFormIndex]" value="@car.item_type_id" />
-                                                        <input class="hidden form-control input-sm" type="text" id="dayList-@vFormIndex" name="dayList[@vFormIndex]" value="@day.reserveRealDate" />
-                                                        <input class="hidden form-control input-sm" type="text" id="workTypeList-@vFormIndex" name="workTypeList[@vFormIndex]" value="2" />
-                                                        <input class="hidden form-control input-sm" type="text" id="arList-@vFormIndex" name="arList[@vFormIndex]" value =@vFormIndex />
-                                                        @(vFormIndex = vFormIndex+1)
-                                                    </td>
-                                                    }
-                                                }else{
-                                                    <td data-check="off" class="reserveTdHover reserve__td--frame text-center reserve__none--frame">
-                                                        <input class="hidden form-control input-sm" type="checkbox" id="checkList-@vFormIndex" name="checkList[@vFormIndex]" value="@vFormIndex" />
-                                                        <input class="hidden form-control input-sm" type="text" id="itemId-@vFormIndex" name="itemId[@vFormIndex]" value="@car.item_car_id" />
-                                                        <input class="hidden form-control input-sm" type="text" id="itemTypeIdList-@vFormIndex" name="itemTypeIdList[@vFormIndex]" value="@car.item_type_id" />
-                                                        <input class="hidden form-control input-sm" type="text" id="dayList-@vFormIndex" name="dayList[@vFormIndex]" value="@day.reserveRealDate" />
-                                                        <input class="hidden form-control input-sm" type="text" id="workTypeList-@vFormIndex" name="workTypeList[@vFormIndex]" value="1" />
-                                                        <input class="hidden form-control input-sm" type="text" id="arList-@vFormIndex" name="arList[@vFormIndex]" value =@vFormIndex />
-                                                        @(vFormIndex = vFormIndex+1)
-                                                    </td>
-                                                    <td data-check="off" class="reserveTdHover reserve__td--frame text-center reserve__none--frame">
-                                                        <input class="hidden form-control input-sm" type="checkbox" id="checkList-@vFormIndex" name="checkList[@vFormIndex]" value="@vFormIndex" />
-                                                        <input class="hidden form-control input-sm" type="text" id="itemId-@vFormIndex" name="itemId[@vFormIndex]" value="@car.item_car_id" />
-                                                        <input class="hidden form-control input-sm" type="text" id="itemTypeIdList-@vFormIndex" name="itemTypeIdList[@vFormIndex]" value="@car.item_type_id" />
-                                                        <input class="hidden form-control input-sm" type="text" id="dayList-@vFormIndex" name="dayList[@vFormIndex]" value="@day.reserveRealDate" />
-                                                        <input class="hidden form-control input-sm" type="text" id="workTypeList-@vFormIndex" name="workTypeList[@vFormIndex]" value="2" />
-                                                        <input class="hidden form-control input-sm" type="text" id="arList-@vFormIndex" name="arList[@vFormIndex]" value =@vFormIndex />
-                                                        @(vFormIndex = vFormIndex+1)
-                                                    </td>
-                                                }
-                                            }
-                                        </tr>
+                                    <th rowspan="3" class="hidden tableTh tableBorder">@Messages("lang.site.itemCarReserve.txId")</th>
+                                    <th rowspan="3" class="tableTh tableBorder">@Messages("lang.site.itemCarReserve.no")</th>
+                                    <th rowspan="3" class="tableTh tableBorder ">@Messages("lang.site.itemCarReserve.name")</th>
+                                    <th rowspan="3" class="tableTh tableBorder ">@Messages("lang.site.itemCarReserve.pos")</th>
+                                    <!--日付-->
+                                    @arReserveDays.zipWithIndex.map { case(day, i) =>
+                                    <th colspan="2" class="tableTh tableBorder">@day.getDay.substring(5)</th>
                                     }
+                                </tr>
+                                <tr class="">
+                                    <!--曜日-->
+                                    @arReserveDays.zipWithIndex.map { case(day, i) =>
+                                    @if(day.getYobi == "日"){
+                                    <th colspan="2" class="tableTh tableBorder" style="color:red;">@day.getYobi</th>
+                                    }else{
+                                    <th colspan="2" class="tableTh tableBorder">@day.getYobi</th>
+                                    }
+                                    }
+                                </tr>
+                                <tr class="">
+                                    <!--AM/PM-->
+                                    @arReserveDays.zipWithIndex.map { case(day, i) =>
+                                    <th class="tableTh tableBorder ">AM</th>
+                                    <th class="tableTh tableBorder ">PM</th>
+                                    }
+                                </tr>
+                            </thead>
+
+                                <tbody class="">
+                                @carList.zipWithIndex.map { case(car, carIndex) =>
+                                <tr class="rowColor rowHover" data-carId="@car.item_car_id" id="@car.item_car_id">
+                                    <td class="hidden text-center tableBorder">@car.item_car_btx_id</td>
+                                    <td class=" reserve__title--frame text-center tableBorder">@car.item_car_no</td>
+                                    <td class=" reserve__title--frame text-center tableBorder">@car.item_car_name</td>
+                                    <td class=" reserve__title--frame text-center modalSelect tableBorder">@car.cur_exb_name</td>
+                                    @car.reserveData.zipWithIndex.map { case(day, dayIndex) =>
+                                    @if(day.reserveDate!= "noDate"){
+                                    @if(day.reserveAmCompany!= "noAmCompany"){
+                                    <td class="reserve__td--frame text-center reserve__already--frame tableBorder">@day.reserveAmCompany</td>
+                                    }else{
+                                    <td data-check=off class="reserveTdHover reserve__td--frame text-center reserve__none--frame tableBorder">
+                                        <input class="hidden form-control input-sm" type="checkbox" id="checkList-@vFormIndex" name="checkList[@vFormIndex]" value="@vFormIndex" />
+                                        <input class="hidden form-control input-sm" type="text" id="itemId-@vFormIndex" name="itemId[@vFormIndex]" value="@car.item_car_id" />
+                                        <input class="hidden form-control input-sm" type="text" id="itemTypeIdList-@vFormIndex" name="itemTypeIdList[@vFormIndex]" value="@car.item_type_id" />
+                                        <input class="hidden form-control input-sm" type="text" id="dayList-@vFormIndex" name="dayList[@vFormIndex]" value="@day.reserveRealDate" />
+                                        <input class="hidden form-control input-sm" type="text" id="workTypeList-@vFormIndex" name="workTypeList[@vFormIndex]" value="1" />
+                                        <input class="hidden form-control input-sm" type="text" id="arList-@vFormIndex" name="arList[@vFormIndex]" value =@vFormIndex />
+                                        @(vFormIndex = vFormIndex+1)
+                                    </td>
+                                    }
+                                    @if(day.reservePmCompany!= "noPmCompany"){
+                                    <td class="reserve__td--frame text-center reserve__already--frame tableBorder">@day.reservePmCompany</td>
+                                    }else{
+                                    <td data-check="off" class="reserveTdHover reserve__td--frame text-center reserve__none--frame tableBorder">
+                                        <input class="hidden form-control input-sm" type="checkbox" id="checkList-@vFormIndex" name="checkList[@vFormIndex]" value="@vFormIndex" />
+                                        <input class="hidden form-control input-sm" type="text" id="itemId-@vFormIndex" name="itemId[@vFormIndex]" value="@car.item_car_id" />
+                                        <input class="hidden form-control input-sm" type="text" id="itemTypeIdList-@vFormIndex" name="itemTypeIdList[@vFormIndex]" value="@car.item_type_id" />
+                                        <input class="hidden form-control input-sm" type="text" id="dayList-@vFormIndex" name="dayList[@vFormIndex]" value="@day.reserveRealDate" />
+                                        <input class="hidden form-control input-sm" type="text" id="workTypeList-@vFormIndex" name="workTypeList[@vFormIndex]" value="2" />
+                                        <input class="hidden form-control input-sm" type="text" id="arList-@vFormIndex" name="arList[@vFormIndex]" value =@vFormIndex />
+                                        @(vFormIndex = vFormIndex+1)
+                                    </td>
+                                    }
+                                    }else{
+                                    <td data-check="off" class="reserveTdHover reserve__td--frame text-center reserve__none--frame tableBorder">
+                                        <input class="hidden form-control input-sm" type="checkbox" id="checkList-@vFormIndex" name="checkList[@vFormIndex]" value="@vFormIndex" />
+                                        <input class="hidden form-control input-sm" type="text" id="itemId-@vFormIndex" name="itemId[@vFormIndex]" value="@car.item_car_id" />
+                                        <input class="hidden form-control input-sm" type="text" id="itemTypeIdList-@vFormIndex" name="itemTypeIdList[@vFormIndex]" value="@car.item_type_id" />
+                                        <input class="hidden form-control input-sm" type="text" id="dayList-@vFormIndex" name="dayList[@vFormIndex]" value="@day.reserveRealDate" />
+                                        <input class="hidden form-control input-sm" type="text" id="workTypeList-@vFormIndex" name="workTypeList[@vFormIndex]" value="1" />
+                                        <input class="hidden form-control input-sm" type="text" id="arList-@vFormIndex" name="arList[@vFormIndex]" value =@vFormIndex />
+                                        @(vFormIndex = vFormIndex+1)
+                                    </td>
+                                    <td data-check="off" class="reserveTdHover reserve__td--frame text-center reserve__none--frame tableBorder">
+                                        <input class="hidden form-control input-sm" type="checkbox" id="checkList-@vFormIndex" name="checkList[@vFormIndex]" value="@vFormIndex" />
+                                        <input class="hidden form-control input-sm" type="text" id="itemId-@vFormIndex" name="itemId[@vFormIndex]" value="@car.item_car_id" />
+                                        <input class="hidden form-control input-sm" type="text" id="itemTypeIdList-@vFormIndex" name="itemTypeIdList[@vFormIndex]" value="@car.item_type_id" />
+                                        <input class="hidden form-control input-sm" type="text" id="dayList-@vFormIndex" name="dayList[@vFormIndex]" value="@day.reserveRealDate" />
+                                        <input class="hidden form-control input-sm" type="text" id="workTypeList-@vFormIndex" name="workTypeList[@vFormIndex]" value="2" />
+                                        <input class="hidden form-control input-sm" type="text" id="arList-@vFormIndex" name="arList[@vFormIndex]" value =@vFormIndex />
+                                        @(vFormIndex = vFormIndex+1)
+                                    </td>
+                                    }
+                                    }
+                                </tr>
+                                }
                                 </tbody>
-                            </table>
-                        </div>
-                    </div>
+                        </table>
                 </div>
                 <!-- モーダル画面 -->
                 <div class="modal" id="inputModal" tabindex="-1" role="dialog" aria-labelledby="InputModalLabel" aria-hidden="true" data-show="true" data-keyboard="false" data-backdrop="static">
@@ -215,7 +220,7 @@ ITEM_TYPE_FILTER: Int
                                 <div class="form-group" style="margin-bottom: 5px;">
                                     <label class="text-right  control-label col-xs-6" style="margin-top: 5px;">@Messages("lang.search.reserveFloor")</label>
                                     <select id="FLOOR_NAME_FILTER" style="width: 120px;">-
-                                         <!--仮設材種別テーブルから検索フィルタを設置-->
+                                        <!--仮設材種別テーブルから検索フィルタを設置-->
                                         <option value=""></option>
                                         @floorNameList.zipWithIndex.map { case(floor, i) =>
                                         <option value="@floor.floor_name">@floor.floor_name</option>
@@ -235,11 +240,15 @@ ITEM_TYPE_FILTER: Int
                         </div>
                     </div>
                 </div>
-                @CSRF.formField
+            @CSRF.formField
             </form>
+
         </div>
     </div>
 </div>
+
+<script type="text/javascript" src='@routes.MyAssets.js("common/jquery.ba-throttle-debounce.min.js")'></script>
+<script type="text/javascript" src='@routes.MyAssets.js("common/jquery-stickytable.js")'></script>
 <script type="text/javascript" src="@routes.MyAssets.js("site/newItemCarReserve.js")"></script>
 <script></script>
 </body>
