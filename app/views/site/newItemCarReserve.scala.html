@@ -50,7 +50,7 @@ ITEM_TYPE_FILTER: Int
                 @Messages("lang.site.newItemCarReserve.page.title")
             </div>
             <!-- ボタン-->
-            <form id="viewForm" method="post" action="">
+            <form id="viewFormSearch" method="post" action="">
                 <!--header 検索部-->
                 <div class="row tableRow" style="margin-top: 10px;">
                     <div class="text-left col-xs-10 col-sm-10 col-md-10 col-lg-10" style="padding:0;">
@@ -93,8 +93,11 @@ ITEM_TYPE_FILTER: Int
                             @Messages("lang.btn.move.reserve")
                         </div>
                     </div>
-
                 </div>
+                @CSRF.formField
+            </form>
+            <!-- ボタン-->
+            <form id="viewFormReserve" method="post" action="">
                 <!--テーブル部-->
                 <!--<div class="row tableRow sticky-headers sticky-table sticky-ltr-cells">-->
                 <!--<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="padding:0;">-->

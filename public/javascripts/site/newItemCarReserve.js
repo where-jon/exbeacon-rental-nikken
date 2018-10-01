@@ -1,5 +1,5 @@
 var arCheckBoxIndex = []
-var gReserveCheck = true;
+var gReserveCheck = false;
 
 // サブミット
 function getFilterCheck(){
@@ -23,8 +23,27 @@ function getFilterCheck(){
     }
 }
 
-function dbExecuteManager(routeUrl){
-    var formElement = $("#viewForm")
+/*
+function dbExecuteManager2(routeUrl){
+    var formElement = $("#viewForm2")
+    formElement[0].action = routeUrl
+    // 送信ボタン生成
+    var vButton = document.createElement("button");
+    vButton.id = "dbExecuteBtn"
+    vButton.className = "btn hidden";
+    formElement[0].appendChild(vButton);
+
+    $("#dbExecuteBtn").trigger( "click" );
+}
+*/
+
+function dbExecuteManager(routeUrl,vBtnName){
+    var formElement = null
+    if(vBtnName =="search"){
+        formElement = $("#viewFormSearch")
+    }else if (vBtnName =="reserve"){
+        formElement = $("#viewFormReserve")
+    }
     formElement[0].action = routeUrl
     // 送信ボタン生成
     var vButton = document.createElement("button");
@@ -40,7 +59,6 @@ function btnEvent(){
     // DatePickerの設定 start---------------------------------------
      gDatePicker.dayClickEvent();
     // DatePickerの設定 end-----------------------------------------
-
 
     //　予約登録ボタン
 　　var registerBtnElement = document.getElementById("itemRegisterFooter")
@@ -58,13 +76,14 @@ function btnEvent(){
             var floorNameFilterResult = $('#FLOOR_NAME_FILTER option:selected').val();
             var inputFloorName = document.getElementById("floorName")
             inputFloorName.value = floorNameFilterResult
-            dbExecuteManager("../site/newItemCarReserve/reserve")
+            dbExecuteManager("../site/newItemCarReserve/reserve","reserve")
         }
     });
 
     //　予約へボタン
     var reserveBtnElement = document.getElementById("reserveBtn")
     reserveBtnElement.addEventListener('click', function(event) {
+         gReserveCheck = true;
          $('#inputModal').modal();
     });
 
@@ -74,7 +93,7 @@ function btnEvent(){
         // inputDate結果をfromへ設定
         var inputDate = document.getElementById("inputDate")
         inputDate.value = gDatePicker.startSqlTime
-        dbExecuteManager("../site/newItemCarReserve")
+        dbExecuteManager("../site/newItemCarReserve","search")
     });
 
 }

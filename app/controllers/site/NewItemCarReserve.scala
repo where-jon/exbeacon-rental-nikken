@@ -102,10 +102,7 @@ class NewItemCarReserve @Inject()(config: Configuration
 
     /*転送form*/
     val itemCarForm = Form(mapping(
-      "inputDate" -> text.verifying(Messages("error.site.newItemCarReserve.inputDate.empty"), {inputDate => !inputDate.isEmpty() && inputDate.length > 0})
-      ,"inputSearchDate" -> nonEmptyText.verifying(Messages("error.site.newItemCarReserve.searchDate.over"), {inputSearchDate => !inputSearchDate.isEmpty() && inputSearchDate.toInt >=0 && inputSearchDate.toInt <=10})
-      ,"inputName" -> text
-      ,"checkList" -> list(text.verifying(Messages("checkList error"), { checkList => !checkList.isEmpty() }))
+      "checkList" -> list(text.verifying(Messages("checkList error"), { checkList => !checkList.isEmpty() }))
       ,"itemId" -> list(number.verifying(Messages("error.site.itemReserve.form.id"), { itemId => itemId != null }))
       ,"itemTypeIdList" -> list(number.verifying(Messages("error.site.itemReserve.form.type"), { itemTypeIdList => itemTypeIdList != null }))
       ,"dayList" -> list(text.verifying(Messages("error.site.itemReserve.form.type"), { dayList => !dayList.isEmpty() }))

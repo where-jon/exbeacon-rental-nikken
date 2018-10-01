@@ -12,10 +12,7 @@ import play.api.db._
 
 /*作業車・立馬予約用formクラス*/
 case class NewItemCarReserveData(
-  inputDate: String
-  ,inputSearchDate: String
-  , inputName: String
-  ,  checkList: List[String]
+   checkList: List[String]
   , itemId: List[Int]
   , itemTypeIdList: List[Int]
   , dayList: List[String]
