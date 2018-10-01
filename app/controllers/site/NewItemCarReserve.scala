@@ -178,6 +178,9 @@ class NewItemCarReserve @Inject()(config: Configuration
             }
         }
           if(vTodayCheck||vAlreadyCheck){
+            System.out.println("---testCode .start---")
+            System.out.println("errMsg::::" + errMsg)
+            System.out.println("---testCode .end---")
             Redirect(routes.NewItemCarReserve.index())
               .flashing(ERROR_MSG_KEY -> errMsg.mkString(HTML_BR))
           }else{
