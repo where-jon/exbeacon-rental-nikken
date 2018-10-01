@@ -57,11 +57,6 @@ class NewItemCarReserve @Inject()(config: Configuration
   val WORK_TYPE = WorkTypeEnum().map;
 
   var TOTAL_LENGTH = 0;
-  val itemCarSearchForm = Form(mapping(
-    "inputDate" -> text.verifying(Messages("error.site.newItemCarReserve.inputDate.empty"), {inputDate => !inputDate.isEmpty() && inputDate.length > 0})
-    ,"inputSearchDate" -> nonEmptyText.verifying(Messages("error.site.newItemCarReserve.searchDate.over"), {inputSearchDate => !inputSearchDate.isEmpty() && inputSearchDate.toInt >=0 && inputSearchDate.toInt <=10})
-    ,"inputName" -> text
-  )(NewItemCarSearchData.apply)(NewItemCarSearchData.unapply))
 
   /** 　初期化 */
   def init() {
@@ -166,7 +161,7 @@ class NewItemCarReserve @Inject()(config: Configuration
                     errMsg :+= Messages("error.site.reserve.overtime", mCurrentTime,vTemp)
                     errMsg :+= Messages("error.site.reserve.overtime.define")
                   } else {
-                    errMsg :+= Messages("error.site.reserve.other")
+                    errMsg :+= vCurrentTimeCheck
                   }
                   vTodayCheck = true
                   break
@@ -225,6 +220,12 @@ class NewItemCarReserve @Inject()(config: Configuration
   }
   /** 　検索ロジック */
   def search = SecuredAction { implicit request =>
+    val itemCarSearchForm = Form(mapping(
+      "inputDate" -> text.verifying(Messages("error.site.newItemCarReserve.inputDate.empty"), {inputDate => !inputDate.isEmpty() && inputDate.length > 0})
+      ,"inputSearchDate" -> nonEmptyText.verifying(Messages("error.site.newItemCarReserve.searchDate.over"), {inputSearchDate => !inputSearchDate.isEmpty() && inputSearchDate.toInt >=0 && inputSearchDate.toInt <=10})
+      ,"inputName" -> text
+    )(NewItemCarSearchData.apply)(NewItemCarSearchData.unapply))
+
     //System.out.println("start search:")
     val placeId = super.getCurrentPlaceId
     //検索側データ取得
