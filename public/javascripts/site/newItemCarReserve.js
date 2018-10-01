@@ -253,8 +253,4 @@ $(function(){
 
 });
 
-$(window).load(function() {
-    $('#load').hide();
-});
-
 

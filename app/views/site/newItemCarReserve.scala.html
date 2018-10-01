@@ -22,17 +22,14 @@ ITEM_TYPE_FILTER: Int
 <html lang="ja">
 <head>
 @templates.htmlHead(title = Messages("lang.site.newItemCarReserve.page.title"))
-<link rel="stylesheet" href="@routes.MyAssets.css("common/jquery-stickytable.css")"/>
 <link rel="stylesheet" href="@routes.MyAssets.css("cms/itemCarManage.css")"/>
 <script></script>
 </head>
 <body>
 <!-- content -->
 <div class="container" id ="">
-    <div id="load">
-        <img src="/public/images/loading.gif" alt="loading">
-    </div>
-
+    <!--loading部-->
+    @views.html.templates.totalLoading()
     <!-- ナビバー  -->
     @views.html.templates.navBar()
     <div class="row">
@@ -102,7 +99,7 @@ ITEM_TYPE_FILTER: Int
                 <!--<div class="row tableRow sticky-headers sticky-table sticky-ltr-cells">-->
                 <!--<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="padding:0;">-->
                     <!--<div class="table-responsive-body">-->
-                <div id="tableDiv" class="row tableRow col-xs-12 col-sm-12 col-md-12 col-lg-12" style="height:800px;">
+                <div id="tableDiv" class="row tableRow col-xs-12 col-sm-12 col-md-12 col-lg-12" >
                         <table id="myTable" class="table reserveTable">
                             <thead class="">
                                 <tr class="">
@@ -250,8 +247,6 @@ ITEM_TYPE_FILTER: Int
     </div>
 </div>
 
-<script type="text/javascript" src='@routes.MyAssets.js("common/jquery.ba-throttle-debounce.min.js")'></script>
-<script type="text/javascript" src='@routes.MyAssets.js("common/jquery-stickytable.js")'></script>
 <script type="text/javascript" src="@routes.MyAssets.js("site/newItemCarReserve.js")"></script>
 <script></script>
 </body>
