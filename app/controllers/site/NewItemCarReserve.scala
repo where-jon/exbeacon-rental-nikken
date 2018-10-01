@@ -222,7 +222,7 @@ class NewItemCarReserve @Inject()(config: Configuration
   def search = SecuredAction { implicit request =>
     val itemCarSearchForm = Form(mapping(
       "inputDate" -> text.verifying(Messages("error.site.newItemCarReserve.inputDate.empty"), {inputDate => !inputDate.isEmpty() && inputDate.length > 0})
-      ,"inputSearchDate" -> nonEmptyText.verifying(Messages("error.site.newItemCarReserve.searchDate.over"), {inputSearchDate => !inputSearchDate.isEmpty() && inputSearchDate.toInt >=0 && inputSearchDate.toInt <=10})
+      ,"inputSearchDate" -> text.verifying(Messages("error.site.newItemCarReserve.searchDate.over"), {inputSearchDate => !inputSearchDate.isEmpty() && inputSearchDate.toInt >=0 && inputSearchDate.toInt <=10})
       ,"inputName" -> text
     )(NewItemCarSearchData.apply)(NewItemCarSearchData.unapply))
 
@@ -233,8 +233,7 @@ class NewItemCarReserve @Inject()(config: Configuration
 
     val form = itemCarSearchForm.bindFromRequest
     if (form.hasErrors){
-      val errMsg = form.errors.map(_.message).mkString(HTML_BR)
-      Redirect(routes.NewItemCarReserve.index()).flashing(ERROR_MSG_KEY -> errMsg)
+      Redirect(routes.NewItemCarReserve.index()).flashing(ERROR_MSG_KEY -> form.errors.map(_.message).mkString(HTML_BR))
     }else{
       // 部署情報
       val carFormSearchData = itemCarSearchForm.bindFromRequest.get
