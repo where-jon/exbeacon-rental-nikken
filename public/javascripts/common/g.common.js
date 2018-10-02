@@ -170,6 +170,7 @@ var gResize = {
 
 /*画面初期表示関連*/
 var gInitView = {
+
     newTableResize : function(vType) {
         var timer = false;
         $(window).resize(function() {
@@ -179,26 +180,21 @@ var gInitView = {
             timer = setTimeout(function() {
                 // 処理の再実行
                 gInitView.removeTable();
-                gInitView.newFixTable();
-                gInitView.bindMouseAndTouch();
+                gInitView.newFixTable(vType);
+//                gInitView.bindMouseAndTouch();
             }, 200);
         });
     },
-    newFixTable : function() {
-        var vHeight = $(window).height()*0.70;
+
+    newFixTable : function(vType) {
+        var vHeight = -1
+        if(vType=="noBtn"){
+            vHeight = $(window).height()*0.75;
+        }else{
+            vHeight = $(window).height()*0.70;
+        }
         $('#tableDiv')[0].style.height = vHeight + "px"
-
-
         $('#myTable').stickyTable({overflowy: true});
-
-//        $('#destroyBtn').click(function() {
-//            //removes sticky table classes and elements
-//            $('#myTable').stickyTable('destroy');
-//        });
-//
-//        $('#initBtn').click(function() {
-//            $('#myTable').stickyTable();
-//        });
     },
     removeTable : function() {
         var clonedTable = $('.bodyTableDiv').find('table').clone();

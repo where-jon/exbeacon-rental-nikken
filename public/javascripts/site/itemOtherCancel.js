@@ -159,6 +159,7 @@ function btnEvent(){
 $(function(){
     // テーブルを固定
     gInitView.newFixTable();
+    gInitView.newTableResize();
     // マウス操作とタップ操作をバインド
     gInitView.bindMouseAndTouch();
     // filter値確認
