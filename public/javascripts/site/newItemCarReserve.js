@@ -64,7 +64,6 @@ function btnEvent(){
 　　var registerBtnElement = document.getElementById("itemRegisterFooter")
     registerBtnElement.addEventListener('click', function(event) {
         if(gReserveCheck){
-            console.log("loading....")
             $('#load')[0].style.display = ""
             gReserveCheck = false;
             // companyName結果をfromへ設定
@@ -238,18 +237,18 @@ $(function(){
     bindMouseAndTouch();
 
  // リサイズ対応
-    var timer = false;
-    $(window).resize(function() {
-        if (timer !== false) {
-            clearTimeout(timer);
-        }
-        timer = setTimeout(function() {
-            // 処理の再実行
-            removeTable();
-            fixTable();
-            bindMouseAndTouch();
-        }, 200);
-    });
+//    var timer = false;
+//    $(window).resize(function() {
+//        if (timer !== false) {
+//            clearTimeout(timer);
+//        }
+//        timer = setTimeout(function() {
+//            // 処理の再実行
+//            removeTable();
+//            fixTable();
+//            bindMouseAndTouch();
+//        }, 200);
+//    });
 
 });
 
