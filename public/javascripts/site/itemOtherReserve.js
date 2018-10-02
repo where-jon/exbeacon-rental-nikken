@@ -143,18 +143,14 @@ function btnEvent(){
 }
 
 $(function(){
+
+     // テーブルを固定
+    gInitView.newFixTable();
+    gInitView.newTableResize();
+    // マウス操作とタップ操作をバインド
+    gInitView.bindMouseAndTouch();
     // filter値確認
     getFilterCheck();
     // 表示ボタンをクリック
     btnEvent();
-
-    // テーブルを固定
-    gInitView.fixTable();
-
-    // マウス操作とタップ操作をバインド
-    gInitView.bindMouseAndTouch();
-
-    // 画面サイズ変更による再調整
-    gInitView.tableResize();
-
 });

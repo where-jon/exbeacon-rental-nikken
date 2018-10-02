@@ -131,15 +131,13 @@ class ItemOtherReserve @Inject()(config: Configuration
           val vReserveEndDate = ItemOtherReserveData.inputEndDate
           var idListData = List[Int]()
           var idTypeListData = List[Int]()
-          ItemOtherReserveData.itemId.zipWithIndex.map { case (itemId, i) =>
-            ItemOtherReserveData.checkVal.zipWithIndex.map { case (check, j) =>
-              if(i == check){
-                val vItemTypeId = ItemOtherReserveData.itemTypeIdList(i)
-                idListData = idListData :+itemId
-                idTypeListData = idTypeListData :+vItemTypeId
-                setData = setData :+ ReserveItem(vItemTypeId,itemId,vFloorId,placeId,vCompanyId,vReserveStartDate,vReserveEndDate,true,vWorkTypeId)
-              }
-            }
+          ItemOtherReserveData.checkVal.zipWithIndex.map { case (check, j) =>
+            val vIndex = check.toInt
+            val vId = ItemOtherReserveData.itemId(vIndex)
+            val vItemTypeId = ItemOtherReserveData.itemTypeIdList(vIndex)
+            idListData = idListData :+vId
+            idTypeListData = idTypeListData :+vItemTypeId
+            setData = setData :+ ReserveItem(vItemTypeId,vId,vFloorId,placeId,vCompanyId,vReserveStartDate,vReserveEndDate,true,vWorkTypeId)
           }
 
           var errMsg = Seq[String]()
