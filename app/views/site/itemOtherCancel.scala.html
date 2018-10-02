@@ -24,6 +24,8 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
 <body>
 <!-- content -->
 <div class="container">
+    <!--loading部-->
+    @views.html.templates.totalLoading()
     <!-- ナビバー  -->
     @views.html.templates.navBar()
     <div class="row">
@@ -104,56 +106,56 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
                 <!-- テーブルのROW -->
                 <div class="row tableRow">
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="padding:0;">
-                        <div class="table-responsive-body">
-                            <table class="table table-bordered table-condensed itemTable">
+                        <div id="tableDiv" class="table-responsive-body">
+                            <table id="myTable" class="table table-bordered table-condensed itemTable">
                                 <thead>
                                     <tr>
-                                        <th colspan="10" class="tableTitleTh">@Messages("lang.site.itemOtherCancel.page.title")</th>
+                                        <th colspan="10" class="tableTitleBorder tableTitleTh">@Messages("lang.site.itemOtherCancel.page.title")</th>
                                     </tr>
                                     <tr>
-                                        <th class="tableTh ">@Messages("lang.site.itemOtherCancel.select")</th>
-                                        <th class="tableTh ">@Messages("lang.site.itemOtherCancel.txId")</th>
-                                        <th class="tableTh ">@Messages("lang.site.itemOtherCancel.no")</th>
-                                        <th class="tableTh ">@Messages("lang.site.itemOtherCancel.floor")</th>
-                                        <th class="tableTh ">@Messages("lang.site.itemOtherCancel.pos")</th>
-                                        <th class="tableTh hidden">@Messages("lang.site.itemOtherCancel.itemId")</th>
-                                        <th class="tableTh hidden">@Messages("lang.site.itemOtherCancel.typeId")</th>
-                                        <th class="tableTh ">@Messages("lang.site.itemOtherCancel.typeName")</th>
-                                        <th class="tableTh ">@Messages("lang.site.itemOtherCancel.name")</th>
-                                        <th class="tableTh ">@Messages("lang.site.itemOtherCancel.reserveCompany")</th>
-                                        <th class="tableTh ">@Messages("lang.site.itemOtherCancel.reserveStartDate")</th>
-                                        <th class="tableTh ">@Messages("lang.site.itemOtherCancel.reserveEndDate")</th>
-                                        <th class="hidden tableTh ">@Messages("lang.site.itemOtherCancel.reserveTerm")</th>
-                                        <th class="tableTh hidden">@Messages("lang.site.itemOtherCancel.reserveId")</th>
+                                        <th class="tableTh tableBorder ">@Messages("lang.site.itemOtherCancel.select")</th>
+                                        <th class="tableTh tableBorder ">@Messages("lang.site.itemOtherCancel.txId")</th>
+                                        <th class="tableTh tableBorder ">@Messages("lang.site.itemOtherCancel.no")</th>
+                                        <th class="tableTh tableBorder ">@Messages("lang.site.itemOtherCancel.floor")</th>
+                                        <th class="tableTh tableBorder ">@Messages("lang.site.itemOtherCancel.pos")</th>
+                                        <th class="tableTh tableBorder hidden">@Messages("lang.site.itemOtherCancel.itemId")</th>
+                                        <th class="tableTh tableBorder hidden">@Messages("lang.site.itemOtherCancel.typeId")</th>
+                                        <th class="tableTh tableBorder ">@Messages("lang.site.itemOtherCancel.typeName")</th>
+                                        <th class="tableTh tableBorder ">@Messages("lang.site.itemOtherCancel.name")</th>
+                                        <th class="tableTh tableBorder ">@Messages("lang.site.itemOtherCancel.reserveCompany")</th>
+                                        <th class="tableTh tableBorder ">@Messages("lang.site.itemOtherCancel.reserveStartDate")</th>
+                                        <th class="tableTh tableBorder ">@Messages("lang.site.itemOtherCancel.reserveEndDate")</th>
+                                        <th class="hidden tableTh tableBorder ">@Messages("lang.site.itemOtherCancel.reserveTerm")</th>
+                                        <th class="tableTh tableBorder hidden">@Messages("lang.site.itemOtherCancel.reserveId")</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @otherList.zipWithIndex.map { case(other, i) =>
                                         <tr class="rowColor rowHover" data-carId="@other.item_other_id" id="@other.item_other_id">
-                                            <td class="item common__check--frame" id="check-@i">
+                                            <td class="tableBorder item common__check--frame" id="check-@i">
                                                 <input class= "checkTotal" type="checkbox" id="isCheckBox-@i" name="checkVal[@i]" value=@i />
                                             </td>
-                                            <td class="itemTd text-center ">@other.item_other_btx_id</td>
-                                            <td class="itemTd text-center ">@other.item_other_no</td>
-                                            <td class="itemTd text-center ">@other.cur_pos_name</td>
-                                            <td class="itemTd text-center modalSelect">@other.cur_exb_name</td>
-                                            <td class="itemTd text-center hidden">@other.item_other_id
+                                            <td class="tableBorder itemTd text-center ">@other.item_other_btx_id</td>
+                                            <td class="tableBorder itemTd text-center ">@other.item_other_no</td>
+                                            <td class="tableBorder itemTd text-center ">@other.cur_pos_name</td>
+                                            <td class="tableBorder itemTd text-center modalSelect">@other.cur_exb_name</td>
+                                            <td class="tableBorder itemTd text-center hidden">@other.item_other_id
                                                 <input class="hidden form-control input-sm" type="text" id="itemId-@i" name="itemId[@i]" value="@other.item_other_id" />
                                             </td>
-                                            <td class="itemTd text-center hidden">@other.item_type_id
+                                            <td class="tableBorder itemTd text-center hidden">@other.item_type_id
                                                 <input class="hidden form-control input-sm" type="text" id="itemTypeIdList-@i" name="itemTypeIdList[@i]" value="@other.item_type_id" />
                                             </td>
-                                            <td class="itemTd text-center ">@other.item_type_name</td>
-                                            <td class="itemTd text-center ">@other.item_other_name</td>
-                                            <td class="itemTd text-center ">@other.company_name</td>
-                                            <td class="itemTd text-center ">@other.reserve_start_date
+                                            <td class="tableBorder itemTd text-center ">@other.item_type_name</td>
+                                            <td class="tableBorder itemTd text-center ">@other.item_other_name</td>
+                                            <td class="tableBorder itemTd text-center ">@other.company_name</td>
+                                            <td class="tableBorder itemTd text-center ">@other.reserve_start_date
                                                 <input class="hidden form-control input-sm" type="text" id="reserveStartDateList-@i" name="reserveStartDateList[@i]" value="@other.reserve_start_date" />
                                             </td>
-                                            <td class="itemTd text-center ">@other.reserve_end_date</td>
-                                            <td class="hidden itemTd text-center ">@other.work_type_name
+                                            <td class="tableBorder itemTd text-center ">@other.reserve_end_date</td>
+                                            <td class="hidden tableBorder itemTd text-center ">@other.work_type_name
                                                 <input class="hidden form-control input-sm" type="text" id="workTypeNameList-@i" name="workTypeNameList[@i]" value="@other.work_type_name" />
                                             </td>
-                                            <td class="hidden itemTd text-center ">
+                                            <td class="hidden tableBorder itemTd text-center ">
                                                 <input class=" form-control input-sm" type="text" id="reserveList-@i" name="itemReserveIdList[@i]" value="@other.reserve_id" />
                                             </td>
                                         </tr>

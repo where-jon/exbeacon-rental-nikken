@@ -47,8 +47,8 @@ function btnEvent(){
 　　var registerBtnElement = document.getElementById("itemRegisterFooter")
     registerBtnElement.addEventListener('click', function(event) {
         if(gReserveCheck){
+            $('#load')[0].style.display = ""
             gReserveCheck = false;
-
             // itemTypeId結果をfromへ設定
             var itemTypeFilterResult = $('#ITEM_TYPE_FILTER option:selected').val();
             var inputItemType = document.getElementById("itemTypeId")
@@ -147,19 +147,17 @@ function btnEvent(){
 }
 
 $(function(){
+   // テーブルを固定
+    gInitView.newFixTable();
+    // マウス操作とタップ操作をバインド
+    gInitView.bindMouseAndTouch();
+    // 画面サイズ変更による再調整
+    //gInitView.newTableResize();
 
     // filter値確認
     getFilterCheck();
     // 表示ボタンをクリック
     btnEvent();
 
-    // テーブルを固定
-    gInitView.fixTable();
-
-    // マウス操作とタップ操作をバインド
-    gInitView.bindMouseAndTouch();
-
-    // 画面サイズ変更による再調整
-    gInitView.tableResize();
 
 });

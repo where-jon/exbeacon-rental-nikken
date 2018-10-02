@@ -120,20 +120,18 @@ class ItemCarCancel @Inject()(config: Configuration
         if(ItemCarReserveData.checkVal.zipWithIndex.length > 0){
           var setData = List[CancelItem]()
           var vCancelCheck = "OK"
-          ItemCarReserveData.itemId.zipWithIndex.map { case (itemId, i) =>
-            ItemCarReserveData.checkVal.zipWithIndex.map { case (check, j) =>
-                if(i == check){
-                  val vItemTypeId = ItemCarReserveData.itemTypeIdList(i)
-                  val vItemReserveId = ItemCarReserveData.itemReserveIdList(i)
-                  val vReserveStartDate = ItemCarReserveData.reserveStartDateList(i)
-                  val vWorkTypeName = ItemCarReserveData.workTypeNameList(i)
-                  val vCheckValue = beaconService.currentTimeCancelCheck(vReserveStartDate,vWorkTypeName)
-                  if(vCheckValue != "OK"){
-                    vCancelCheck = vCheckValue
-                  }
-                  setData = setData :+ CancelItem(vItemTypeId,itemId,vItemReserveId,placeId,true)
-                }
+          ItemCarReserveData.checkVal.zipWithIndex.map { case (check, j) =>
+              val vIndex = check.toInt
+              val vId = ItemCarReserveData.itemId(vIndex)
+              val vItemTypeId = ItemCarReserveData.itemTypeIdList(vIndex)
+              val vItemReserveId = ItemCarReserveData.itemReserveIdList(vIndex)
+              val vReserveStartDate = ItemCarReserveData.reserveStartDateList(vIndex)
+              val vWorkTypeName = ItemCarReserveData.workTypeNameList(vIndex)
+              val vCheckValue = beaconService.currentTimeCancelCheck(vReserveStartDate,vWorkTypeName)
+              if(vCheckValue != "OK"){
+                vCancelCheck = vCheckValue
               }
+              setData = setData :+ CancelItem(vItemTypeId,vId,vItemReserveId,placeId,true)
             }
           if(vCancelCheck == "OK"){ //　現在時刻から予約取消可能かを判定
             val result = carDAO.cancelItemCar(setData)
