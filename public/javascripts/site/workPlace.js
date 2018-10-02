@@ -701,6 +701,16 @@ $(function () {
     var floorFrame = $('#floor-category');
     floorFrame.val(gMapPos)
 
+    // 初期表示
+    var beaconMapFrame = document.getElementById("beaconMap-" + gMapPos);
+    beaconMapFrame.classList.remove("hidden");
+
+
+    var updateBtn = [].slice.call(document.querySelectorAll(".btn__icon--style"))
+    updateBtn[0].addEventListener('click', function() {
+        startUpdate();
+    });
+
     if(floorFrame!=null){
          // 管理者用selectbox value取得
          $('#floor-category').change(function() {
@@ -717,18 +727,6 @@ $(function () {
              document.cookie = cookies;
          });
         }
-
-
-    // 初期表示
-    var beaconMapFrame = document.getElementById("beaconMap-" + gMapPos);
-    beaconMapFrame.classList.remove("hidden");
-
-
-    var updateBtn = [].slice.call(document.querySelectorAll(".btn__icon--style"))
-    updateBtn[0].addEventListener('click', function() {
-        startUpdate();
-    });
-
 
     // exbViewer取得
     gObjData.setElementBuildingData();
