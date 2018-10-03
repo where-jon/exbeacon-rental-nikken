@@ -54,6 +54,8 @@ class ItemCarCancel @Inject()(config: Configuration
   var floorNameList :Seq[Floor] = null; // フロア
   var workTypeList :Seq[WorkType] = null; // 作業期間種別
 
+  var RESERVE_MAX_COUNT = -1
+
   /*enum形*/
   val WORK_TYPE = WorkTypeEnum().map;
 
@@ -83,6 +85,7 @@ class ItemCarCancel @Inject()(config: Configuration
 
     COMPANY_NAME_FILTER = ""
     FLOOR_NAME_FILTER = ""
+    RESERVE_MAX_COUNT = config.getInt("web.positioning.reserveMaxCount").get
   }
 
   /** 　検索側データ取得 */
@@ -200,7 +203,7 @@ class ItemCarCancel @Inject()(config: Configuration
 
 
     Ok(views.html.site.itemCarCancel(ITEM_TYPE_FILTER,COMPANY_NAME_FILTER,WORK_TYPE_FILTER,RESERVE_DATE
-      ,carListApi,itemTypeList,companyNameList,floorNameList,workTypeList,WORK_TYPE))
+      ,carListApi,itemTypeList,companyNameList,floorNameList,workTypeList,WORK_TYPE,RESERVE_MAX_COUNT))
   }
 
   /** 初期表示 */
@@ -216,7 +219,7 @@ class ItemCarCancel @Inject()(config: Configuration
       val carListApi = beaconService.getItemCarBeaconPosition(dbDatas,true,placeId)
       if(carListApi!=null){
         Ok(views.html.site.itemCarCancel(ITEM_TYPE_FILTER,COMPANY_NAME_FILTER,WORK_TYPE_FILTER,RESERVE_DATE
-          ,carListApi,itemTypeList,companyNameList,floorNameList,workTypeList,WORK_TYPE))
+          ,carListApi,itemTypeList,companyNameList,floorNameList,workTypeList,WORK_TYPE,RESERVE_MAX_COUNT))
       }else{
         // apiと登録データが違う場合
         Redirect(errors.routes.UnDetectedApi.indexSite)

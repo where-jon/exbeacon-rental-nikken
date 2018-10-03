@@ -8,7 +8,8 @@ itemTypeList: Seq[ItemType],
 companyNameList :Seq[Company],
 floorNameList :Seq[Floor],
 workTypeList :Seq[WorkType],
-workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: RequestHeader, flash: Flash)
+workTypeMap: Map[Int,String],
+RESERVE_MAX_COUNT:Int)(implicit user: User, messages: Messages, request: RequestHeader, flash: Flash)
 @import b3.vertical.fieldConstructor
 @import controllers.routes
 @import helper._
@@ -30,6 +31,7 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
     <div class="row">
         <!-- サイドメニュー -->
         @views.html.templates.sideMenu()
+        <span id="reserveMaxCount" data-count = "@RESERVE_MAX_COUNT" class = "hidden" ></span>
         <span class="col-xs-10 col-sm-10 col-md-10 col-lg-10">
             <!-- メッセージ -->
             @views.html.templates.msgDiv()
