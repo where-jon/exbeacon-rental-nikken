@@ -113,7 +113,7 @@ ITEM_TYPE_FILTER: Int
                                     <th rowspan="3" class="tableTh tableBorder ">@Messages("lang.site.itemCarReserve.pos")</th>
                                     <!--日付-->
                                     @arReserveDays.zipWithIndex.map { case(day, i) =>
-                                    <th colspan="2" class="tableTh tableBorder">@day.getDay.substring(5)</th>
+                                    <th colspan="2" class="tableTh tableBorder tableMonth">@day.getDay.substring(5)</th>
                                     }
                                 </tr>
                                 <tr class="">
@@ -145,7 +145,7 @@ ITEM_TYPE_FILTER: Int
                                     @car.reserveData.zipWithIndex.map { case(day, dayIndex) =>
                                     @if(day.reserveDate!= "noDate"){
                                     @if(day.reserveAmCompany!= "noAmCompany"){
-                                    <td class="reserve__td--frame text-center reserve__already--frame tableBorder">@day.reserveAmCompany</td>
+                                    <td class="reserve__td--frame text-center reserve__already--frame tableBorder">@day.reserveAmCompany.substring(0,4)</td>
                                     }else{
                                     <td data-check=off class="reserveTdHover reserve__td--frame text-center reserve__none--frame tableBorder">
                                         <input class="hidden form-control input-sm" type="checkbox" id="checkList-@vFormIndex" name="checkList[@vFormIndex]" value="@vFormIndex" />
@@ -158,7 +158,7 @@ ITEM_TYPE_FILTER: Int
                                     </td>
                                     }
                                     @if(day.reservePmCompany!= "noPmCompany"){
-                                    <td class="reserve__td--frame text-center reserve__already--frame tableBorder">@day.reservePmCompany</td>
+                                    <td class="reserve__td--frame text-center reserve__already--frame tableBorder">@day.reservePmCompany.substring(0,4)</td>
                                     }else{
                                     <td data-check="off" class="reserveTdHover reserve__td--frame text-center reserve__none--frame tableBorder">
                                         <input class="hidden form-control input-sm" type="checkbox" id="checkList-@vFormIndex" name="checkList[@vFormIndex]" value="@vFormIndex" />
