@@ -1,5 +1,6 @@
 var arCheckBoxIndex = []
 var gReserveCheck = true;
+var gtitleName = "その他仮設材予約取消"
 
 // サブミット
 function getFilterCheck(){
@@ -42,6 +43,8 @@ function btnEvent(){
       gDatePicker.htmlClickEvent();
     // DatePickerの設定 end-----------------------------------------
 
+    //　checkboxクリックイベント
+    gReserveCheck = gReserve.bCheckEvent()
 
     //　予約取消ボタン
 　　var registerBtnElement = document.getElementById("itemRegisterFooter")
@@ -83,46 +86,48 @@ function btnEvent(){
     //　取消へボタン
     var reserveBtnElement = document.getElementById("reserveBtn")
     reserveBtnElement.addEventListener('click', function(event) {
+        gReserveCheck = gReserve.bCheckData()
+        if(gReserveCheck){
+        $('#inputModal').modal();
+             // modal値設定
+            // item種別
+            var itemTypeFilterResult = $('#ITEM_TYPE_FILTER option:selected')[0].text;
+            var mItemTypeName = document.getElementById("mItemTypeName")
+            if(itemTypeFilterResult != ""){
+                mItemTypeName.textContent = itemTypeFilterResult
+            }
 
-         $('#inputModal').modal();
-         // modal値設定
-        // item種別
-        var itemTypeFilterResult = $('#ITEM_TYPE_FILTER option:selected')[0].text;
-        var mItemTypeName = document.getElementById("mItemTypeName")
-        if(itemTypeFilterResult != ""){
-            mItemTypeName.textContent = itemTypeFilterResult
-        }
+            // companyName結果をfromへ設定
+            var companyNameFilterResult = $('#COMPANY_NAME_FILTER option:selected').val();
+            var mCompanyName = document.getElementById("mCompanyName")
+            if(companyNameFilterResult != ""){
+                mCompanyName.textContent = companyNameFilterResult
+            }
 
-        // companyName結果をfromへ設定
-        var companyNameFilterResult = $('#COMPANY_NAME_FILTER option:selected').val();
-        var mCompanyName = document.getElementById("mCompanyName")
-        if(companyNameFilterResult != ""){
-            mCompanyName.textContent = companyNameFilterResult
-        }
+            // floorName結果をfromへ設定
+            var floorNameFilterResult = $('#FLOOR_NAME_FILTER option:selected').val();
+            var mReserveFloorName = document.getElementById("mReserveFloorName")
+            if(floorNameFilterResult != ""){
+                mReserveFloorName.textContent = floorNameFilterResult
+            }
 
-        // floorName結果をfromへ設定
-        var floorNameFilterResult = $('#FLOOR_NAME_FILTER option:selected').val();
-        var mReserveFloorName = document.getElementById("mReserveFloorName")
-        if(floorNameFilterResult != ""){
-            mReserveFloorName.textContent = floorNameFilterResult
-        }
+            // work_type_name結果をfromへ設定
+            var workTypeNameFilterResult = $('#WORK_TYPE_FILTER option:selected').val();
+            if(workTypeNameFilterResult != ""){
+                mWorkTypeName.textContent = workTypeNameFilterResult
+            }
 
-        // work_type_name結果をfromへ設定
-        var workTypeNameFilterResult = $('#WORK_TYPE_FILTER option:selected').val();
-        if(workTypeNameFilterResult != ""){
-            mWorkTypeName.textContent = workTypeNameFilterResult
-        }
-
-        // inputDate結果をfromへ設定
-        var mReserveStartDate = document.getElementById("mReserveStartDate")
-        var inputDate = document.getElementById("inputDate")
-        if(inputDate.value != ""){
-            mReserveStartDate.textContent = gDatePicker.startSqlTime
-        }
-        var mReserveEndDate = document.getElementById("mReserveEndDate")
-        var inputDate2 = document.getElementById("inputDate2")
-        if(inputDate2.value != ""){
-            mReserveEndDate.textContent = gDatePicker.endSqlTime
+            // inputDate結果をfromへ設定
+            var mReserveStartDate = document.getElementById("mReserveStartDate")
+            var inputDate = document.getElementById("inputDate")
+            if(inputDate.value != ""){
+                mReserveStartDate.textContent = gDatePicker.startSqlTime
+            }
+            var mReserveEndDate = document.getElementById("mReserveEndDate")
+            var inputDate2 = document.getElementById("inputDate2")
+            if(inputDate2.value != ""){
+                mReserveEndDate.textContent = gDatePicker.endSqlTime
+            }
         }
 
     });
