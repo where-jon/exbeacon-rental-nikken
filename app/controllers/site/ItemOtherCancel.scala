@@ -47,6 +47,8 @@ class ItemOtherCancel @Inject()(config: Configuration
   var floorNameList :Seq[Floor] = null; // フロア
   var workTypeList :Seq[WorkType] = null; // 作業期間種別
 
+  var RESERVE_MAX_COUNT = -1
+
   /*enum形*/
   val WORK_TYPE = WorkTypeEnum().map;
 
@@ -77,6 +79,8 @@ class ItemOtherCancel @Inject()(config: Configuration
 
     COMPANY_NAME_FILTER = ""
     FLOOR_NAME_FILTER = ""
+
+    RESERVE_MAX_COUNT = config.getInt("web.positioning.reserveMaxCount").get
   }
 
   /** 　検索側データ取得 */
@@ -113,20 +117,18 @@ class ItemOtherCancel @Inject()(config: Configuration
         if(ItemOtherReserveData.checkVal.zipWithIndex.length > 0){
           var setData = List[CancelItem]()
           var vCancelCheck = "OK"
-          ItemOtherReserveData.itemId.zipWithIndex.map { case (itemId, i) =>
-            ItemOtherReserveData.checkVal.zipWithIndex.map { case (check, j) =>
-                if(i == check){
-                  val vItemTypeId = ItemOtherReserveData.itemTypeIdList(i)
-                  val vItemReserveId = ItemOtherReserveData.itemReserveIdList(i)
-                  val vReserveStartDate = ItemOtherReserveData.reserveStartDateList(i)
-                  val vWorkTypeName = ItemOtherReserveData.workTypeNameList(i)
-                  val vCheckValue = beaconService.currentTimeCancelCheck(vReserveStartDate,vWorkTypeName)
-                  if(vCheckValue != "OK"){
-                    vCancelCheck = vCheckValue
-                  }
-                  setData = setData :+ CancelItem(vItemTypeId,itemId,vItemReserveId,placeId,true)
-                }
+          ItemOtherReserveData.checkVal.zipWithIndex.map { case (check, j) =>
+              val vIndex = check.toInt
+              val vId = ItemOtherReserveData.itemId(vIndex)
+              val vItemTypeId = ItemOtherReserveData.itemTypeIdList(vIndex)
+              val vItemReserveId = ItemOtherReserveData.itemReserveIdList(vIndex)
+              val vReserveStartDate = ItemOtherReserveData.reserveStartDateList(vIndex)
+              val vWorkTypeName = ItemOtherReserveData.workTypeNameList(vIndex)
+              val vCheckValue = beaconService.currentTimeCancelCheck(vReserveStartDate,vWorkTypeName)
+              if(vCheckValue != "OK"){
+                vCancelCheck = vCheckValue
               }
+              setData = setData :+ CancelItem(vItemTypeId,vId,vItemReserveId,placeId,true)
             }
           if(vCancelCheck == "OK") { //　現在時刻から予約取消可能かを判定
             val result = otherDAO.cancelItemOther(setData)
@@ -197,7 +199,7 @@ class ItemOtherCancel @Inject()(config: Configuration
 
 
     Ok(views.html.site.itemOtherCancel(ITEM_TYPE_FILTER,COMPANY_NAME_FILTER,WORK_TYPE_FILTER,RESERVE_START_DATE,RESERVE_END_DATE
-      ,otherListApi,itemTypeList,companyNameList,floorNameList,workTypeList,WORK_TYPE))
+      ,otherListApi,itemTypeList,companyNameList,floorNameList,workTypeList,WORK_TYPE,RESERVE_MAX_COUNT))
   }
 
   /** 初期表示 */
@@ -215,7 +217,7 @@ class ItemOtherCancel @Inject()(config: Configuration
 
       if(otherListApi!=null){
         Ok(views.html.site.itemOtherCancel(ITEM_TYPE_FILTER,COMPANY_NAME_FILTER,WORK_TYPE_FILTER,RESERVE_START_DATE,RESERVE_END_DATE
-          ,otherListApi,itemTypeList,companyNameList,floorNameList,workTypeList,WORK_TYPE))
+          ,otherListApi,itemTypeList,companyNameList,floorNameList,workTypeList,WORK_TYPE,RESERVE_MAX_COUNT))
       }else{
         // apiと登録データが違う場合
         Redirect(errors.routes.UnDetectedApi.indexSite)

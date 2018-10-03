@@ -101,21 +101,6 @@ class MovementCar @Inject()(config: Configuration
     }
   }
 
-  /** 　作業週の曜日を求める */
-  def getYobi(targetDay:String) : String = {
-    val vYobi = calendarDAO.selectGetYoubi(targetDay).last.getDay.trim()
-    val szYobi =
-    if( vYobi == "6.0" ) "土"
-    else if (vYobi == ".0") "日"
-    else if (vYobi == "1.0") "月"
-    else if (vYobi == "2.0") "火"
-    else if (vYobi == "3.0") "水"
-    else if (vYobi == "4.0") "木"
-    else if (vYobi == "5.0") "金"
-    else  ""
-
-    return szYobi
-  }
 
   /** 　item_logテーブルデータ取得 */
   def getAllItemLogData(placeId:Int,itemIdList :Seq[Int],calendarList:List[WeekData]) : Seq[List[WorkRate]] = {
@@ -182,7 +167,7 @@ class MovementCar @Inject()(config: Configuration
             calendarDAO.selectGetTermStarEndDay(vTargetDate,vWeekFirstDay).last.getDay.toInt
           vWeekLastDay = vTargetDate
           bWeekLoofCheck = false  // もう次からは当月ではないのでloofを止めさえる
-          val szYobi = vTargetDate + "日("+ this.getYobi(vTargetDate) + ")"
+          val szYobi = vTargetDate + "日("+ calendarDAO.getYobi(vTargetDate) + ")"
         }else{
           vTermDay = calendarDAO.selectGetTermStarEndDay(vWeekLastDay,vWeekFirstDay).last.getDay.toInt
             //calendarDAO.selectGetTermDay(iWeekIndex,vNextWeekFirstDay,DETECT_MONTH).last.getDay.toInt
@@ -198,7 +183,7 @@ class MovementCar @Inject()(config: Configuration
         vRealWorkDay = vTermDay - vYasumiCount
         val vWeekTotalTime = DAY_WORK_TIME * vRealWorkDay
         vTemp= vWeekFirstDay.splitAt(8)
-        val szYobi = intWeekFirstDay + "日("+ this.getYobi(vWeekFirstDay) + ")"
+        val szYobi = intWeekFirstDay + "日("+ calendarDAO.getYobi(vWeekFirstDay) + ")"
         weekData = weekData :+
           WeekData(szYobi,iWeekIndex,vWeekFirstDay,vWeekLastDay,vTermDay,vRealWorkDay,vWeekTotalTime)
       iWeekIndex = iWeekIndex + 1; // 週目カウントを増加
@@ -223,7 +208,7 @@ class MovementCar @Inject()(config: Configuration
       var vRealWorkDay = 0
       if(iWeekIndex == 1){ // 最初の方だけ
         val szYobi =
-          "1日("+ this.getYobi(DETECT_MONTH + "-01") + ")"
+          "1日("+ calendarDAO.getYobi(DETECT_MONTH + "-01") + ")"
 
         if(intWeekFirstDay == 8){ // 一周目が一日の場合普通に営業日5日
           val vWeekTotalTime = DAY_WORK_TIME * REAL_WORK_DAY
@@ -252,7 +237,7 @@ class MovementCar @Inject()(config: Configuration
             calendarDAO.selectGetTermStarEndDay(vTargetDate,vWeekBeforeFirstDay).last.getDay.toInt
           vWeekLastDay = vTargetDate
           bWeekLoofCheck = false  // もう次からは当月ではないのでloofを止めさえる
-          val szYobi = vTargetDate + "日("+ this.getYobi(vTargetDate) + ")"
+          val szYobi = vTargetDate + "日("+ calendarDAO.getYobi(vTargetDate) + ")"
         }else{
           vTermDay =
             calendarDAO.selectGetTermDay(iWeekIndex,DETECT_MONTH,vWeekBeforeFirstDay).last.getDay.toInt
@@ -268,7 +253,7 @@ class MovementCar @Inject()(config: Configuration
         val vWeekTotalTime = DAY_WORK_TIME * vRealWorkDay
         val vTemp= vWeekBeforeFirstDay.splitAt(8)
         val intWeekFirstDay =vTemp._2.toInt
-        val szYobi = intWeekFirstDay + "日("+ this.getYobi(vWeekBeforeFirstDay) + ")"
+        val szYobi = intWeekFirstDay + "日("+ calendarDAO.getYobi(vWeekBeforeFirstDay) + ")"
         weekData = weekData :+
           WeekData(szYobi,iWeekIndex,vWeekBeforeFirstDay,vWeekLastDay,vTermDay,vRealWorkDay,vWeekTotalTime)
       }
@@ -341,7 +326,7 @@ class MovementCar @Inject()(config: Configuration
         pw.print("\"")
         pw.print(",")
         pw.print(s"${item.last.itemName},")
-        item.map{ v =>
+        item.foreach{ v =>
           pw.print(s"${v.operatingRate}%," +
             s"${v.reserveOperatingRate}%,"
           )

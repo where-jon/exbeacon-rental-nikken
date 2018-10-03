@@ -9,6 +9,10 @@ import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, Json, Reads}
 
 
+case class GetOneWeekData(
+ var getDay: String
+,var getYobi:String
+)
 
 case class GetOneWeek(
  getDay: String
@@ -125,6 +129,30 @@ class LogCalendarDAO @Inject()(dbapi: DBApi) {
   }
 
 
+  def selectGetDayOfWeek(SEARCH_DATE:String,END_DAY:Int): Seq[GetOneWeekData] = {
+    // Parser
+    val simpleDayOfWeek = {
+      get[String]("getDay") ~
+      get[String]("getYobi")map {
+        case
+          getDay~ getYobi =>
+          GetOneWeekData(getDay,getYobi)
+      }
+    }
+
+    db.withConnection { implicit connection =>
+      val selectPh =
+        """
+           select
+            to_CHAR(date_trunc('day', TO_TIMESTAMP('""" + {SEARCH_DATE}+ """ ', 'YYYY-MM-DD'))::date    + i, 'YYYY-MM-DD') as getDay
+            ,to_CHAR(extract(dow from date_trunc('day', TO_TIMESTAMP('""" + {SEARCH_DATE}+ """ ', 'YYYY-MM-DD'))::date    + i),'999D9') as getYobi
+            from generate_series(0,""" +{END_DAY}+""" ) as t(i)
+        """
+      SQL(selectPh).as(simpleDayOfWeek.*)
+
+    }
+  }
+
   def selectGetWeek(indexWeek:Int, DETECT_MONTH:String): Seq[GetOneWeek] = {
     db.withConnection { implicit connection =>
       val selectPh =
@@ -237,6 +265,23 @@ class LogCalendarDAO @Inject()(dbapi: DBApi) {
       )
       sql.as(simpleOneWeek.*)
     }
+  }
+
+
+  /** 　作業週の曜日を求める */
+  def getYobi(targetDay:String) : String = {
+    val vYobi = this.selectGetYoubi(targetDay).last.getDay.trim()
+    val szYobi =
+      if( vYobi == "6.0" ) "土"
+      else if (vYobi == ".0") "日"
+      else if (vYobi == "1.0") "月"
+      else if (vYobi == "2.0") "火"
+      else if (vYobi == "3.0") "水"
+      else if (vYobi == "4.0") "木"
+      else if (vYobi == "5.0") "金"
+      else  ""
+
+    return szYobi
   }
 
 }

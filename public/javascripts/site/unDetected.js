@@ -32,7 +32,6 @@ function btnEvent(){
 
     // DatePickerの設定 start---------------------------------------
      gDatePicker.todayClickEvent();
-     gDatePicker.htmlDayClickEvent();
     // DatePickerの設定 end-----------------------------------------
 
 

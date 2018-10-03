@@ -52,6 +52,11 @@ GET    /site/workPlace/getData         controllers.site.WorkPlace.getData
 GET    /site/itemCarMaster                 controllers.site.ItemCarMaster.index
 POST   /site/itemCarMaster                 controllers.site.ItemCarMaster.search
 
+# 新作業車・立馬予約
+GET    /site/newItemCarReserve             controllers.site.NewItemCarReserve.index
+POST   /site/newItemCarReserve             controllers.site.NewItemCarReserve.search
+POST   /site/newItemCarReserve/reserve     controllers.site.NewItemCarReserve.reserve
+
 # 作業車・立馬予約
 GET    /site/itemCarReserve                 controllers.site.ItemCarReserve.index
 POST   /site/itemCarReserve                 controllers.site.ItemCarReserve.search

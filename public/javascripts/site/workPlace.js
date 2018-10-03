@@ -20,7 +20,7 @@ var workerBtnCheck = false;
 var vInfoTagElement;
 var myNum;
 var INIT_POS = -5;
-var INIT_FLOOR = 3;
+var INIT_FLOOR = 1;
 var gMapFrame = []
 var gDrawer = []
 var Drawer = function(map) {
@@ -638,15 +638,68 @@ var viewHidden = function() {
     }
  }
 
-$(function () {
-    console.log("workPlace.js")
 
+function getCookie(name) {
+    name = new RegExp(name  + '=([^;]*)');
+    return name.test(document.cookie) ? unescape(RegExp.$1) : '';
+}
+
+
+function isPreUrlCookiesCheck() {
+    var bPreUrlCheck = false
+    try{
+     var vPreUrl= getCookie('preUrl');
+     if(vPreUrl == ""){
+         bPreUrlCheck = false
+     }else{
+        var vCurUrl = window.location.href
+        if(vCurUrl == vPreUrl){
+            bPreUrlCheck = true
+        }else{
+            bPreUrlCheck = false
+        }
+     }
+     return bPreUrlCheck
+    }catch(e){
+     bPreUrlCheck = false;
+     return bPreUrlCheck
+    }
+}
+
+ function checkCookies() {
+     try{
+         var isFloorNumNull= getCookie('floor');
+         if(isFloorNumNull == ""){
+             gMapPos = INIT_FLOOR;
+         }else{
+             gMapPos = Number(getCookie('floor'));
+         }
+         if(isNaN(gMapPos)){
+             gMapPos = INIT_FLOOR;
+         }
+
+     }catch(e){
+         gMapPos = INIT_FLOOR;
+     }
+ }
+
+
+$(function () {
     try {
         VIEW_COUNT = Number($(document.getElementById("viewCount")).attr("data-count"));
     }
     catch(exception){
         VIEW_COUNT = -1; // エラーの場合
     }
+
+    // 現場状況画面での更新の場合見たフロアにするため
+    if(isPreUrlCookiesCheck()){
+        checkCookies();
+    }
+
+    // フロア固定
+    var floorFrame = $('#floor-category');
+    floorFrame.val(gMapPos)
 
     // 初期表示
     var beaconMapFrame = document.getElementById("beaconMap-" + gMapPos);
@@ -658,21 +711,22 @@ $(function () {
         startUpdate();
     });
 
-    var floorFrame = $('#floor-category');
-     if(floorFrame!=null){
-     // 管理者用selectbox value取得
-     $('#floor-category').change(function() {
-         viewHidden();
-         var result = $('#floor-category option:selected').val();
-         // itemTypeあるものだけ表示
-         itemTypeCheck();
+    if(floorFrame!=null){
+         // 管理者用selectbox value取得
+         $('#floor-category').change(function() {
+             viewHidden();
+             var result = $('#floor-category option:selected').val();
+             // itemTypeあるものだけ表示
+             itemTypeCheck();
 
-         console.log("floor:" + result)
-         gMapPos = result;
-         document.getElementById("beaconMap-" + result).classList.remove("hidden");
-     });
-    }
+             console.log("floor:" + result)
+             gMapPos = result;
+             document.getElementById("beaconMap-" + result).classList.remove("hidden");
 
+             cookies = "floor" + '=' + gMapPos;
+             document.cookie = cookies;
+         });
+        }
 
     // exbViewer取得
     gObjData.setElementBuildingData();
