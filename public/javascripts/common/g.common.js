@@ -50,7 +50,7 @@ var NOBTN_ROWS = 2;
 var NOBTN_OTHER_HEIGHT_RAITO = 0.85;
 var NOBTN_OTHER_WIDTH_RAITO = 0.99;
 var NOBTN_OTHER_ROWS = 3;
-
+var RESERVE_MAX_COUNT = 100;
 var gResize = {
     /* 文字サイズを再調整するロジック*/
     textResize : function(vElement,motoSize) {
@@ -1417,7 +1417,7 @@ var gTopMenu = {
 var bInputCheck = false;
 var arAddDeleteIndex = [];
 var gInit = {
-		
+
 		inputNameAllClear : function() {
 			var vInputElement = document.getElementsByClassName("form-control input-sm")
 			
@@ -2072,7 +2072,6 @@ var gModal = {
 		},
 }
 
-
 var gDatabase = {
 		resultCheck : function() {
 			var vDbResultElement = document.getElementById("dbResult")
@@ -2127,4 +2126,39 @@ var gDatabase = {
 	    		$("#dbExecuteBtn").trigger( "click" );
 			}
 		}
+}
+var gReserve = {
+    vCheckFrame : null,
+    bCheckEvent : function() {
+        try {
+            RESERVE_MAX_COUNT = Number($(document.getElementById("reserveMaxCount")).attr("data-count"));
+        }
+        catch(exception){
+            RESERVE_MAX_COUNT = 100; // エラーの場合
+        }
+        gReserve.vCheckFrame = [].slice.call(document.querySelectorAll(".checkTotal"));
+        gReserve.vCheckFrame.forEach(function(check, pos) {
+            check.addEventListener('click', function() {
+                gReserve.bCheckData();
+            });
+        });
+    },
+
+    bCheckData : function() {
+        var vCount = 0;
+        var bCheck = false;
+        gReserve.vCheckFrame.forEach(function(vCheck, pos) {
+            if(vCheck.checked){
+                vCount++;
+            }
+        });
+
+        if(vCount>RESERVE_MAX_COUNT){
+            bCheck = false
+             bootbox.alert( gtitleName + "は最大「"+RESERVE_MAX_COUNT+"個」まで可能です。「現在："　+ vCount + "個」");
+        }else{
+            bCheck = true
+        }
+        return bCheck
+    },
 }
