@@ -590,6 +590,7 @@ class itemCarDAO @Inject()(dbapi: DBApi) {
  				     reserve.reserve_start_date  between to_date('""" + {startDate} +"""', 'YYYY-MM-DD') and
                                                   to_date('""".stripMargin + {endDate} +"""', 'YYYY-MM-DD')
  						and reserve.place_id = """  + {placeId} + """
+            and reserve.item_type_id in ( """ + {itemIdList.mkString(",")} +""" )
  				 		ORDER BY
           			reserve.item_id, reserve_start_date
             	), ',') as ar_reserve_date
@@ -606,6 +607,7 @@ class itemCarDAO @Inject()(dbapi: DBApi) {
             reserve.reserve_start_date  between to_date('""" + {startDate} +"""', 'YYYY-MM-DD') and
                                                   to_date('""" + {endDate} +"""', 'YYYY-MM-DD')
  						and reserve.place_id = """  + {placeId} + """
+            and reserve.item_type_id in ( """ + {itemIdList.mkString(",")} +""" )
  				 		ORDER BY
           			reserve.item_id, reserve_start_date
             	), ',') as ar_reserve_company_name
@@ -622,6 +624,7 @@ class itemCarDAO @Inject()(dbapi: DBApi) {
  				     reserve.reserve_start_date  between to_date('""" + {startDate} +"""', 'YYYY-MM-DD') and
                                                  to_date('""" + {endDate} +"""', 'YYYY-MM-DD')
  						and reserve.place_id = """  + {placeId} + """
+            and reserve.item_type_id in ( """ + {itemIdList.mkString(",")} +""" )
  				 		ORDER BY
           			reserve.item_id, reserve_start_date
             	), ',') as ar_reserve_work_type
@@ -631,7 +634,7 @@ class itemCarDAO @Inject()(dbapi: DBApi) {
 	            and i.active_flg = true
             where c.place_id = """  + {placeId} + """
             and c.active_flg = true
-            and c.item_type_id in ( """ + {itemIdList.mkString(",")} +""" )
+            --and c.item_type_id in ( """ + {itemIdList.mkString(",")} +""" )
             order by item_car_id
 
         """
