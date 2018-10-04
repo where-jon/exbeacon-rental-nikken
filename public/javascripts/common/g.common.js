@@ -43,11 +43,11 @@ var BTN_HEIGHT_RAITO = 0.70;
 var BTN_WIDTH_RAITO = 0.99;
 var BTN_ROWS = 2;
 // 画面下部にボタン無し
-var NOBTN_HEIGHT_RAITO = 0.85;
+var NOBTN_HEIGHT_RAITO = 0.75;
 var NOBTN_WIDTH_RAITO = 0.99;
 var NOBTN_ROWS = 2;
 // 画面下部にボタン無し（その他）
-var NOBTN_OTHER_HEIGHT_RAITO = 0.85;
+var NOBTN_OTHER_HEIGHT_RAITO = 0.75;
 var NOBTN_OTHER_WIDTH_RAITO = 0.99;
 var NOBTN_OTHER_ROWS = 3;
 var RESERVE_MAX_COUNT = 100;
@@ -191,7 +191,7 @@ var gInitView = {
         if(vType=="noBtn"){
             vHeight = $(window).height()*0.75;
         }else{
-            vHeight = $(window).height()*0.70;
+            vHeight = $(window).height()*0.65;
         }
         $('#tableDiv')[0].style.height = vHeight + "px"
         $('#myTable').stickyTable({overflowy: true});
