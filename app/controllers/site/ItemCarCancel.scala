@@ -215,7 +215,7 @@ class ItemCarCancel @Inject()(config: Configuration
       //検索側データ取得
       getSearchData(placeId)
       // dbデータ取得
-      val dbDatas = carDAO.selectCarMasterCancel(placeId,itemIdList)
+      val dbDatas = carDAO.selectCarMasterCancelInitDsp(placeId,itemIdList)
       val carListApi = beaconService.getItemCarBeaconPosition(dbDatas,true,placeId)
       if(carListApi!=null){
         Ok(views.html.site.itemCarCancel(ITEM_TYPE_FILTER,COMPANY_NAME_FILTER,WORK_TYPE_FILTER,RESERVE_DATE
