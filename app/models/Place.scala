@@ -168,7 +168,7 @@ class placeDAO @Inject() (dbapi: DBApi) {
     * 現場情報を指定されたソート順で取得
     * @return
     */
-  def selectPlaceAll(): Seq[Place] = {
+  def selectPlaceAll(WORKING_STATUS:Int): Seq[Place] = {
     val list = {
       get[Int]("place_id") ~
         get[String]("place_name") ~
@@ -200,6 +200,7 @@ class placeDAO @Inject() (dbapi: DBApi) {
            place_master pm
          where
            pm.active_flg = true
+           and  pm.status = """  + {WORKING_STATUS} + """
            order by place_id
 
           """
