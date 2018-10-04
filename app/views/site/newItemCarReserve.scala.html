@@ -43,7 +43,7 @@ ITEM_TYPE_FILTER: Int
         <!-- メイン -->
         <div class="mainSpace col-xs-10 col-sm-10 col-md-10 col-lg-10">
             <!-- 画面題字 -->
-            <div class="form-group" style="font-weight:bold;font-size:19px;margin:25px 0px;">
+            <div class="form-group" style="font-weight:bold;font-size:19px;margin:15px 0px;">
                 <!--タイトル-->
                 @Messages("lang.site.newItemCarReserve.page.title")
             </div>
@@ -103,7 +103,7 @@ ITEM_TYPE_FILTER: Int
                 <div id="tableDiv" class="row tableRow col-xs-12 col-sm-12 col-md-12 col-lg-12" >
                         <table id="myTable" class="table reserveTable">
                             <thead class="">
-                                <tr class="">
+                                <tr class ="hidden">
                                     <th colspan="@(TOTAL_LENGTH*2+3)" class="tableTitleBorder tableTitleTh ">@Messages("lang.site.newItemCarReserve.page.title")</th>
                                 </tr>
                                 <tr class="">
