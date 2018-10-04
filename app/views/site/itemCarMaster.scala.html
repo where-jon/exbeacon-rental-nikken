@@ -22,6 +22,8 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
 <body>
 <!-- content -->
 <div class="container">
+    <!--loading部-->
+    @views.html.templates.totalLoading()
     <!-- ナビバー  -->
     @views.html.templates.navBar()
     <div class="row">
