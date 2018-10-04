@@ -1,6 +1,6 @@
 .currentTitle{
     color: #000!important;
-    font-size: 16px!important;
+    font-size: 1.4em!important;
     font-weight: bold;
     font-family: 'メイリオ', 'Meiryo', sans-serif;
 }
@@ -11,7 +11,6 @@
 }
 .menuBtnWrapper{
     width: 100%;
-    background-color: #D9D9D9;
     padding-top: 1%;
     padding-bottom: 10px;
 }
@@ -19,6 +18,35 @@
 .menuBtnsDiv{
     padding: 0px 5px;
     margin-bottom: 10px;
+}
+.menuBottomBtnsDiv{
+    margin-ton:200px;
+}
+
+.menuBottomBtns {
+    display: inline-block;
+    line-height: 8vmin;
+    margin-bottom: 0;
+    font-weight: 400;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    -ms-touch-action: manipulation;
+    touch-action: manipulation;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    background-image: none;
+    border-radius: 4px;
+    height: 10vmin;
+    width: 100%;
+    padding: 6px 0px;
+    background-color: #a9d18e !important;
+    color: #000;
+    font-family: 'Meiryo UI', 'メイリオ', 'Meiryo', sans-serif;
+    font-size: 1.4vw;
 }
 
 a.menuBtn{
@@ -33,7 +61,7 @@ a.menuBtn{
 }
 a.menuBtn:visited, a.menuBtn:active{
     color: #000;
-    border-color: #000;
+    border-color: rgba(89, 89, 89, 1);
 }
 a.menuBtn:hover{
     background-color: rgb(169, 209, 142);
@@ -71,3 +99,17 @@ a.cmsBtn:hover{
 }
 
 
+/*■iPad縦向き*/
+@media only screen and (min-device-width:768px) and (max-device-width:1024px) and (orientation:portrait) {
+.currentTitle{
+    color: #000!important;
+    font-size: 16px!important;
+    font-weight: bold;
+    font-family: 'メイリオ', 'Meiryo', sans-serif;
+}
+
+}
+
+/*■iPad横向き*/
+@media only screen and (min-device-width:768px) and (max-device-width:1024px) and (orientation:landscape) {
+}

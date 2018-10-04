@@ -1,21 +1,21 @@
 /******* ナビバー ********/
 .navbarCorner{
-    /* background-color: #B4C7E7!important; */
-    background-color: rgb(169, 209, 142)!important;
+    color: white;
+    background-color: rgba(112, 173, 71, 1) !important;
     padding:0;
     height: 54px;
 }
 .navbar{
 	border-radius: 0;
 	border: none;
-	background-color: #D9D9D9;
+	background-color: rgba(197, 224, 180, 1) !important;
     /*height: 54px;*/
     margin-bottom: 0px
 }
 .navbar-brand{
     width: 100%;
     text-align: center;
-    font-size: 90%;
+    font-size: 1.4em !important;
 }
 
 .navbar-top{
@@ -40,6 +40,9 @@
     margin-top: 9px!important;
     font-family: YuGothic, '游ゴシック体', 'Yu Gothic Medium', '游ゴシック Medium', sans-serif!important;
 }
+.tabFrame{
+    width:10em;
+}
 .cmsTab{
     background-color: #8FAADC!important;
     color: #FFF!important;
@@ -51,7 +54,7 @@
     font-family: YuGothic, '游ゴシック体', 'Yu Gothic Medium', '游ゴシック Medium', sans-serif!important;
 }
 .tabSelected{
-    background-color: rgb(169, 209, 142)!important;
+    background-color: white!important;
     color: #000000!important;
     padding-left:7px!important;
     padding-right:7px!important;
@@ -67,12 +70,12 @@
     margin-top: 5px;
     margin-right: 8px;
     margin-bottom: 5px;
-    border: 1px solid #4472C4;
+    border: 1px solid rgb(185, 224, 158);
     padding: 1px 8px 1px 8px !important;
-    background-color: rgb(112, 173, 71);
-    color: #FFF;
+    background-color: #70ad47;
+    color: #fff;
     font-family: 'メイリオ', 'Meiryo', sans-serif;
-    border-radius: 0;
+    border-radius: 5px;
 }
 .btn-signout:hover {
     color: #FFF;
@@ -131,7 +134,7 @@ body{
 
 /******* サイドメニュー ********/
 .side-area{
-    background-color: #f2f2f2!important;
+    background-color: rgba(217, 217, 217, 1)!important;
     height: calc(~"100vh - 40px");
     padding-left: 0px;
     padding-right: 0px;
@@ -154,4 +157,36 @@ a.btn:hover{
 
 select {
     height: 28px;
+}
+
+/*■iPad縦向き*/
+@media only screen and (min-device-width:768px) and (max-device-width:1024px) and (orientation:portrait) {
+.navbar-brand{
+    width: 100%;
+    text-align: center;
+    font-size: 1.2em !important;
+    margin-top: -5px;
+}
+.tabFrame{
+    width:auto;
+}
+.currentTitle{
+    color: #000!important;
+    font-size: 16px!important;
+    font-weight: bold;
+    font-family: 'メイリオ', 'Meiryo', sans-serif;
+}
+
+}
+
+/*■iPad横向き*/
+@media only screen and (min-device-width:768px) and (max-device-width:1024px) and (orientation:landscape) {
+.navbar-brand{
+    width: 100%;
+    text-align: center;
+    font-size: 1.1em !important;
+}
+.tabFrame{
+    width:10em;
+}
 }

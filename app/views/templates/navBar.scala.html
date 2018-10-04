@@ -25,8 +25,8 @@
         </div>
         <div class="row" style="margin:0px;height:34px;">
             <div class="col-xs-9 col-sm-9 col-md-9 col-lg-9" style="padding:0px;height:34px;">
-                <ul class="nav navbar-nav" style="font-size:80%">
-                    <li class="pull-left" style="margin-left:2px">
+                <ul class="nav navbar-nav" style="font-size:80%;margin-left: -2px;">
+                    <li class="pull-left tabFrame" style="margin-left:2px">
                         @if(request.path contains "/site/") {
                         <a class="text-center tabSelected menu-title"><i class="fa fa-eye"></i>&nbsp;@Messages("lang.navbar.tab.temporaryMaterialManagement")</a>
                         }else{
@@ -34,14 +34,14 @@
                         }
                     </li>
                     @if(user.services.contains("level2") || user.services.contains("level3") || user.services.contains("master") ) {
-                    <li class="pull-left" style="margin-left:2px">
+                    <li class="pull-left tabFrame" style="margin-left:2px">
                         @if(request.path contains "/analysis/") {
                         <a class="text-center tabSelected"><i class="fa fa-bar-chart"></i>&nbsp;@Messages("lang.navbar.tab.analysis")</a>
                         }else{
                         <a href="/analysis/telemetry" class="text-center tab"><i class="fa fa-bar-chart"></i>&nbsp;@Messages("lang.navbar.tab.analysis")</a>
                         }
                     </li>
-                    <li class="pull-left" style="margin-left:2px">
+                    <li class="pull-left tabFrame" style="margin-left:2px">
                         @if(
                         (request.path contains "/cms/itemCarManage") ||
                         (request.path contains "/cms/itemOtherManage") ||
@@ -56,7 +56,7 @@
                     </li>
                     }
                     @if(user.services.contains("level3") || user.services.contains("master") ) {
-                    <li class="pull-left" style="margin-left:2px">
+                    <li class="pull-left tabFrame" style="margin-left:2px">
                         @if(
                         (request.path contains "/cms/floorManage") ||
                         (request.path contains "/manage/mapManager") ||
@@ -70,7 +70,7 @@
                     </li>
                     }
                     @if(user.services.contains("master")) {
-                    <li class="pull-left" style="margin-left:2px">
+                    <li class="pull-left tabFrame" style="margin-left:2px">
                         @if(
                         (request.path contains "/cms/placeManage") ||
                         (request.path contains "/cms/sortPlaceListWith/") ||
