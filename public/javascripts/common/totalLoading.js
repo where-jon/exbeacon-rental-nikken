@@ -16,7 +16,7 @@ $(window).load(function() {
     document.body.style.overflow = "hidden"
 
     // 左サイドメニュークリックしたら活性化させる .start
-    var vElement = $(".mainSpace").find('.form-group')
+    /*var vElement = $(".mainSpace").find('.form-group')
     if(vElement[0] === undefined){
     }else{
         var vTitle = getSerfaceText(vElement[0])
@@ -32,7 +32,7 @@ $(window).load(function() {
         if(selected.textContent.trim() == vTitle)
              $(selected).addClass('btnSelected');
         });
-    }
+    }*/
     // 左サイドメニュークリックしたら活性化させる .end
 
     //  logoutボタンイベント.start
