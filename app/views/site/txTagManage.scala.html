@@ -19,6 +19,8 @@
 <body>
 <!-- content -->
 <div class="container">
+    <!--loading部-->
+    @views.html.templates.totalLoading()
     <!-- ナビバー  -->
     @views.html.templates.navBar()
     <div class="row">
@@ -31,7 +33,7 @@
         <!-- メイン -->
         <div class="mainSpace col-xs-10 col-sm-10 col-md-10 col-lg-10">
             <!-- 画面題字 -->
-            <div class="form-group" style="font-weight:bold;font-size:19px;margin:25px 0px;">
+            <div class="form-group" style="font-weight:bold;font-size:19px;margin:15px 0px;">
                 <!--タイトル-->
                 @Messages("lang.site.txTagManage.title")
             </div>
@@ -76,7 +78,7 @@
                     <div class="table-responsive-body">
                         <table class="table table-bordered table-condensed itemTable">
                             <thead>
-                                <tr>
+                                <tr class ="hidden">
                                     <th colspan="6" class="tableTitleTh">@Messages("lang.site.txTagManage.title")</th>
                                 </tr>
                                 <tr>

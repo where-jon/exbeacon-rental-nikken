@@ -13,6 +13,8 @@
 <body>
     <!-- content -->
     <div class="container">
+        <!--loading部-->
+        @views.html.templates.totalLoading()
         <!-- ナビバー  -->
         @views.html.templates.navBar()
         <div class="row">
@@ -34,7 +36,7 @@
                         <div class="table-responsive-body">
                             <table class="table table-bordered table-condensed itemTable">
                                 <thead>
-                                    <tr>
+                                    <tr class ="hidden">
                                         <th colspan="3" class="tableTitleTh">@Messages("lang.cms.companyManage.company.list.header.title")</th>
                                     </tr>
                                     <tr>

@@ -25,7 +25,7 @@ class ItemLogDataActor @Inject()(config: Configuration
   var dbDatas :Seq[BeaconViewer] = null; // 仮設材種別
   var beaconData : itemLogPositionData = null;
   private val enableLogging = config.getBoolean("akka.quartz.schedules.ItemLogDataActor.loggingStart").getOrElse(false)
-
+  val WORKING_STATUS = 1  // 施行中
   def receive = {
     case msg:String => {
       execute()
@@ -40,7 +40,7 @@ class ItemLogDataActor @Inject()(config: Configuration
       // 処理開始
       Logger.info(s"""${new DateTime().toString("yyyy/MM/dd HH:mm:ss.SSS")}  ${BATCH_NAME} --- start -- """)
       try{
-        val placeData = placeDAO.selectPlaceAll()
+        val placeData = placeDAO.selectPlaceAll(WORKING_STATUS)
         placeData.zipWithIndex.map { case (place, i) =>
           if(place.btxApiUrl != null && place.btxApiUrl != ""){
             val placeId = place.placeId

@@ -17,6 +17,8 @@ gatewayList: Seq[GwTelemetryData]
 <body>
 <!-- content -->
 <div class="container">
+    <!--loading部-->
+    @views.html.templates.totalLoading()
     <!-- ナビバー  -->
     @templates.navBar()
     <div class="row">
@@ -47,7 +49,7 @@ gatewayList: Seq[GwTelemetryData]
                     <div class="table-responsive-body">
                         <table class="table table-bordered table-condensed itemTable">
                             <thead>
-                            <tr>
+                            <tr class ="hidden">
                                 <th colspan="4" class="tableTitleTh">@Messages("lang.analysis.gateway.page.title")</th>
                             </tr>
                             <tr>

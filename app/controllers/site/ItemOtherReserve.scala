@@ -57,6 +57,8 @@ class ItemOtherReserve @Inject()(config: Configuration
   /*enum形*/
   val WORK_TYPE = WorkTypeEnum().map;
 
+  var RESERVE_MAX_COUNT = -1
+
 
     val itemOtherSearchForm = Form(mapping(
     "itemTypeId" ->number,
@@ -74,6 +76,8 @@ class ItemOtherReserve @Inject()(config: Configuration
 
     COMPANY_NAME_FILTER = ""
     FLOOR_NAME_FILTER = ""
+
+    RESERVE_MAX_COUNT = config.getInt("web.positioning.reserveMaxCount").get
   }
 
   /** 　検索側データ取得 */
@@ -131,15 +135,13 @@ class ItemOtherReserve @Inject()(config: Configuration
           val vReserveEndDate = ItemOtherReserveData.inputEndDate
           var idListData = List[Int]()
           var idTypeListData = List[Int]()
-          ItemOtherReserveData.itemId.zipWithIndex.map { case (itemId, i) =>
-            ItemOtherReserveData.checkVal.zipWithIndex.map { case (check, j) =>
-              if(i == check){
-                val vItemTypeId = ItemOtherReserveData.itemTypeIdList(i)
-                idListData = idListData :+itemId
-                idTypeListData = idTypeListData :+vItemTypeId
-                setData = setData :+ ReserveItem(vItemTypeId,itemId,vFloorId,placeId,vCompanyId,vReserveStartDate,vReserveEndDate,true,vWorkTypeId)
-              }
-            }
+          ItemOtherReserveData.checkVal.zipWithIndex.map { case (check, j) =>
+            val vIndex = check.toInt
+            val vId = ItemOtherReserveData.itemId(vIndex)
+            val vItemTypeId = ItemOtherReserveData.itemTypeIdList(vIndex)
+            idListData = idListData :+vId
+            idTypeListData = idTypeListData :+vItemTypeId
+            setData = setData :+ ReserveItem(vItemTypeId,vId,vFloorId,placeId,vCompanyId,vReserveStartDate,vReserveEndDate,true,vWorkTypeId)
           }
 
           var errMsg = Seq[String]()
@@ -224,7 +226,7 @@ class ItemOtherReserve @Inject()(config: Configuration
     }
 
     Ok(views.html.site.itemOtherReserve(ITEM_TYPE_FILTER,WORK_TYPE_FILTER,RESERVE_START_DATE,RESERVE_END_DATE
-      ,otherListApi,itemTypeList,companyNameList,floorNameList,workTypeList,WORK_TYPE))
+      ,otherListApi,itemTypeList,companyNameList,floorNameList,workTypeList,WORK_TYPE,RESERVE_MAX_COUNT))
   }
 
   /** 初期表示 */
@@ -241,7 +243,7 @@ class ItemOtherReserve @Inject()(config: Configuration
       val otherListApi = beaconService.getItemOtherBeaconPosition(dbDatas,true,placeId)
       if(otherListApi!=null){
         Ok(views.html.site.itemOtherReserve(ITEM_TYPE_FILTER,WORK_TYPE_FILTER,RESERVE_START_DATE,RESERVE_END_DATE
-          ,otherListApi,itemTypeList,companyNameList,floorNameList,workTypeList,WORK_TYPE))
+          ,otherListApi,itemTypeList,companyNameList,floorNameList,workTypeList,WORK_TYPE,RESERVE_MAX_COUNT))
       }else{
         // apiと登録データが違う場合
         Redirect(errors.routes.UnDetectedApi.indexSite)

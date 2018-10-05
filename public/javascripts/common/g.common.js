@@ -43,14 +43,14 @@ var BTN_HEIGHT_RAITO = 0.70;
 var BTN_WIDTH_RAITO = 0.99;
 var BTN_ROWS = 2;
 // 画面下部にボタン無し
-var NOBTN_HEIGHT_RAITO = 0.85;
+var NOBTN_HEIGHT_RAITO = 0.75;
 var NOBTN_WIDTH_RAITO = 0.99;
 var NOBTN_ROWS = 2;
 // 画面下部にボタン無し（その他）
-var NOBTN_OTHER_HEIGHT_RAITO = 0.85;
+var NOBTN_OTHER_HEIGHT_RAITO = 0.75;
 var NOBTN_OTHER_WIDTH_RAITO = 0.99;
 var NOBTN_OTHER_ROWS = 3;
-
+var RESERVE_MAX_COUNT = 100;
 var gResize = {
     /* 文字サイズを再調整するロジック*/
     textResize : function(vElement,motoSize) {
@@ -70,7 +70,7 @@ var gResize = {
 
     },
     viewSizeCheck : function() {
-          var vCheckMapElement = document.getElementById("beaconMap-1")
+          var vCheckMapElement = document.getElementById("beaconMap-" + gMapPos)
           if(vCheckMapElement!=null){
             var vWidth = vCheckMapElement.clientWidth;
             var vHeight = vCheckMapElement.clientHeight;
@@ -170,6 +170,32 @@ var gResize = {
 
 /*画面初期表示関連*/
 var gInitView = {
+
+    newTableResize : function(vType) {
+        var timer = false;
+        $(window).resize(function() {
+            if (timer !== false) {
+                clearTimeout(timer);
+            }
+            timer = setTimeout(function() {
+                // 処理の再実行
+                gInitView.removeTable();
+                gInitView.newFixTable(vType);
+//                gInitView.bindMouseAndTouch();
+            }, 200);
+        });
+    },
+
+    newFixTable : function(vType) {
+        var vHeight = -1
+        if(vType=="noBtn"){
+            vHeight = $(window).height()*0.75;
+        }else{
+            vHeight = $(window).height()*0.65;
+        }
+        $('#tableDiv')[0].style.height = vHeight + "px"
+        $('#myTable').stickyTable({overflowy: true});
+    },
     removeTable : function() {
         var clonedTable = $('.bodyTableDiv').find('table').clone();
         $(clonedTable).attr('style', '');
@@ -1391,7 +1417,7 @@ var gTopMenu = {
 var bInputCheck = false;
 var arAddDeleteIndex = [];
 var gInit = {
-		
+
 		inputNameAllClear : function() {
 			var vInputElement = document.getElementsByClassName("form-control input-sm")
 			
@@ -2046,7 +2072,6 @@ var gModal = {
 		},
 }
 
-
 var gDatabase = {
 		resultCheck : function() {
 			var vDbResultElement = document.getElementById("dbResult")
@@ -2101,4 +2126,39 @@ var gDatabase = {
 	    		$("#dbExecuteBtn").trigger( "click" );
 			}
 		}
+}
+var gReserve = {
+    vCheckFrame : null,
+    bCheckEvent : function() {
+        try {
+            RESERVE_MAX_COUNT = Number($(document.getElementById("reserveMaxCount")).attr("data-count"));
+        }
+        catch(exception){
+            RESERVE_MAX_COUNT = 100; // エラーの場合
+        }
+        gReserve.vCheckFrame = [].slice.call(document.querySelectorAll(".checkTotal"));
+        gReserve.vCheckFrame.forEach(function(check, pos) {
+            check.addEventListener('click', function() {
+                gReserve.bCheckData();
+            });
+        });
+    },
+
+    bCheckData : function() {
+        var vCount = 0;
+        var bCheck = false;
+        gReserve.vCheckFrame.forEach(function(vCheck, pos) {
+            if(vCheck.checked){
+                vCount++;
+            }
+        });
+
+        if(vCount>RESERVE_MAX_COUNT){
+            bCheck = false
+             bootbox.alert( gtitleName + "は最大「"+RESERVE_MAX_COUNT+"個」まで可能です。「現在："　+ vCount + "個」");
+        }else{
+            bCheck = true
+        }
+        return bCheck
+    },
 }

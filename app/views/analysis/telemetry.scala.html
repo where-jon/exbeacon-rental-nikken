@@ -17,6 +17,8 @@ exbList: Seq[ExbTelemetryData]
 <body>
 <!-- content -->
 <div class="container">
+    <!--loading部-->
+    @views.html.templates.totalLoading()
     <!-- ナビバー  -->
     @templates.navBar()
     <div class="row">
@@ -47,7 +49,7 @@ exbList: Seq[ExbTelemetryData]
                     <div class="table-responsive-body">
                         <table class="table table-bordered table-condensed itemTable">
                             <thead>
-                            <tr>
+                            <tr class ="hidden">
                                 <th colspan="5" class="tableTitleTh">@Messages("lang.analysis.telemetry.page.title")</th>
                             </tr>
                             <tr>

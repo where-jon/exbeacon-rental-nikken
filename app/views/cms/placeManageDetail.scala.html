@@ -13,13 +13,15 @@
 <body>
     <!-- content -->
     <div class="container">
+        <!--loading部-->
+        @views.html.templates.totalLoading()
         <!-- ナビバー  -->
         @views.html.templates.navBar()
         <div class="row">
             <!-- 左サイドバー -->
             @views.html.templates.sideMenu()
             <!-- メイン -->
-            <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10">
+            <div class="mainSpace col-xs-10 col-sm-10 col-md-10 col-lg-10">
                 <!-- メッセージ -->
                 @views.html.templates.msgDiv()
                 <!-- 画面題字 -->
@@ -32,7 +34,7 @@
                         <div class="table-responsive-body">
                             <table class="table table-bordered table-condensed itemTable" style="width:100%;">
                                 <thead>
-                                    <tr>
+                                    <tr class ="hidden">
                                         <th colspan="6" class="tableTitleTh" style="width:100%">@Messages("lang.cms.placeManage.place.list.header.title")</th>
                                     </tr>
                                     <tr>

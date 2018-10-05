@@ -20,6 +20,8 @@
 <body>
 <!-- content -->
 <div class="container">
+    <!--loading部-->
+    @views.html.templates.totalLoading()
     <!-- ナビバー  -->
     @views.html.templates.navBar()
     <div class="row">
@@ -86,7 +88,7 @@
                         <div class="table-responsive-body">
                             <table class="table table-bordered table-condensed itemTable">
                                 <thead>
-                                    <tr>
+                                    <tr class ="hidden">
                                         <th colspan="7" class="tableTitleTh">@Messages("lang.site.unDetected.page.title")</th>
                                     </tr>
                                     <tr>

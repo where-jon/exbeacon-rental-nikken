@@ -22,6 +22,8 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
 <body>
 <!-- content -->
 <div class="container">
+    <!--loading部-->
+    @views.html.templates.totalLoading()
     <!-- ナビバー  -->
     @views.html.templates.navBar()
     <div class="row">
@@ -101,7 +103,7 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
                     <div class="table-responsive-body">
                         <table class="table table-bordered table-condensed itemTable">
                             <thead>
-                                <tr>
+                                <tr class ="hidden">
                                     <th colspan="9" class="tableTitleTh">@Messages("lang.site.itemCarMaster.page.title")</th>
                                 </tr>
                                 <tr>

@@ -18,6 +18,8 @@ logItemAllList: Seq[List[WorkRate]]
 <body>
 <!-- content -->
 <div class="container">
+    <!--loading部-->
+    @views.html.templates.totalLoading()
     <!-- ナビバー  -->
     @views.html.templates.navBar()
     <div class="row">
@@ -70,8 +72,7 @@ logItemAllList: Seq[List[WorkRate]]
                     <div class="table-responsive-body">
                         <table class="table table-bordered table-condensed itemTable">
                             <thead>
-                            <tr>
-
+                            <tr class ="hidden">
                                 <th colspan="@(TOTAL_LENGTH*2+4)" class="tableTitleTh">@{
                                         if(DETECT_MONTH.substring(5) == "12" || DETECT_MONTH.substring(5) == "11" || DETECT_MONTH.substring(5) == "10"){
                                             DETECT_MONTH.substring(5) + "月"

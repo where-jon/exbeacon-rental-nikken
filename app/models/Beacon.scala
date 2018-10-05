@@ -6,8 +6,11 @@ import javax.inject.Inject
 
 import anorm.SqlParser.get
 import anorm.{SQL, ~}
+import controllers.CReserveData
 import play.api.db.DBApi
 import play.api.libs.json._
+
+import scala.collection.immutable.List
 //import play.api.Logger
 import play.api.libs.functional.syntax._
 
@@ -94,6 +97,34 @@ object beaconPosition {
   implicit def jsonWrites = Json.writes[beaconPosition]
 }
 
+
+
+/**
+  * 測位APIの結果をフロントエンド側に返却するためのデータモデル
+  *
+  * @param btx_id        BeaconTXのID
+  * @param pos_id        位置を表すID
+  * @param phase         電波強度算出時の検出タイミング
+  * @param power_level   BeaconTXの電池残量
+  * @param updatetime    当日最後に検出した時刻
+  */
+case class itemCarReserveBeaconPositionData(
+  cur_exb_name: String,
+  cur_pos_name: String,
+  btx_id: Int,
+  pos_id: Int,
+  phase: Int,
+  power_level: Int,
+  updatetime: String,
+  item_car_id: Int,
+  item_car_btx_id: Int,
+  item_car_key_btx_id: Int,
+  item_type_id: Int,
+  item_car_no: String,
+  item_car_name:String,
+  place_id: Int
+  ,var reserveData : List[CReserveData]
+)
 
 /**
   * 測位APIの結果をフロントエンド側に返却するためのデータモデル

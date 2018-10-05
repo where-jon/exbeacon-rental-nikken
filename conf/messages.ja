@@ -605,11 +605,14 @@ lang.search.term = 期間 :
 lang.search.type = 種別 :
 lang.search.curFloor = 現在フロア :
 lang.search.reserveFloor = 予約フロア :
+lang.search.reserveCompany = 予約業者 :
 lang.search.detectedFloor = 検知位置 :
 lang.search.absence = 不在
 lang.search.undetected = 未検知
 lang.search.floor = 検知フロア :
 lang.search.reserveDate = 予約日：
+lang.search.newReserveDate = 検索日：
+lang.search.searchDate = 検索日数：
 lang.search.reserveDate2 = 予約日：
 lang.search.powerlevel = 電池残量 :
 lang.search.detectedDate = 検出日：
@@ -694,6 +697,12 @@ lang.site.itemCarMaster.term=期間
 lang.site.itemCarMaster.reserveId=予約ID
 
 
+# 新作業車・立馬予約
+lang.site.newItemCarReserve.page.title=作業車・立馬予約
+error.site.newItemCarReserve.inputDate.empty=日付「yyyy/MM/dd」で検索お願いします。
+error.site.newItemCarReserve.searchDate.over = 「0~10」まで半角数字入力をお願いします。
+success.site.newItemCarReserve.update=作業車・立馬予約を完了しました。
+
 # 作業車・立馬予約
 lang.site.itemCarReserve.page.title=作業車・立馬予約
 lang.site.itemCarReserve.select=選択
@@ -704,6 +713,7 @@ lang.site.itemCarReserve.txId=Tag ID
 lang.site.itemCarReserve.typeId=種別ID
 lang.site.itemCarReserve.typeName=種別
 lang.site.itemCarReserve.name=名称
+lang.site.itemCarReserve.no=番号
 lang.site.itemCarReserve.reserveDate=予約日
 lang.site.itemCarReserve.reserveTerm=予約期間
 lang.site.itemCarReserve.reserveId=予約ID
@@ -811,7 +821,7 @@ error.site.itemOtherReserve.already = すでに予約されてます。
 # 予約画面共通
 error.site.reserve.overtime=現在時刻「{0}」は「{1}」予約可能時間を過ぎてるので本日内予約はできません。
 error.site.reserve.overtime.define=「午前」「終日」は 当日「8時」まで「午後」は 当日「13時」まで予約可能
-error.site.reserve.pretime=現在時刻より過去の方は予約できません。
+error.site.reserve.preTime=現在時刻より過去の方は予約できません。
 error.site.reserve.other=例外NGで予約できません。
 error.site.cancel.overtime=選択されたもの中、現在時刻13時過ぎてるので本日内予約取消はできません。
 error.site.cancel.pretime=選択されたもの中、現在時刻より過去の予約がある為、予約取消はできません。<br/>取消には「システム管理者」権限以上が必要になります。
@@ -846,6 +856,7 @@ lang.site.carCancel.cancelBtn=取消
 lang.site.otherCancel.cancelBtn=取消
 lang.btn.cancel=取消
 lang.btn.reserve.list=予約情報を確認
+lang.btn.reserve.search=検索
 lang.btn.move.cancel=取消へ
 lang.btn.reserve=予約
 lang.btn.move.reserve=予約へ

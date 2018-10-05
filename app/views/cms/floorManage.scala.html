@@ -15,6 +15,8 @@ floorInfoList: Seq[FloorInfoData]
 <body>
     <!-- content -->
     <div class="container">
+        <!--loading部-->
+        @views.html.templates.totalLoading()
         <!-- ナビバー  -->
         @views.html.templates.navBar()
         <div class="row">
@@ -35,7 +37,7 @@ floorInfoList: Seq[FloorInfoData]
                         <div class="table-responsive-body">
                             <table class="table table-bordered table-condensed itemTable floorTable">
                                 <thead>
-                                    <tr>
+                                    <tr class ="hidden">
                                         <th colspan="6" class="tableTitleTh">@Messages("lang.cms.floorManage.title")</th>
                                     </tr>
                                     <tr>

@@ -21,6 +21,15 @@ import scala.collection.immutable.List
 import scala.concurrent.Await
 import scala.concurrent.duration.Duration
 
+case class CReserveData(
+  var reserveDate :String
+  ,var reserveAmCompany :String
+  ,var reservePmCompany :String
+  ,var reserveAmWorkType :String
+  ,var reservePmWorkType :String
+  ,var reserveRealDate :String
+)
+
 class BeaconService @Inject() (config: Configuration,
   ws: WSClient
   , val messagesApi: MessagesApi
@@ -35,7 +44,7 @@ class BeaconService @Inject() (config: Configuration,
   var GATEWAY_API_URL =""
   var TELEMETRY_API_URL =""
 
- /** 予約の際現在時刻から予約に正しいかを判定する*/
+  /** 予約の際現在時刻から予約に正しいかを判定する*/
   def currentTimeReserveCheck (vStartDate:String,vWorkType:String): String = {
      // 現在時刻設定
     val mSimpleDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.JAPAN)
@@ -48,11 +57,11 @@ class BeaconService @Inject() (config: Configuration,
       else if(mHour < 13 && vWorkType =="午後" ) "OK" // 現在時間が13時以前（午後はOK）
       else "当日"
     }else if (mTime > vStartDate){  // 現在時間より過去の方予約はNG
-      Messages("error.site.reserve.pretime")
+      "error.site.reserve.preTime"
     }else if (mTime < vStartDate) {  // 現在時間より未来の方+1day OK
       "OK"
     }else // 変な場合
-      Messages("error.site.reserve.other")
+      "error.site.reserve.other"
   }
 
   /** 予約取消の際現在時刻から予約取消に正しいかを判定する*/
@@ -124,6 +133,109 @@ class BeaconService @Inject() (config: Configuration,
       dateTime.format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss"))
     }
     return vUpdateTime
+  }
+
+
+  /**
+    * ビーコン位置取得
+    *
+    * EXCloudIfActorにて非同期で取得しているビーコン位置情報を取得する
+    * その際、item_car_masterテーブルと結合してitemCarBeaconPositionDataのリストとして返却する
+    *
+    * @param dbDatas  予約テーブルまで含めた作業車・立馬情報
+    * @param blankInclude  ブランクレコード（名前=param01が空）を含めるかどうか
+    * @param placeId  接続現場情報
+    * @return  List[itemCarBeaconPositionData]
+    */
+  def getItemCarReserveBeaconPosition(dbDatas:Seq[CarReserveViewer],arReserveDays:Seq[GetOneWeekData], blankInclude: Boolean = false, placeId:Int): Seq[itemCarReserveBeaconPositionData] = {
+      val posList = Await.result(ws.url(POS_API_URL).get().map { response =>
+        Json.parse(response.body).asOpt[List[beaconPosition]].getOrElse(Nil)
+      }, Duration.Inf)
+        dbDatas.map { v =>
+        val bpd = posList.find(_.btx_id == v.item_car_btx_id) match {
+          case Some(check) =>
+            posList.find(_.btx_id == v.item_car_btx_id)
+          case None => return null
+        }
+
+        var vUpdateTime = ""
+        val exbDatas =exbDao.selectExbApiInfo(placeId,bpd.get.pos_id)
+        val blankTargetMode =
+          if (blankInclude && bpd.get.pos_id != -1) true else false
+        var vExbName = this.getCurrentPositionStatus(bpd.get.pos_id,bpd.get.updatetime)
+        var vFloorName = vExbName
+
+        var reserveData = List[CReserveData]()
+        // 予約関連
+        arReserveDays.zipWithIndex.foreach { case (day, dayIndex) =>
+          reserveData = reserveData :+ CReserveData("noDate","noAmCompany","noPmCompany","noAmWorkType","noPmWorkType",day.getDay)
+        }
+
+        if(v.ar_reserve_date(0)!=""){
+          v.ar_reserve_date.zipWithIndex.foreach { case (reserve, reserveIndex) =>
+            arReserveDays.zipWithIndex.foreach { case (day, dayIndex) =>
+              if(day.getDay == reserve){
+                val vCompany = v.ar_reserve_company_name(reserveIndex)
+                val vWorkType = v.ar_reserve_work_type(reserveIndex)
+                reserveData(dayIndex).reserveDate = reserve
+                if(vWorkType == "午前"){
+                  reserveData(dayIndex).reserveAmWorkType = vWorkType
+                  reserveData(dayIndex).reserveAmCompany = vCompany
+                }else if(vWorkType =="午後"){
+                  reserveData(dayIndex).reservePmWorkType = vWorkType
+                  reserveData(dayIndex).reservePmCompany = vCompany
+                }else if(vWorkType =="終日"){
+                  reserveData(dayIndex).reserveAmWorkType = vWorkType
+                  reserveData(dayIndex).reservePmWorkType = vWorkType
+                  reserveData(dayIndex).reserveAmCompany = vCompany
+                  reserveData(dayIndex).reservePmCompany = vCompany
+                }
+              }
+            }
+          }
+        }
+
+        if (bpd.isDefined && blankTargetMode) {
+          val vPosId =
+            if (vExbName != "不在" ) bpd.get.pos_id else -1
+          exbDatas.map { index =>
+            vFloorName = if (vExbName == "不在" ) "不在" else index.cur_floor_name
+            vExbName = index.exb_pos_name
+          }
+
+          // jsonからiso時間変換
+          vUpdateTime = this.setUpdateTime(bpd.get.updatetime)
+
+          itemCarReserveBeaconPositionData(
+            vExbName,
+            vFloorName,
+            bpd.get.btx_id,
+            vPosId,
+            bpd.get.phase,
+            bpd.get.power_level,
+            vUpdateTime,
+            v.item_car_id,
+            v.item_car_btx_id,
+            v.item_car_key_btx_id,
+            v.item_type_id,
+            v.item_car_no,
+            v.item_car_name,
+            v.place_id
+            ,reserveData
+          )
+        } else {
+          itemCarReserveBeaconPositionData(vExbName,vFloorName,-1, -1, -1, 0, "no",
+            v.item_car_id,
+            v.item_car_btx_id,
+            v.item_car_key_btx_id,
+            v.item_type_id,
+            v.item_car_no,
+            v.item_car_name,
+            v.place_id
+            ,reserveData
+          )
+        }
+      }.sortBy(_.item_car_btx_id)
   }
 
 

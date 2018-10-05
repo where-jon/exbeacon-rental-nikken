@@ -1,6 +1,6 @@
 var arCheckBoxIndex = []
 var gReserveCheck = true;
-
+var gtitleName = "作業車・立馬予約取消"
 // サブミット
 function getFilterCheck(){
     var inputItemType = document.getElementById("itemTypeId")
@@ -39,16 +39,17 @@ function btnEvent(){
 
     // DatePickerの設定 start---------------------------------------
      gDatePicker.dayClickEvent();
-     gDatePicker.htmlDayClickEvent();
     // DatePickerの設定 end-----------------------------------------
 
+    //　checkboxクリックイベント
+    gReserveCheck = gReserve.bCheckEvent()
 
     //　予約取消ボタン
 　　var registerBtnElement = document.getElementById("itemRegisterFooter")
     registerBtnElement.addEventListener('click', function(event) {
         if(gReserveCheck){
+            $('#load')[0].style.display = ""
             gReserveCheck = false;
-
             // itemTypeId結果をfromへ設定
             var itemTypeFilterResult = $('#ITEM_TYPE_FILTER option:selected').val();
             var inputItemType = document.getElementById("itemTypeId")
@@ -80,41 +81,43 @@ function btnEvent(){
     //　取消へボタン
     var reserveBtnElement = document.getElementById("reserveBtn")
     reserveBtnElement.addEventListener('click', function(event) {
+        gReserveCheck = gReserve.bCheckData()
+        if(gReserveCheck){
+            $('#inputModal').modal();
+             // modal値設定
+            // item種別
+            var itemTypeFilterResult = $('#ITEM_TYPE_FILTER option:selected')[0].text;
+            var mItemTypeName = document.getElementById("mItemTypeName")
+            if(itemTypeFilterResult != ""){
+                mItemTypeName.textContent = itemTypeFilterResult
+            }
 
-         $('#inputModal').modal();
-         // modal値設定
-        // item種別
-        var itemTypeFilterResult = $('#ITEM_TYPE_FILTER option:selected')[0].text;
-        var mItemTypeName = document.getElementById("mItemTypeName")
-        if(itemTypeFilterResult != ""){
-            mItemTypeName.textContent = itemTypeFilterResult
-        }
+            // companyName結果をfromへ設定
+            var companyNameFilterResult = $('#COMPANY_NAME_FILTER option:selected').val();
+            var mCompanyName = document.getElementById("mCompanyName")
+            if(companyNameFilterResult != ""){
+                mCompanyName.textContent = companyNameFilterResult
+            }
 
-        // companyName結果をfromへ設定
-        var companyNameFilterResult = $('#COMPANY_NAME_FILTER option:selected').val();
-        var mCompanyName = document.getElementById("mCompanyName")
-        if(companyNameFilterResult != ""){
-            mCompanyName.textContent = companyNameFilterResult
-        }
+            // floorName結果をfromへ設定
+            var floorNameFilterResult = $('#FLOOR_NAME_FILTER option:selected').val();
+            var mReserveFloorName = document.getElementById("mReserveFloorName")
+            if(floorNameFilterResult != ""){
+                mReserveFloorName.textContent = floorNameFilterResult
+            }
 
-        // floorName結果をfromへ設定
-        var floorNameFilterResult = $('#FLOOR_NAME_FILTER option:selected').val();
-        var mReserveFloorName = document.getElementById("mReserveFloorName")
-        if(floorNameFilterResult != ""){
-            mReserveFloorName.textContent = floorNameFilterResult
-        }
+            // work_type_name結果をfromへ設定
+            var workTypeNameFilterResult = $('#WORK_TYPE_FILTER option:selected').val();
+            if(workTypeNameFilterResult != ""){
+                mWorkTypeName.textContent = workTypeNameFilterResult
+            }
 
-        // work_type_name結果をfromへ設定
-        var workTypeNameFilterResult = $('#WORK_TYPE_FILTER option:selected').val();
-        if(workTypeNameFilterResult != ""){
-            mWorkTypeName.textContent = workTypeNameFilterResult
-        }
-
-        // inputDate結果をfromへ設定
-        var mReserveDate = document.getElementById("mReserveDate")
-        var inputDate = document.getElementById("inputDate")
-        if(inputDate.value != ""){
-            mReserveDate.textContent = gDatePicker.startSqlTime
+            // inputDate結果をfromへ設定
+            var mReserveDate = document.getElementById("mReserveDate")
+            var inputDate = document.getElementById("inputDate")
+            if(inputDate.value != ""){
+                mReserveDate.textContent = gDatePicker.startSqlTime
+            }
         }
 
 
@@ -147,19 +150,18 @@ function btnEvent(){
 }
 
 $(function(){
+   // テーブルを固定
+    gInitView.newFixTable();
+    gInitView.newTableResize();
+    // マウス操作とタップ操作をバインド
+    gInitView.bindMouseAndTouch();
+    // 画面サイズ変更による再調整
+    //gInitView.newTableResize();
 
     // filter値確認
     getFilterCheck();
     // 表示ボタンをクリック
     btnEvent();
 
-    // テーブルを固定
-    gInitView.fixTable();
-
-    // マウス操作とタップ操作をバインド
-    gInitView.bindMouseAndTouch();
-
-    // 画面サイズ変更による再調整
-    gInitView.tableResize();
 
 });
