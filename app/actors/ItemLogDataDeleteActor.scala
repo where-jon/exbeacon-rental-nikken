@@ -20,6 +20,7 @@ class ItemLogDataDeleteActor @Inject()(config: Configuration
                                        , placeDAO: placeDAO
   ) extends Actor {
   val BATCH_NAME = "仮設材削除"
+  val WORKING_STATUS = 1  // 施行中
   private val enableLogging = config.getBoolean("akka.quartz.schedules.ItemLogDataDeleteActor.logDeleteStart").getOrElse(false)
   private val deleteInterval = config.getInt("akka.quartz.schedules.ItemLogDataDeleteActor.logDeleteInterval").getOrElse(0)
 
@@ -37,8 +38,11 @@ class ItemLogDataDeleteActor @Inject()(config: Configuration
       val df = new SimpleDateFormat("yyyy-MM-dd")
       // カレンダークラスのインスタンスを取得
       val cal = Calendar.getInstance
-      var delateTime = new DateTime().toString(" HH:mm:ss")
-      var delateDate = df.format(cal.getTime()).toString + delateTime
+      val calDel = Calendar.getInstance
+      calDel.add(Calendar.MONTH, -1); // 前月分は残す
+      //      var delateTime = new DateTime().toString(" HH:mm:ss")
+      var delateTime = " 00:00:00"
+      var delateDate = df.format(calDel.getTime()).toString + delateTime
 
       // 削除開始対象月取得
       // 環境変数（３カ月）を減算
@@ -58,7 +62,7 @@ class ItemLogDataDeleteActor @Inject()(config: Configuration
         val sdf2 = new SimpleDateFormat("yyyy-MM-01 00:00:00")
         var targetMonth2 = sdf2.format(cal.getTime())
 
-        val placeData = placeDAO.selectPlaceAll()
+        val placeData = placeDAO.selectPlaceAll(WORKING_STATUS)
         placeData.zipWithIndex.map { case (place, i) =>
           if(place.btxApiUrl != null && place.btxApiUrl != ""){
             val placeId = place.placeId
