@@ -23,7 +23,8 @@ import utils.silhouette.MyEnv
   */
 // フォーム定義
 case class ItemDeleteForm(
-    deleteItemOtherId: String
+  deleteItemOtherId: String
+  , deleteItemTypeId: String
 )
 case class ItemUpdateForm(
     inputPlaceId: String
@@ -134,7 +135,7 @@ class ItemOtherManage @Inject()(
                                    .filter(_.itemOtherNo == f.inputItemOtherNo)
 
         // 予約情報テーブルに作業車・立馬IDが存在していないか
-        val itemOtherReserveList = itemOtherDAO.selectCarReserveCheck(super.getCurrentPlaceId, f.inputItemOtherId.toInt)
+        val itemOtherReserveList = itemOtherDAO.selectCarReserveCheck(super.getCurrentPlaceId, f.inputItemOtherId.toInt, f.inputItemTypeId.toInt)
         if (itemOtherReserveList.length > 0) {
           var chkFlg: Int = 0
           // 現在時刻設定
@@ -253,6 +254,7 @@ class ItemOtherManage @Inject()(
       "deleteItemOtherId" -> text.verifying(Messages("error.cms.ItemOtherManage.delete.empty"), {
         !_.isEmpty
       })
+      ,"deleteItemTypeId" -> text
     )(ItemDeleteForm.apply)(ItemDeleteForm.unapply))
 
     // フォームの取得
@@ -266,7 +268,7 @@ class ItemOtherManage @Inject()(
       val f = form.get
 
       // 予約情報テーブルに作業車・立馬IDが存在していないか
-      val itemOtherReserveList = itemOtherDAO.selectCarReserveCheck(super.getCurrentPlaceId, f.deleteItemOtherId.toInt)
+      val itemOtherReserveList = itemOtherDAO.selectCarReserveCheck(super.getCurrentPlaceId, f.deleteItemOtherId.toInt, f.deleteItemTypeId.toInt)
       if (itemOtherReserveList.length > 0) {
         var chkFlg: Int = 0
         // 現在時刻設定

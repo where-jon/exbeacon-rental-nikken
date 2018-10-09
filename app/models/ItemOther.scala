@@ -291,7 +291,8 @@ class itemOtherDAO @Inject()(dbapi: DBApi) {
   /*作業車・立馬予約状況確認*/
   def selectCarReserveCheck(
                              placeId: Int,
-                             itemOtherId: Int
+                             itemOtherId: Int,
+                             itemTypeId: Int
                            ): Seq[ReserveMasterCheck] = {
 
     db.withConnection { implicit connection =>
@@ -315,6 +316,7 @@ class itemOtherDAO @Inject()(dbapi: DBApi) {
       // 追加検索条件
       var wherePh = ""
       wherePh += s""" and r.item_id = {itemOtherId} """
+      wherePh += s""" and r.item_type_id = {itemTypeId} """
 
       // 表示順を設定
       val orderPh =
@@ -322,7 +324,7 @@ class itemOtherDAO @Inject()(dbapi: DBApi) {
           order by
             r.item_id
         """
-      SQL(selectPh + wherePh + orderPh).on('placeId -> placeId, 'itemOtherId -> itemOtherId).as(reserveMasterCheck.*)
+      SQL(selectPh + wherePh + orderPh).on('placeId -> placeId, 'itemOtherId -> itemOtherId, 'itemTypeId -> itemTypeId).as(reserveMasterCheck.*)
     }
   }
 

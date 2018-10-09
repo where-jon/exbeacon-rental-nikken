@@ -158,6 +158,7 @@ placeId: Int
                 <form id="deleteForm" name="deleteForm" class="form-horizontal" method="post" enctype="multipart/form-data" action="@controllers.cms.routes.ItemOtherManage.delete.path">
                     @CSRF.formField
                     <input type="hidden" id="deleteItemOtherId" name="deleteItemOtherId">
+                    <input type="hidden" id="deleteItemTypeId" name="deleteItemTypeId">
                     <div class="modal-header">@Messages("lang.cms.itemOtherManage.itemDelete.popup.title")</div>
                     <div class="modal-body">
                         <div class="text-center">
