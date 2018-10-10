@@ -39,6 +39,9 @@ function showInputModal(isRegister){
 
 function showDeleteModal(){
     if($('.rowHoverSelectedColor').length > 0){
+        var itemOtherId = $('.rowHoverSelectedColor').attr('data-itemOtherId');
+        $('.cloned').remove();
+        $('#deleteItemTypeId').val($('#'+itemOtherId).find('.itemTypeId').text());
         $('#deleteModal').modal();
     }
 }

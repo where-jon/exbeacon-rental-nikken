@@ -173,6 +173,7 @@
                 <form id="deleteForm" name="deleteForm" class="form-horizontal" method="post" enctype="multipart/form-data" action="@controllers.cms.routes.ItemCarManage.delete.path">
                     @CSRF.formField
                     <input type="hidden" id="deleteCarId" name="deleteCarId">
+                    <input type="hidden" id="deleteCarTypeId" name="deleteCarTypeId">
                     <div class="modal-header">@Messages("lang.cms.itemCarManage.carDelete.popup.title")</div>
                     <div class="modal-body">
                         <div class="text-center">
