@@ -46,7 +46,7 @@ class TxTagManage @Inject()(config: Configuration
   /** 　検索側データ取得 */
   def getSearchData(_placeId:Integer): Unit = {
     /*仮設材種別取得*/
-    itemTypeList = itemTypeDAO.selectItemCarInfo(_placeId);
+    itemTypeList = itemTypeDAO.selectTotalItemInfo(_placeId);
     /*仮設材種別id取得*/
     itemIdList = itemTypeList.map{item => item.item_type_id}
     if(itemIdList.isEmpty){
