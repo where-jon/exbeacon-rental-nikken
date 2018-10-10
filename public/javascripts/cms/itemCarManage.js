@@ -67,6 +67,8 @@ function showInputModal(isRegister){
 
 function showDeleteModal(){
     if($('.rowHoverSelectedColor').length > 0){
+        var carId = $('.rowHoverSelectedColor').attr('data-carId');
+        $('#deleteCarTypeId').val($('#'+carId).find('.carTypeId').text());
         $('#deleteModal').modal();
     }
 }
