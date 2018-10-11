@@ -523,7 +523,7 @@ class itemCarDAO @Inject()(dbapi: DBApi) {
                ,coalesce(r.reserve_id, -1) as reserve_id
            from
              		item_car_master as c
-             		LEFT JOIN reserve_table as r on c.item_car_id = r.item_id
+             		LEFT JOIN reserve_table as r on c.item_car_id = r.item_id and r.work_type_id = c.item_type_id
                 and to_char(r.reserve_start_date, 'YYYY-MM-DD') = to_char(current_timestamp, 'YYYY-MM-DD')
              		and r.active_flg = true
 						left JOIN item_type as i on i.item_type_id = c.item_type_id
