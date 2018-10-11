@@ -44,6 +44,8 @@ class MovementCar @Inject()(config: Configuration
   val DAY_WORK_TIME = 6;
   val HOUR_MINUTE = 60;
   var BATCH_INTERVAL_MINUTE = 60; //ログ検知インタバル初期値60分 daidan30分
+  var PAGE = 1;
+  var MAX_PAGE = 0;
 
   val CALENDAR_TYPE = "今月のみ";
   //val CALENDAR_TYPE = "今月以外";
@@ -51,6 +53,8 @@ class MovementCar @Inject()(config: Configuration
   var DETECT_MONTH_DAY = "";
   var NOW_DATE = "";
   var TOTAL_LENGTH = 0;
+
+  val PAGE_LINE_COUNT = 20 // 画面に表示する行数
 
   val movementCarSearchForm = Form(mapping(
     "inputDate" -> text.verifying(Messages("error.analysis.movementCar.search.date.empty"), {!_.isEmpty})
@@ -104,11 +108,20 @@ class MovementCar @Inject()(config: Configuration
 
   /** 　item_logテーブルデータ取得 */
   def getAllItemLogData(placeId:Int,itemIdList :Seq[Int],calendarList:List[WeekData]) : Seq[List[WorkRate]] = {
+
     // ①itemCarテーブルlistからsqlを組むplaceId
     val dbDatas = carDAO.selectCarMasterViewer(placeId,itemIdList)  // 作業車のみ
 
+    val pagePosition = (PAGE - 1) * PAGE_LINE_COUNT
+    val logItemList = dbDatas.drop(pagePosition).take(PAGE_LINE_COUNT)
+    if(dbDatas.length % PAGE_LINE_COUNT > 0){
+      MAX_PAGE = dbDatas.length / PAGE_LINE_COUNT + 1
+    }else{
+      MAX_PAGE = dbDatas.length / PAGE_LINE_COUNT
+    }
+
     // ②. ①から取得したデータへgetCalndarDataを含む
-    val allData = dbDatas.zipWithIndex.map { case (car, i) =>
+    val allData = logItemList.zipWithIndex.map { case (car, i) =>
       calendarList.zipWithIndex.map{ case (calendar, i) =>
 
         // 検知フラグがtrue
@@ -287,7 +300,7 @@ class MovementCar @Inject()(config: Configuration
 
 
   /** csv出力 */
-  def csvExport = SecuredAction { implicit request =>
+  def csvExport(page:Int) = SecuredAction { implicit request =>
     System.out.println("start csvExport:")
     val placeId = super.getCurrentPlaceId
     val calendarList =  this.getCalendarData()
@@ -337,20 +350,21 @@ class MovementCar @Inject()(config: Configuration
       Ok.sendFile(content = file, fileName = _ => "MONTH_MOVEMENT_CAR_V1.csv")
     }catch {
       case e: Exception =>
-        Redirect(routes.MovementCar.index())
+        Redirect(routes.MovementCar.index(1))
           .flashing(ERROR_MSG_KEY -> Messages("error.analysis.movementCar.csvExport"))
     }
   }
 
   /** 　検索ロジック */
-  def search = SecuredAction { implicit request =>
+  def search(page:Int) = SecuredAction { implicit request =>
     movementCarSearchForm.bindFromRequest.fold(
       formWithErrors =>
-        Redirect(routes.MovementCar.index())
+        Redirect(routes.MovementCar.index(1))
           //.flashing(ERROR_MSG_KEY -> Messages(formWithErrors.errors.map(_.message +"<br>").mkString("\n"))),  //herokuで動かない
             .flashing(ERROR_MSG_KEY -> Messages("error.analysis.movementCar.search.date.empty")),
       searchForm => {
         val placeId = super.getCurrentPlaceId
+        PAGE = page
         //検索側データ取得
         getSearchData(placeId)
         // 検索情報
@@ -358,13 +372,13 @@ class MovementCar @Inject()(config: Configuration
         val calendarList =  this.getCalendarData()
         val logItemAllList =  getAllItemLogData(placeId,itemIdList,calendarList)
 
-        Ok(views.html.analysis.movementCar(logItemAllList,calendarList,DETECT_MONTH,TOTAL_LENGTH))
+        Ok(views.html.analysis.movementCar(logItemAllList,calendarList,DETECT_MONTH,TOTAL_LENGTH, PAGE, MAX_PAGE))
       }
     )
   }
 
   /** 初期表示 */
-  def index = SecuredAction { implicit request =>
+  def index(page:Int) = SecuredAction { implicit request =>
     val reqIdentity = request.identity
     if(reqIdentity.level >= 2){
       // 初期化
@@ -374,9 +388,19 @@ class MovementCar @Inject()(config: Configuration
       getSearchData(placeId)
 
       // DB探索になる今月に関するデータをセット
+      PAGE = page
       val calendarList =  this.getCalendarData()
       val logItemAllList =  getAllItemLogData(placeId,itemIdList,calendarList)
-      Ok(views.html.analysis.movementCar(logItemAllList,calendarList,DETECT_MONTH,TOTAL_LENGTH))
+//      var pagePosition = (page - 1) * PAGE_LINE_COUNT
+//      val logItemList = logItemAllList.drop(pagePosition).take(PAGE_LINE_COUNT)
+//      var maxPage = 0
+//      if(logItemAllList.length % PAGE_LINE_COUNT > 0){
+//        maxPage = logItemAllList.length / PAGE_LINE_COUNT + 1
+//      }else{
+//        maxPage = logItemAllList.length / PAGE_LINE_COUNT
+//      }
+
+      Ok(views.html.analysis.movementCar(logItemAllList,calendarList,DETECT_MONTH,TOTAL_LENGTH, PAGE, MAX_PAGE))
     }else{
       Redirect(site.routes.ItemCarMaster.index)
     }
