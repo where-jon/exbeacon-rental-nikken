@@ -45,6 +45,7 @@ class ItemOtherMaster @Inject()(config: Configuration
 
   /*enum形*/
   val WORK_TYPE = WorkTypeEnum().map;
+  val WORK_TYPE_ID = WorkTypeIdEnum().map;
 
   /*転送form*/
   val carForm = Form(mapping(
@@ -79,6 +80,21 @@ class ItemOtherMaster @Inject()(config: Configuration
     workTypeList = workTypeDAO.selectWorkInfo(_placeId);
   }
 
+  /** workType重複を除く処理 */
+  def getItemListDuplicateWorkType(dbData:Seq[OtherViewer]): Seq[OtherViewer] = {
+    var preItemId = -1
+    dbData.zipWithIndex.foreach { case (otherList, index) =>
+      if(preItemId == otherList.item_other_id) {
+        dbData(index-1).work_type_name = WORK_TYPE.get(2).last  // 終日の場合
+        dbData(index-1).work_type_id = WORK_TYPE_ID.get("終日").last  // 終日の値
+        otherList.work_type_name = "重複"
+        dbData.drop(index)
+      }
+      preItemId = otherList.item_other_id
+    }
+    return dbData.filter(_.work_type_name != "重複")
+  }
+
   /** 　検索ロジック */
   def search = SecuredAction { implicit request =>
     System.out.println("start search:")
@@ -94,7 +110,7 @@ class ItemOtherMaster @Inject()(config: Configuration
     FLOOR_NAME_FILTER = carFormData.floorName
 
     // dbデータ取得
-    val dbDatas = otherDAO.selectOtherMasterViewer(placeId,itemIdList)
+    val dbDatas = this.getItemListDuplicateWorkType(otherDAO.selectOtherMasterSql(placeId,itemIdList))
     var otherListApi = beaconService.getItemOtherBeaconPosition(dbDatas,true,placeId)
     if (ITEM_TYPE_FILTER != 0) {
       otherListApi = otherListApi.filter(_.item_type_id == ITEM_TYPE_FILTER)
@@ -119,7 +135,7 @@ class ItemOtherMaster @Inject()(config: Configuration
       //検索側データ取得
       getSearchData(placeId)
       // dbデータ取得
-      val dbDatas = otherDAO.selectOtherMasterViewer(placeId,itemIdList)
+      val dbDatas = this.getItemListDuplicateWorkType(otherDAO.selectOtherMasterSql(placeId,itemIdList))
       val otherListApi = beaconService.getItemOtherBeaconPosition(dbDatas,true,placeId)
       if(otherListApi!=null){
         Ok(views.html.site.itemOtherMaster(ITEM_TYPE_FILTER, COMPANY_NAME_FILTER,FLOOR_NAME_FILTER,WORK_TYPE_FILTER

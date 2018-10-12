@@ -1,0 +1,34 @@
+@(currentPage: Integer, maxPage: Integer, routeName: String)
+
+<div align="center">
+    <ul class="pagination">
+        @if(currentPage == 1) {
+        <li class="disabled"><span>&laquo;</span></li>
+        } else {
+        @if(routeName.equals("@controllers.analysis.routes.MovementCar.index")){
+        <!-- 作業車稼働状況分析 -->
+        <li><a href="@controllers.analysis.routes.MovementCar.index(currentPage - 1)">&laquo;</a></li>
+        }
+        }
+
+        @for(index <- 1 to maxPage) {
+        @if(currentPage == index) {
+        <li class="disabled"><span>@index</span></li>
+        } else {
+        @if(routeName.equals("@controllers.analysis.routes.MovementCar.index")){
+        <!-- 作業車稼働状況分析 -->
+        <li><a href="@controllers.analysis.routes.MovementCar.index(index)">@index</a></li>
+        }
+        }
+        }
+
+        @if(currentPage == maxPage) {
+        <li class="disabled"><span>&raquo;</span></li>
+        } else {
+        @if(routeName.equals("@controllers.analysis.routes.MovementCar.index")){
+        <!-- 作業車稼働状況分析 -->
+        <li><a href="@controllers.analysis.routes.MovementCar.index(currentPage + 1)">&raquo;</a></li>
+        }
+        }
+    </ul>
+</div>
