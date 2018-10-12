@@ -48,4 +48,23 @@ $(window).load(function() {
     }
     //  logoutボタンイベント.end
 
+    //  menuボタンイベント.start
+    menuElement = [].slice.call(document.querySelectorAll(".innerMenu"))
+        menuElement.forEach(function(selected, pos) {
+            selected.addEventListener('click', function() {
+                $('#load')[0].style.display = ""
+            });
+        });
+    //  menuボタンイベント.end
+
+     //  tabボタンイベント.start
+    tabElement = [].slice.call(document.querySelectorAll(".tabFrame"))
+        tabElement.forEach(function(selected, pos) {
+            selected.addEventListener('click', function() {
+                $('#load')[0].style.display = ""
+            });
+        });
+    //  tabボタンイベント.end
+
+
 });
