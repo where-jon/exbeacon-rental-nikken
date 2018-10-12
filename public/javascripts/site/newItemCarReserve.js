@@ -21,6 +21,11 @@ function getFilterCheck(){
     if(inputName!=null){
          $('#ITEM_NAME_FILTER').val(inputName.value)
     }
+
+    var inputFloorName = document.getElementById("floorName")
+    if(inputFloorName!=null){
+         $('#FLOOR_NAME_FILTER').val(inputFloorName.value)
+    }
 }
 
 function dbExecuteManager(routeUrl,vBtnName){
@@ -58,8 +63,8 @@ function btnEvent(){
             inputCompanyName.value = companyNameFilterResult
 
             // floorName結果をfromへ設定
-            var floorNameFilterResult = $('#FLOOR_NAME_FILTER option:selected').val();
-            var inputFloorName = document.getElementById("floorName")
+            var floorNameFilterResult = $('#FLOOR_NAME_FILTER_MODAL option:selected').val();
+            var inputFloorName = document.getElementById("floorNameModal")
             inputFloorName.value = floorNameFilterResult
             dbExecuteManager("../site/newItemCarReserve/reserve","reserve")
         }
@@ -78,6 +83,17 @@ function btnEvent(){
         // inputDate結果をfromへ設定
         var inputDate = document.getElementById("inputDate")
         inputDate.value = gDatePicker.startSqlTime
+
+        // itemTypeId結果をfromへ設定
+        var itemTypeFilterResult = $('#ITEM_TYPE_FILTER option:selected').val();
+        var inputItemType = document.getElementById("itemTypeId")
+        inputItemType.value = itemTypeFilterResult
+
+        // floorName結果をfromへ設定
+        var floorNameFilterResult = $('#FLOOR_NAME_FILTER option:selected').val();
+        var inputFloorName = document.getElementById("floorName")
+        inputFloorName.value = floorNameFilterResult
+
         dbExecuteManager("../site/newItemCarReserve","search")
     });
 
