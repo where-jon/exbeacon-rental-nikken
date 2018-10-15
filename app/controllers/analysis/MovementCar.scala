@@ -54,7 +54,8 @@ class MovementCar @Inject()(config: Configuration
   var NOW_DATE = "";
   var TOTAL_LENGTH = 0;
 
-  val PAGE_LINE_COUNT = 20 // 画面に表示する行数
+  // 画面に表示する行数
+  val PAGE_LINE_COUNT = config.getInt("web.positioning.pageLineCount").get
 
   val movementCarSearchForm = Form(mapping(
     "inputDate" -> text.verifying(Messages("error.analysis.movementCar.search.date.empty"), {!_.isEmpty})
@@ -152,6 +153,40 @@ class MovementCar @Inject()(config: Configuration
     return allData
   }
 
+  /** 　item_logテーブルデータ取得CSV出力用 */
+  def getAllItemLogDataCsv(placeId:Int,itemIdList :Seq[Int],calendarList:List[WeekData]) : Seq[List[WorkRate]] = {
+
+    // ①itemCarテーブルlistからsqlを組むplaceId
+    val dbDatas = carDAO.selectCarMasterViewer(placeId,itemIdList)  // 作業車のみ
+
+    // ②. ①から取得したデータへgetCalndarDataを含む
+    val allData = dbDatas.zipWithIndex.map { case (car, i) =>
+      calendarList.zipWithIndex.map{ case (calendar, i) =>
+
+        // 検知フラグがtrue
+        val getWorkFlgSqlData =itemlogDAO.selectWorkingOn(true,car.item_car_id,placeId,calendar.iWeekStartDay,calendar.iWeekEndDay,itemIdList)
+        val vWofkFlgDetectCount = getWorkFlgSqlData.last.detected_count
+        var bRealWorkDayCheck = true
+        // 実際働く時間（土、日だけの場合もある）
+        val vRealWorkTime = if(calendar.iWeekRealWorkDay == 0 ){
+          bRealWorkDayCheck = false
+          calendar.iWeekTotalWorkDay * DAY_WORK_TIME // 実際残り日（土日最大二日）から動いたら判定に入れる
+        }else {
+          calendar.iWeekTotalTime
+        }
+        // 週末があるため実際
+        val vOperatingRate = this.getDetectedCount(vWofkFlgDetectCount,vRealWorkTime,bRealWorkDayCheck)
+        // 予約ともに検知フラグがtrue
+        val getReserveWorkFlgSqlData =itemlogDAO.selectReserveAndWorkingOn(true,true,car.item_car_id,placeId,calendar.iWeekStartDay,calendar.iWeekEndDay,itemIdList)
+        val vReserveWofkFlgDetectCount = getReserveWorkFlgSqlData.last.detected_count
+        val vReserveOperatingRate = this.getDetectedCount(vReserveWofkFlgDetectCount,vRealWorkTime,bRealWorkDayCheck)
+
+        WorkRate(car.item_car_id,car.item_car_btx_id,car.item_car_key_btx_id,car.item_car_no,car.item_car_name,vOperatingRate,vReserveOperatingRate,vWofkFlgDetectCount,vReserveWofkFlgDetectCount)
+
+      }
+    }
+    return allData
+  }
 
   def getMonthData(): List[WeekData] = {
 
@@ -304,7 +339,7 @@ class MovementCar @Inject()(config: Configuration
     System.out.println("start csvExport:")
     val placeId = super.getCurrentPlaceId
     val calendarList =  this.getCalendarData()
-    val logItemAllList =  getAllItemLogData(placeId,itemIdList,calendarList)
+    val logItemAllList =  getAllItemLogDataCsv(placeId,itemIdList,calendarList)
 
     try{
       // csv ロジック
@@ -372,9 +407,23 @@ class MovementCar @Inject()(config: Configuration
         val calendarList =  this.getCalendarData()
         val logItemAllList =  getAllItemLogData(placeId,itemIdList,calendarList)
 
-        Ok(views.html.analysis.movementCar(logItemAllList,calendarList,DETECT_MONTH,TOTAL_LENGTH, PAGE, MAX_PAGE))
+        Ok(views.html.analysis.movementCar(logItemAllList,calendarList,DETECT_MONTH,TOTAL_LENGTH, PAGE, MAX_PAGE, "search"))
       }
     )
+  }
+
+  /** 　検索ロジック ページネーション用 */
+  def searchPaging(page:Int) = SecuredAction { implicit request =>
+    val placeId = super.getCurrentPlaceId
+    PAGE = page
+    //検索側データ取得
+    getSearchData(placeId)
+    // 検索情報
+    //     DETECT_MONTH = searchForm.inputDate
+    val calendarList =  this.getCalendarData()
+    val logItemAllList =  getAllItemLogData(placeId,itemIdList,calendarList)
+
+    Ok(views.html.analysis.movementCar(logItemAllList,calendarList,DETECT_MONTH,TOTAL_LENGTH, PAGE, MAX_PAGE, "search"))
   }
 
   /** 初期表示 */
@@ -400,7 +449,7 @@ class MovementCar @Inject()(config: Configuration
 //        maxPage = logItemAllList.length / PAGE_LINE_COUNT
 //      }
 
-      Ok(views.html.analysis.movementCar(logItemAllList,calendarList,DETECT_MONTH,TOTAL_LENGTH, PAGE, MAX_PAGE))
+      Ok(views.html.analysis.movementCar(logItemAllList,calendarList,DETECT_MONTH,TOTAL_LENGTH, PAGE, MAX_PAGE, "index"))
     }else{
       Redirect(site.routes.ItemCarMaster.index)
     }

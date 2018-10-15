@@ -1,13 +1,17 @@
-@(currentPage: Integer, maxPage: Integer, routeName: String)
+@(functionName: String, currentPage: Integer, maxPage: Integer, routeName: String)
 
 <div align="center">
     <ul class="pagination">
         @if(currentPage == 1) {
         <li class="disabled"><span>&laquo;</span></li>
         } else {
-        @if(routeName.equals("@controllers.analysis.routes.MovementCar.index")){
+        @if(routeName.equals("@controllers.analysis.routes.MovementCar")){
         <!-- 作業車稼働状況分析 -->
+        @if(functionName.equals("search")){
+        <li><a href="@controllers.analysis.routes.MovementCar.searchPaging(currentPage - 1)">&laquo;</a></li>
+        }else{
         <li><a href="@controllers.analysis.routes.MovementCar.index(currentPage - 1)">&laquo;</a></li>
+        }
         }
         }
 
@@ -15,9 +19,13 @@
         @if(currentPage == index) {
         <li class="disabled"><span>@index</span></li>
         } else {
-        @if(routeName.equals("@controllers.analysis.routes.MovementCar.index")){
+        @if(routeName.equals("@controllers.analysis.routes.MovementCar")){
         <!-- 作業車稼働状況分析 -->
+        @if(functionName.equals("search")){
+        <li><a href="@controllers.analysis.routes.MovementCar.searchPaging(index)">@index</a></li>
+        }else{
         <li><a href="@controllers.analysis.routes.MovementCar.index(index)">@index</a></li>
+        }
         }
         }
         }
@@ -25,9 +33,13 @@
         @if(currentPage == maxPage) {
         <li class="disabled"><span>&raquo;</span></li>
         } else {
-        @if(routeName.equals("@controllers.analysis.routes.MovementCar.index")){
+        @if(routeName.equals("@controllers.analysis.routes.MovementCar")){
         <!-- 作業車稼働状況分析 -->
+        @if(functionName.equals("search")){
+        <li><a href="@controllers.analysis.routes.MovementCar.searchPaging(currentPage + 1)">&raquo;</a></li>
+        }else{
         <li><a href="@controllers.analysis.routes.MovementCar.index(currentPage + 1)">&raquo;</a></li>
+        }
         }
         }
     </ul>

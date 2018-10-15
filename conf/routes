@@ -95,6 +95,7 @@ POST   /site/txTagManage                controllers.site.TxTagManage.search
 GET    /analysis/movementCar                 controllers.analysis.MovementCar.index(page: Integer = 1)
 GET    /analysis/movementCar/:page           controllers.analysis.MovementCar.index(page: Integer)
 POST   /analysis/movementCar/:page           controllers.analysis.MovementCar.search(page: Integer)
+GET   /analysis/movementCar/searchPaging/:page    controllers.analysis.MovementCar.searchPaging(page: Integer)
 GET   /analysis/movementCar/csvExport/:page       controllers.analysis.MovementCar.csvExport(page: Integer)
 
 
