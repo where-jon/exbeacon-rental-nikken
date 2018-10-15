@@ -48,6 +48,7 @@ var NOBTN_WIDTH_RAITO = 0.99;
 var NOBTN_ROWS = 2;
 // 画面下部にボタン無し（その他）
 var NOBTN_OTHER_HEIGHT_RAITO = 0.75;
+var NOBTN_PAGING_HEIGHT_RAITO = 0.70;
 var NOBTN_OTHER_WIDTH_RAITO = 0.99;
 var NOBTN_OTHER_ROWS = 3;
 var RESERVE_MAX_COUNT = 100;
@@ -213,7 +214,7 @@ var gInitView = {
             timer = setTimeout(function() {
                 // 処理の再実行
                 gInitView.removeTable();
-                gInitView.fixTable("NoBtnOther");
+                gInitView.fixTable("NoBtnPaging");
                 gInitView.bindMouseAndTouch();
             }, 200);
         });
@@ -260,6 +261,10 @@ var gInitView = {
             }else if(screenPattern == "NoBtnOther"){
                 // パターン３
                 heightRaito = NOBTN_OTHER_HEIGHT_RAITO;
+                fRows = NOBTN_OTHER_ROWS;
+            }else if(screenPattern == "NoBtnPaging"){
+                // パターン４
+                heightRaito = NOBTN_PAGING_HEIGHT_RAITO;
                 fRows = NOBTN_OTHER_ROWS;
             }
         }
