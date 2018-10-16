@@ -263,6 +263,7 @@ var gInitView = {
                 heightRaito = NOBTN_OTHER_HEIGHT_RAITO;
                 fRows = NOBTN_OTHER_ROWS;
             }else if(screenPattern == "NoBtnPaging"){
+                // パターン４
                 heightRaito = NOBTN_PAGING_HEIGHT_RAITO;
                 fRows = NOBTN_OTHER_ROWS;
             }
