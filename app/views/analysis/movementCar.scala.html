@@ -106,20 +106,20 @@ logItemAllList: Seq[List[WorkRate]]
                                 @v.zipWithIndex.map { case (logItem, j) =>
                                     @if(j == 0){
                                         <td class="itemTd text-center ">@logItem.itemNo
-                                            <input class="form-control input-sm" type="text" name="itemDataList[@vFormIndex]" value="@logItem.itemNo" />
+                                            <input class="hidden form-control input-sm" type="text" name="itemDataList[@vFormIndex]" value="@logItem.itemNo" />
                                         </td>
                                         @(vFormIndex = vFormIndex+1)
                                         <td class="itemTd text-center ">@logItem.itemName
-                                            <input class="form-control input-sm" type="text" name="itemDataList[@vFormIndex]" value="@logItem.itemName" />
+                                            <input class="hidden form-control input-sm" type="text" name="itemDataList[@vFormIndex]" value="@logItem.itemName" />
                                         </td>
                                         @(vFormIndex = vFormIndex+1)
                                     }
                                     <td class="itemTd text-center ">@logItem.operatingRate%
-                                        <input class="form-control input-sm" type="text" name="itemDataList[@vFormIndex]" value="@logItem.operatingRate%" />
+                                        <input class="hidden form-control input-sm" type="text" name="itemDataList[@vFormIndex]" value="@logItem.operatingRate%" />
                                     </td>
                                     @(vFormIndex = vFormIndex+1)
                                     <td class="itemTd text-center ">@logItem.reserveOperatingRate%
-                                        <input class="form-control input-sm" type="text" name="itemDataList[@vFormIndex]" value="@logItem.reserveOperatingRate%" />
+                                        <input class="hidden form-control input-sm" type="text" name="itemDataList[@vFormIndex]" value="@logItem.reserveOperatingRate%" />
                                     </td>
                                     @(vFormIndex = vFormIndex+1)
 
