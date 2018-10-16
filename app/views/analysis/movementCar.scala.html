@@ -11,6 +11,7 @@ logItemAllList: Seq[List[WorkRate]]
 @import controllers.routes
 @import helper._
 @import org.joda.time.DateTime
+@import java.math.BigInteger; var vFormIndex=0;
 <!doctype html>
 <html lang="ja">
 <head>
@@ -61,11 +62,9 @@ logItemAllList: Seq[List[WorkRate]]
                     <div id = "viewBtn" class="loadingBtn text-center btn btn__movement__view--frame">
                         @Messages("lang.btn.show")
                     </div>
-                    <a href="/analysis/movementCar/csvExport/1">
-                        <div id = "csvExport" class="loadingBtn text-center btn btn__view--frame">
-                            @Messages("lang.btn.csv.export")
-                        </div>
-                    </a>
+                    <div id = "csvExport" class=" text-center btn btn__view--frame">
+                        @Messages("lang.btn.csv.export")
+                    </div>
 
                 </div>
 
@@ -102,17 +101,28 @@ logItemAllList: Seq[List[WorkRate]]
                             </tr>
                             </thead>
                             <tbody>
-                            @logItemAllList.map { v =>
+                            @logItemAllList.zipWithIndex.map { case (v, i) =>
                             <tr class="rowColor rowHover" data-carId="1" id="1">
                                 @v.zipWithIndex.map { case (logItem, j) =>
                                     @if(j == 0){
-                                        <td class="itemTd text-center ">@logItem.itemNo</td>
-                                        <td class="itemTd text-center ">@logItem.itemName</td>
+                                        <td class="itemTd text-center ">@logItem.itemNo
+                                            <input class="form-control input-sm" type="text" name="itemDataList[@vFormIndex]" value="@logItem.itemNo" />
+                                        </td>
+                                        @(vFormIndex = vFormIndex+1)
+                                        <td class="itemTd text-center ">@logItem.itemName
+                                            <input class="form-control input-sm" type="text" name="itemDataList[@vFormIndex]" value="@logItem.itemName" />
+                                        </td>
+                                        @(vFormIndex = vFormIndex+1)
                                     }
-                                    <!--<td class="itemTd text-center ">@logItem.operatingRate% (@logItem.operatingCount 回)</td>
-                                    <td class="itemTd text-center ">@logItem.reserveOperatingRate% (@logItem.reserveOperatingCount 回)</td>-->
-                                    <td class="itemTd text-center ">@logItem.operatingRate%</td>
-                                    <td class="itemTd text-center ">@logItem.reserveOperatingRate%</td>
+                                    <td class="itemTd text-center ">@logItem.operatingRate%
+                                        <input class="form-control input-sm" type="text" name="itemDataList[@vFormIndex]" value="@logItem.operatingRate%" />
+                                    </td>
+                                    @(vFormIndex = vFormIndex+1)
+                                    <td class="itemTd text-center ">@logItem.reserveOperatingRate%
+                                        <input class="form-control input-sm" type="text" name="itemDataList[@vFormIndex]" value="@logItem.reserveOperatingRate%" />
+                                    </td>
+                                    @(vFormIndex = vFormIndex+1)
+
                                 }
                             </tr>
                             }
@@ -126,58 +136,6 @@ logItemAllList: Seq[List[WorkRate]]
 
             <!-- ページネーション -->
             @views.html.templates.pagination(functionName, currentPage, maxPage, "@controllers.analysis.routes.MovementCar")
-
-            <!-- モーダル画面 -->
-            <div class="modal" id="inputModal" tabindex="-1" role="dialog" aria-labelledby="InputModalLabel" aria-hidden="true" data-show="true" data-keyboard="false" data-backdrop="static">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                            @CSRF.formField
-                            <input type="hidden" name="inputPlaceId" value="">
-                            <input type="hidden" id="inputItemKindId" name="inputItemKindId">
-                            <input type="hidden" id="actualItemInfoStr" name="actualItemInfoStr">
-                            <div class="modal-header" style="">@Messages("lang.analysis.movementCar.page.title")</div>
-                            <div class="modal-body">
-                                <div class="form-group" style="margin-bottom: 5px;">
-                                    <label class="text-right  control-label col-xs-6">予約希望日</label>
-                                    <label id="mReserveDate" class="modalClass control-label">未設定</label>
-                                </div>
-                                <div class="form-group" style="margin-bottom: 5px;">
-                                    <label class="text-right control-label col-xs-6">種別</label>
-                                    <label id="mItemTypeName" class="modalClass control-label">未設定</label>
-                                </div>
-                                <div class="form-group" style="margin-bottom: 5px;">
-                                    <label class="text-right control-label col-xs-6">期間</label>
-                                    <label id="mWorkTypeName" class="modalClass control-label">未設定</label>
-                                </div>
-
-                                <div class="form-group" style="margin-bottom: 5px;">
-                                    <label class="text-right control-label col-xs-6">業者</label>
-                                    <label id="mCompanyName" class="modalClass control-label">未設定</label>
-                                </div>
-
-                                <div class="form-group" style="margin-bottom: 5px;">
-                                    <label class="text-right control-label col-xs-6">予約フロア</label>
-                                    <label id="mReserveFloorName" class="modalClass control-label">未設定</label>
-                                </div>
-
-                                <!--<div class="form-group" style="margin-bottom: 5px;">-->
-                                    <!--<label class="text-right control-label col-xs-6">選択</label>-->
-                                    <!--<label id="mArSelectId" class="modalClass control-label">未設定</label>-->
-                                <!--</div>-->
-                            </div>
-                            <div class="modal-footer">
-                                <div class="col-xs-6 text-center">
-                                    <button type="button" class="btn btn-default" data-dismiss="modal">@Messages("cancel")</button>
-                                </div>
-                                <div class="col-xs-6 text-center">
-                                    <button id="itemRegisterFooter"  type="" class="text-center btn btn-primary">予約</button>
-                                </div>
-                            </div>
-                    </div>
-                </div>
-            </div>
-
-
         </div>
     </div>
 </div>

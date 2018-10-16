@@ -21,6 +21,11 @@ case class NewItemCarReserveData(
   , floorName: String
 )
 
+/*作業車稼働率用formクラス*/
+case class MovementCarData(
+  itemDataList: List[String]
+)
+
 /*作業車・立馬予約用formクラス*/
 case class ItemCarReserveData(
   itemTypeId: Int
