@@ -70,6 +70,8 @@ case class NewItemCarSearchData(
   inputDate: String
   ,inputSearchDate: String
   , inputName: String
+  ,itemTypeId: Int
+  , floorName: String
 )
 
 case class ItemCar(
@@ -128,6 +130,7 @@ case class CarReserveViewer(
   , item_car_btx_id: Int
   , item_car_key_btx_id: Int
   , item_type_id: Int
+  , item_type_name:String
   , item_car_no: String
   , item_car_name:String
   , place_id: Int
@@ -605,16 +608,17 @@ class itemCarDAO @Inject()(dbapi: DBApi) {
         get[Int]("item_car_btx_id") ~
         get[Int]("item_car_key_btx_id") ~
         get[Int]("item_type_id") ~
+        get[String]("item_type_name") ~
         get[String]("item_car_no") ~
         get[String]("item_car_name") ~
         get[Int]("place_id") ~
         get[String]("ar_reserve_date") ~
         get[String]("ar_reserve_company_name") ~
         get[String]("ar_reserve_work_type") map {
-        case item_car_id ~ item_car_btx_id ~ item_car_key_btx_id ~ item_type_id ~
+        case item_car_id ~ item_car_btx_id ~ item_car_key_btx_id ~ item_type_id ~ item_type_name~
           item_car_no ~item_car_name ~place_id ~
           ar_reserve_date ~ ar_reserve_company_name ~ar_reserve_work_type =>
-          CarReserveViewer(item_car_id, item_car_btx_id, item_car_key_btx_id, item_type_id,
+          CarReserveViewer(item_car_id, item_car_btx_id, item_car_key_btx_id, item_type_id,item_type_name,
              item_car_no, item_car_name, place_id,
             ar_reserve_date.split(",").toSeq,ar_reserve_company_name.split(",").toSeq,ar_reserve_work_type.split(",").toSeq)
       }
@@ -628,6 +632,7 @@ class itemCarDAO @Inject()(dbapi: DBApi) {
                ,c.item_car_btx_id
                , c.item_car_key_btx_id
                , c.item_type_id
+               , i.item_type_name
                , c.item_car_no
                , c.item_car_name
                , c.place_id

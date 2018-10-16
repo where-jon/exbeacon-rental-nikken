@@ -168,6 +168,26 @@ th{
     background-color: rgb(169, 209, 142); /*#bbb5b5;*/
 }
 
+.btn__search--frame{
+    position: absolute;
+    width: 110px;
+    margin-left: 20px;
+    margin-top: -3px;
+    text-align: center;
+    border: 1px solid #000;
+    background-color: #FFFFFF;
+    padding-right: 0px!important;
+    padding-left: 0px!important;
+    color: #000;
+    font-size: calc(95%) !important;
+    box-shadow: 1px 1px 1px 0px rgba(0, 0, 0, 0.8);
+}
+
+.btn__search--frame:hover{
+    color: #fff;
+    background-color: rgb(169, 209, 142); /*#bbb5b5;*/
+}
+
 
 .link{
     width: 75%!important;
@@ -197,4 +217,24 @@ th{
 .itemTd{
     white-space: normal;
     word-break: break-all;
+}
+
+/*■高さが足りない場合調整*/
+@media screen and (max-width:1286px) {
+.btn__search--frame{
+    top: -65px;
+    left: 236px;
+}
+}
+@media screen and (max-width:1080px) {
+.btn__search--frame{
+    top: -62px;
+    left: 506px;
+}
+}
+@media screen and (max-width:769px) {
+.btn__search--frame{
+    top: -64px;
+    left: 340px;
+}
 }
