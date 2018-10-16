@@ -44,12 +44,11 @@ function btnEvent(){
         csvBtn.addEventListener('click', function() {
             var vPageIndex = location.href.substring(22,location.href.length).replace(/[^0-9]/g,'');
             if(isNaN(vPageIndex) == true) {
-                vPageIndex = 1
+                dbExecuteManager("/analysis/movementCar/csvExport/1")
             }else{
-                vPageIndex = vPageIndex
+                dbExecuteManager("/analysis/movementCar/csvExport/" + vPageIndex)
             }
-            dbExecuteManager("/analysis/movementCar/csvExport/" + vPageIndex)
-            $('#load').hide();
+//            $('#load').hide();
 //            $.ajax({
 //                url: '/analysis/movementCar/csvExport/1',
 //                processData: false,
