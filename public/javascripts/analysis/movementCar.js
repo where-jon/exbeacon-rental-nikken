@@ -42,7 +42,13 @@ function btnEvent(){
     var csvBtn = document.getElementById("csvExport");
     if(csvBtn !=null){
         csvBtn.addEventListener('click', function() {
-            dbExecuteManager("/analysis/movementCar/csvExport/1")
+            var vPageIndex = location.href.substring(22,location.href.length).replace(/[^0-9]/g,'');
+            if(isNaN(vPageIndex) == true) {
+                vPageIndex = 1
+            }else{
+                vPageIndex = vPageIndex
+            }
+            dbExecuteManager("/analysis/movementCar/csvExport/" + vPageIndex)
             $('#load').hide();
 //            $.ajax({
 //                url: '/analysis/movementCar/csvExport/1',

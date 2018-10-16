@@ -68,7 +68,7 @@ class MovementCar @Inject()(config: Configuration
   var itemIdList :Seq[Int] = null; // 仮設材種別id
 
   /*csv用*/
-  private val CSV_HEAD = "#MONTH_MOVEMENT_CAR_V1"
+  var CSV_HEAD = ""
 
   /** 　初期化 */
   def init(): Unit = {
@@ -328,6 +328,7 @@ class MovementCar @Inject()(config: Configuration
         }
         val os = new FileOutputStream(file)
         val pw = new PrintWriter(new OutputStreamWriter(os, "SJIS"));
+        CSV_HEAD = DETECT_MONTH +"_MOVEMENT_CAR_PAGE_" + page
         pw.println(CSV_HEAD)
         pw.print(s"${DETECT_MONTH} 作業車稼働状況分析")
         pw.println("")
@@ -356,7 +357,7 @@ class MovementCar @Inject()(config: Configuration
         }
         pw.close()
         Ok(Json.toJson("ok"))
-        Ok.sendFile(content = file, fileName = _ => "MOVEMENT_CAR_V1.csv")
+        Ok.sendFile(content = file, fileName = _ => CSV_HEAD +".csv")
       }catch {
         case e: Exception =>
           Redirect(routes.MovementCar.index(1))
