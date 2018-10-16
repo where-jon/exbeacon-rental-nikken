@@ -13,6 +13,7 @@ import play.api._
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
+import play.api.libs.json.Json
 import utils.silhouette.MyEnv
 
 
@@ -318,18 +319,18 @@ class MovementCar @Inject()(config: Configuration
       this.getMonthData()
     }
 
-    System.out.println("=========[" +DETECT_MONTH+"]=======")
-    weekData.map{ v=>
-      System.out.println("================")
-      System.out.println("曜日：" +v.szYobi)
-      System.out.println("週目：" +v.iNum)
-      System.out.println("週最初日：" +v.iWeekStartDay)
-      System.out.println("週最終日：" +v.iWeekEndDay)
-      System.out.println("週全日：" +v.iWeekTotalWorkDay)
-      System.out.println("週働く日：" +v.iWeekRealWorkDay)
-      System.out.println("週働く時間：" +v.iWeekTotalTime)
-      System.out.println("================")
-    }
+//    System.out.println("=========[" +DETECT_MONTH+"]=======")
+//    weekData.map{ v=>
+//      System.out.println("================")
+//      System.out.println("曜日：" +v.szYobi)
+//      System.out.println("週目：" +v.iNum)
+//      System.out.println("週最初日：" +v.iWeekStartDay)
+//      System.out.println("週最終日：" +v.iWeekEndDay)
+//      System.out.println("週全日：" +v.iWeekTotalWorkDay)
+//      System.out.println("週働く日：" +v.iWeekRealWorkDay)
+//      System.out.println("週働く時間：" +v.iWeekTotalTime)
+//      System.out.println("================")
+//    }
     return weekData
   }
 
@@ -339,7 +340,7 @@ class MovementCar @Inject()(config: Configuration
     System.out.println("start csvExport:")
     val placeId = super.getCurrentPlaceId
     val calendarList =  this.getCalendarData()
-    val logItemAllList =  getAllItemLogDataCsv(placeId,itemIdList,calendarList)
+    val logItemAllList =  getAllItemLogData(placeId,itemIdList,calendarList)
 
     try{
       // csv ロジック
@@ -382,6 +383,7 @@ class MovementCar @Inject()(config: Configuration
         pw.println("")
       }
       pw.close()
+      Ok(Json.toJson("ok"))
       Ok.sendFile(content = file, fileName = _ => "MONTH_MOVEMENT_CAR_V1.csv")
     }catch {
       case e: Exception =>
@@ -440,15 +442,6 @@ class MovementCar @Inject()(config: Configuration
       PAGE = page
       val calendarList =  this.getCalendarData()
       val logItemAllList =  getAllItemLogData(placeId,itemIdList,calendarList)
-//      var pagePosition = (page - 1) * PAGE_LINE_COUNT
-//      val logItemList = logItemAllList.drop(pagePosition).take(PAGE_LINE_COUNT)
-//      var maxPage = 0
-//      if(logItemAllList.length % PAGE_LINE_COUNT > 0){
-//        maxPage = logItemAllList.length / PAGE_LINE_COUNT + 1
-//      }else{
-//        maxPage = logItemAllList.length / PAGE_LINE_COUNT
-//      }
-
       Ok(views.html.analysis.movementCar(logItemAllList,calendarList,DETECT_MONTH,TOTAL_LENGTH, PAGE, MAX_PAGE, "index"))
     }else{
       Redirect(site.routes.ItemCarMaster.index)

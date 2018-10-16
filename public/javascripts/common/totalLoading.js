@@ -48,4 +48,13 @@ $(window).load(function() {
     }
     //  logoutボタンイベント.end
 
+
+
+    loadingBtnElement = [].slice.call(document.querySelectorAll(".loadingBtn"))
+    loadingBtnElement.forEach(function(selected, pos) {
+        selected.addEventListener('click', function() {
+            $('#load')[0].style.display = ""
+        });
+    });
+
 });

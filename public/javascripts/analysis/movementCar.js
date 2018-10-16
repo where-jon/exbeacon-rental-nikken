@@ -38,6 +38,26 @@ function btnEvent(){
         inputDate.value = gDatePicker.startSqlTime
         dbExecuteManager("/analysis/movementCar/1")
     });
+
+    var csvBtn = document.getElementById("csvExport");
+    if(csvBtn !=null){
+        csvBtn.addEventListener('click', function() {
+            $.ajax({
+                url: '/analysis/movementCar/csvExport/1',
+                processData: false,
+                contentType: false,
+                type: 'GET',
+                success: function(result){
+                    setTimeout(function() {
+                        // 処理の再実行
+                        $('#load').hide();
+                    }, 10000);
+                },error: function (e) {
+                    console.dir(e);
+                }
+            });
+        });
+    }
 }
 
 $(function(){
