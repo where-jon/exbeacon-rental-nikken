@@ -11,7 +11,6 @@ function getSerfaceText(element){
 }
 // 画面loadingが終わってから走る
 $(window).load(function() {
-    $('#load').hide();
     // bodyにあるスクロールバーを削除
     document.body.style.overflow = "hidden"
 
@@ -76,5 +75,8 @@ $(window).load(function() {
         });
     //  tabボタンイベント.end
 
-
+   setTimeout(function() {
+        // 処理の再実行
+        $('#load').hide();
+    }, 300);
 });
