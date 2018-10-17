@@ -1,46 +1,25 @@
-@(functionName: String, currentPage: Integer, maxPage: Integer, routeName: String)
+@(currentPage: Integer, maxPage: Integer, routeName: String)
 
 <div align="center">
     <ul class="pagination">
         @if(currentPage == 1) {
-        <li class="loadingBtn disabled"><span>&laquo;</span></li>
+            <li class="disabled"><span>&laquo;</span></li>
         } else {
-        @if(routeName.equals("@controllers.analysis.routes.MovementCar")){
-        <!-- 作業車稼働状況分析 -->
-        @if(functionName.equals("search")){
-        <li class="loadingBtn"><a href="@controllers.analysis.routes.MovementCar.searchPaging(currentPage - 1)">&laquo;</a></li>
-        }else{
-        <li class="loadingBtn"><a href="@controllers.analysis.routes.MovementCar.index(currentPage - 1)">&laquo;</a></li>
-        }
-        }
+            <li><a href=@routeName@(currentPage-1)>&laquo;</a></li>
         }
 
         @for(index <- 1 to maxPage) {
-        @if(currentPage == index) {
-        <li class="loadingBtn disabled"><span>@index</span></li>
-        } else {
-        @if(routeName.equals("@controllers.analysis.routes.MovementCar")){
-        <!-- 作業車稼働状況分析 -->
-        @if(functionName.equals("search")){
-        <li class="loadingBtn"><a href="@controllers.analysis.routes.MovementCar.searchPaging(index)">@index</a></li>
-        }else{
-        <li class="loadingBtn"><a href="@controllers.analysis.routes.MovementCar.index(index)">@index</a></li>
-        }
-        }
-        }
+            @if(currentPage == index) {
+            <li class="disabled"><span>@index</span></li>
+            } else {
+                <li><a href=@routeName@index>@index</a></li>
+            }
         }
 
         @if(currentPage == maxPage) {
-        <li class="loadingBtn disabled"><span>&raquo;</span></li>
+            <li class="disabled"><span>&raquo;</span></li>
         } else {
-        @if(routeName.equals("@controllers.analysis.routes.MovementCar")){
-        <!-- 作業車稼働状況分析 -->
-        @if(functionName.equals("search")){
-        <li class="loadingBtn"><a href="@controllers.analysis.routes.MovementCar.searchPaging(currentPage + 1)">&raquo;</a></li>
-        }else{
-        <li class="loadingBtn"><a href="@controllers.analysis.routes.MovementCar.index(currentPage + 1)">&raquo;</a></li>
-        }
-        }
+            <li><a href=@routeName@(currentPage+1)>&raquo;</a></li>
         }
     </ul>
 </div>
