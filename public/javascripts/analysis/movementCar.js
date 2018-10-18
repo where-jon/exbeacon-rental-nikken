@@ -36,8 +36,38 @@ function btnEvent(){
         // inputDate結果をfromへ設定
         var inputDate = document.getElementById("inputDate")
         inputDate.value = gDatePicker.startSqlTime
-        dbExecuteManager("/analysis/movementCar")
+        dbExecuteManager("/analysis/movementCar/1")
     });
+
+    var csvBtn = document.getElementById("csvExport");
+    if(csvBtn !=null){
+        csvBtn.addEventListener('click', function() {
+            var vPageIndex = location.href.substring(22,location.href.length).replace(/[^0-9]/g,'');
+            if(isNaN(vPageIndex) == true) {
+               dbExecuteManager("/analysis/movementCar/csvExport/1")
+            }else if(vPageIndex =="") {
+               dbExecuteManager("/analysis/movementCar/csvExport/1")
+
+            }else{
+               dbExecuteManager("/analysis/movementCar/csvExport/" + vPageIndex)
+            }
+//            $('#load').hide();
+//            $.ajax({
+//                url: '/analysis/movementCar/csvExport/1',
+//                processData: false,
+//                contentType: false,
+//                type: 'GET',
+//                success: function(result){
+//                    setTimeout(function() {
+//                        // 処理の再実行
+//                        $('#load').hide();
+//                    }, 10000);
+//                },error: function (e) {
+//                    console.dir(e);
+//                }
+//            });
+        });
+    }
 }
 
 $(function(){
@@ -47,7 +77,7 @@ $(function(){
     btnEvent();
 
     // テーブルを固定
-    gInitView.fixTable("NoBtnOther");
+    gInitView.fixTable("NoBtnPaging");
 
     // マウス操作とタップ操作をバインド
     gInitView.bindMouseAndTouch();

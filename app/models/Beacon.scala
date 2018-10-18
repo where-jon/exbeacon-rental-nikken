@@ -120,6 +120,7 @@ case class itemCarReserveBeaconPositionData(
   item_car_btx_id: Int,
   item_car_key_btx_id: Int,
   item_type_id: Int,
+  item_type_name: String,
   item_car_no: String,
   item_car_name:String,
   place_id: Int

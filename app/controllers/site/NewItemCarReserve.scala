@@ -187,22 +187,6 @@ class NewItemCarReserve @Inject()(config: Configuration
             //　エラーチェック通ったら更新ロジック
             val result = carDAO.reserveItemCar(setData)
             if (result == "success") {
-
-//              ITEM_NAME_FILTER = ItemCarReserveData.inputName
-//              RESERVE_DATE = ItemCarReserveData.inputDate
-//              DETECT_DATE = RESERVE_DATE
-//              TERM_DAY = ItemCarReserveData.inputSearchDate.toInt
-//
-//              val arReserveDays = calendarDAO.selectGetDayOfWeek(RESERVE_DATE,TERM_DAY)
-//              TOTAL_LENGTH = arReserveDays.size
-//              val vStartDate = arReserveDays(0).getDay
-//              val vEndDate = arReserveDays((arReserveDays.size-1)).getDay
-//              val dbReserveDatas = carDAO.selectCarMasterCalendarType(placeId,itemIdList,vStartDate,vEndDate)
-//              var carListApi = beaconService.getItemCarReserveBeaconPosition(dbReserveDatas,arReserveDays,true,placeId)
-//
-//              Ok(views.html.site.newItemCarReserve(ITEM_TYPE_FILTER,ITEM_NAME_FILTER,WORK_TYPE_FILTER,RESERVE_DATE
-//                ,carListApi,itemTypeList,companyNameList,floorNameList,workTypeList,WORK_TYPE,DETECT_DATE,TERM_DAY,arReserveDays,TOTAL_LENGTH))
-
               Redirect(routes.NewItemCarReserve.index())
                 .flashing(SUCCESS_MSG_KEY -> Messages("success.site.carReserve.update"))
             }else {
@@ -224,6 +208,8 @@ class NewItemCarReserve @Inject()(config: Configuration
       "inputDate" -> text.verifying(Messages("error.site.newItemCarReserve.inputDate.empty"), {inputDate => !inputDate.isEmpty() && inputDate.length > 0})
       ,"inputSearchDate" -> text.verifying(Messages("error.site.newItemCarReserve.searchDate.over"), {inputSearchDate => !inputSearchDate.isEmpty() && inputSearchDate.toInt >=0 && inputSearchDate.toInt <=10})
       ,"inputName" -> text
+      , "itemTypeId" -> number
+      ,"floorName" -> text
     )(NewItemCarSearchData.apply)(NewItemCarSearchData.unapply))
 
     //System.out.println("start search:")
@@ -237,7 +223,9 @@ class NewItemCarReserve @Inject()(config: Configuration
     }else{
       // 部署情報
       val carFormSearchData = itemCarSearchForm.bindFromRequest.get
-      ITEM_NAME_FILTER = carFormSearchData.inputName
+      ITEM_TYPE_FILTER = carFormSearchData.itemTypeId
+      FLOOR_NAME_FILTER = carFormSearchData.floorName
+      //ITEM_NAME_FILTER = carFormSearchData.inputName
       RESERVE_DATE = carFormSearchData.inputDate
       DETECT_DATE = RESERVE_DATE
       TERM_DAY = carFormSearchData.inputSearchDate.toInt
@@ -256,13 +244,21 @@ class NewItemCarReserve @Inject()(config: Configuration
         reserveDay.getYobi = vTempYobi
       }
       // 名称検索
-      if(ITEM_NAME_FILTER!=""){
-        carListApi = carListApi.filter(_.item_car_name.contains(ITEM_NAME_FILTER))
+//      if(ITEM_NAME_FILTER!=""){
+//        carListApi = carListApi.filter(_.item_car_name.contains(ITEM_NAME_FILTER))
+//      }
+      // 種別検索
+      if (ITEM_TYPE_FILTER != 0) {
+        carListApi = carListApi.filter(_.item_type_id == ITEM_TYPE_FILTER)
+      }
+      // フロア名検索
+      if (FLOOR_NAME_FILTER != "") {
+        carListApi = carListApi.filter(_.cur_pos_name == FLOOR_NAME_FILTER)
       }
 
 
       if(carListApi!=null){
-        Ok(views.html.site.newItemCarReserve(ITEM_TYPE_FILTER,ITEM_NAME_FILTER,WORK_TYPE_FILTER,RESERVE_DATE
+        Ok(views.html.site.newItemCarReserve(ITEM_TYPE_FILTER,FLOOR_NAME_FILTER,ITEM_NAME_FILTER,WORK_TYPE_FILTER,RESERVE_DATE
           ,carListApi,itemTypeList,companyNameList,floorNameList,workTypeList,WORK_TYPE,DETECT_DATE,TERM_DAY,arReserveDays,TOTAL_LENGTH))
       }else{
         // apiと登録データが違う場合
@@ -298,7 +294,7 @@ class NewItemCarReserve @Inject()(config: Configuration
       }
 
       if(carListApi!=null){
-        Ok(views.html.site.newItemCarReserve(ITEM_TYPE_FILTER,ITEM_NAME_FILTER,WORK_TYPE_FILTER,RESERVE_DATE
+        Ok(views.html.site.newItemCarReserve(ITEM_TYPE_FILTER,FLOOR_NAME_FILTER,ITEM_NAME_FILTER,WORK_TYPE_FILTER,RESERVE_DATE
           ,carListApi,itemTypeList,companyNameList,floorNameList,workTypeList,WORK_TYPE,DETECT_DATE,TERM_DAY,arReserveDays,TOTAL_LENGTH))
       }else{
         // apiと登録データが違う場合

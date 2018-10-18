@@ -1,5 +1,6 @@
 @(
 ITEM_TYPE_FILTER: Int
+,FLOOR_NAME_FILTER:String
 ,ITEM_NAME_FILTER:String
 ,WORK_TYPE_FILTER:String
 ,RESERVE_DATE:String
@@ -72,15 +73,39 @@ ITEM_TYPE_FILTER: Int
                         </div>
 
                         <!--名称-->
-                        <div style="margin-right:10px;float:left;">
+                        <div class ="hidden" style="margin-right:10px;float:left;">
                             <div style="float:left">名称：</div>
                             <div class='input-group' style="margin-top:-5px;">
                                 <input type='text' class="form-control" id="inputName" name="inputName" value="@ITEM_NAME_FILTER" style="width: 100px;"/>
                             </div>
                         </div>
 
-                        <div class="col-xs-2 col-sm-3 col-md-3 col-lg-2" style="padding:0; margin-top: 5px;">
-                            <div id = "viewBtn" class="text-center btn btn__view--frame">
+                        <div style="margin-right:10px;float:left;">
+                            @Messages("lang.search.type")
+                            <select id="ITEM_TYPE_FILTER" style="width: 120px;">
+                                <!--仮設材種別テーブルから検索フィルタを設置-->
+                                <option value="0"></option>
+                                @itemTypeList.zipWithIndex.map { case(itemType, i) =>
+                                <option value="@itemType.item_type_id">@itemType.item_type_name</option>
+                                }
+                            </select>
+                            <input class="hidden form-control input-sm" type="text" id="itemTypeId" name="itemTypeId" value="@ITEM_TYPE_FILTER" />
+                        </div>
+
+                        <div style="margin-right:10px;float:left;">
+                            @Messages("lang.search.curFloor")
+                            <select id="FLOOR_NAME_FILTER" style="width: 120px;">
+                                <!--仮設材種別テーブルから検索フィルタを設置-->
+                                <option value=""></option>
+                                @floorNameList.zipWithIndex.map { case(floor, i) =>
+                                <option value="@floor.floor_name">@floor.floor_name</option>
+                                }
+                            </select>
+                            <input class="hidden form-control input-sm" type="text" id="floorName" name="floorName" value="@FLOOR_NAME_FILTER" />
+                        </div>
+
+                        <div class="col-xs-2 col-sm-3 col-md-3 col-lg-2" style="padding:0;">
+                            <div id = "viewBtn" class="text-center btn btn__search--frame">
                                 @Messages("lang.btn.reserve.search")
                             </div>
                         </div>
@@ -110,7 +135,7 @@ ITEM_TYPE_FILTER: Int
 
                                     <th rowspan="3" class="hidden tableTh tableBorder">@Messages("lang.site.itemCarReserve.txId")</th>
                                     <th rowspan="3" class="tableTh tableBorder">@Messages("lang.site.itemCarReserve.no")</th>
-                                    <th rowspan="3" class="tableTh tableBorder ">@Messages("lang.site.itemCarReserve.name")</th>
+                                    <th rowspan="3" class="tableTh tableBorder ">@Messages("lang.site.itemCarReserve.typeName")</th>
                                     <th rowspan="3" class="tableTh tableBorder ">@Messages("lang.site.itemCarReserve.pos")</th>
                                     <!--日付-->
                                     @arReserveDays.zipWithIndex.map { case(day, i) =>
@@ -141,7 +166,7 @@ ITEM_TYPE_FILTER: Int
                                 <tr class="rowColor rowHover" data-carId="@car.item_car_id" id="@car.item_car_id">
                                     <td class="hidden text-center tableBorder">@car.item_car_btx_id</td>
                                     <td class=" reserve__title--frame text-center tableBorder">@car.item_car_no</td>
-                                    <td class=" reserve__title--frame text-center tableBorder">@car.item_car_name</td>
+                                    <td class=" reserve__title--frame text-center tableBorder">@car.item_type_name</td>
                                     <td class=" reserve__title--frame text-center modalSelect tableBorder">@car.cur_exb_name</td>
                                     @car.reserveData.zipWithIndex.map { case(day, dayIndex) =>
                                     @if(day.reserveDate!= "noDate"){
@@ -232,14 +257,14 @@ ITEM_TYPE_FILTER: Int
                                 </div>
                                 <div class="form-group" style="margin-bottom: 5px;">
                                     <label class="text-right  control-label col-xs-6" style="margin-top: 5px;">@Messages("lang.search.reserveFloor")</label>
-                                    <select id="FLOOR_NAME_FILTER" style="width: 120px;">-
+                                    <select id="FLOOR_NAME_FILTER_MODAL" style="width: 120px;">-
                                         <!--仮設材種別テーブルから検索フィルタを設置-->
                                         <option value=""></option>
                                         @floorNameList.zipWithIndex.map { case(floor, i) =>
                                         <option value="@floor.floor_name">@floor.floor_name</option>
                                         }
                                     </select>
-                                    <input class="hidden form-control input-sm" type="text" id="floorName" name="floorName" value="" />
+                                    <input class="hidden form-control input-sm" type="text" id="floorNameModal" name="floorName" value="" />
                                 </div>
                             </div>
                             <div class="modal-footer">
