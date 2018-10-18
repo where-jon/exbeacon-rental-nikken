@@ -67,7 +67,7 @@ $(window).load(function() {
     //  menuボタンイベント.end
 
      //  tabボタンイベント.start
-    tabElement = [].slice.call(document.querySelectorAll(".tabFrame"))
+    tabElement = [].slice.call(document.querySelectorAll(".tabLoading"))
         tabElement.forEach(function(selected, pos) {
             selected.addEventListener('click', function() {
                 $('#load')[0].style.display = ""
