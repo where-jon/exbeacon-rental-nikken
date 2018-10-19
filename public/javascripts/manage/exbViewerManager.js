@@ -374,7 +374,7 @@ $(function () {
                 vExbViewerData[i].size = Number(viewer_pos_size);
 
                 // pos_type
-                  var viewType = document.getElementById("input_viewer_pos_type-" + gClickPos).value;
+                var viewType = document.getElementById("input_viewer_pos_type_name-" + gClickPos).value;
                 vExbViewerData[i].viewType = viewType;
 
                 // x
