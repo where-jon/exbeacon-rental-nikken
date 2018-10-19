@@ -87,7 +87,7 @@ class PlaceManage @Inject() (
   }
 
   /** 指定順一覧表示 */
-  def sortPlaceListWith(sortType:Int = 0) = SecuredAction { implicit request =>
+  def sortPlaceListWith(sortType:Int) = SecuredAction { implicit request =>
     val reqIdentity = request.identity
     if (reqIdentity.level >= 4) {
       if (securedRequest2User.isSysMng) {

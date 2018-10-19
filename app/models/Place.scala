@@ -17,7 +17,7 @@ case class PlaceEnum(
   sortTypeMap: Map[Int,String] = Map[Int,String](
     0 -> "pm.place_id",
     1 -> "pm.updatetime",
-    2 -> "pm.place_name",
+    2 -> "pm.place_id",
     3 -> "pm.status",
     4 -> "user_email",
     5 -> "user_name"
@@ -270,9 +270,10 @@ class placeDAO @Inject() (dbapi: DBApi) {
             btx_api_url, btx_api_url, btx_api_url, cms_password, user_id, user_email, user_name)
       }
     }
-    db.withConnection { implicit connection =>
-      var selectSQL =
-        s"""
+    if(sortType>0){
+      db.withConnection { implicit connection =>
+        var selectSQL =
+          s"""
           SELECT
               pm.place_id AS place_id,
               pm.place_name AS place_name,
@@ -288,9 +289,35 @@ class placeDAO @Inject() (dbapi: DBApi) {
             LEFT OUTER JOIN user_master u ON pm.place_id = u.current_place_id AND u.permission = 3
           WHERE pm.active_flg = true
           GROUP BY pm.place_id, pm.place_name, pm.status, u.user_id, u.email, u.name
-          ORDER BY ${PlaceEnum().sortTypeMap(sortType)}"""
-      SQL(selectSQL).as(list.*)
+          ORDER BY ${PlaceEnum().sortTypeMap(sortType)} DESC
+          """
+        SQL(selectSQL).as(list.*)
+      }
+    }else{
+      db.withConnection { implicit connection =>
+        var selectSQL =
+          s"""
+          SELECT
+              pm.place_id AS place_id,
+              pm.place_name AS place_name,
+              count(f.floor_id) AS floor_count,
+              pm.status AS status,
+              pm.btx_api_url AS btx_api_url,
+              pm.cms_password AS cms_password,
+              COALESCE(u.user_id, -1) AS user_id,
+              COALESCE(u.email, '-') AS user_email,
+              COALESCE(u.name, '-') AS user_name
+          FROM place_master pm
+            LEFT OUTER JOIN floor_master f ON pm.place_id = f.place_id
+            LEFT OUTER JOIN user_master u ON pm.place_id = u.current_place_id AND u.permission = 3
+          WHERE pm.active_flg = true
+          GROUP BY pm.place_id, pm.place_name, pm.status, u.user_id, u.email, u.name
+          ORDER BY ${PlaceEnum().sortTypeMap(sortType)}
+          """
+        SQL(selectSQL).as(list.*)
+      }
     }
+
   }
 
   /**
