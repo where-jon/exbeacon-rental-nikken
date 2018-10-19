@@ -42,6 +42,7 @@ class UnDetected @Inject()(config: Configuration
 
   var itemTypeList: Seq[ItemType] = null; // 仮設材種別
   var floorNameList: Seq[Floor] = null; // フロア
+  var detectedTxList :Seq[Int] = null; // 検索日以前24間内に検知されたTX
 
   val unDetectedSearchForm = Form(mapping(
     "itemTypeId" -> number,
@@ -83,7 +84,13 @@ class UnDetected @Inject()(config: Configuration
     FLOOR_NAME_FILTER = searchForm.floorName
     DETECT_DATE = searchForm.inputDate
 
-    var dbDatasList = itemLogDao.selectUnDetectedData(placeId,DETECT_DATE)
+    detectedTxList = itemLogDao.selectDetectedData(placeId,DETECT_DATE).map{item => item.item_btx_id}
+    var dbDatasList = if(detectedTxList.length>0){
+      itemLogDao.selectUnDetectedData(placeId,DETECT_DATE,detectedTxList)
+    }else{
+      detectedTxList = detectedTxList:+ -1
+      itemLogDao.selectUnDetectedData(placeId,DETECT_DATE,detectedTxList)
+    }
 
     if (FLOOR_NAME_FILTER != "") {
       dbDatasList = dbDatasList.filter(_.finish_floor_name == FLOOR_NAME_FILTER)
@@ -107,7 +114,13 @@ class UnDetected @Inject()(config: Configuration
     getSearchData(placeId)
 
     // dbデータ取得
-    val dbDatasList = itemLogDao.selectUnDetectedData(placeId,DETECT_DATE)
+    detectedTxList = itemLogDao.selectDetectedData(placeId,DETECT_DATE).map{item => item.item_btx_id}
+    val dbDatasList = if(detectedTxList.length > 0){
+      itemLogDao.selectUnDetectedData(placeId,DETECT_DATE,detectedTxList)
+    }else{
+      detectedTxList = detectedTxList:+ -1
+      itemLogDao.selectUnDetectedData(placeId,DETECT_DATE,detectedTxList)
+    }
 
     Ok(views.html.site.unDetected(ITEM_TYPE_FILTER, FLOOR_NAME_FILTER, DETECT_DATE
       , dbDatasList, itemTypeList, floorNameList))
