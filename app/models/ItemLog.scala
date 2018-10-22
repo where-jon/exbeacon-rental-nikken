@@ -285,6 +285,7 @@ class ItemLogDAO @Inject() (dbapi: DBApi) {
               GROUP BY item_btx_id ) AS T2
             ON T2.F1=T1.item_btx_id AND T2.F2=T1.finish_updatetime
             where t1.place_id = {place_id}
+            and finish_floor_name != '不在'
             and item_btx_id not in( """ + {detectedTxList.mkString(",")} +""" )
 
         ORDER BY
