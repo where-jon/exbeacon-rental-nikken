@@ -119,7 +119,7 @@ var gAddPositionMargin = function(beacons) {
 
 					}
 
-				}else if (viewType == "5x5") {
+				}else if (viewType == "2x5") {
 					// nearby
 					var marginXstatic = -(targets[0].pos.margin+0.5);
 					var marginXCotei = -(16);
@@ -148,7 +148,7 @@ var gAddPositionMargin = function(beacons) {
 
 					}
 
-				}else if (viewType == "1x4") {
+				}else if (viewType == "4x2") {
 					// nearby
 					var marginXCotei =  -3;
 					var marginYCotei =  -4;
@@ -288,76 +288,81 @@ var gAddPositionMargin = function(beacons) {
 					}
 
 				}else if (viewType == "2x2") {
-					// nearby
-					var marginXstatic = -(targets[0].pos.margin + 1);
-					var marginXCotei = -(targets[0].pos.margin - 0.5);
-					var marginX = -(targets[0].pos.margin - 0.5);
-					var marginYstatic = (targets[0].pos.margin + 1.2);
-					var marginY = (targets[0].pos.margin - 2.5);
-					var lengthSize = targets.length;
-					var marginYcheck = false;
-					var vAddon = 3;
-					var vAddonCount = 0;
-					var vArMargin = [0,-1,1,-2,2,3,-3,4,-4,5,-5];
-					for (var i = 0; i < targets.length; i++) {
-						if(vAddonCount != 0 && i  > (vAddon * vAddonCount)){
-							targets[i] = addEqaulpos2x2(targets[i],vArMargin[vAddonCount],vAddonCount)
-						}
-						if (i % 4 == 3) {
-							if (i != 0) {
-								vAddonCount++;
-								marginYcheck = true;
-							}
-						}
-						if (i % 2 == 0 && i != 0) {
-							marginX = marginXCotei;
-							if(!marginYcheck){
-								marginY = marginY - marginYstatic;
-							}else{
-								//marginY = -1;
-								marginYcheck = false;
-							}
-						}
-						addMargin(targets[i].pos, marginX, marginY);
-						marginX = marginX - (marginXstatic);
-					}
+                    var marginX = targets[0].pos.margin;
+                    var arPoint = [
+                        [0,0],[-(marginX),0],
+                        [0,marginX],[-(marginX),(marginX)],
+                    ]
+                    var vPointLenth = arPoint.length
+                    var vStaticValue = 0;
+                    targets.forEach(function(element,i) {
+                        var vIndex = i % vPointLenth
+                        if( i!=0 &&　vIndex == 0 )
+                          vStaticValue += 1;
 
-				}else if (viewType == "2x3") {
-					// nearby
-					var marginXstatic = -(targets[0].pos.margin + 1);
-					var marginXCotei = -(targets[0].pos.margin - 0.5);
-					var marginX = -(targets[0].pos.margin - 0.5);
-					var marginYstatic = (targets[0].pos.margin + 1.2);
-					var marginY = (targets[0].pos.margin - 2.5);
-					var lengthSize = targets.length;
-					var marginYcheck = false;
-					var vAddon = 5;
-					var vAddonCount = 0;
-					var vArMargin = [0,-1,1,-2,2,3,-3,4,-4,5,-5];
-					for (var i = 0; i < targets.length; i++) {
-						if(vAddonCount != 0 && i  > (vAddon * vAddonCount)){
-							targets[i] = addEqaulpos2x2(targets[i],vArMargin[vAddonCount],vAddonCount)
-						}
-						if (i % 6 == 5) {
-							if (i != 0) {
-								vAddonCount++;
-								marginYcheck = true;
-							}
-						}
-						if (i % 2 == 0 && i != 0) {
-							marginX = marginXCotei;
-							if(!marginYcheck){
-								marginY = marginY - marginYstatic;
-							}else{
-								// marginY = -1;
-								marginYcheck = false;
-							}
-						}
-						addMargin(targets[i].pos, marginX, marginY);
-						marginX = marginX - (marginXstatic);
-					}
+                        var vMarginX = arPoint[vIndex][0] + vStaticValue
+                        var vMarginY = arPoint[vIndex][1] + vStaticValue
+                        addMargin(targets[i].pos, vMarginX, vMarginY);
+                    });
 
-				}else if (viewType == "2x2_circle") {
+				}else if (viewType == "Mx2") {
+                    // nearby
+                     var marginXstatic = -(targets[0].pos.margin + 1);
+                     var marginXCotei = -(targets[0].pos.margin - 0.5);
+                     var marginX = -(targets[0].pos.margin - 0.5);
+                     var marginYstatic = -(targets[0].pos.margin + 1.5);
+                     var marginY = -(targets[0].pos.margin - 2);
+                     var lengthSize = targets.length;
+
+                     for (var i = 0; i < targets.length; i++) {
+
+                         if (i % 2 == 0 && i != 0) {
+                             marginX = marginXCotei;
+                             marginY = marginY - marginYstatic;
+                         }
+                         addMargin(targets[i].pos, marginX, marginY);
+                         marginX = marginX - (marginXstatic);
+                     }
+
+                }else if (viewType == "Mx3") {
+					// nearby
+                    var marginXstatic = -(targets[0].pos.margin + 1);
+                    var marginXCotei = -(targets[0].pos.margin - 0.5);
+                    var marginX = -(targets[0].pos.margin - 0.5);
+                    var marginYstatic = -(targets[0].pos.margin + 1.5);
+                    var marginY = -(targets[0].pos.margin - 2);
+                    var lengthSize = targets.length;
+
+                    for (var i = 0; i < targets.length; i++) {
+
+                        if (i % 3 == 0 && i != 0) {
+                            marginX = marginXCotei;
+                            marginY = marginY - marginYstatic;
+                        }
+                        addMargin(targets[i].pos, marginX, marginY);
+                        marginX = marginX - (marginXstatic);
+                    }
+
+				}else if (viewType == "Mx4") {
+                    // nearby
+                     var marginXstatic = -(targets[0].pos.margin + 1);
+                     var marginXCotei = -(targets[0].pos.margin - 0.5);
+                     var marginX = -(targets[0].pos.margin - 0.5);
+                     var marginYstatic = -(targets[0].pos.margin + 1.5);
+                     var marginY = -(targets[0].pos.margin - 2);
+                     var lengthSize = targets.length;
+
+                     for (var i = 0; i < targets.length; i++) {
+
+                         if (i % 4 == 0 && i != 0) {
+                             marginX = marginXCotei;
+                             marginY = marginY - marginYstatic;
+                         }
+                         addMargin(targets[i].pos, marginX, marginY);
+                         marginX = marginX - (marginXstatic);
+                     }
+
+                }else if (viewType == "2x2_circle") {
 					var marginXstatic = -(targets[0].pos.margin);
 					var marginXCotei = -(targets[0].pos.margin);
 					var marginX = targets[0].pos.margin;
@@ -531,7 +536,6 @@ var gAddPositionMargin = function(beacons) {
 						}
 						addMargin(targets[i].pos, marginX, marginY);
 						marginX = marginX - (marginXstatic);
-
 					}
 
 				}
