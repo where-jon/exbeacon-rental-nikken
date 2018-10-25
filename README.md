@@ -45,8 +45,15 @@ Heroku環境
 | 環境変数名 | 値 | 備考 |
 |----------|------|------|
 | DATABASE_URL | herokuダッシュボード参照 |  |
-| BATCH_INTERVAL | 0 0,10,20,30,40,50 8-23 ? * * | 10分おき, 8:00-24:00に実行|
-| BATCH_LOG_LEVEL | INFO=出力する、DEBUG=出力しない | 状況によって判断 |
+| ITEMLOG_BATCH_INTERVAL | 0 */30 * ? * * | 施行中現場の位置情報を30分間隔でバッチ実行|
+| ITEMLOG_BATCH_START | TRUE=出力する、=出力しない | 状況によって判断 |
+| POSITIONIG_COUNTMINUTE | 30 | 作業車稼働率状況画面でバッチ間隔30分と合わせてカウントする |
+| POSITIONIG_ABSENCEMINUTE | 30 | 設定「分」単位で不在を判断する |
+| POSITIONIG_UPDATESEC | 600 | 現場状況画面自動更新「秒」 |
+| VIEW_COUNT | 999 | 現場状況画面最大表示数 |
+| PAGE_LINE_COUNT | 20 | ページング１画面毎、表示数 |
+| RESERVE_MAX_COUNT | 100 | 作業車・立馬予約取消、その他仮設材予約と取消画面複数選択最大設定値 |
+
 
 
 環境構築
