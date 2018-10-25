@@ -79,15 +79,11 @@ workTypeMap: Map[Int,String])(implicit user: User, messages: Messages, request: 
                         <div class = "hidden" style="margin-right:10px;float:left;">
                             @Messages("lang.search.term")
                             <select id="WORK_TYPE_FILTER" style="width: 120px;">
-                                <!--期間Enumから検索フィルタを設置-->
-                                <!--<option value="0"></option>-->
-                                <!--@workTypeMap.map{case (key, value) =>-->
-                                <!--<option value="@(key+1)">@value</option>-->
-                                <!--}-->
                                 <option value=""></option>
                                 @workTypeList.zipWithIndex.map { case(workType, i) =>
                                     <option value="@workType.work_type_name">@workType.work_type_name</option>
                                 }
+                                <option value="無">無</option>
                             </select>
                             <input class="hidden form-control input-sm" type="text" id="workTypeName" name="workTypeName" value="@WORK_TYPE_FILTER" />
                         </div>

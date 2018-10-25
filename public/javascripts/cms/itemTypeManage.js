@@ -64,7 +64,7 @@ function showInputModal(isRegister){
             $('#background-color').ColorPickerSliders({
                 color: rgbEditIcon,
                 placement: 'right',
-                sliders: true,
+                sliders: false,
                 swatches: false,
                 hsvpanel: true
             });
@@ -74,7 +74,7 @@ function showInputModal(isRegister){
             $('#text-color').ColorPickerSliders({
                 color: rgbEditText,
                 placement: 'right',
-                sliders: true,
+                sliders: false,
                 swatches: false,
                 hsvpanel: true
             });

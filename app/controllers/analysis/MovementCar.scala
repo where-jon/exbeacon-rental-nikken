@@ -13,6 +13,7 @@ import play.api._
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
+import play.api.libs.json.Json
 import utils.silhouette.MyEnv
 
 
@@ -35,6 +36,7 @@ class MovementCar @Inject()(config: Configuration
 , itemTypeDAO: models.ItemTypeDAO
 , workTypeDAO: models.WorkTypeDAO
 , calendarDAO: models.LogCalendarDAO
+, pagiNationHelper: common.PagiNation
 ) extends BaseController with I18nSupport {
 
    /*検索用*/
@@ -43,6 +45,7 @@ class MovementCar @Inject()(config: Configuration
   val REAL_WORK_DAY = 5;
   val DAY_WORK_TIME = 6;
   val HOUR_MINUTE = 60;
+  val FIX_COLUMN =2
   var BATCH_INTERVAL_MINUTE = 60; //ログ検知インタバル初期値60分 daidan30分
 
   val CALENDAR_TYPE = "今月のみ";
@@ -61,7 +64,7 @@ class MovementCar @Inject()(config: Configuration
   var itemIdList :Seq[Int] = null; // 仮設材種別id
 
   /*csv用*/
-  private val CSV_HEAD = "#MONTH_MOVEMENT_CAR_V1"
+  var CSV_HEAD = ""
 
   /** 　初期化 */
   def init(): Unit = {
@@ -104,11 +107,14 @@ class MovementCar @Inject()(config: Configuration
 
   /** 　item_logテーブルデータ取得 */
   def getAllItemLogData(placeId:Int,itemIdList :Seq[Int],calendarList:List[WeekData]) : Seq[List[WorkRate]] = {
+
     // ①itemCarテーブルlistからsqlを組むplaceId
     val dbDatas = carDAO.selectCarMasterViewer(placeId,itemIdList)  // 作業車のみ
+    // 共通ページングからデータ取得
+    val logItemList = pagiNationHelper.getMovementPageData(dbDatas)
 
     // ②. ①から取得したデータへgetCalndarDataを含む
-    val allData = dbDatas.zipWithIndex.map { case (car, i) =>
+    val allData = logItemList.zipWithIndex.map { case (car, i) =>
       calendarList.zipWithIndex.map{ case (calendar, i) =>
 
         // 検知フラグがtrue
@@ -138,7 +144,6 @@ class MovementCar @Inject()(config: Configuration
     }
     return allData
   }
-
 
   def getMonthData(): List[WeekData] = {
 
@@ -270,87 +275,98 @@ class MovementCar @Inject()(config: Configuration
       this.getMonthData()
     }
 
-    System.out.println("=========[" +DETECT_MONTH+"]=======")
-    weekData.map{ v=>
-      System.out.println("================")
-      System.out.println("曜日：" +v.szYobi)
-      System.out.println("週目：" +v.iNum)
-      System.out.println("週最初日：" +v.iWeekStartDay)
-      System.out.println("週最終日：" +v.iWeekEndDay)
-      System.out.println("週全日：" +v.iWeekTotalWorkDay)
-      System.out.println("週働く日：" +v.iWeekRealWorkDay)
-      System.out.println("週働く時間：" +v.iWeekTotalTime)
-      System.out.println("================")
-    }
+//    System.out.println("=========[" +DETECT_MONTH+"]=======")
+//    weekData.map{ v=>
+//      System.out.println("================")
+//      System.out.println("曜日：" +v.szYobi)
+//      System.out.println("週目：" +v.iNum)
+//      System.out.println("週最初日：" +v.iWeekStartDay)
+//      System.out.println("週最終日：" +v.iWeekEndDay)
+//      System.out.println("週全日：" +v.iWeekTotalWorkDay)
+//      System.out.println("週働く日：" +v.iWeekRealWorkDay)
+//      System.out.println("週働く時間：" +v.iWeekTotalTime)
+//      System.out.println("================")
+//    }
     return weekData
   }
 
 
   /** csv出力 */
-  def csvExport = SecuredAction { implicit request =>
-    System.out.println("start csvExport:")
-    val placeId = super.getCurrentPlaceId
-    val calendarList =  this.getCalendarData()
-    val logItemAllList =  getAllItemLogData(placeId,itemIdList,calendarList)
+  def csvExport(page:Int) = SecuredAction { implicit request =>
 
-    try{
-      // csv ロジック
-      val file = new File("/tmp/temp_export.csv")
-      if (file.exists()) {
-        file.delete()
-      }
-      val os = new FileOutputStream(file)
-      val pw = new PrintWriter(new OutputStreamWriter(os, "SJIS"));
-      pw.println(CSV_HEAD)
-      pw.print(s"${DETECT_MONTH} 作業車稼働状況分析")
-      pw.println("")
-      pw.print("作業車,")
-      pw.print("作業車,")
-      calendarList.foreach { calendar =>
-        pw.print(s"${calendar.szYobi}の週," +
-          s"実${calendar.iWeekRealWorkDay}/${calendar.iWeekTotalWorkDay}日,"
-        )
-      }
-      pw.println("")
-      pw.print("番号,")
-      pw.print("名称,")
-      calendarList.foreach { calendar =>
-        pw.print(s"稼働率," +
-          s"予約/稼働,"
-        )
-      }
-      pw.println("")
-      logItemAllList.foreach { item =>
-        pw.print("=\"")
-        pw.print(s"${item.last.itemNo}")
-        pw.print("\"")
-        pw.print(",")
-        pw.print(s"${item.last.itemName},")
-        item.foreach{ v =>
-          pw.print(s"${v.operatingRate}%," +
-            s"${v.reserveOperatingRate}%,"
-          )
+    /*転送form*/
+    val movementCarForm = Form(mapping(
+      "itemDataList" -> list(text.verifying(Messages("error.analysis.movementCar.form.error"), { itemDataList => !itemDataList.isEmpty() }))
+    )(MovementCarData.apply)(MovementCarData.unapply))
+    val form = movementCarForm.bindFromRequest
+    //System.out.println("start csvExport:")
+    if (form.hasErrors){
+      // エラーでリダイレクト遷移
+      Redirect(routes.MovementCar.index(1)).flashing(ERROR_MSG_KEY -> form.errors.map(_.message).mkString(HTML_BR))
+
+    }else {
+      val placeId = super.getCurrentPlaceId
+      val calendarList =  this.getCalendarData()
+      val brLength = ( calendarList.length * FIX_COLUMN ) + FIX_COLUMN
+      val movementData = form.get
+      //val logItemAllList =  getAllItemLogData(placeId,itemIdList,calendarList)
+      try{
+        // csv ロジック
+        val file = new File("/tmp/temp_export.csv")
+        if (file.exists()) {
+          file.delete()
         }
+        val os = new FileOutputStream(file)
+        val pw = new PrintWriter(new OutputStreamWriter(os, "SJIS"));
+        CSV_HEAD = DETECT_MONTH +"_MOVEMENT_CAR_PAGE_" + page
+        pw.println(CSV_HEAD)
+        pw.print(s"${DETECT_MONTH} 作業車稼働状況分析")
         pw.println("")
+        pw.print("作業車,")
+        pw.print("作業車,")
+              calendarList.foreach { calendar =>
+                pw.print(s"${calendar.szYobi}の週," +
+                  s"実${calendar.iWeekRealWorkDay}/${calendar.iWeekTotalWorkDay}日,"
+                )
+              }
+        pw.println("")
+        pw.print("番号,")
+        pw.print("名称,")
+              calendarList.foreach { calendar =>
+                pw.print(s"稼働率," +
+                  s"予約/稼働,"
+                )
+              }
+        pw.println("")
+
+        movementData.itemDataList.zipWithIndex.map { case (itemData, index) =>
+          if(index!=0 && index % brLength == 0){
+            pw.println("")
+          }
+          pw.print(s"${itemData},")
+        }
+        pw.close()
+        Ok(Json.toJson("ok"))
+        Ok.sendFile(content = file, fileName = _ => CSV_HEAD +".csv")
+      }catch {
+        case e: Exception =>
+          Redirect(routes.MovementCar.index(1))
+            .flashing(ERROR_MSG_KEY -> Messages("error.analysis.movementCar.csvExport"))
       }
-      pw.close()
-      Ok.sendFile(content = file, fileName = _ => "MONTH_MOVEMENT_CAR_V1.csv")
-    }catch {
-      case e: Exception =>
-        Redirect(routes.MovementCar.index())
-          .flashing(ERROR_MSG_KEY -> Messages("error.analysis.movementCar.csvExport"))
+
     }
   }
 
+
   /** 　検索ロジック */
-  def search = SecuredAction { implicit request =>
+  def search(page:Int) = SecuredAction { implicit request =>
     movementCarSearchForm.bindFromRequest.fold(
       formWithErrors =>
-        Redirect(routes.MovementCar.index())
-          //.flashing(ERROR_MSG_KEY -> Messages(formWithErrors.errors.map(_.message +"<br>").mkString("\n"))),  //herokuで動かない
+        Redirect(routes.MovementCar.index(1))
             .flashing(ERROR_MSG_KEY -> Messages("error.analysis.movementCar.search.date.empty")),
       searchForm => {
         val placeId = super.getCurrentPlaceId
+        pagiNationHelper.PAGE = page
         //検索側データ取得
         getSearchData(placeId)
         // 検索情報
@@ -358,13 +374,26 @@ class MovementCar @Inject()(config: Configuration
         val calendarList =  this.getCalendarData()
         val logItemAllList =  getAllItemLogData(placeId,itemIdList,calendarList)
 
-        Ok(views.html.analysis.movementCar(logItemAllList,calendarList,DETECT_MONTH,TOTAL_LENGTH))
+        Ok(views.html.analysis.movementCar(logItemAllList,calendarList,DETECT_MONTH,TOTAL_LENGTH, pagiNationHelper.PAGE, pagiNationHelper.MAX_PAGE))
       }
     )
   }
 
+  /** 　検索ロジック ページネーション用 */
+  def searchPaging(page:Int) = SecuredAction { implicit request =>
+    val placeId = super.getCurrentPlaceId
+    pagiNationHelper.PAGE = page
+    //検索側データ取得
+    getSearchData(placeId)
+    // 検索情報
+    val calendarList =  this.getCalendarData()
+    val logItemAllList =  getAllItemLogData(placeId,itemIdList,calendarList)
+
+    Ok(views.html.analysis.movementCar(logItemAllList,calendarList,DETECT_MONTH,TOTAL_LENGTH, pagiNationHelper.PAGE, pagiNationHelper.MAX_PAGE))
+  }
+
   /** 初期表示 */
-  def index = SecuredAction { implicit request =>
+  def index(page:Int) = SecuredAction { implicit request =>
     val reqIdentity = request.identity
     if(reqIdentity.level >= 2){
       // 初期化
@@ -374,9 +403,10 @@ class MovementCar @Inject()(config: Configuration
       getSearchData(placeId)
 
       // DB探索になる今月に関するデータをセット
+      pagiNationHelper.PAGE = page
       val calendarList =  this.getCalendarData()
       val logItemAllList =  getAllItemLogData(placeId,itemIdList,calendarList)
-      Ok(views.html.analysis.movementCar(logItemAllList,calendarList,DETECT_MONTH,TOTAL_LENGTH))
+      Ok(views.html.analysis.movementCar(logItemAllList,calendarList,DETECT_MONTH,TOTAL_LENGTH, pagiNationHelper.PAGE, pagiNationHelper.MAX_PAGE))
     }else{
       Redirect(site.routes.ItemCarMaster.index)
     }

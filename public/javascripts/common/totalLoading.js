@@ -11,7 +11,6 @@ function getSerfaceText(element){
 }
 // 画面loadingが終わってから走る
 $(window).load(function() {
-    $('#load').hide();
     // bodyにあるスクロールバーを削除
     document.body.style.overflow = "hidden"
 
@@ -48,4 +47,36 @@ $(window).load(function() {
     }
     //  logoutボタンイベント.end
 
+
+    //  各ページボタンイベント.start
+    loadingBtnElement = [].slice.call(document.querySelectorAll(".loadingBtn"))
+    loadingBtnElement.forEach(function(selected, pos) {
+        selected.addEventListener('click', function() {
+            $('#load')[0].style.display = ""
+        });
+    });
+    //  各ページボタンイベント.end
+  
+    //  menuボタンイベント.start
+    menuElement = [].slice.call(document.querySelectorAll(".innerMenu"))
+        menuElement.forEach(function(selected, pos) {
+            selected.addEventListener('click', function() {
+                $('#load')[0].style.display = ""
+            });
+        });
+    //  menuボタンイベント.end
+
+     //  tabボタンイベント.start
+    tabElement = [].slice.call(document.querySelectorAll(".tabLoading"))
+        tabElement.forEach(function(selected, pos) {
+            selected.addEventListener('click', function() {
+                $('#load')[0].style.display = ""
+            });
+        });
+    //  tabボタンイベント.end
+
+   setTimeout(function() {
+        // 処理の再実行
+        $('#load').hide();
+    }, 300);
 });

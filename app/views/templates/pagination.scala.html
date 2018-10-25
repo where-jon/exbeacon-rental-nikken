@@ -1,0 +1,25 @@
+@(currentPage: Integer, maxPage: Integer, routeName: String)
+
+<div align="center">
+    <ul class=" pagination">
+        @if(currentPage == 1) {
+            <li class="disabled"><span>&laquo;</span></li>
+        } else {
+            <li class="loadingBtn" ><a href=@routeName@(currentPage-1)>&laquo;</a></li>
+        }
+
+        @for(index <- 1 to maxPage) {
+            @if(currentPage == index) {
+            <li class="disabled"><span>@index</span></li>
+            } else {
+                <li class="loadingBtn"><a href=@routeName@index>@index</a></li>
+            }
+        }
+
+        @if(currentPage == maxPage) {
+            <li class="disabled"><span>&raquo;</span></li>
+        } else {
+            <li class="loadingBtn"><a href=@routeName@(currentPage+1)>&raquo;</a></li>
+        }
+    </ul>
+</div>

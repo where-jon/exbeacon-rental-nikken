@@ -37,6 +37,7 @@ case class CarUpdateForm(
 
 case class CarDeleteForm(
     deleteCarId: String
+    , deleteCarTypeId: String
 )
 
 @Singleton
@@ -163,7 +164,7 @@ class ItemCarManage @Inject()(
           // 更新の場合 --------------------------
           // 作業車・立馬番号重複チェック
           // 予約情報テーブルに作業車・立馬IDが存在していないか
-          val itemCarReserveList = carDAO.selectCarReserveCheck(super.getCurrentPlaceId, f.inputCarId.toInt)
+          val itemCarReserveList = carDAO.selectCarReserveCheck(super.getCurrentPlaceId, f.inputCarId.toInt, f.inputCarTypeId.toInt)
           if (itemCarReserveList.length > 0) {
             var chkFlg: Int = 0
             // 現在時刻設定
@@ -326,6 +327,7 @@ class ItemCarManage @Inject()(
       "deleteCarId" -> text.verifying(Messages("error.cms.CarManage.delete.empty"), {
         !_.isEmpty
       })
+      ,"deleteCarTypeId" -> text
     )(CarDeleteForm.apply)(CarDeleteForm.unapply))
 
     // フォームの取得
@@ -339,7 +341,7 @@ class ItemCarManage @Inject()(
       val f = form.get
 
       // 予約情報テーブルに作業車・立馬IDが存在していないか
-      val carReserveList = carDAO.selectCarReserveCheck(super.getCurrentPlaceId, f.deleteCarId.toInt)
+      val carReserveList = carDAO.selectCarReserveCheck(super.getCurrentPlaceId, f.deleteCarId.toInt, f.deleteCarTypeId.toInt)
       if (carReserveList.length > 0) {
         var chkFlg: Int = 0
         // 現在時刻設定

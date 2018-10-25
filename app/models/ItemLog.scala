@@ -71,6 +71,11 @@ case class UnDetectedSearchData(
   inputDate: String
 )
 
+case class DetectLog(
+  item_id: Int
+  ,item_btx_id: Int
+  ,detect_count: Int
+)
 case class ItemLog(
 item_id: Int
 ,item_btx_id: Int
@@ -223,7 +228,44 @@ class ItemLogDAO @Inject() (dbapi: DBApi) {
     }
   }
 
-  def selectUnDetectedData(placeId: Int, detectDate: String): Seq[ItemLog] = {
+  def selectDetectedData(placeId: Int, detectDate: String): Seq[DetectLog] = {
+
+    // Parser
+    val simple2 = {
+      get[Int]("item_id") ~
+        get[Int]("item_btx_id") ~
+        get[Int]("detect_count")map {
+        case item_id ~ item_btx_id ~ detect_count
+           => DetectLog(item_id, item_btx_id, detect_count)
+      }
+    }
+
+    db.withConnection { implicit connection =>
+      val sql = SQL(
+        """
+        select
+          T1.item_id
+          ,T1.item_btx_id
+          ,count(T1.item_btx_id) as detect_count
+          from item_log T1
+          where T1.finish_updatetime
+          between to_date({finish_updatetime}, 'YYYY-MM-DD') - 1 and to_date({finish_updatetime}, 'YYYY-MM-DD')
+          and T1.place_id = {place_id}
+           group by
+          T1.item_id
+          ,T1.item_btx_id
+        order by T1.item_btx_id
+
+        """
+      ).on(
+        'place_id -> placeId,
+        'finish_updatetime -> detectDate
+      )
+      sql.as(simple2.*)
+    }
+  }
+
+  def selectUnDetectedData(placeId: Int, detectDate: String,detectedTxList:Seq[Int]): Seq[ItemLog] = {
     db.withConnection { implicit connection =>
       val sql = SQL(
         """
@@ -249,6 +291,9 @@ class ItemLogDAO @Inject() (dbapi: DBApi) {
               GROUP BY item_btx_id ) AS T2
             ON T2.F1=T1.item_btx_id AND T2.F2=T1.finish_updatetime
             where t1.place_id = {place_id}
+            and finish_floor_name != '不在'
+            and item_btx_id not in( """ + {detectedTxList.mkString(",")} +""" )
+
         ORDER BY
         item_btx_id
 

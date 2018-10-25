@@ -45,6 +45,7 @@ class ItemCarMaster @Inject()(config: Configuration
 
   /*enum形*/
   val WORK_TYPE = WorkTypeEnum().map;
+  val WORK_TYPE_ID = WorkTypeIdEnum().map;
 
   /*転送form*/
   val carForm = Form(mapping(
@@ -79,6 +80,21 @@ class ItemCarMaster @Inject()(config: Configuration
     workTypeList = workTypeDAO.selectWorkInfo(_placeId);
   }
 
+  /** workType重複を除く処理 */
+  def getItemListDuplicateWorkType(dbData:Seq[CarViewer]): Seq[CarViewer] = {
+    var preItemId = -1
+    dbData.zipWithIndex.foreach { case (carList, index) =>
+      if(preItemId == carList.item_car_id) {
+        dbData(index-1).work_type_name = WORK_TYPE.get(2).last  // 終日の場合
+        dbData(index-1).work_type_id = WORK_TYPE_ID.get("終日").last  // 終日の値
+        carList.work_type_name = "重複"
+        dbData.drop(index)
+      }
+      preItemId = carList.item_car_id
+    }
+    return dbData.filter(_.work_type_name != "重複")
+  }
+
   /** 　検索ロジック */
   def search = SecuredAction { implicit request =>
     System.out.println("start search:")
@@ -93,7 +109,7 @@ class ItemCarMaster @Inject()(config: Configuration
     WORK_TYPE_FILTER = carFormData.workTypeName
     FLOOR_NAME_FILTER = carFormData.floorName
     // dbデータ取得
-    val dbDatas = carDAO.selectCarMasterViewer(placeId,itemIdList)
+    val dbDatas = this.getItemListDuplicateWorkType(carDAO.selectCarMasterSql(placeId,itemIdList))
     var carListApi = beaconService.getItemCarBeaconPosition(dbDatas,true,placeId)
 
     if (ITEM_TYPE_FILTER != 0) {
@@ -113,6 +129,7 @@ class ItemCarMaster @Inject()(config: Configuration
       ,carListApi,itemTypeList,companyNameList,floorNameList,workTypeList,WORK_TYPE))
   }
 
+
   /** 初期表示 */
   def index = SecuredAction { implicit request =>
     val placeId = super.getCurrentPlaceId
@@ -122,7 +139,7 @@ class ItemCarMaster @Inject()(config: Configuration
       //検索側データ取得
       getSearchData(placeId)
       // dbデータ取得
-      val dbDatas = carDAO.selectCarMasterViewer(placeId,itemIdList)
+      val dbDatas = this.getItemListDuplicateWorkType(carDAO.selectCarMasterSql(placeId,itemIdList))
       val carListApi = beaconService.getItemCarBeaconPosition(dbDatas,true,placeId)
       if(carListApi!=null){
         Ok(views.html.site.itemCarMaster(ITEM_TYPE_FILTER, COMPANY_NAME_FILTER,FLOOR_NAME_FILTER,WORK_TYPE_FILTER
