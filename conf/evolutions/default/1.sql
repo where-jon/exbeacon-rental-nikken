@@ -5,7 +5,7 @@
 --1.
 -- Table: ユーザマスタ
 
-CREATE TABLE public.user_master (
+CREATE TABLE user_master (
 	user_id serial NOT NULL,
 	email text NOT NULL,
 	"name" text NOT NULL,
@@ -35,7 +35,7 @@ CREATE TABLE public.user_master (
 --2.
 -- Table: place_master (建築現場マスタ)
 
-CREATE TABLE public.place_master (
+CREATE TABLE place_master (
 	place_id serial NOT NULL,
 	place_name text NOT NULL,
 	status int4 NOT NULL DEFAULT 0,
@@ -65,7 +65,7 @@ CREATE TABLE public.place_master (
 --3.
 -- Table: company_master (業者マスタ)
 
-CREATE TABLE public.company_master (
+CREATE TABLE company_master (
 	company_id serial NOT NULL,
 	company_name text NOT NULL,
 	note text NOT NULL DEFAULT ''::text,
@@ -89,7 +89,7 @@ CREATE TABLE public.company_master (
 --4.
 -- Table: floor_master (フロアマスタ)
 
-CREATE TABLE public.floor_master (
+CREATE TABLE floor_master (
 	floor_id serial NOT NULL,
 	floor_name text NOT NULL,
 	display_order int4 NOT NULL,
@@ -119,7 +119,7 @@ CREATE TABLE public.floor_master (
 --5.
 -- Table: exb_master (EXBeaconマスタ)
 
-CREATE TABLE public.exb_master (
+CREATE TABLE exb_master (
 	exb_id serial NOT NULL,
 	exb_device_id int4 NOT NULL,
 	exb_device_no int4 NOT NULL,
@@ -158,7 +158,7 @@ CREATE TABLE public.exb_master (
 --6.
 -- Table:item_car_master (作業車・立馬マスタ)
 
-CREATE TABLE public.item_car_master (
+CREATE TABLE item_car_master (
 	item_car_id serial NOT NULL,
 	item_type_id int4 NOT NULL,
 	item_car_btx_id int4 NOT NULL,
@@ -169,7 +169,7 @@ CREATE TABLE public.item_car_master (
 	place_id int4 NOT NULL,
 	active_flg bool NOT NULL DEFAULT true,
 	updatetime timestamp NULL DEFAULT now(),
-	CONSTRAINT item_car_master2_pkey PRIMARY KEY (item_car_id)
+	CONSTRAINT item_car_master_pkey PRIMARY KEY (item_car_id)
 )
 --WITH (
 --  OIDS=FALSE
@@ -189,7 +189,7 @@ CREATE TABLE public.item_car_master (
 --7.
 -- Table: item_other_master (その他仮設材マスタ)
 
-CREATE TABLE public.item_other_master (
+CREATE TABLE item_other_master (
 	item_other_id serial NOT NULL,
 	item_type_id int4 NOT NULL,
 	item_other_btx_id int4 NOT NULL,
@@ -218,7 +218,7 @@ CREATE TABLE public.item_other_master (
 --8.
 -- Table: item_type (仮設材種別)
 
-CREATE TABLE public.item_type (
+CREATE TABLE item_type (
 	item_type_id serial NOT NULL,
 	item_type_name text NOT NULL,
 	item_type_category_id int4 NOT NULL,
@@ -250,7 +250,7 @@ CREATE TABLE public.item_type (
 --9.
 -- Table: view_type (TX表示種別)
 
-CREATE TABLE public.view_type (
+CREATE TABLE view_type (
 	view_type_id serial NOT NULL,
 	view_type_name text NOT NULL,
 	note text NOT NULL DEFAULT ''::text,
@@ -275,7 +275,7 @@ CREATE TABLE public.view_type (
 --10.
 -- Table: work_type (働き方種別)
 
-CREATE TABLE public.work_type (
+CREATE TABLE work_type (
 	work_type_id serial NOT NULL,
 	work_type_name text NOT NULL,
 	note text NOT NULL DEFAULT ''::text,
@@ -299,7 +299,7 @@ CREATE TABLE public.work_type (
 --11.
 -- Table: reserve_table (予約テーブル)
 
-CREATE TABLE public.reserve_table (
+CREATE TABLE reserve_table (
 	reserve_id serial NOT NULL,
 	item_type_id int4 NOT NULL,
 	item_id int4 NOT NULL,
@@ -330,7 +330,7 @@ CREATE TABLE public.reserve_table (
 --12.
 -- Table: item_log (TX位置ロぐバッチテーブル)
 
-CREATE TABLE public.item_log (
+CREATE TABLE item_log (
 	item_log_id serial NOT NULL,
 	item_type_id int4 NOT NULL,
 	item_id int4 NOT NULL,
@@ -338,8 +338,8 @@ CREATE TABLE public.item_log (
 	item_btx_id int4 NOT NULL,
 	item_car_key_btx_id int4 NOT NULL,
 	reserve_flg bool NOT NULL DEFAULT false,
-	reserve_start_date date,
-	reserve_end_date date,
+    reserve_start_date date NULL,
+    reserve_end_date date NULL,
 	working_flg bool NOT NULL DEFAULT false,
 	finish_floor_id int4 NOT NULL,
 	finish_floor_name text NOT NULL,
@@ -377,20 +377,6 @@ CREATE TABLE public.item_log (
 --COMMENT ON COLUMN item_log.updatetime IS 'データ更新日時';
 
 
-INSERT INTO user_master
-(email, "name", password, place_id, current_place_id, active_flg, updatetime, permission)
-VALUES('exb@where123.jp', '開発者', '$2a$10$3Gyu0kfE2oaTHfQfg6saZ.9A3eCGBF.6enfUtA7jRv0Y9Qd3prGnK', 0, 1, true, now(), 4);
-
-INSERT INTO user_master
-(email, "name", password, place_id, current_place_id, active_flg, updatetime, permission)
-VALUES('tenant@test.jp', 'テナント', '$2a$10$3Gyu0kfE2oaTHfQfg6saZ.9A3eCGBF.6enfUtA7jRv0Y9Qd3prGnK', 0, 1, true, now(), 4);
-
-
- -- place_master
-INSERT INTO place_master (place_name, status, btx_api_url, exb_telemetry_url, gateway_telemetry_url, cms_password, active_flg, updatetime)
-VALUES('渋谷現場', 0, 'https://ma4zj5805g.execute-api.ap-northeast-1.amazonaws.com/prod/beacon/position-kalman', 'https://ma4zj5805g.execute-api.ap-northeast-1.amazonaws.com/prod/telemetry/0', 'https://ma4zj5805g.execute-api.ap-northeast-1.amazonaws.com/prod/gateway/0'
-, 'sibuya', true, now());
-
 
 # --- !Downs
 DROP TABLE user_master;
@@ -400,12 +386,9 @@ DROP TABLE floor_master;
 DROP TABLE exb_master;
 DROP TABLE item_car_master;
 DROP TABLE item_other_master;
-
 DROP TABLE item_type;
 DROP TABLE view_type;
 DROP TABLE work_type;
-
 DROP TABLE reserve_table;
-
 DROP TABLE item_log;
 
