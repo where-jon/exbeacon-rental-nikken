@@ -17,6 +17,7 @@ import play.api.{Configuration, Logger}
 class ItemLogDataDeleteActor @Inject()(config: Configuration
                                        , ws: WSClient
                                        , itemlogDAO: ItemLogDAO
+                                       , reserveMasterDAO: ReserveMasterDAO
                                        , placeDAO: placeDAO
   ) extends Actor {
   val BATCH_NAME = "仮設材削除"
@@ -35,13 +36,13 @@ class ItemLogDataDeleteActor @Inject()(config: Configuration
     */
   private def execute():Unit = {
     if (enableLogging || deleteInterval != 0) {
-      val df = new SimpleDateFormat("yyyy-MM-dd")
+      val df = new SimpleDateFormat("yyyy-MM-")
       // カレンダークラスのインスタンスを取得
       val cal = Calendar.getInstance
       val calDel = Calendar.getInstance
-      calDel.add(Calendar.MONTH, -1); // 前月分は残す
-      //      var delateTime = new DateTime().toString(" HH:mm:ss")
-      var delateTime = " 00:00:00"
+      var delMonth = (deleteInterval - 1) * -1
+      calDel.add(Calendar.MONTH, delMonth); // 先月、先々月分は残す
+      var delateTime = "01 00:00:00" // 1日固定
       var delateDate = df.format(calDel.getTime()).toString + delateTime
 
       // 削除開始対象月取得
@@ -80,7 +81,10 @@ class ItemLogDataDeleteActor @Inject()(config: Configuration
                 // 削除対象データ有り
                 val itemLogMinData = itemlogDAO.selectOldestRow(placeId, delateDate)
                 if(itemLogMinData != null && itemLogMinData.length > 0){
+                  // 仮設材ログ削除
                   itemlogDAO.delete(placeId, delateDate)
+                  // 予約テーブル削除
+                  reserveMasterDAO.batchDelete(placeId, delateDate)
                 }
               }
             }
