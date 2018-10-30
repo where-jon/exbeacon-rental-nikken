@@ -76,7 +76,7 @@ class ItemLogDataDeleteActor @Inject()(config: Configuration
             if(itemLogMinData != null && itemLogMinData.length > 0){
               // 最古のレコード　Date型変換
               val lastMonth = new DateTime(sdf.parse(itemLogMinData.last.updatetime))
-              var lastYearMonth = lastMonth.toString("yyyyMM")
+              val lastYearMonth = lastMonth.toString("yyyyMM")
               // 削除開始対象月が有るか？
               if(lastYearMonth.toInt <= targetMonth.toInt){
                 // 削除対象データ有り

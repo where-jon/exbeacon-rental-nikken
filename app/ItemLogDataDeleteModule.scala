@@ -2,7 +2,7 @@
 import actors.ItemLogDataDeleteActor
 import com.google.inject.AbstractModule
 import play.api.libs.concurrent.AkkaGuiceSupport
-import services.{ItemLogDataDeleteCron, ItemLogDataDeleteService}
+import services.ItemLogDataDeleteService
 
 /**
  * This class is a Guice module that tells Guice how to bind several
