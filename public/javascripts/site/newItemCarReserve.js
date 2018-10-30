@@ -108,6 +108,7 @@ function bindMouseAndTouch(){
         var touch_time = 0;
         $(".reserveTdHover").bind({
             'touchstart': function(e) {
+                reserveClickEvent(this);
                 if(e.originalEvent.touches.length > 1){
                     touch_time = 0;
                     touched = false;
@@ -159,7 +160,7 @@ function bindMouseAndTouch(){
         });
     }
 }
-
+/* 予約に関するクリックイベント*/
 function reserveClickEvent(vThis){
     var vCheck = $(vThis).attr('data-check');
     if(vCheck == "off"){
