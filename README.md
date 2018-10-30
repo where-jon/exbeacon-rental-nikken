@@ -53,7 +53,10 @@ Heroku環境
 | VIEW_COUNT | 999 | 現場状況画面最大表示数 |
 | PAGE_LINE_COUNT | 20 | ページング１画面毎、表示数 |
 | RESERVE_MAX_COUNT | 100 | 作業車・立馬予約取消、その他仮設材予約と取消画面複数選択最大設定値 |
-
+| ITEMLOG_DELETE_BATCH_START_TIME | 0 0 0 * * ? | 毎日0時にバッチ実行 |
+| ITEMLOG_DELETE_INTERVAL | 3 | 3ヶ月経過した仮設材ログと予約情報を削除 |
+| ITEMLOG_DELETE_BATCH_START | true | 削除バッチ実行許可 |
+| DELETION_EXCLUSION_SITE | "" | ログ削除しない現場IDをカンマ区切りで設定 |
 
 
 環境構築

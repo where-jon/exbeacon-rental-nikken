@@ -25,6 +25,7 @@ class ItemLogDataDeleteActor @Inject()(config: Configuration
   val WORKING_STATUS = 1  // 施行中
   private val enableLogging = config.getBoolean("akka.quartz.schedules.ItemLogDataDeleteActor.logDeleteStart").getOrElse(false)
   private val deleteInterval = config.getInt("akka.quartz.schedules.ItemLogDataDeleteActor.logDeleteInterval").getOrElse(0)
+  private val deletionExclusionSite = config.getString("akka.quartz.schedules.ItemLogDataDeleteActor.deletionExclusionSite").getOrElse(0)
 
   def receive = {
     case msg:String => {
@@ -37,6 +38,11 @@ class ItemLogDataDeleteActor @Inject()(config: Configuration
     */
   private def execute():Unit = {
     if (enableLogging || deleteInterval != 0) {
+      var exclusionPlaceID = Array[String]("0")
+      if(!deletionExclusionSite.toString.isEmpty){
+        exclusionPlaceID = deletionExclusionSite.toString().split(",")
+      }
+
       val df = new SimpleDateFormat("yyyy-MM-")
       // カレンダークラスのインスタンスを取得
       val cal = Calendar.getInstance
@@ -66,7 +72,14 @@ class ItemLogDataDeleteActor @Inject()(config: Configuration
 
         val placeData = placeDAO.selectPlaceAll(WORKING_STATUS)
         placeData.zipWithIndex.map { case (place, i) =>
-          if(place.btxApiUrl != null && place.btxApiUrl != ""){
+          var delFlg = true
+          for(ckPlaceId <- exclusionPlaceID){
+            if(ckPlaceId.toInt == place.placeId && delFlg){
+              delFlg = false
+            }
+          }
+
+          if(place.btxApiUrl != null && place.btxApiUrl != "" && delFlg){
             val placeId = place.placeId
 
             // 削除開始対象月以前のデータは全て削除(ゴミデータ対策)
