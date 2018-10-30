@@ -418,4 +418,68 @@ class UserDAO @Inject() (
       sql.as(simple.*)
     }
   }
+
+
+
+
+
+//  // Parser
+//  val simpleTest = {
+//    get[Int]("user_id") ~
+//      get[String]("email") ~
+//      get[String]("name") ~
+//      get[String]("password") ~
+//      get[Option[Int]]("place_id") ~
+//      get[Option[Int]]("current_place_id")~
+//      get[Int]("permission")~
+//      get[Int]("user_master.permission") map {
+//      case id ~ email ~ name ~ password ~ place_id ~ current_place_id  ~ level~ permission=>
+//        User(
+//          Some(id.toString.toLong),
+////          email,
+//          "t_kitahara@where123.jp",
+//          true,
+//          password,
+////          name,
+//          "テスト",
+//          place_id,
+//          if(current_place_id == None){
+//            if(place_id == None){
+//              Option(1)
+//            }else{
+//              place_id
+//            }
+//          }else{
+//            current_place_id
+//          },
+//          placeDAO.selectPlaceNameByPlaceId(current_place_id.getOrElse(0)),
+//          (place_id == None),
+//          level,
+//          List(if (permission == 4) "master" else if (permission == 3) "level3" else if (permission == 2) "level2" else if (permission == 1) "level1"  else "none")
+//        )
+//    }
+//  }
+//
+//  def selectSendMailUserList(): Seq[User] = {
+//    db.withConnection { implicit connection =>
+//      val sql = SQL(
+//        """
+//      select
+//        user_id
+//        , email
+//        , name
+//        , password
+//        , place_id
+//        , current_place_id
+//        , active_flg
+//        , permission
+//        from user_master
+//        where
+//          permission = 4
+//          and active_flg = true
+//        order by user_id
+//      """)
+//      sql.as(simpleTest.*)
+//    }
+//  }
 }

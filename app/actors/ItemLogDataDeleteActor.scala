@@ -7,8 +7,10 @@ import akka.actor.Actor
 import javax.inject.Inject
 import models._
 import org.joda.time.DateTime
+import play.api.i18n.Messages
 import play.api.libs.ws.WSClient
 import play.api.{Configuration, Logger}
+import utils.{MailService, Mailer}
 
 /**
   * itemLogテーブルデータ保存バッチ
@@ -16,6 +18,7 @@ import play.api.{Configuration, Logger}
   */
 class ItemLogDataDeleteActor @Inject()(config: Configuration
                                        , ws: WSClient
+                                       , userDAO: UserDAO
                                        , itemlogDAO: ItemLogDAO
                                        , reserveMasterDAO: ReserveMasterDAO
                                        , placeDAO: placeDAO
@@ -96,6 +99,12 @@ class ItemLogDataDeleteActor @Inject()(config: Configuration
           Logger.error(s"""${BATCH_NAME}にてエラーが発生""", e)
           System.out.println("--------------------バッチエラー検知.end--------------------------")
       }
+
+      // 仮設材ログ、予約管理削除メール通知
+//      val users = userDAO.selectSendMailUserList()
+//      for(user <- users) {
+//        Mailer.welcome(user, "")
+//      }
     }
   }
 }
