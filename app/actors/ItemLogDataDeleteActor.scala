@@ -7,10 +7,8 @@ import akka.actor.Actor
 import javax.inject.Inject
 import models._
 import org.joda.time.DateTime
-import play.api.i18n.Messages
 import play.api.libs.ws.WSClient
 import play.api.{Configuration, Logger}
-import utils.{MailService, Mailer}
 
 /**
   * itemLogテーブルデータ保存バッチ
@@ -43,14 +41,14 @@ class ItemLogDataDeleteActor @Inject()(config: Configuration
       // カレンダークラスのインスタンスを取得
       val cal = Calendar.getInstance
       val calDel = Calendar.getInstance
-      var delMonth = (deleteInterval - 1) * -1
+      val delMonth = (deleteInterval - 1) * -1
       calDel.add(Calendar.MONTH, delMonth); // 先月、先々月分は残す
-      var delateTime = "01 00:00:00" // 1日固定
-      var delateDate = df.format(calDel.getTime()).toString + delateTime
+      val delateTime = "01 00:00:00" // 1日固定
+      val delateDate = df.format(calDel.getTime()).toString + delateTime
 
       // 削除開始対象月取得
       // 環境変数（３カ月）を減算
-      var deletionPeriod = deleteInterval * -1
+      val deletionPeriod = deleteInterval * -1
       cal.add(Calendar.MONTH, deletionPeriod);
 
       // 処理開始
@@ -61,10 +59,10 @@ class ItemLogDataDeleteActor @Inject()(config: Configuration
         val ymdf = new SimpleDateFormat("yyyyMM")
         val sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
         // 削除開始対象月
-        var targetMonth = ymdf.format(cal.getTime())
+        val targetMonth = ymdf.format(cal.getTime())
 
         val sdf2 = new SimpleDateFormat("yyyy-MM-01 00:00:00")
-        var targetMonth2 = sdf2.format(cal.getTime())
+        val targetMonth2 = sdf2.format(cal.getTime())
 
         val placeData = placeDAO.selectPlaceAll(WORKING_STATUS)
         placeData.zipWithIndex.map { case (place, i) =>
@@ -87,7 +85,7 @@ class ItemLogDataDeleteActor @Inject()(config: Configuration
                   // 仮設材ログ削除
                   itemlogDAO.delete(placeId, delateDate)
                   // 予約テーブル削除
-                  reserveMasterDAO.batchDelete(placeId, delateDate)
+                  reserveMasterDAO.batchReserveItemDelete(placeId, delateDate)
                 }
               }
             }
@@ -99,12 +97,6 @@ class ItemLogDataDeleteActor @Inject()(config: Configuration
           Logger.error(s"""${BATCH_NAME}にてエラーが発生""", e)
           System.out.println("--------------------バッチエラー検知.end--------------------------")
       }
-
-      // 仮設材ログ、予約管理削除メール通知
-//      val users = userDAO.selectSendMailUserList()
-//      for(user <- users) {
-//        Mailer.welcome(user, "")
-//      }
     }
   }
 }

@@ -326,10 +326,10 @@ class ReserveMasterDAO @Inject() (dbapi: DBApi) {
     * 仮設材ログ削除バッチ用
     * @return
     */
-  def batchDelete(placeId: Int, deltedate: String): Unit = {
+  def batchReserveItemDelete(placeId: Int, deltedate: String): Unit = {
     db.withTransaction { implicit connection =>
 
-      // 作業車の削除
+      // 予約情報の削除
       SQL(
         """
            delete from reserve_table

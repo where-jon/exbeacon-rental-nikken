@@ -16,4 +16,6 @@ object Mailer {
       bodyText = mails.welcomeTxt(user.name, link)
     )
   }
+
+
 }

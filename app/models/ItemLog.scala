@@ -392,16 +392,6 @@ class ItemLogDAO @Inject() (dbapi: DBApi) {
     }
   }
 
-  // ログ削除処理用　最古のレコードを取得
-  object DeleteWorkingLog {
-    implicit val jsonReads: Reads[ItemLogDeleteDate] = (
-      (JsPath \ "place_id").read[Int] ~
-        ((JsPath \ "updatetime").read[String])
-      )(ItemLogDeleteDate.apply _)
-
-    implicit def jsonWrites = Json.writes[ItemLogDeleteDate]
-  }
-
   // Parser
   val DeleteworkingSimple = {
     get[Int]("place_id") ~
