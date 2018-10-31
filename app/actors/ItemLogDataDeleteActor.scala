@@ -72,14 +72,9 @@ class ItemLogDataDeleteActor @Inject()(config: Configuration
 
         val placeData = placeDAO.selectPlaceAll(WORKING_STATUS)
         placeData.zipWithIndex.map { case (place, i) =>
-          var delFlg = true
-          for(ckPlaceId <- exclusionPlaceID){
-            if(ckPlaceId.toInt == place.placeId && delFlg){
-              delFlg = false
-            }
-          }
-
-          if(place.btxApiUrl != null && place.btxApiUrl != "" && delFlg){
+          // ログ削除除外現場チェック
+          val exclusionId = exclusionPlaceID.find(_ == place.placeId.toString)
+          if(place.btxApiUrl != null && place.btxApiUrl != "" && exclusionId.isEmpty){
             val placeId = place.placeId
 
             // 削除開始対象月以前のデータは全て削除(ゴミデータ対策)
