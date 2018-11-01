@@ -227,6 +227,9 @@ mail.welcome.postlink=Note that this link will expire in 24 hours if it''s not a
 
 mail.sign=XX会議室予約システム管理者
 
+mail.NoticeMail.subject=仮設材ログ削除実施通知
+mail.NoticeMail.Body=来月１日の深夜０時に仮設材ログと予約情報を削除するバッチ処理を行います。
+
 ################################################################################################
 
 # 各画面文言
