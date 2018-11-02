@@ -11,7 +11,7 @@ import play.api.libs.ws.WSClient
 import play.api.{Configuration, Logger}
 
 /**
-  * itemLogテーブルデータ保存バッチ
+  * itemL_log及び、reserve_tableテーブルデータ削除バッチ
   *
   */
 class ItemLogDataDeleteActor @Inject()(config: Configuration
@@ -37,7 +37,7 @@ class ItemLogDataDeleteActor @Inject()(config: Configuration
     * 実際の処理
     */
   private def execute():Unit = {
-    if (enableLogging || deleteInterval != 0) {
+    if (enableLogging && deleteInterval != 0) {
       var exclusionPlaceID = Array[String]("0")
       if(!deletionExclusionSite.toString.isEmpty){
         exclusionPlaceID = deletionExclusionSite.toString().split(",")

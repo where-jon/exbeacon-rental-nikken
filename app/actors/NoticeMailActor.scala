@@ -6,31 +6,43 @@ import java.util.Calendar
 import akka.actor.Actor
 import javax.inject.Inject
 import models._
+import models.api.Mail
 import org.joda.time.DateTime
-import play.api.i18n.Messages
+import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.ws.WSClient
 import play.api.{Configuration, Logger}
 import play.libs.mailer.MailerClient
 
+case class MailInfo(
+    magType: Int
+  , fromUser: String
+  , userEmail: String
+  , placeName: List[String]
+)
+
 /**
-  * itemLogテーブルデータ保存バッチ
+  * メールを送信バッチ
   *
   */
 class NoticeMailActor @Inject()(config: Configuration
                                 , ws: WSClient
                                 , mailerClient: MailerClient
-                                , messages: Messages
+                                , val messagesApi: MessagesApi
                                 , userDAO: UserDAO
                                 , itemlogDAO: ItemLogDAO
                                 , reserveMasterDAO: ReserveMasterDAO
                                 , placeDAO: placeDAO
-  ) extends Actor {
-  val BATCH_NAME = "仮設材削除"
+  ) extends Actor with I18nSupport {
+  val BATCH_NAME = "メール送信"
   val WORKING_STATUS = 1  // 施行中
   private val enableLogging = config.getBoolean("akka.quartz.schedules.NoticeMailActor.noticeMailStart").getOrElse(false)
   private val noticeDaysAgo = config.getInt("akka.quartz.schedules.NoticeMailActor.noticeDaysAgo").getOrElse(0)
+  private val developMailAddress = config.getString("akka.quartz.schedules.NoticeMailActor.developMailAddress").getOrElse(0)
+  private val sendMaileFromUser = config.getString("play.mailer.from").getOrElse(0)
   private val deleteInterval = config.getInt("akka.quartz.schedules.ItemLogDataDeleteActor.logDeleteInterval").getOrElse(0)
   private val deletionExclusionSite = config.getString("akka.quartz.schedules.ItemLogDataDeleteActor.deletionExclusionSite").getOrElse(0)
+  // テスト用
+  private val noticeMailTestDate = config.getString("akka.quartz.schedules.NoticeMailActor.noticeMailTestDate").getOrElse(0)
 
   def receive = {
     case msg:String => {
@@ -42,22 +54,39 @@ class NoticeMailActor @Inject()(config: Configuration
     * 実際の処理
     */
   private def execute():Unit = {
-    val subject = messages("mail.welcome.subject")
-    if (enableLogging || noticeDaysAgo != 0) {
+    if ((enableLogging && noticeDaysAgo != 0) &&
+        (noticeDaysAgo >= 4 && noticeDaysAgo <= 20)){
       var exclusionPlaceID = Array[String]("0")
       if(!deletionExclusionSite.toString.isEmpty){
         exclusionPlaceID = deletionExclusionSite.toString().split(",")
       }
+      var placeNmae = List[String]() // 現場名称
+
+      // メール送信日の曜日を取得
+      val deldate = Calendar.getInstance
+      var countDay = noticeDaysAgo - 1;
+      deldate.set(Calendar.DATE,(deldate.getActualMaximum(Calendar.DATE) - countDay))
+      val week = deldate.get(Calendar.DAY_OF_WEEK)
+      if(week == 1){
+        // 日曜日の場合は月曜日にメールを送信
+        countDay = countDay - 1
+      }else if(week == 7){
+        // 土曜日の場合は月曜日にメールを送信
+        countDay = countDay - 2
+      }
 
       val todayDf = new SimpleDateFormat("dd")
       val df = new SimpleDateFormat("yyyy-MM-")
-      // カレンダークラスのインスタンスを取得
-      val noticeCal = Calendar.getInstance
       // 当月の最終日を取得
+      val noticeCal = Calendar.getInstance
       val lastDayOfMonth = noticeCal.getActualMaximum(Calendar.DATE)
-      val today = todayDf.format(noticeCal.getTime())
-      // 通知日
-      if((lastDayOfMonth - noticeDaysAgo) < today.toInt) {
+      var today = todayDf.format(noticeCal.getTime()).toInt
+      if(noticeMailTestDate.toString.nonEmpty){
+        // テスト確認用メール送信日が設定されていた場合
+        today = noticeMailTestDate.toString.toInt
+      }
+      // メール送信日か否かをチェック
+      if((lastDayOfMonth - countDay) == today) {
         val cal = Calendar.getInstance
         val calDel = Calendar.getInstance
         val delMonth = (deleteInterval - 1) * -1
@@ -80,9 +109,6 @@ class NoticeMailActor @Inject()(config: Configuration
           // 削除開始対象月
           val targetMonth = ymdf.format(cal.getTime())
 
-          //        val sdf2 = new SimpleDateFormat("yyyy-MM-01 00:00:00")
-          //        val targetMonth2 = sdf2.format(cal.getTime())
-
           val placeData = placeDAO.selectPlaceAll(WORKING_STATUS)
           placeData.zipWithIndex.map { case (place, i) =>
             // ログ削除除外現場チェック
@@ -101,16 +127,27 @@ class NoticeMailActor @Inject()(config: Configuration
                   val itemLogMinData = itemlogDAO.selectOldestRow(placeId, delateDate)
                   if (itemLogMinData != null && itemLogMinData.length > 0) {
                     // 仮設材ログ、予約管理削除メール通知
-                    import models.api.Mail
+                    // 現場名称取得
+                    placeNmae = placeNmae :+ place.placeName
+
                     val mailer = new Mail
+                    val mailinfo = new MailInfo(1, sendMaileFromUser.toString, "", placeNmae)
                     val users = userDAO.selectSendMailUserList(placeId)
                     for(user <- users) {
-                      mailer.sendEmail(mailerClient, user)
+                      mailer.sendEmail(mailerClient, user, mailinfo)
                     }
                   }
                 }
               }
             }
+          }
+
+          // メールを送信していた場合はdevelopにもメール送信する
+          if(placeNmae.nonEmpty){
+            val mailer = new Mail
+            val users = userDAO.selectSendMailPermission(4)
+            val mailinfo = new MailInfo(2, sendMaileFromUser.toString, developMailAddress.toString, placeNmae)
+            mailer.sendEmail(mailerClient, users.head, mailinfo)
           }
         } catch {
           case e: Exception =>

@@ -419,6 +419,7 @@ class UserDAO @Inject() (
     }
   }
 
+  // 現場指定で権限3以上のユーザ情報取得（メール送信用）
   def selectSendMailUserList(placeId: Int): Seq[User] = {
     db.withConnection { implicit connection =>
       val sql = SQL(
@@ -440,6 +441,32 @@ class UserDAO @Inject() (
         order by user_id
       """).on(
         'placeId -> placeId
+      )
+      sql.as(simple.*)
+    }
+  }
+
+  // 権限指定でユーザ情報取得（メール送信用）
+  def selectSendMailPermission(permission: Int): Seq[User] = {
+    db.withConnection { implicit connection =>
+      val sql = SQL(
+        """
+      select
+        user_id
+        , email
+        , name
+        , password
+        , place_id
+        , current_place_id
+        , active_flg
+        , permission
+        from user_master
+        where
+          permission = {permission}
+          and active_flg = true
+        order by user_id
+      """).on(
+        'permission -> permission
       )
       sql.as(simple.*)
     }
