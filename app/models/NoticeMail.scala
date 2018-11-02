@@ -11,7 +11,8 @@ import play.libs.mailer.{Email, MailerClient}
 class Mail {
   def sendEmail(mailerClient: MailerClient, user: User, mailInfo: MailInfo)(implicit m: Messages): Unit = {
     val email = new Email
-    val subjectMsg = Messages("mail.NoticeMail.subject")
+//    val subjectMsg = Messages("mail.NoticeMail.subject")
+    val subjectMsg = "仮設材ログ削除実施のお知らせ"
     email.setSubject(subjectMsg)
     email.setFrom(mailInfo.fromUser)
     if(mailInfo.magType == 1){
@@ -30,8 +31,8 @@ class Mail {
   // 権限３のメッセージ
   def level3Body(mailInfo: MailInfo)(implicit m: Messages): String = {
 //    val bodyMessage = Messages("mail.NoticeMail.Body.level3.message")
-  val bodyMessage = mailInfo.bodyMessage
-  Logger.info(s"""${new DateTime().toString("yyyy/MM/dd HH:mm:ss.SSS")}  ${bodyMessage}""")
+  val bodyMessage = "来月１日の深夜０時に仮設材ログと予約情報を削除するバッチ処理を実施します。"
+//  Logger.info(s"""${new DateTime().toString("yyyy/MM/dd HH:mm:ss.SSS")}  ${bodyMessage}""")
     bodyMessage
   }
 
@@ -39,7 +40,8 @@ class Mail {
   def level4Body(mailInfo: MailInfo)(implicit m: Messages): String = {
     val body = new StringBuilder
 //    val bodyMessage = Messages("mail.NoticeMail.Body.level4.message")
-    body.append(mailInfo.bodyMessage)
+    val bodyMessage = "来月１日の深夜０時に下記の現場の仮設材ログと予約情報を削除するバッチ処理を実施します。"
+    body.append(bodyMessage)
     for(placeName <- mailInfo.placeName){
       body.append("\r\n" + placeName)
     }
