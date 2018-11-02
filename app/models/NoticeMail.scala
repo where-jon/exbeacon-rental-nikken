@@ -9,7 +9,8 @@ import play.libs.mailer.{Email, MailerClient}
 class Mail {
   def sendEmail(mailerClient: MailerClient, user: User, mailInfo: MailInfo)(implicit m: Messages): Unit = {
     val email = new Email
-    email.setSubject(Messages("mail.NoticeMail.subject"))
+    val subjectMsg = Messages("mail.NoticeMail.subject")
+    email.setSubject(subjectMsg)
     email.setFrom(mailInfo.fromUser)
     if(mailInfo.magType == 1){
       email.addTo(user.email)
@@ -26,13 +27,15 @@ class Mail {
 
   // 権限３のメッセージ
   def level3Body(mailInfo: MailInfo)(implicit m: Messages): String = {
-    Messages("mail.NoticeMail.Body.level3.message")
+    val bodyMessage = Messages("mail.NoticeMail.Body.level3.message")
+    bodyMessage
   }
 
   // 権限４のメッセージ
   def level4Body(mailInfo: MailInfo)(implicit m: Messages): String = {
     val body = new StringBuilder
-    body.append(Messages("mail.NoticeMail.Body.level4.message"))
+    val bodyMessage = Messages("mail.NoticeMail.Body.level4.message")
+    body.append(bodyMessage)
     for(placeName <- mailInfo.placeName){
       body.append("\r\n" + placeName)
     }
