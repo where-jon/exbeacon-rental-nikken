@@ -110,7 +110,7 @@ class NoticeMailActor @Inject()(config: Configuration
           val targetMonth = ymdf.format(cal.getTime())
 
           val placeData = placeDAO.selectPlaceAll(WORKING_STATUS)
-          placeData.zipWithIndex.map { case (place, i) =>
+          placeData.zipWithIndex.foreach { case (place, i) =>
             // ログ削除除外現場チェック
             val exclusionId = exclusionPlaceID.find(_ == place.placeId.toString)
             if (place.btxApiUrl != null && place.btxApiUrl != "" && exclusionId.isEmpty) {
