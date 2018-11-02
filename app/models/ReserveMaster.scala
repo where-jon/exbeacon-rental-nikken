@@ -322,5 +322,25 @@ class ReserveMasterDAO @Inject() (dbapi: DBApi) {
     }
   }
 
+  /**
+    * 仮設材ログ削除バッチ用
+    * @return
+    */
+  def batchReserveItemDelete(placeId: Int, deltedate: String): Unit = {
+    db.withTransaction { implicit connection =>
+
+      // 予約情報の削除
+      SQL(
+        """
+           delete from reserve_table
+           where place_id = {placeId}
+           and updatetime < TO_TIMESTAMP({deltedate}, 'YYYY/MM/DD HH24:MI:SS');
+        """
+          .stripMargin).on('placeId -> placeId, 'deltedate -> deltedate).executeUpdate()
+
+      // コミット
+      connection.commit()
+    }
+  }
 }
 
