@@ -2,6 +2,8 @@ package models.api
 
 import actors.MailInfo
 import models.User
+import org.joda.time.DateTime
+import play.api.Logger
 import play.api.i18n.Messages
 import play.libs.mailer.{Email, MailerClient}
 
@@ -28,6 +30,7 @@ class Mail {
   // 権限３のメッセージ
   def level3Body(mailInfo: MailInfo)(implicit m: Messages): String = {
     val bodyMessage = Messages("mail.NoticeMail.Body.level3.message")
+    Logger.info(s"""${new DateTime().toString("yyyy/MM/dd HH:mm:ss.SSS")}  ${bodyMessage}""")
     bodyMessage
   }
 
