@@ -53,10 +53,15 @@ Heroku環境
 | VIEW_COUNT | 999 | 現場状況画面最大表示数 |
 | PAGE_LINE_COUNT | 20 | ページング１画面毎、表示数 |
 | RESERVE_MAX_COUNT | 100 | 作業車・立馬予約取消、その他仮設材予約と取消画面複数選択最大設定値 |
-| ITEMLOG_DELETE_BATCH_START_TIME | 0 0 0 * * ? | 毎日0時にバッチ実行 |
+| ITEMLOG_DELETE_BATCH_START_TIME | 0 0 0 1 * ? | 毎月1日0時にバッチ実行 |
 | ITEMLOG_DELETE_INTERVAL | 3 | 3ヶ月経過した仮設材ログと予約情報を削除 |
-| ITEMLOG_DELETE_BATCH_START | true | 削除バッチ実行許可 |
+| ITEMLOG_DELETE_BATCH_START | true | ログ削除バッチ実行許可 |
 | DELETION_EXCLUSION_SITE | "" | ログ削除しない現場IDをカンマ区切りで設定 |
+| NOTICE_MAIL_BATCH_START_TIME | 0 0 9 * * ? | 毎日9時にバッチ実行 |
+| NOTICE_MAIL_INTERVAL | 7 | 仮設材ログ削除通知　月末の何日前かを設定 ※4日～20日以下で設定可能 |
+| NOTICE_MAIL_BATCH_START | true | メール送信バッチ実行許可 |
+| DEVELOP_MAIL_ADDRESS | xxxxxxx@where123.jp | developのメールアドレス |
+| NOTICE_MAIL_TEST_DATE | "" | テスト確認用メール送信日算出後の日付を設定　※本番では値無 |
 
 
 環境構築
