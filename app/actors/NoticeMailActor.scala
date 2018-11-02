@@ -8,7 +8,7 @@ import javax.inject.Inject
 import models._
 import models.api.Mail
 import org.joda.time.DateTime
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.libs.ws.WSClient
 import play.api.{Configuration, Logger}
 import play.libs.mailer.MailerClient
@@ -18,6 +18,7 @@ case class MailInfo(
   , fromUser: String
   , userEmail: String
   , placeName: List[String]
+  , bodyMessage: String
 )
 
 /**
@@ -131,7 +132,8 @@ class NoticeMailActor @Inject()(config: Configuration
                     placeNmae = placeNmae :+ place.placeName
 
                     val mailer = new Mail
-                    val mailinfo = new MailInfo(1, sendMaileFromUser.toString, "", placeNmae)
+                    val bodyMessage = Messages("mail.NoticeMail.Body.level3.message")
+                    val mailinfo = new MailInfo(1, sendMaileFromUser.toString, "", placeNmae, bodyMessage)
                     val users = userDAO.selectSendMailUserList(placeId)
                     for(user <- users) {
                       mailer.sendEmail(mailerClient, user, mailinfo)
@@ -146,7 +148,8 @@ class NoticeMailActor @Inject()(config: Configuration
           if(placeNmae.nonEmpty){
             val mailer = new Mail
             val users = userDAO.selectSendMailPermission(4)
-            val mailinfo = new MailInfo(2, sendMaileFromUser.toString, developMailAddress.toString, placeNmae)
+            val bodyMessage = Messages("mail.NoticeMail.Body.level4.message")
+            val mailinfo = new MailInfo(2, sendMaileFromUser.toString, developMailAddress.toString, placeNmae, bodyMessage)
             mailer.sendEmail(mailerClient, users.head, mailinfo)
           }
         } catch {

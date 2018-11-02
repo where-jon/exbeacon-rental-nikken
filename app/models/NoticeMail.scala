@@ -29,16 +29,17 @@ class Mail {
 
   // 権限３のメッセージ
   def level3Body(mailInfo: MailInfo)(implicit m: Messages): String = {
-    val bodyMessage = Messages("mail.NoticeMail.Body.level3.message")
-    Logger.info(s"""${new DateTime().toString("yyyy/MM/dd HH:mm:ss.SSS")}  ${bodyMessage}""")
+//    val bodyMessage = Messages("mail.NoticeMail.Body.level3.message")
+  val bodyMessage = mailInfo.bodyMessage
+  Logger.info(s"""${new DateTime().toString("yyyy/MM/dd HH:mm:ss.SSS")}  ${bodyMessage}""")
     bodyMessage
   }
 
   // 権限４のメッセージ
   def level4Body(mailInfo: MailInfo)(implicit m: Messages): String = {
     val body = new StringBuilder
-    val bodyMessage = Messages("mail.NoticeMail.Body.level4.message")
-    body.append(bodyMessage)
+//    val bodyMessage = Messages("mail.NoticeMail.Body.level4.message")
+    body.append(mailInfo.bodyMessage)
     for(placeName <- mailInfo.placeName){
       body.append("\r\n" + placeName)
     }
