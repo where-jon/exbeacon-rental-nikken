@@ -5,14 +5,9 @@ import play.api.libs.concurrent.AkkaGuiceSupport
 import services.ItemLogDataDeleteService
 
 /**
- * This class is a Guice module that tells Guice how to bind several
- * different types. This Guice module is created when the Play
- * application starts.
-
- * Play will automatically use any class called `Module` that is in
- * the root package. You can create modules in other locations by
- * adding `play.modules.enabled` settings to the `application.conf`
- * configuration file.
+ * 仮設材ログ削除バッチモジュール
+ * playから本モジュールが呼び出されることで、仮設材ログ削除バッチアクターを起動します。
+ * application.confのplay.modulesに本モジュールを定義することで、playから呼び出されます。
  */
 class ItemLogDataDeleteModule extends AbstractModule with AkkaGuiceSupport{
 
