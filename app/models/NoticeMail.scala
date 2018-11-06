@@ -2,7 +2,6 @@ package models.api
 
 import actors.MailInfo
 import models.User
-import play.api.i18n.Messages
 import play.libs.mailer.{Email, MailerClient}
 
 
@@ -17,7 +16,7 @@ class Mail {
   val level4BodyPlaceTitle = "【対象の現場】"
   val nakapochi = "・"
 
-  def sendEmail(mailerClient: MailerClient, user: User, mailInfo: MailInfo)(implicit m: Messages): Unit = {
+  def sendEmail(mailerClient: MailerClient, user: User, mailInfo: MailInfo): Unit = {
     val email = new Email
     email.setSubject(subjectMessage)
     email.setFrom(mailInfo.fromUser.trim)
@@ -35,7 +34,7 @@ class Mail {
   }
 
   // 権限３のメッセージ
-  def level3Body(mailInfo: MailInfo)(implicit m: Messages): String = {
+  def level3Body(mailInfo: MailInfo) = {
     val body = new StringBuilder
     val bodyMessage = level3BodyMessage
     body.append(bodyMessage)
@@ -47,7 +46,7 @@ class Mail {
   }
 
   // 権限４のメッセージ
-  def level4Body(mailInfo: MailInfo)(implicit m: Messages): String = {
+  def level4Body(mailInfo: MailInfo) = {
     val body = new StringBuilder
     val bodyMessage = level4BodyMessage
     body.append(bodyMessage)

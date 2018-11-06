@@ -179,7 +179,7 @@ class NoticeMailActor @Inject()(config: Configuration
     val aText = "^(([0-9a-zA-Z!#\\$%&'\\*\\+\\-/=\\?\\^_`\\{\\}\\|~]+(\\.[0-9a-zA-Z!#\\$%&'\\*\\+\\-/=\\?\\^_`\\{\\}\\|~]+)*)|(\\\"[^\\\"]*\\\"))@[0-9a-zA-Z!#\\$%&'\\*\\+\\-/=\\?\\^_`\\{\\}\\|~]+(\\.[0-9a-zA-Z!#\\$%&'\\*\\+\\-/=\\?\\^_`\\{\\}\\|~]+)*$"
     val regularExpression = aText
     result = checkMailAddress(address, regularExpression)
-    return result
+    result
   }
 
   def checkMailAddress(address: String, regularExpression: String): Boolean = {
