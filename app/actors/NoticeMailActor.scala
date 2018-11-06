@@ -63,7 +63,7 @@ class NoticeMailActor @Inject()(config: Configuration
       if(!deletionExclusionSite.toString.isEmpty){
         exclusionPlaceID = deletionExclusionSite.toString().split(",")
       }
-      var placeName = List[String]() // 現場名称
+      var placeNames = List[String]() // 現場名称
 
       // メール送信日の曜日を取得
       val deldate = Calendar.getInstance
@@ -131,8 +131,10 @@ class NoticeMailActor @Inject()(config: Configuration
                     if (itemLogMinData != null && itemLogMinData.length > 0) {
                       // 仮設材ログ、予約管理削除メール通知
                       // 現場名称取得
-                      placeName = placeName :+ place.placeName
+                      placeNames = placeNames :+ place.placeName
 
+                      var placeName = List[String]() // 現場名称
+                      placeName = placeName :+ place.placeName
                       val mailer = new Mail
                       val mailinfo = new MailInfo(MAGTYPE_SITE_MANAGER, sendMaileFromUser.toString, "", placeName)
                       val users = userDAO.selectSendMailUserList(placeId)
@@ -150,13 +152,13 @@ class NoticeMailActor @Inject()(config: Configuration
             }
 
             // メールを送信していた場合はdevelopにもメール送信する
-            if (placeName.nonEmpty) {
+            if (placeNames.nonEmpty) {
               val mailer = new Mail
               val users = userDAO.selectSendMailPermission(4)
               if (developMailAddress != null
                 && developMailAddress.toString.nonEmpty
                 && checkMailAddressRegularity(developMailAddress.toString.trim)) {
-                val mailinfo = new MailInfo(MAGTYPE_DEVELOP, sendMaileFromUser.toString, developMailAddress.toString, placeName)
+                val mailinfo = new MailInfo(MAGTYPE_DEVELOP, sendMaileFromUser.toString, developMailAddress.toString, placeNames)
                 mailer.sendEmail(mailerClient, users.head, mailinfo)
               }
             }
