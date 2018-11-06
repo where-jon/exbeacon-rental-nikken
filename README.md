@@ -58,7 +58,7 @@ Heroku環境
 | ITEMLOG_DELETE_BATCH_START | true | ログ削除バッチ実行許可 |
 | DELETION_EXCLUSION_SITE | "" | ログ削除しない現場IDをカンマ区切りで設定 |
 | NOTICE_MAIL_BATCH_START_TIME | 0 0 9 * * ? | 毎日9時にバッチ実行 |
-| NOTICE_MAIL_INTERVAL | 7 | 仮設材ログ削除通知　月末の何日前かを設定 ※4日～20日以下で設定可能 |
+| NOTICE_DAYS_AGO | 7 | 仮設材ログ削除通知　月末の何日前かを設定 ※4日～20日以下で設定可能 |
 | NOTICE_MAIL_BATCH_START | true | メール送信バッチ実行許可 |
 | DEVELOP_MAIL_ADDRESS | xxxxxxx@where123.jp | developのメールアドレス |
 | NOTICE_MAIL_TEST_DATE | "" | テスト確認用メール送信日算出後の日付を設定　※本番では値無 |
