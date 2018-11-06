@@ -2,31 +2,29 @@ package models.api
 
 import actors.MailInfo
 import models.User
-import org.joda.time.DateTime
-import play.api.Logger
 import play.api.i18n.Messages
 import play.libs.mailer.{Email, MailerClient}
 
 
 class Mail {
 
+  val MAGTYPE_DEVELOP = "develop"  // 開発者
+  val MAGTYPE_SITE_MANAGER = "SiteManager"  // 現場責任者
   val subjectMessage = "仮設材ログ削除実施のお知らせ"
   val level3BodyMessage = "来月１日の深夜０時に仮設材ログと予約情報を削除するバッチ処理を実施します。"
   val level4BodyMessage = "来月１日の深夜０時に下記の現場の仮設材ログと予約情報を削除するバッチ処理を実施します。"
 
   def sendEmail(mailerClient: MailerClient, user: User, mailInfo: MailInfo)(implicit m: Messages): Unit = {
     val email = new Email
-//    val subjectMsg = Messages("mail.NoticeMail.subject")
-    val subjectMsg = subjectMessage
-    email.setSubject(subjectMsg)
-    email.setFrom(mailInfo.fromUser)
-    if(mailInfo.magType == 1){
-      email.addTo(user.email)
+    email.setSubject(subjectMessage)
+    email.setFrom(mailInfo.fromUser.trim)
+    if(mailInfo.magType.equals(MAGTYPE_SITE_MANAGER)){
+      email.addTo(user.email.trim)
       email.setBodyText(level3Body(mailInfo))
       mailerClient.send(email)
-    }else if(mailInfo.magType == 2){
+    }else if(mailInfo.magType.equals(MAGTYPE_DEVELOP)){
       if(mailInfo.userEmail.nonEmpty){
-        email.addTo(mailInfo.userEmail)
+        email.addTo(mailInfo.userEmail.trim)
         email.setBodyText(level4Body(mailInfo))
         mailerClient.send(email)
       }
@@ -35,16 +33,13 @@ class Mail {
 
   // 権限３のメッセージ
   def level3Body(mailInfo: MailInfo)(implicit m: Messages): String = {
-//    val bodyMessage = Messages("mail.NoticeMail.Body.level3.message")
   val bodyMessage = level3BodyMessage
-//  Logger.info(s"""${new DateTime().toString("yyyy/MM/dd HH:mm:ss.SSS")}  ${bodyMessage}""")
     bodyMessage
   }
 
   // 権限４のメッセージ
   def level4Body(mailInfo: MailInfo)(implicit m: Messages): String = {
     val body = new StringBuilder
-//    val bodyMessage = Messages("mail.NoticeMail.Body.level4.message")
     val bodyMessage = level4BodyMessage
     body.append(bodyMessage)
     for(placeName <- mailInfo.placeName){
