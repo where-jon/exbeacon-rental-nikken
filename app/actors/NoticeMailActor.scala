@@ -105,9 +105,10 @@ class NoticeMailActor @Inject()(config: Configuration
           val deletionPeriod = (deleteInterval - SEND_MAIL_MONTH) * -1
           cal.add(Calendar.MONTH, deletionPeriod);
 
-          // 処理開始
-          Logger.info(s"""${new DateTime().toString("yyyy/MM/dd HH:mm:ss.SSS")}  ${BATCH_NAME} --- start -- """)
           try {
+            // 処理開始
+            Logger.info(s"""${new DateTime().toString("yyyy/MM/dd HH:mm:ss.SSS")}  ${BATCH_NAME} --- start --- """)
+
             // DateFormat
             val ymdf = new SimpleDateFormat("yyyyMM")
             val sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
@@ -143,6 +144,7 @@ class NoticeMailActor @Inject()(config: Configuration
                       for (user <- users) {
                         if (checkMailAddressRegularity(user.email.trim)) {
                           mailer.sendEmail(mailerClient, user, mailinfo)
+                          Logger.info(s"""${new DateTime().toString("yyyy/MM/dd HH:mm:ss.SSS")}  ${BATCH_NAME} --- ${user.name}にメール送信しました。 --- """)
                         } else {
                           Logger.error(s"""${user.email}は不正なメールアドレス""")
                         }
@@ -162,6 +164,8 @@ class NoticeMailActor @Inject()(config: Configuration
                 && checkMailAddressRegularity(developMailAddress.toString.trim)) {
                 val mailinfo = new MailInfo(MAGTYPE_DEVELOP, sendMaileFromUser.toString, developMailAddress.toString, placeNames)
                 mailer.sendEmail(mailerClient, users.head, mailinfo)
+                Logger.info(s"""${new DateTime().toString("yyyy/MM/dd HH:mm:ss.SSS")}  ${BATCH_NAME} --- developerにメール送信しました。 --- """)
+                Logger.info(s"""${new DateTime().toString("yyyy/MM/dd HH:mm:ss.SSS")}  ${BATCH_NAME} --- end --- """)
               }
             }
           } catch {
