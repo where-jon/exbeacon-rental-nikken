@@ -38,6 +38,8 @@ class NoticeMailActor @Inject()(config: Configuration
   val WORKING_STATUS = 1  // 施行中
   val MAGTYPE_DEVELOP = "develop"  // 開発者
   val MAGTYPE_SITE_MANAGER = "SiteManager"  // 現場責任者
+  val SEND_MAIL_MONTH = 1  // メール送信月算出用
+  val SEND_MAIL_MONTH_DEL = 2  // 削除月算出用
   private val enableLogging = config.getBoolean("akka.quartz.schedules.NoticeMailActor.noticeMailStart").getOrElse(false)
   private val noticeDaysAgo = config.getInt("akka.quartz.schedules.NoticeMailActor.noticeDaysAgo").getOrElse(0)
   private val developMailAddress = config.getString("akka.quartz.schedules.NoticeMailActor.developMailAddress").getOrElse(0)
@@ -93,14 +95,14 @@ class NoticeMailActor @Inject()(config: Configuration
         if(checkMailAddressRegularity(sendMaileFromUser.toString)) {
           val cal = Calendar.getInstance
           val calDel = Calendar.getInstance
-          val delMonth = (deleteInterval - 1) * -1
+          val delMonth = (deleteInterval - SEND_MAIL_MONTH_DEL) * -1
           calDel.add(Calendar.MONTH, delMonth); // 先月、先々月分は残す
           val delateTime = "01 00:00:00" // 1日固定
           val delateDate = df.format(calDel.getTime()).toString + delateTime
 
           // 削除開始対象月取得
           // 環境変数（３カ月）を減算
-          val deletionPeriod = deleteInterval * -1
+          val deletionPeriod = (deleteInterval - SEND_MAIL_MONTH) * -1
           cal.add(Calendar.MONTH, deletionPeriod);
 
           // 処理開始
