@@ -2,11 +2,14 @@ package models.api
 
 import actors.MailInfo
 import models.User
+import org.joda.time.DateTime
+import play.api.Logger
 import play.libs.mailer.{Email, MailerClient}
 
 
 class Mail {
 
+  val BATCH_NAME = "メール送信"
   val MAGTYPE_DEVELOP = "develop"  // 開発者
   val MAGTYPE_SITE_MANAGER = "SiteManager"  // 現場責任者
   val subjectMessage = "仮設材ログ削除実施のお知らせ"
@@ -24,11 +27,13 @@ class Mail {
       email.addTo(user.email.trim)
       email.setBodyText(level3Body(mailInfo))
       mailerClient.send(email)
+      Logger.info(s"""${new DateTime().toString("yyyy/MM/dd HH:mm:ss.SSS")}  ${BATCH_NAME} --- ${user.name}<${user.email}>にメール送信しました。 --- """)
     }else if(mailInfo.magType.equals(MAGTYPE_DEVELOP)){
       if(mailInfo.userEmail.nonEmpty){
         email.addTo(mailInfo.userEmail.trim)
         email.setBodyText(level4Body(mailInfo))
         mailerClient.send(email)
+        Logger.info(s"""${new DateTime().toString("yyyy/MM/dd HH:mm:ss.SSS")}  ${BATCH_NAME} --- developer<${mailInfo.userEmail}>にメール送信しました。 --- """)
       }
     }
   }

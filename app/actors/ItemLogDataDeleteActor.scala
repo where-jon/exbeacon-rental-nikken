@@ -94,6 +94,7 @@ class ItemLogDataDeleteActor @Inject()(config: Configuration
                   itemlogDAO.delete(placeId, delateDate)
                   // 予約テーブル削除
                   reserveMasterDAO.batchReserveItemDelete(placeId, delateDate)
+                  Logger.info(s"""${new DateTime().toString("yyyy/MM/dd HH:mm:ss.SSS")}  ${BATCH_NAME} --- end -- """)
                 }
               }
             }
