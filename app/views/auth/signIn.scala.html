@@ -6,34 +6,14 @@
 <html lang="ja">
 <head>
 	@templates.htmlHead(title="ログイン")
-	<style type="text/css">
-		.login-btn{
-			width: 100%!important;
-			font-size: 16px!important;
-			background-color: rgb(169, 209, 142);
-			color:#000000;
-		}
-		.loginTappedClass{
-			box-shadow: 0px 0px 10px rgba(100, 100, 100, 0.5) inset;
-			background: #778fac;
-		}
-		.formRow{
-			margin-top: 150px;
-		}
-	</style>
-	<style media="(min-width:1025px)">
-		.form-control{
-			font-size: 16px;
-		}
-	</style>
+	<link rel="stylesheet" href="@routes.MyAssets.css("cms/signIn.css")"/>
 	<script type="text/javascript">
-		// ログインボタンのタップ時の動きをつける
 		$(function() {
 			$('.login-btn').on('touchstart touchend', function(e) {
 				if (e.type === 'touchstart') {
-					$(this).addClass('loginTappedClass');
+					$(this).addClass('login-tab');
 				}else{
-					$(this).removeClass('loginTappedClass');
+					$(this).removeClass('login-tab');
 				}
 			});
 		});
@@ -43,18 +23,18 @@
 	<!-- content  -->
 	<div class="container">
 		<div id="pcTabletNav" class="row" style="margin-bottom:0px">
-			<div class="navbarCorner col-xs-2 col-sm-2 col-md-2 col-lg-2" style="height:54px;">
+			<div class="navbarCorner col-xs-2 col-sm-2 col-md-2 col-lg-2 title-height">
 				<div class="navbar-brand">
 					<div>
 						<span>@Messages("system.name")</span>
 					</div>
 				</div>
 			</div>
-			<div class="navbar col-xs-10 col-sm-10 col-md-10 col-lg-10" style="padding:0px;height:54px;">
+			<div class="navbar col-xs-10 col-sm-10 col-md-10 col-lg-10 nav-style">
 			</div>
 		</div>
 		@b3.formCSRF(routes.Auth.authenticate) {
-			<div class="row formRow">
+			<div class="row form-row">
 				<div class="col-xs-6 col-xs-offset-3 col-xs-6 col-sm-offset-3 col-md-6 col-md-offset-3">
 					@tags.alertFromRequest(request, "error")
 					<div class="form-group">
