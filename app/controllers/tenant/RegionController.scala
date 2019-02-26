@@ -46,7 +46,7 @@ case class PlaceDeleteForm(deletePlaceId: String)
 case class PlaceSortForm(placeSortId: String)
 
 @Singleton
-class WorkPlaceController @Inject() (
+class RegionController @Inject() (
   config: Configuration,
   val silhouette: Silhouette[MyEnv],
   val messagesApi: MessagesApi,
@@ -69,11 +69,11 @@ class WorkPlaceController @Inject() (
     val reqIdentity = request.identity
     if (reqIdentity.level >= 4) {
       if (securedRequest2User.isSysMng) {
-        Redirect(routes.WorkPlaceController.sortPlaceListWith(selectedSortType))
+        Redirect(routes.RegionController.regionList(selectedSortType))
       } else {
         // シス管でなければ登録されている現場の管理画面へ遷移
         if (super.isCmsLogged) {
-          Redirect(routes.WorkPlaceController.detail)
+          Redirect(routes.RegionController.detail)
         } else {
           Redirect(CMS_NOT_LOGGED_RETURN_PATH).flashing(ERROR_MSG_KEY -> Messages("error.cmsLogged.invalid"))
         }
@@ -84,17 +84,17 @@ class WorkPlaceController @Inject() (
   }
 
   /** 指定順一覧表示 */
-  def sortPlaceListWith(sortType:Int) = SecuredAction { implicit request =>
+  def regionList(sortType:Int) = SecuredAction { implicit request =>
     val reqIdentity = request.identity
     if (reqIdentity.level >= 4) {
       if (securedRequest2User.isSysMng) {
         val placeList = placeDAO.selectPlaceListWithSortTypeEx(sortType)
         val statusList = PlaceEnum().map
-        Ok(views.html.tenant.workPlace(placeList, statusList))
+        Ok(views.html.tenant.region(placeList, statusList))
       } else {
         if (super.isCmsLogged) {
           // シス管でなければ登録されている現場の管理画面へ遷移
-          Redirect(routes.WorkPlaceController.detail)
+          Redirect(routes.RegionController.detail)
         } else {
           Redirect(CMS_NOT_LOGGED_RETURN_PATH).flashing(ERROR_MSG_KEY -> Messages("error.cmsLogged.invalid"))
         }
@@ -117,7 +117,7 @@ class WorkPlaceController @Inject() (
     // 現在の現場IDを更新
     placeDAO.updateCurrentPlaceId(f.inputPlaceId.toInt, securedRequest2User.id.get.toInt)
 
-    Redirect(routes.WorkPlaceController.detail)
+    Redirect(routes.RegionController.detail)
   }
 
   /** 管理ページログイン */
@@ -134,7 +134,7 @@ class WorkPlaceController @Inject() (
 
     if(placeDAO.isExist(f.inputPlaceId.toInt, f.inputCmsLoginPassword)){
       // 詳細画面にセッションを付与して遷移
-      Redirect(routes.WorkPlaceController.detail).withSession(request.session + (CMS_LOGGED_SESSION_KEY -> "yes"))
+      Redirect(routes.RegionController.detail).withSession(request.session + (CMS_LOGGED_SESSION_KEY -> "yes"))
     }else{
       // 元来た画面に遷移
       Redirect(f.inputReturnPath).flashing(ERROR_MSG_KEY -> Messages("error.cms.PlaceManage.cmsLogin"))
@@ -157,14 +157,14 @@ class WorkPlaceController @Inject() (
           // エラーメッセージ
           val errMsg = Messages("error.cms.placeManage.move.empty")
           // リダイレクトで画面遷移
-          Redirect(routes.WorkPlaceController.sortPlaceListWith(selectedSortType)).flashing(ERROR_MSG_KEY -> errMsg)
+          Redirect(routes.RegionController.regionList(selectedSortType)).flashing(ERROR_MSG_KEY -> errMsg)
         } else {
           // 対象の現場にアクセス不可＆システム管理者出ない場合はログアウト
           Redirect("/signout")
         }
       } else {
         // 画面遷移
-        Ok(views.html.tenant.workPlaceDetail(placeList.last, statusList, securedRequest2User.isSysMng))
+        Ok(views.html.tenant.regionDetail(placeList.last, statusList, securedRequest2User.isSysMng))
       }
     }else{
       Redirect(CMS_NOT_LOGGED_RETURN_PATH).flashing(ERROR_MSG_KEY -> Messages("error.cmsLogged.invalid"))
@@ -200,7 +200,7 @@ class WorkPlaceController @Inject() (
       // エラーメッセージ
       val errMsg = form.errors.map(_.message).mkString(HTML_BR)
       // リダイレクトで画面遷移
-      Redirect(routes.WorkPlaceController.sortPlaceListWith(selectedSortType)).flashing(ERROR_MSG_KEY -> errMsg)
+      Redirect(routes.RegionController.regionList(selectedSortType)).flashing(ERROR_MSG_KEY -> errMsg)
     }else{
       // DB登録
       val placeEx = PlaceEx.apply(0, form.get.placeName, 0, form.get.placeStatus.toInt, "", "", "", "", "", -1, "", "")
@@ -212,7 +212,7 @@ class WorkPlaceController @Inject() (
         true, 3, null
       )
       userService.insert(user)
-      Redirect(routes.WorkPlaceController.sortPlaceListWith(selectedSortType))
+      Redirect(routes.RegionController.regionList(selectedSortType))
         .flashing(SUCCESS_MSG_KEY -> Messages("success.cms.PlaceManage.register"))
     }
   }
@@ -234,12 +234,12 @@ class WorkPlaceController @Inject() (
     )
     val form = inputForm.bindFromRequest
     if (form.hasErrors){
-      Redirect(routes.WorkPlaceController.detail())
+      Redirect(routes.RegionController.detail())
         .flashing(ERROR_MSG_KEY -> form.errors.map(_.message).mkString(HTML_BR))
     }else{
       placeDAO.updateById(form.get.placeId.toInt, form.get.placeName, form.get.placeStatus.toInt)
       userService.updateUserNameById(form.get.userId.toInt, form.get.userLoginId, form.get.userName)
-      Redirect(s"""${routes.WorkPlaceController.detail().path()}?${KEY_PLACE_ID}=${form.get.placeId}""")
+      Redirect(s"""${routes.RegionController.detail().path()}?${KEY_PLACE_ID}=${form.get.placeId}""")
         .flashing(SUCCESS_MSG_KEY -> Messages("success.cms.PlaceManage.register"))
     }
   }
@@ -256,17 +256,17 @@ class WorkPlaceController @Inject() (
     val form = inputForm.bindFromRequest
     if (form.hasErrors){
       val errMsg = form.errors.map(_.message).mkString(HTML_BR)
-      Redirect(routes.WorkPlaceController.detail()).flashing(ERROR_MSG_KEY -> errMsg)
+      Redirect(routes.RegionController.detail()).flashing(ERROR_MSG_KEY -> errMsg)
     }else{
       if(form.get.password1 != form.get.password2){
-        Redirect(routes.WorkPlaceController.detail())
+        Redirect(routes.RegionController.detail())
           .flashing(ERROR_MSG_KEY -> Messages("error.cms.PlaceManage.passwordUpdate.notEqual"))
       }else{
         userService.changePasswordById(
           form.get.userId,
           passwordHasherRegistry.current.hash(form.get.password1).password
         )
-        Redirect(s"""${routes.WorkPlaceController.detail().path()}?${KEY_PLACE_ID}=${form.get.placeId}""")
+        Redirect(s"""${routes.RegionController.detail().path()}?${KEY_PLACE_ID}=${form.get.placeId}""")
           .flashing(SUCCESS_MSG_KEY -> Messages("success.cms.PlaceManage.passwordUpdate"))
       }
     }
@@ -313,7 +313,7 @@ class WorkPlaceController @Inject() (
     )
     val form = inputForm.bindFromRequest
     if (form.hasErrors) { // 入力内容がエラーなら中止
-      Redirect(routes.WorkPlaceController.sortPlaceListWith(selectedSortType))
+      Redirect(routes.RegionController.regionList(selectedSortType))
         .flashing(ERROR_MSG_KEY -> form.errors.map(_.message).mkString(HTML_BR))
     } else {
       // 担当者アカウントを削除
@@ -321,7 +321,7 @@ class WorkPlaceController @Inject() (
       // 現場を削除
       userService.deleteLogicalByPlaceId(form.get.deletePlaceId.toInt)
       // 画面遷移
-      Redirect(routes.WorkPlaceController.sortPlaceListWith(selectedSortType))
+      Redirect(routes.RegionController.regionList(selectedSortType))
         .flashing(SUCCESS_MSG_KEY -> Messages("success.cms.PlaceManage.delete"))
     }
   }

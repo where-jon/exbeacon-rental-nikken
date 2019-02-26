@@ -30,12 +30,8 @@
                 <div class="form-group" style="font-weight:bold;font-size:19px;margin:15px 0px;">
                     @Messages("placeManage.title")
                     <div class="pull-right">
-                        <a href="@controllers.tenant.routes.WorkPlaceController.sortPlaceListWith(1).path" class=" btn sortBtn">@Messages("lang.cms.placeManage.sort.updatetime")</a>
-                        <a href="@controllers.tenant.routes.WorkPlaceController.sortPlaceListWith(2).path" class=" btn sortBtn">@Messages("lang.cms.placeManage.sort.id")</a>
-                        <!--<a href="@controllers.tenant.routes.WorkPlaceController.sortPlaceListWith(2).path" class="btn sortBtn" style="width:150px;display:none">@Messages("lang.cms.placeManage.sort.placeName")</a>
-                        <a href="@controllers.tenant.routes.WorkPlaceController.sortPlaceListWith(3).path" class="btn sortBtn" style="display:none">@Messages("lang.cms.placeManage.sort.status")</a>
-                        <a href="@controllers.tenant.routes.WorkPlaceController.sortPlaceListWith(4).path" class="btn sortBtn" style="width:150px;display:none">@Messages("lang.cms.placeManage.sort.user_email")</a>
-                        <a href="@controllers.tenant.routes.WorkPlaceController.sortPlaceListWith(5).path" class="btn sortBtn" style="width:150px;display:none">@Messages("lang.cms.placeManage.sort.user_name")</a>-->
+                        <a href="@controllers.tenant.routes.RegionController.regionList(1).path" class=" btn sortBtn">@Messages("lang.cms.placeManage.sort.updatetime")</a>
+                        <a href="@controllers.tenant.routes.RegionController.regionList(2).path" class=" btn sortBtn">@Messages("lang.cms.placeManage.sort.id")</a>
                     </div>
                 </div>
                 <!-- テーブルのROW -->
@@ -83,7 +79,7 @@
                 <!-- 欄外-->
                 <div class="row tableRow" style="margin-top: 10px;">
                     <div class="text-center col-xs-4 col-sm-4 col-md-4" style="padding:0;">
-                        <form id="placeChangeForm" name="placeChangeForm" enctype="multipart/form-data" class="hidden" method="post" action="@controllers.tenant.routes.WorkPlaceController.change.path">
+                        <form id="placeChangeForm" name="placeChangeForm" enctype="multipart/form-data" class="hidden" method="post" action="@controllers.tenant.routes.RegionController.change.path">
                             @CSRF.formField
                             <input type="hidden" id="inputPlaceId" name="inputPlaceId">
                         </form>
@@ -106,7 +102,7 @@
     <div class="modal" id="inputModal" tabindex="-1" role="dialog" aria-labelledby="placeRegisterModalLabel" aria-hidden="true" data-show="true" data-keyboard="false" data-backdrop="static">
         <div class="modal-dialog">
             <div class="modal-content">
-                <form id="placeRegisterForm" name="placeRegisterForm" enctype="multipart/form-data" class="form-horizontal" method="post" action="@controllers.tenant.routes.WorkPlaceController.register.path">
+                <form id="placeRegisterForm" name="placeRegisterForm" enctype="multipart/form-data" class="form-horizontal" method="post" action="@controllers.tenant.routes.RegionController.register.path">
                     @CSRF.formField
                     <div class="modal-header" style="">@Messages("lang.cms.placeManage.input.popup.title")</div>
                     <div class="modal-body">
@@ -157,7 +153,7 @@
     <div class="modal" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true" data-show="true" data-keyboard="false" data-backdrop="static">
         <div class="modal-dialog">
             <div class="modal-content">
-                <form id="deleteForm" name="PlaceDeleteForm" class="form-horizontal" enctype="multipart/form-data" method="post" action="@controllers.tenant.routes.WorkPlaceController.delete.path">
+                <form id="deleteForm" name="PlaceDeleteForm" class="form-horizontal" enctype="multipart/form-data" method="post" action="@controllers.tenant.routes.RegionController.delete.path">
                     @CSRF.formField
                     <input type="hidden" id="deletePlaceId" name="deletePlaceId" value="" />
                     <div class="modal-header">@Messages("lang.cms.placeManage.delete.popup.title")</div>

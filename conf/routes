@@ -3,165 +3,165 @@
 # ~~~~
 
 # An example controller showing a sample home page
-GET     /                                controllers.Application.index
+GET         /                                               controllers.Application.index
 
 
 ###  業務ページ ############################
 # 作業車利用状況
-GET     /carSummery                     controllers.CarSummery.index
-GET     /carSummery/getPlotInfo         controllers.CarSummery.getPlotInfo
+GET         /carSummery                                     controllers.CarSummery.index
+GET         /carSummery/getPlotInfo                         controllers.CarSummery.getPlotInfo
 # 作業車予約
-GET     /carReserve                     controllers.CarReserve.index
-POST    /carReserve/register            controllers.CarReserve.register
-POST    /carReserve/registerModal       controllers.CarReserve.registerModal
-POST    /carReserve/update              controllers.CarReserve.update
-POST    /carReserve/delete              controllers.CarReserve.delete
+GET         /carReserve                                     controllers.CarReserve.index
+POST        /carReserve/register                            controllers.CarReserve.register
+POST        /carReserve/registerModal                       controllers.CarReserve.registerModal
+POST        /carReserve/update                              controllers.CarReserve.update
+POST        /carReserve/delete                              controllers.CarReserve.delete
 # その他仮設材利用状況
-GET     /otherItem                      controllers.OtherItem.index
-GET     /otherItem/getPlotInfo          controllers.OtherItem.getPlotInfo
+GET         /otherItem                                      controllers.OtherItem.index
+GET         /otherItem/getPlotInfo                          controllers.OtherItem.getPlotInfo
 
 
 ###  CMS　#################################
 # 現場管理
-GET     /tenant/workPlace                controllers.tenant.WorkPlaceController.index
-GET     /tenant/sortPlaceListWith/:number  controllers.tenant.WorkPlaceController.sortPlaceListWith(number: Int)
-GET     /tenant/workPlace/detail         controllers.tenant.WorkPlaceController.detail
-POST    /tenant/workPlace/register       controllers.tenant.WorkPlaceController.register
-POST    /tenant/workPlace/change         controllers.tenant.WorkPlaceController.change
-POST    /tenant/workPlace/update         controllers.tenant.WorkPlaceController.update
-POST    /tenant/workPlace/delete         controllers.tenant.WorkPlaceController.delete
-POST    /tenant/workPlace/passwordUpdate controllers.tenant.WorkPlaceController.passwordUpdate
-POST    /tenant/workPlace/cmsLogin       controllers.tenant.WorkPlaceController.cmsLogin
+GET         /tenant/region                               controllers.tenant.RegionController.index
+GET         /tenant/regionList/:number                   controllers.tenant.RegionController.regionList(number: Int)
+GET         /tenant/region/detail                        controllers.tenant.RegionController.detail
+POST        /tenant/region/register                      controllers.tenant.RegionController.register
+POST        /tenant/region/change                        controllers.tenant.RegionController.change
+POST        /tenant/region/update                        controllers.tenant.RegionController.update
+POST        /tenant/region/delete                        controllers.tenant.RegionController.delete
+POST        /tenant/region/passwordUpdate                controllers.tenant.RegionController.passwordUpdate
+POST        /tenant/region/cmsLogin                      controllers.tenant.RegionController.cmsLogin
 
 # フロア管理
-GET     /cms/floorManage                controllers.cms.FloorManage.index
-POST    /cms/floorManage/floorUpdate    controllers.cms.FloorManage.floorUpdate
-POST    /cms/floorManage/floorDelete    controllers.cms.FloorManage.floorDelete
+GET         /cms/floorManage                                controllers.cms.FloorManage.index
+POST        /cms/floorManage/floorUpdate                    controllers.cms.FloorManage.floorUpdate
+POST        /cms/floorManage/floorDelete                    controllers.cms.FloorManage.floorDelete
 #  POST    /cms/floorManage/sort           controllers.cms.FloorManage.sort
 
 
 # API未検知
-GET    /site/unDetectedApi            controllers.errors.UnDetectedApi.indexSite
-GET    /analysis/unDetectedApi        controllers.errors.UnDetectedApi.indexAnalysis
+GET         /site/unDetectedApi                             controllers.errors.UnDetectedApi.indexSite
+GET         /analysis/unDetectedApi                         controllers.errors.UnDetectedApi.indexAnalysis
 
 # 現場状況
-GET    /site/workPlace                 controllers.site.WorkPlace.index
-GET    /site/workPlace/getData         controllers.site.WorkPlace.getData
+GET         /site/workPlace                                 controllers.site.WorkPlace.index
+GET         /site/workPlace/getData                         controllers.site.WorkPlace.getData
 
 # 作業車・立馬一覧
-GET    /site/itemCarMaster                 controllers.site.ItemCarMaster.index
-POST   /site/itemCarMaster                 controllers.site.ItemCarMaster.search
+GET         /site/itemCarMaster                             controllers.site.ItemCarMaster.index
+POST        /site/itemCarMaster                             controllers.site.ItemCarMaster.search
 
 # 新作業車・立馬予約
-GET    /site/newItemCarReserve             controllers.site.NewItemCarReserve.index
-POST   /site/newItemCarReserve             controllers.site.NewItemCarReserve.search
-POST   /site/newItemCarReserve/reserve     controllers.site.NewItemCarReserve.reserve
+GET         /site/newItemCarReserve                         controllers.site.NewItemCarReserve.index
+POST        /site/newItemCarReserve                         controllers.site.NewItemCarReserve.search
+POST        /site/newItemCarReserve/reserve                 controllers.site.NewItemCarReserve.reserve
 
 # 作業車・立馬予約
-GET    /site/itemCarReserve                 controllers.site.ItemCarReserve.index
-POST   /site/itemCarReserve                 controllers.site.ItemCarReserve.search
-POST   /site/itemCarReserve/reserve         controllers.site.ItemCarReserve.reserve
+GET         /site/itemCarReserve                            controllers.site.ItemCarReserve.index
+POST        /site/itemCarReserve                            controllers.site.ItemCarReserve.search
+POST        /site/itemCarReserve/reserve                    controllers.site.ItemCarReserve.reserve
 
 # 作業車・立馬予約取消
-GET    /site/itemCarCancel                 controllers.site.ItemCarCancel.index
-POST   /site/itemCarCancel                 controllers.site.ItemCarCancel.search
-POST   /site/itemCarCancel/cancel         controllers.site.ItemCarCancel.cancel
+GET         /site/itemCarCancel                             controllers.site.ItemCarCancel.index
+POST        /site/itemCarCancel                             controllers.site.ItemCarCancel.search
+POST        /site/itemCarCancel/cancel                      controllers.site.ItemCarCancel.cancel
 
 
 # その他仮設材一覧
-GET    /site/itemOtherMaster                 controllers.site.ItemOtherMaster.index
-POST   /site/itemOtherMaster                 controllers.site.ItemOtherMaster.search
+GET         /site/itemOtherMaster                           controllers.site.ItemOtherMaster.index
+POST        /site/itemOtherMaster                           controllers.site.ItemOtherMaster.search
 
 # その他仮設材予約
-GET    /site/itemOtherReserve                 controllers.site.ItemOtherReserve.index
-POST   /site/itemOtherReserve                 controllers.site.ItemOtherReserve.search
-POST   /site/itemOtherReserve/reserve         controllers.site.ItemOtherReserve.reserve
+GET         /site/itemOtherReserve                          controllers.site.ItemOtherReserve.index
+POST        /site/itemOtherReserve                          controllers.site.ItemOtherReserve.search
+POST        /site/itemOtherReserve/reserve                  controllers.site.ItemOtherReserve.reserve
 
 
 # その他仮設材予約取消
-GET    /site/itemOtherCancel                 controllers.site.ItemOtherCancel.index
-POST   /site/itemOtherCancel                 controllers.site.ItemOtherCancel.search
-POST   /site/itemOtherCancel/cancel         controllers.site.ItemOtherCancel.cancel
+GET         /site/itemOtherCancel                           controllers.site.ItemOtherCancel.index
+POST        /site/itemOtherCancel                           controllers.site.ItemOtherCancel.search
+POST        /site/itemOtherCancel/cancel                    controllers.site.ItemOtherCancel.cancel
 
 # 未検出の仮設材
-GET    /site/unDetected                 controllers.site.UnDetected.index
-POST   /site/unDetected                 controllers.site.UnDetected.search
+GET         /site/unDetected                                controllers.site.UnDetected.index
+POST        /site/unDetected                                controllers.site.UnDetected.search
 
 # ビーコンタグ電池残量確認
-GET    /site/txTagManage                controllers.site.TxTagManage.index
-POST   /site/txTagManage                controllers.site.TxTagManage.search
+GET         /site/txTagManage                               controllers.site.TxTagManage.index
+POST        /site/txTagManage                               controllers.site.TxTagManage.search
 
 # 作業車移動状況分析
-GET    /analysis/movementCar                 controllers.analysis.MovementCar.index(page: Integer = 1)
-GET    /analysis/movementCar/:page           controllers.analysis.MovementCar.index(page: Integer)
-POST   /analysis/movementCar/:page           controllers.analysis.MovementCar.search(page: Integer)
-GET   /analysis/movementCar/searchPaging/:page    controllers.analysis.MovementCar.searchPaging(page: Integer)
-POST   /analysis/movementCar/csvExport/:page       controllers.analysis.MovementCar.csvExport(page: Integer)
+GET         /analysis/movementCar                           controllers.analysis.MovementCar.index(page: Integer = 1)
+GET         /analysis/movementCar/:page                     controllers.analysis.MovementCar.index(page: Integer)
+POST        /analysis/movementCar/:page                     controllers.analysis.MovementCar.search(page: Integer)
+GET         /analysis/movementCar/searchPaging/:page        controllers.analysis.MovementCar.searchPaging(page: Integer)
+POST        /analysis/movementCar/csvExport/:page           controllers.analysis.MovementCar.csvExport(page: Integer)
 
 
 # EXB状態監視
-GET     /analysis/telemetry                   controllers.analysis.Telemetry.index
+GET         /analysis/telemetry                             controllers.analysis.Telemetry.index
 
 # GW状態監視
-GET     /analysis/gateway                   controllers.analysis.Gateway.index
+GET         /analysis/gateway                               controllers.analysis.Gateway.index
 
 # マップマネージャー
-GET    /manage/mapManager              controllers.manage.MapManager.index
-POST   /manage/uploadMap               controllers.manage.MapManager.uploadMap
+GET         /manage/mapManager                              controllers.manage.MapManager.index
+POST        /manage/uploadMap                               controllers.manage.MapManager.uploadMap
 
 # EXB管理（旧）
-GET    /manage/exbManager              controllers.manage.ExbManager.index
-POST   /exb/deleteExb      		       controllers.manage.ExbManager.deleteExb
+GET         /manage/exbManager                              controllers.manage.ExbManager.index
+POST        /exb/deleteExb                                  controllers.manage.ExbManager.deleteExb
 #POST   /exb/updateExb      		       controllers.manage.ExbManager.updateExb
 
 
 # EXB管理（新）
-GET     /cms/exbManage                controllers.cms.ExbManage.index
-POST    /cms/exbManage/exbUpdate    controllers.cms.ExbManage.exbUpdate
-POST    /cms/exbManage/exbDelete    controllers.cms.ExbManage.exbDelete
+GET         /cms/exbManage                                  controllers.cms.ExbManage.index
+POST        /cms/exbManage/exbUpdate                        controllers.cms.ExbManage.exbUpdate
+POST        /cms/exbManage/exbDelete                        controllers.cms.ExbManage.exbDelete
 
 # EXB位置管理
-GET    /manage/exbViewerManager        controllers.manage.ExbViewerManager.index
-POST   /manage/updateExbViewer         controllers.manage.ExbViewerManager.updateViewerManager
+GET         /manage/exbViewerManager                        controllers.manage.ExbViewerManager.index
+POST        /manage/updateExbViewer                         controllers.manage.ExbViewerManager.updateViewerManager
 
 # 作業車・立馬管理
-GET     /cms/itemCarManage             controllers.cms.ItemCarManage.index
-POST    /cms/itemCarManage/update      controllers.cms.ItemCarManage.update
-POST    /cms/itemCarManage/delete      controllers.cms.ItemCarManage.delete
+GET         /cms/itemCarManage                              controllers.cms.ItemCarManage.index
+POST        /cms/itemCarManage/update                       controllers.cms.ItemCarManage.update
+POST        /cms/itemCarManage/delete                       controllers.cms.ItemCarManage.delete
 # 仮設材管理
-GET     /cms/itemOtherManage            controllers.cms.ItemOtherManage.index
-POST    /cms/itemOtherManage/update     controllers.cms.ItemOtherManage.update
-POST    /cms/itemOtherManage/delete     controllers.cms.ItemOtherManage.delete
+GET         /cms/itemOtherManage                            controllers.cms.ItemOtherManage.index
+POST        /cms/itemOtherManage/update                     controllers.cms.ItemOtherManage.update
+POST        /cms/itemOtherManage/delete                     controllers.cms.ItemOtherManage.delete
 # 仮設材種別管理
-GET     /cms/itemTypeManage             controllers.cms.ItemTypeManage.index
-POST    /cms/itemTypeManage/update      controllers.cms.ItemTypeManage.update
-POST    /cms/itemTypeManage/delete      controllers.cms.ItemTypeManage.delete
+GET         /cms/itemTypeManage                             controllers.cms.ItemTypeManage.index
+POST        /cms/itemTypeManage/update                      controllers.cms.ItemTypeManage.update
+POST        /cms/itemTypeManage/delete                      controllers.cms.ItemTypeManage.delete
 # 業者管理
-GET     /cms/companyManage              controllers.cms.CompanyManage.index
-POST    /cms/companyManage/update       controllers.cms.CompanyManage.update
-POST    /cms/companyManage/delete       controllers.cms.CompanyManage.delete
+GET         /cms/companyManage                              controllers.cms.CompanyManage.index
+POST        /cms/companyManage/update                       controllers.cms.CompanyManage.update
+POST        /cms/companyManage/delete                       controllers.cms.CompanyManage.delete
 # 現場アカウント管理
-GET     /cms/accountManage                controllers.cms.AccountManage.index
-POST    /cms/accountManage/create         controllers.cms.AccountManage.create
-POST    /cms/accountManage/update         controllers.cms.AccountManage.update
-POST    /cms/accountManage/passwordUpdate controllers.cms.AccountManage.passwordUpdate
-POST    /cms/accountManage/delete         controllers.cms.AccountManage.delete
+GET         /cms/accountManage                              controllers.cms.AccountManage.index
+POST        /cms/accountManage/create                       controllers.cms.AccountManage.create
+POST        /cms/accountManage/update                       controllers.cms.AccountManage.update
+POST        /cms/accountManage/passwordUpdate               controllers.cms.AccountManage.passwordUpdate
+POST        /cms/accountManage/delete                       controllers.cms.AccountManage.delete
 
 
 ## 認証周り（日立APから移植）
-GET     /signin                         controllers.Auth.signIn
-POST    /authenticate                   controllers.Auth.authenticate
-GET     /signout                        controllers.Auth.signOut
-GET     /change-password                controllers.Auth.changePassword
-POST    /change-password                controllers.Auth.handleChangePassword
-GET     /myaccount                      controllers.Application.myAccount
+GET         /signin                                         controllers.Auth.signIn
+POST        /authenticate                                   controllers.Auth.authenticate
+GET         /signout                                        controllers.Auth.signOut
+GET         /change-password                                controllers.Auth.changePassword
+POST        /change-password                                controllers.Auth.handleChangePassword
+GET         /myaccount                                      controllers.Application.myAccount
 
 # Map static resources from the /public folder to the /assets URL path
-GET     /public/*file                   controllers.MyAssets.public(path="/public", file: Asset)
-GET     /lib/*file                      controllers.MyAssets.lib(path="/public/lib", file: Asset)
-GET     /css/*file                      controllers.MyAssets.css(path="/public/stylesheets", file: Asset)
-GET     /js/*file                       controllers.MyAssets.js(path="/public/javascripts", file: Asset)
-GET     /img/*file                      controllers.MyAssets.img(path="/public/images", file: Asset)
-GET     /common/css/*file               controllers.MyAssets.commonCss(path="/public/lib/common/stylesheets", file: Asset)
-GET     /common/js/*file                controllers.MyAssets.commonJs(path="/public/lib/common/javascripts", file: Asset)
-GET     /common/img/*file               controllers.MyAssets.commonImg(path="/public/lib/common/images", file: Asset)
+GET         /public/*file                                   controllers.MyAssets.public(path="/public", file: Asset)
+GET         /lib/*file                                      controllers.MyAssets.lib(path="/public/lib", file: Asset)
+GET         /css/*file                                      controllers.MyAssets.css(path="/public/stylesheets", file: Asset)
+GET         /js/*file                                       controllers.MyAssets.js(path="/public/javascripts", file: Asset)
+GET         /img/*file                                      controllers.MyAssets.img(path="/public/images", file: Asset)
+GET         /common/css/*file                               controllers.MyAssets.commonCss(path="/public/lib/common/stylesheets", file: Asset)
+GET         /common/js/*file                                controllers.MyAssets.commonJs(path="/public/lib/common/javascripts", file: Asset)
+GET         /common/img/*file                               controllers.MyAssets.commonImg(path="/public/lib/common/images", file: Asset)

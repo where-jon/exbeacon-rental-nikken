@@ -72,13 +72,13 @@
                     @if(user.services.contains("master")) {
                     <li class="pull-left tabFrame" style="margin-left:2px">
                         @if(
-                        (request.path contains "/tenant/tenant") ||
-                        (request.path contains "/tenant/sortPlaceListWith/") ||
+                        (request.path contains "/tenant/region") ||
+                        (request.path contains "/tenant/regionList/") ||
                         (request.path contains "/change-password")
                         ) {
                         <a class="text-center tabSelected"><i class="fa fa-building"></i>&nbsp;@Messages("lang.navbar.tab.tenantManagement")</a>
                         }else{
-                        <a href="/tenant/workPlace" class="tabLoading text-center tab"><i class="fa fa-building"></i>&nbsp;@Messages("lang.navbar.tab.tenantManagement")</a>
+                        <a href="/tenant/region" class="tabLoading text-center tab"><i class="fa fa-building"></i>&nbsp;@Messages("lang.navbar.tab.tenantManagement")</a>
                         }
                     </li>
                     }
