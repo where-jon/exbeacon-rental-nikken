@@ -1,14 +1,11 @@
 package controllers
 
 
-import utils.silhouette._
 import com.mohiva.play.silhouette.api.Silhouette
+import javax.inject.{Inject, Singleton}
 import play.api._
 import play.api.i18n.MessagesApi
-
-import scala.concurrent.Future
-import scala.concurrent.ExecutionContext.Implicits._
-import javax.inject.{Inject, Singleton}
+import utils.silhouette._
 
 
 @Singleton
@@ -21,7 +18,7 @@ class Application @Inject() (  config: Configuration
     if(securedRequest2User.isSysMng == false){
       Redirect(site.routes.ItemCarMaster.index)
     }else{
-      Redirect(cms.routes.PlaceManage.index)
+      Redirect(tenant.routes.WorkPlaceController.index)
     }
   }
 

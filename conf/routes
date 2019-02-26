@@ -23,15 +23,15 @@ GET     /otherItem/getPlotInfo          controllers.OtherItem.getPlotInfo
 
 ###  CMS　#################################
 # 現場管理
-GET     /cms/placeManage                controllers.cms.PlaceManage.index
-GET     /cms/sortPlaceListWith/:number  controllers.cms.PlaceManage.sortPlaceListWith(number: Int)
-GET     /cms/placeManage/detail         controllers.cms.PlaceManage.detail
-POST    /cms/placeManage/register       controllers.cms.PlaceManage.register
-POST    /cms/placeManage/change         controllers.cms.PlaceManage.change
-POST    /cms/placeManage/update         controllers.cms.PlaceManage.update
-POST    /cms/placeManage/delete         controllers.cms.PlaceManage.delete
-POST    /cms/placeManage/passwordUpdate controllers.cms.PlaceManage.passwordUpdate
-POST    /cms/placeManage/cmsLogin       controllers.cms.PlaceManage.cmsLogin
+GET     /tenant/workPlace                controllers.tenant.WorkPlaceController.index
+GET     /tenant/sortPlaceListWith/:number  controllers.tenant.WorkPlaceController.sortPlaceListWith(number: Int)
+GET     /tenant/workPlace/detail         controllers.tenant.WorkPlaceController.detail
+POST    /tenant/workPlace/register       controllers.tenant.WorkPlaceController.register
+POST    /tenant/workPlace/change         controllers.tenant.WorkPlaceController.change
+POST    /tenant/workPlace/update         controllers.tenant.WorkPlaceController.update
+POST    /tenant/workPlace/delete         controllers.tenant.WorkPlaceController.delete
+POST    /tenant/workPlace/passwordUpdate controllers.tenant.WorkPlaceController.passwordUpdate
+POST    /tenant/workPlace/cmsLogin       controllers.tenant.WorkPlaceController.cmsLogin
 
 # フロア管理
 GET     /cms/floorManage                controllers.cms.FloorManage.index

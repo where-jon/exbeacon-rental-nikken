@@ -6,7 +6,7 @@
 <div class="modal" id="cmsLoginModal" tabindex="-1" role="dialog" aria-labelledby="cmsLoginModalLabel" aria-hidden="true" data-show="true" data-keyboard="false" data-backdrop="static">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form id="cmsLoginForm" name="cmsLoginForm" enctype="multipart/form-data" class="form-horizontal" method="post" action="@controllers.cms.routes.PlaceManage.cmsLogin.path">
+            <form id="cmsLoginForm" name="cmsLoginForm" enctype="multipart/form-data" class="form-horizontal" method="post" action="@controllers.tenant.routes.WorkPlaceController.cmsLogin.path">
                 @content
                 <input type="hidden" name="inputPlaceId" value="@user.currentPlaceId.get">
                 <input type="hidden" name="inputReturnPath" value="@request.path">
