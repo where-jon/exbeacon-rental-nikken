@@ -1,10 +1,17 @@
-# Routes
-# This file defines all application routes (Higher priority routes first)
-# ~~~~
-
 # An example controller showing a sample home page
 GET         /                                               controllers.Application.index
 
+###  tenant　#################################
+# 現場管理
+GET         /tenant/region                               controllers.tenant.RegionController.region
+GET         /tenant/regionList/:number                   controllers.tenant.RegionController.regionList(number: Int)
+GET         /tenant/region/detail                        controllers.tenant.RegionController.regionDetail
+POST        /tenant/region/register                      controllers.tenant.RegionController.regionRegister
+POST        /tenant/region/change                        controllers.tenant.RegionController.regionChange
+POST        /tenant/region/update                        controllers.tenant.RegionController.regionUpdate
+POST        /tenant/region/delete                        controllers.tenant.RegionController.regionDelete
+POST        /tenant/region/passwordUpdate                controllers.tenant.RegionController.regionPasswordUpdate
+POST        /tenant/region/regionLogin                   controllers.tenant.RegionController.regionLogin
 
 ###  業務ページ ############################
 # 作業車利用状況
@@ -21,17 +28,6 @@ GET         /otherItem                                      controllers.OtherIte
 GET         /otherItem/getPlotInfo                          controllers.OtherItem.getPlotInfo
 
 
-###  CMS　#################################
-# 現場管理
-GET         /tenant/region                               controllers.tenant.RegionController.index
-GET         /tenant/regionList/:number                   controllers.tenant.RegionController.regionList(number: Int)
-GET         /tenant/region/detail                        controllers.tenant.RegionController.detail
-POST        /tenant/region/register                      controllers.tenant.RegionController.register
-POST        /tenant/region/change                        controllers.tenant.RegionController.change
-POST        /tenant/region/update                        controllers.tenant.RegionController.update
-POST        /tenant/region/delete                        controllers.tenant.RegionController.delete
-POST        /tenant/region/passwordUpdate                controllers.tenant.RegionController.passwordUpdate
-POST        /tenant/region/cmsLogin                      controllers.tenant.RegionController.cmsLogin
 
 # フロア管理
 GET         /cms/floorManage                                controllers.cms.FloorManage.index

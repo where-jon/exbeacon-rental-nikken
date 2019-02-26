@@ -59,22 +59,22 @@ error.CarReserve.registerModal.inputCarNo.exist=入力された作業車は存�
 error.CarReserve.registerModal.inputCarNo.duplicate=入力された作業車は既に同フロア、同業者で予約されています。
 
 # CMS入力エラー
-error.cms.PlaceManage.register.inputPlaceName.empty=現場名称を入力してください。
-error.cms.PlaceManage.register.inputPlaceStatus.empty=状態を選択してください。
-error.cms.PlaceManage.register.inputUserLoginId.empty=現場責任者IDを入力してください。
-error.cms.PlaceManage.register.inputUserLoginId.exist=指定された現場責任者IDは既に使われています。
-error.cms.PlaceManage.register.inputUserName.empty=現場責任者名を入力してください。
-error.cms.PlaceManage.passwordUpdate.inputPassword.empty=パスワードを入力してください。
-error.cms.PlaceManage.passwordUpdate.inputRePassword.empty=確認用パスワードを入力してください。
-error.cms.PlaceManage.passwordUpdate.notEqual=パスワードと確認用パスワードが異なります。
-error.cms.PlaceManage.cmsLogin=入力されたパスワードに誤りがあります。
-error.cms.PlaceManage.noDelete.byAccount=この現場に紐づく現場アカウントが存在しているので削除できません。
-error.cms.PlaceManage.noDelete.byCompany=この現場に紐づく業者が存在しているので削除できません。
-error.cms.PlaceManage.noDelete.byItemType=この現場に紐づく仮設材種別が存在しているので削除できません。
-error.cms.PlaceManage.noDelete.byOtherMaster=この現場に紐づくその他仮設材が存在しているので削除できません。
-error.cms.PlaceManage.noDelete.byCarMaster=この現場に紐づく作業車・立馬が存在しているので削除できません。
-error.cms.PlaceManage.noDelete.byExb=この現場に紐づくEXBが存在しているので削除できません。
-error.cms.PlaceManage.noDelete.byFloor=この現場に紐づくフロアが存在しているので削除できません。
+error.tenanat.Region.register.inputPlaceName.empty=現場名称を入力してください。
+error.tenanat.Region.register.inputPlaceStatus.empty=状態を選択してください。
+error.tenanat.Region.register.inputUserLoginId.empty=現場責任者IDを入力してください。
+error.tenanat.Region.register.inputUserLoginId.exist=指定された現場責任者IDは既に使われています。
+error.tenanat.Region.register.inputUserName.empty=現場責任者名を入力してください。
+error.tenanat.Region.passwordUpdate.inputPassword.empty=パスワードを入力してください。
+error.tenanat.Region.passwordUpdate.inputRePassword.empty=確認用パスワードを入力してください。
+error.tenanat.Region.passwordUpdate.notEqual=パスワードと確認用パスワードが異なります。
+error.tenanat.Region.cmsLogin=入力されたパスワードに誤りがあります。
+error.tenanat.Region.noDelete.byAccount=この現場に紐づく現場アカウントが存在しているので削除できません。
+error.tenanat.Region.noDelete.byCompany=この現場に紐づく業者が存在しているので削除できません。
+error.tenanat.Region.noDelete.byItemType=この現場に紐づく仮設材種別が存在しているので削除できません。
+error.tenanat.Region.noDelete.byOtherMaster=この現場に紐づくその他仮設材が存在しているので削除できません。
+error.tenanat.Region.noDelete.byCarMaster=この現場に紐づく作業車・立馬が存在しているので削除できません。
+error.tenanat.Region.noDelete.byExb=この現場に紐づくEXBが存在しているので削除できません。
+error.tenanat.Region.noDelete.byFloor=この現場に紐づくフロアが存在しているので削除できません。
 
 
 
@@ -190,10 +190,10 @@ error.unmatched.data=APIと登録データが違うため正しく表示でき�
 # SUCCESS
 success.CarReserve.registerModal=予約を登録しました。
 
-success.cms.PlaceManage.register=現場情報を登録しました。
-success.cms.PlaceManage.update=現場情報を更新しました。
-success.cms.PlaceManage.passwordUpdate=パスワードを更新しました。
-success.cms.PlaceManage.delete=現場情報を削除しました。
+success.tenanat.Region.register=現場情報を登録しました。
+success.tenanat.Region.update=現場情報を更新しました。
+success.tenanat.Region.passwordUpdate=パスワードを更新しました。
+success.tenanat.Region.delete=現場情報を削除しました。
 success.cms.FloorManage.floorDelete=フロアを削除しました。
 success.cms.ExbManage.exbDelete=EXBを削除しました。
 success.cms.FloorManage.floorUpdate=フロア情報を更新しました。

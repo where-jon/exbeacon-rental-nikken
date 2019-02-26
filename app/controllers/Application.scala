@@ -18,7 +18,7 @@ class Application @Inject() (  config: Configuration
     if(securedRequest2User.isSysMng == false){
       Redirect(site.routes.ItemCarMaster.index)
     }else{
-      Redirect(tenant.routes.RegionController.index)
+      Redirect(tenant.routes.RegionController.region)
     }
   }
 
