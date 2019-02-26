@@ -217,7 +217,7 @@
     @if(
         (request.path contains "/tenant/region") ||
         (request.path contains "/tenant/regionList/") ||
-        (request.path contains "/change-password")
+        (request.path contains "/password")
     ) {
         <div style="margin: 20px 0px 30px 0px;">
             <div class="row text-center">
@@ -235,7 +235,7 @@
                         </div>
                         <div class="innerMenu row" style="margin: 0px 3px 0px 3px;">
                             <div class="text-center col-xs-12 col-sm-12 col-md-12" style="padding:0px 3px;">
-                                <a href="/change-password" class="btn menuBtn">@Messages("lang.cms.placeManage.changePassword.page.title")</a>
+                                <a href="/password" class="btn menuBtn">@Messages("lang.cms.placeManage.changePassword.page.title")</a>
                             </div>
                         </div>
                     </div>

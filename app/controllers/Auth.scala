@@ -178,7 +178,7 @@ class Auth @Inject() (
   def changePassword = SecuredAction { implicit request =>
     if (request.identity.level >= 4) {
       // Viewを表示
-      Ok(viewsAuth.changePassword(changePasswordForm, userService.selectSuperUserList()))
+      Ok(views.html.tenant.changePassword(changePasswordForm, userService.selectSuperUserList()))
     } else {
       // 権限無いとき退場
       Redirect(site.routes.WorkPlace.index())
@@ -192,7 +192,7 @@ class Auth @Inject() (
     changePasswordForm.bindFromRequest().fold(
       formWithErrors => {
         // Varidationエラーがあった場合Viewに戻ってエラー表示
-        Future.successful(BadRequest(viewsAuth.changePassword(formWithErrors, userService.selectSuperUserList())))
+        Future.successful(BadRequest(views.html.tenant.changePassword(formWithErrors, userService.selectSuperUserList())))
       },
       passwords => {
         // 現在のパスワードと入力された現在のパスワードが合っているか確認し
@@ -236,7 +236,7 @@ class Auth @Inject() (
               ChangePasswordForm.apply(
               )
             )
-            BadRequest(viewsAuth.changePassword(
+            BadRequest(views.html.tenant.changePassword(
               passForm.withGlobalError(Messages("error.changePassword.password.current.notequal")),
               userService.selectSuperUserList()
             ))

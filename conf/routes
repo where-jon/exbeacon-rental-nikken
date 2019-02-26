@@ -148,8 +148,8 @@ POST        /cms/accountManage/delete                       controllers.cms.Acco
 GET         /signin                                         controllers.Auth.signIn
 POST        /authenticate                                   controllers.Auth.authenticate
 GET         /signout                                        controllers.Auth.signOut
-GET         /change-password                                controllers.Auth.changePassword
-POST        /change-password                                controllers.Auth.handleChangePassword
+GET         /password                                       controllers.Auth.changePassword
+POST        /password                                       controllers.Auth.handleChangePassword
 GET         /myaccount                                      controllers.Application.myAccount
 
 # Map static resources from the /public folder to the /assets URL path
