@@ -1,6 +1,6 @@
-@import models.manage.ExbMasterData
-@import models.manage.ExbAll
-@import models.manage.FloorAll
+@import models.system.ExbMasterData
+@import models.system.ExbAll
+@import models.system.FloorAll
 @(
 exbViewerForm: Form[ExbMasterData],
 exbViewer: Seq[ExbAll],
@@ -16,7 +16,7 @@ viewType: Seq[ViewType]
 <html lang="ja">
 <head>
 @templates.htmlHead(title = Messages("lang.manage.exbViewerManager"))
-	<link rel="stylesheet" href="@routes.MyAssets.css("manage/floorMap.css")"/>
+	<link rel="stylesheet" href="@routes.MyAssets.css("system/floorMap.css")"/>
 	<link rel="stylesheet" href="@routes.MyAssets.css("cms/itemCarManage.css")"/>
 <script></script>
 </head>
@@ -187,7 +187,7 @@ viewType: Seq[ViewType]
 		}
 	</div>
 
-	<script type="text/javascript" src="@routes.MyAssets.js("manage/exbSetup.js")"></script>
+	<script type="text/javascript" src="@routes.MyAssets.js("system/exbSetup.js")"></script>
 
 </body>
 </html>

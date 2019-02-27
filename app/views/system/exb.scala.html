@@ -1,5 +1,5 @@
-@import models.manage.ExbAll
-@import models.manage.FloorInfoData
+@import models.system.ExbAll
+@import models.system.FloorInfoData
 @(
  exbInfoList: Seq[ExbAll]
 ,floorInfoList: Seq[FloorInfoData]
@@ -85,7 +85,7 @@
     <div class="modal" id="exbUpdateModal" tabindex="-1" role="dialog" aria-labelledby="exbUpdateModalLabel" aria-hidden="true" data-show="true" data-keyboard="false" data-backdrop="static">
         <div class="modal-dialog">
             <div class="modal-content">
-                <form id="exbForm" name="exbForm" enctype="multipart/form-data" class="form-horizontal" enctype="multipart/form-data" class="form-horizontal" method="post" action="@controllers.manage.routes.ExbController.exbUpdate.path">
+                <form id="exbForm" name="exbForm" enctype="multipart/form-data" class="form-horizontal" enctype="multipart/form-data" class="form-horizontal" method="post" action="@controllers.system.routes.ExbController.exbUpdate.path">
                     @CSRF.formField
                     <input type="hidden" id="inputExbId" name="inputExbId">
                     <input type="hidden" id="inputPreDeviceId" name="inputPreDeviceId">
@@ -165,7 +165,7 @@
     <div class="modal" id="exbDeleteModal" tabindex="-1" role="dialog" aria-labelledby="exbDeleteModalLabel" aria-hidden="true" data-show="true" data-keyboard="false" data-backdrop="static">
         <div class="modal-dialog">
             <div class="modal-content">
-                <form id="deleteForm" name="deleteForm" class="form-horizontal" enctype="multipart/form-data" class="form-horizontal" method="post" action="@controllers.manage.routes.ExbController.exbDelete.path">
+                <form id="deleteForm" name="deleteForm" class="form-horizontal" enctype="multipart/form-data" class="form-horizontal" method="post" action="@controllers.system.routes.ExbController.exbDelete.path">
                     @CSRF.formField
                     <input type="hidden" id="deleteExbId" name="deleteExbId">
                     <input type="hidden" id="deleteFloorId" name="floorId">
@@ -188,7 +188,7 @@
         </div>
     </div>
 
-    <script type="text/javascript" src="@routes.MyAssets.js("manage/exb.js")"></script>
+    <script type="text/javascript" src="@routes.MyAssets.js("system/exb.js")"></script>
     <script></script>
 </body>
 </html>

@@ -58,14 +58,14 @@
                     @if(user.services.contains("level3") || user.services.contains("master") ) {
                     <li class="pull-left tabFrame" style="margin-left:2px">
                         @if(
-                        (request.path contains "/manage/floor") ||
-                        (request.path contains "/manage/floorMap") ||
-                        (request.path contains "/manage/exb") ||
-                        (request.path contains "/manage/exbSetup")
+                        (request.path contains "/system/floor") ||
+                        (request.path contains "/system/floorMap") ||
+                        (request.path contains "/system/exb") ||
+                        (request.path contains "/system/exbSetup")
                         ) {
                         <a class="text-center tabSelected"><i class="fa fa-wrench"></i>&nbsp;@Messages("lang.navbar.tab.systemManagement")</a>
                         }else{
-                        <a href="/manage/floor" class="tabLoading text-center tab"><i class="fa fa-wrench"></i>&nbsp;@Messages("lang.navbar.tab.systemManagement")</a>
+                        <a href="/system/floor" class="tabLoading text-center tab"><i class="fa fa-wrench"></i>&nbsp;@Messages("lang.navbar.tab.systemManagement")</a>
                         }
                     </li>
                     }
@@ -94,8 +94,8 @@
 </div>
 @if(
     (request.path contains "/site/workPlace") ||
-    (request.path contains "/manage/floorMap") ||
-    (request.path contains "/manage/exbSetup")
+    (request.path contains "/system/floorMap") ||
+    (request.path contains "/system/exbSetup")
 ) {
     @views.html.templates.sideBar()
 }

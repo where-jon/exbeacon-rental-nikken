@@ -21,20 +21,24 @@ POST        /password                                       controllers.Auth.set
 ###  システム管理 .start #################################
 
 # フロア管理
-GET         /manage/floor                                controllers.manage.FloorController.index
-POST        /manage/floor/floorUpdate                    controllers.manage.FloorController.floorUpdate
-POST        /manage/floor/floorDelete                    controllers.manage.FloorController.floorDelete
+GET         /system/floor                                controllers.system.FloorController.index
+POST        /system/floor/floorUpdate                    controllers.system.FloorController.floorUpdate
+POST        /system/floor/floorDelete                    controllers.system.FloorController.floorDelete
 
 
 # マップマネージャー
-GET         /manage/floorMap                                controllers.manage.FloorMapController.index
-POST        /manage/uploadFloorMap                          controllers.manage.FloorMapController.uploadFloorMap
+GET         /system/floorMap                                controllers.system.FloorMapController.index
+POST        /system/uploadFloorMap                          controllers.system.FloorMapController.uploadFloorMap
 
 
-# EXB管理（新）
-GET         /manage/exb                                  controllers.manage.ExbController.index
-POST        /manage/exb/exbUpdate                        controllers.manage.ExbController.exbUpdate
-POST        /manage/exb/exbDelete                        controllers.manage.ExbController.exbDelete
+# EXB管理
+GET         /system/exb                                  controllers.system.ExbController.index
+POST        /system/exb/exbUpdate                        controllers.system.ExbController.exbUpdate
+POST        /system/exb/exbDelete                        controllers.system.ExbController.exbDelete
+
+# EXB位置管理
+GET         /system/exbSetup                              controllers.system.ExbSetupController.index
+POST        /system/updateExbSetup                        controllers.system.ExbSetupController.updateExbSetup
 
 ###  システム管理 .end　#################################
 
@@ -121,9 +125,6 @@ GET         /analysis/telemetry                             controllers.analysis
 GET         /analysis/gateway                               controllers.analysis.Gateway.index
 
 
-# EXB位置管理
-GET         /manage/exbSetup                              controllers.manage.ExbSetupController.index
-POST        /manage/updateExbSetup                        controllers.manage.ExbSetupController.updateExbSetup
 
 # 作業車・立馬管理
 GET         /cms/itemCarManage                              controllers.cms.ItemCarManage.index

@@ -4,7 +4,7 @@ import javax.inject.{Inject, Singleton}
 import com.mohiva.play.silhouette.api.Silhouette
 import controllers.{BaseController, BeaconService, errors}
 import models._
-import models.manage.Floor
+import models.system.Floor
 import play.api._
 import play.api.data.Form
 import play.api.data.Forms._
@@ -33,7 +33,7 @@ class ItemCarCancel @Inject()(config: Configuration
 , carDAO: models.itemCarDAO
 , companyDAO: models.companyDAO
 , beaconService: BeaconService
-, floorDAO: models.manage.floorDAO
+, floorDAO: models.system.floorDAO
 , btxDAO: models.btxDAO
 , itemTypeDAO: models.ItemTypeDAO
 , workTypeDAO: models.WorkTypeDAO

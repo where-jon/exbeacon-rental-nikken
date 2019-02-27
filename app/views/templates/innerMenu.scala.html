@@ -167,10 +167,10 @@
 }
 @if(user.services.contains("level3") || user.services.contains("master") ) {
     @if(
-        (request.path contains "/manage/floor") ||
-        (request.path contains "/manage/floorMap") ||
-        (request.path contains "/manage/exb") ||
-        (request.path contains "/manage/exbSetup")
+        (request.path contains "/system/floor") ||
+        (request.path contains "/system/floorMap") ||
+        (request.path contains "/system/exb") ||
+        (request.path contains "/system/exbSetup")
     ) {
         <div style="margin: 20px 0px 30px 0px;">
             <div class="row text-center">
@@ -183,22 +183,22 @@
                     <div class="text-center col-xs-12 col-sm-12 col-md-12" style="padding:0;">
                         <div class="innerMenu row" style="margin: 0px 3px 10px 3px;">
                             <div class="text-center col-xs-12 col-sm-12 col-md-12" style="padding:0px 3px;">
-                                <a href="/manage/floor" class="btn menuBtn">@Messages("lang.manage.floorManager")</a>
+                                <a href="/system/floor" class="btn menuBtn">@Messages("lang.manage.floorManager")</a>
                             </div>
                         </div>
                         <div class="innerMenu row" style="margin: 0px 3px 10px 3px;">
                             <div class="text-center col-xs-12 col-sm-12 col-md-12" style="padding:0px 3px;">
-                                <a href="/manage/floorMap" class="btn menuBtn">@Messages("lang.manage.mapManager")</a>
+                                <a href="/system/floorMap" class="btn menuBtn">@Messages("lang.manage.mapManager")</a>
                             </div>
                         </div>
                         <div class="innerMenu row" style="margin: 0px 3px 10px 3px;">
                             <div class="text-center col-xs-12 col-sm-12 col-md-12" style="padding:0px 3px;">
-                                <a href="/manage/exb" class="btn menuBtn">@Messages("lang.manage.exbManager")</a>
+                                <a href="/system/exb" class="btn menuBtn">@Messages("lang.manage.exbManager")</a>
                             </div>
                         </div>
                         <div class="innerMenu row" style="margin: 0px 3px 0px 3px;">
                             <div class="text-center col-xs-12 col-sm-12 col-md-12" style="padding:0px 3px;">
-                                <a href="/manage/exbSetup" class="btn menuBtn">@Messages("lang.manage.exbViewerManager")</a>
+                                <a href="/system/exbSetup" class="btn menuBtn">@Messages("lang.manage.exbViewerManager")</a>
                             </div>
                         </div>
                     </div>

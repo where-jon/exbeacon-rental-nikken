@@ -23,7 +23,7 @@ class CarSummery @Inject()(config: Configuration
                            , val messagesApi: MessagesApi
                            , ws: WSClient
                            , carSummeryDAO: models.carSummeryDAO
-                           , floorDAO: models.manage.floorDAO
+                           , floorDAO: models.system.floorDAO
                            , placeDAO: models.placeDAO
                            , carDAO: models.itemCarDAO
                            , companyDAO: models.companyDAO

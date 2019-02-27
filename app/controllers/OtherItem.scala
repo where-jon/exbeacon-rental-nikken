@@ -23,7 +23,7 @@ class OtherItem @Inject()(config: Configuration
                           , ws: WSClient
                           , otherItemDAO: models.otherItemDAO
                           , placeDAO: models.placeDAO
-                          , floorDAO: models.manage.floorDAO
+                          , floorDAO: models.system.floorDAO
                           , btxLastPositionDAO: models.btxLastPositionDAO
                                ) extends BaseController with I18nSupport {
 

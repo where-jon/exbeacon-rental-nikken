@@ -1,4 +1,4 @@
-package controllers.manage
+package controllers.system
 
 import java.awt.image.BufferedImage
 import java.io.{ByteArrayInputStream, ByteArrayOutputStream}
@@ -25,7 +25,7 @@ class FloorMapController @Inject()(config: Configuration
   , val silhouette: Silhouette[MyEnv]
   , val messagesApi: MessagesApi
   , ws: WSClient
-  , floorDAO: models.manage.floorDAO
+  , floorDAO: models.system.floorDAO
   ) extends BaseController with I18nSupport {
 
   val IMAGE_WIDTH = config.getInt("web.btxmaster.mapWidth").get
@@ -67,12 +67,12 @@ class FloorMapController @Inject()(config: Configuration
             System.out.println("11height:" + org.getHeight);
 
             if (1 == floorDAO.updateFloorMap(mapId.get.toInt, b64img, org.getWidth, org.getHeight)) {
-              Redirect("/manage/floorMap").flashing("resultOK" -> Messages("db.update.ok"))
+              Redirect("/system/floorMap").flashing("resultOK" -> Messages("db.update.ok"))
             } else {
-              Redirect("/manage/floorMap").flashing("resultNG" -> Messages("error"))
+              Redirect("/system/floorMap").flashing("resultNG" -> Messages("error"))
             }
           }else{
-            Redirect("/manage/floorMap").flashing("resultNG" -> Messages("error.manage.mapManager.image.empty"))
+            Redirect("/system/floorMap").flashing("resultNG" -> Messages("error.manage.mapManager.image.empty"))
           }
 
         }.getOrElse {
@@ -127,7 +127,7 @@ class FloorMapController @Inject()(config: Configuration
     if(reqIdentity.level >= 3) {
       val placeId = super.getCurrentPlaceId
       val mapViewer = floorDAO.selectFloorAll(placeId)
-      Ok(views.html.manage.floorMap(mapViewerForm, mapViewer))
+      Ok(views.html.system.floorMap(mapViewerForm, mapViewer))
     }else{
       Redirect(site.routes.ItemCarMaster.index)
     }

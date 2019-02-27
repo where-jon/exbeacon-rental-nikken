@@ -7,7 +7,7 @@ import javax.inject.{Inject, Singleton}
 import com.mohiva.play.silhouette.api.Silhouette
 import controllers.{BaseController, BeaconService}
 import models._
-import models.manage.Floor
+import models.system.Floor
 import play.api._
 import play.api.data.Form
 import play.api.data.Forms._
@@ -29,7 +29,7 @@ class UnDetected @Inject()(config: Configuration
 , itemLogDao: models.ItemLogDAO
 , companyDAO: models.companyDAO
 , beaconService: BeaconService
-, floorDAO: models.manage.floorDAO
+, floorDAO: models.system.floorDAO
 , btxDAO: models.btxDAO
 , reserveMasterDAO: models.ReserveMasterDAO
 , itemTypeDAO: models.ItemTypeDAO

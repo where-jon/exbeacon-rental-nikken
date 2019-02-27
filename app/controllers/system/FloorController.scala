@@ -1,4 +1,4 @@
-package controllers.manage
+package controllers.system
 
 import javax.inject.{Inject, Singleton}
 
@@ -26,8 +26,8 @@ class FloorController @Inject()(config: Configuration
   , val silhouette: Silhouette[MyEnv]
   , val messagesApi: MessagesApi
   , placeDAO: models.placeDAO
-  , floorDAO: models.manage.floorDAO
-  , exbDAO: models.manage.ExbDAO
+  , floorDAO: models.system.floorDAO
+  , exbDAO: models.system.ExbDAO
   ) extends BaseController with I18nSupport {
 
   /** フロア更新 */
@@ -116,7 +116,7 @@ class FloorController @Inject()(config: Configuration
       val placeId = securedRequest2User.currentPlaceId.get
       // フロア情報の取得
       val floorInfoList = floorDAO.selectFloorInfoData(placeId)
-      Ok(views.html.manage.floor(floorInfoList))
+      Ok(views.html.system.floor(floorInfoList))
     }else {
       Redirect(site.routes.ItemCarMaster.index)
     }

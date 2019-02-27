@@ -34,7 +34,7 @@ class BeaconService @Inject() (config: Configuration,
   ws: WSClient
   , val messagesApi: MessagesApi
   , carDAO: models.itemCarDAO
-  ,exbDao:models.manage.ExbDAO
+  ,exbDao:models.system.ExbDAO
   ,otherDAO: models.itemOtherDAO
   ,placeDAO: models.placeDAO
   ,txHelper: models.TxStatusHelper

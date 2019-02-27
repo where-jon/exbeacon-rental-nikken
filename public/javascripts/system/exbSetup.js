@@ -397,7 +397,7 @@ function updateBtnEvent() {
             // 基準サイズかをチェックして基準の値に変換する。
             gResize.viewDataMotoChange();
             // modal処理
-            gModal.confirm(gTitle.update,gMessage.update,"../manage/updateExbSetup");
+            gModal.confirm(gTitle.update,gMessage.update,"../system/updateExbSetup");
         }else{
            bCheckUpdate = false;
         }

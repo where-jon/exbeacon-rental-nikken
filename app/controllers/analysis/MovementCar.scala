@@ -30,7 +30,7 @@ class MovementCar @Inject()(config: Configuration
 , carDAO: models.itemCarDAO
 , companyDAO: models.companyDAO
 , beaconService: BeaconService
-, floorDAO: models.manage.floorDAO
+, floorDAO: models.system.floorDAO
 , btxDAO: models.btxDAO
 , itemlogDAO: ItemLogDAO
 , itemTypeDAO: models.ItemTypeDAO

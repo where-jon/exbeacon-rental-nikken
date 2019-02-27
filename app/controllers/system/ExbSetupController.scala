@@ -1,10 +1,10 @@
-package controllers.manage
+package controllers.system
 
 import javax.inject.Inject
 
 import com.mohiva.play.silhouette.api.Silhouette
 import controllers.{BaseController, site}
-import models.manage.ExbMasterData
+import models.system.ExbMasterData
 import play.api.Configuration
 import play.api.data.Form
 import play.api.data.Forms._
@@ -19,8 +19,8 @@ class ExbSetupController @Inject()(config: Configuration
   , val silhouette: Silhouette[MyEnv]
   , val messagesApi: MessagesApi
   , ws: WSClient
-  , exbDAO: models.manage.ExbDAO
-  , floorDAO: models.manage.floorDAO
+  , exbDAO: models.system.ExbDAO
+  , floorDAO: models.system.floorDAO
   , viewTypeDAO: models.ViewTypeDAO
   ) extends BaseController with I18nSupport {
 
@@ -38,7 +38,7 @@ class ExbSetupController @Inject()(config: Configuration
       // viewType情報
       val viewType = viewTypeDAO.selectAll()
 
-      Ok(views.html.manage.exbSetup(exbViewerForm, exbViewer,mapViewer,viewType))
+      Ok(views.html.system.exbSetup(exbViewerForm, exbViewer,mapViewer,viewType))
     }else{
       Redirect(site.routes.ItemCarMaster.index)
     }
@@ -70,14 +70,14 @@ class ExbSetupController @Inject()(config: Configuration
     val viewType = viewTypeDAO.selectAll()
 
     exbViewerForm.bindFromRequest.fold(
-      formWithErrors => BadRequest(views.html.manage.exbSetup(formWithErrors, exbViewer,mapViewer,viewType)),
+      formWithErrors => BadRequest(views.html.system.exbSetup(formWithErrors, exbViewer,mapViewer,viewType)),
       ExbViewerData => {
         exbViewerData = exbViewerForm.bindFromRequest.get
         val result = exbDAO.updateExbMaster(new ExbMasterData(exbViewerData.viewerId, exbViewerData.viewerVisible, exbViewerData.viewerPosType, exbViewerData.viewerPosX, exbViewerData.viewerPosY, exbViewerData.viewerPosMargin, exbViewerData.viewerPosCount, exbViewerData.viewerPosFloor, exbViewerData.viewerPosSize, exbViewerData.viewerPosNum))
         if (result == "success") {
-          Redirect("/manage/exbSetup").flashing("resultOK" -> Messages("db.update.ok"))
+          Redirect("/system/exbSetup").flashing("resultOK" -> Messages("db.update.ok"))
         } else {
-          Redirect("/manage/exbSetup").flashing("resultNG" -> Messages(result))
+          Redirect("/system/exbSetup").flashing("resultNG" -> Messages(result))
         }
       }
     )

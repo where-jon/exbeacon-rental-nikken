@@ -1,4 +1,4 @@
-@import models.manage.FloorAll
+@import models.system.FloorAll
 @(
 mapViewerForm: Form[MapViewerData],
 mapViewer: Seq[FloorAll]
@@ -11,8 +11,17 @@ mapViewer: Seq[FloorAll]
 <html lang="ja">
 <head>
     @templates.htmlHead(title = Messages("lang.manage.mapManager"))
-    <link rel="stylesheet" href="@routes.MyAssets.css("manage/floorMap.css")"/>
-    <script type="text/javascript" src="@routes.MyAssets.js("manage/floorMap.js")"></script>
+     <style type="text/css">
+        .navbar-brand {
+            margin-left: 5px;
+            text-align: center;
+        }
+        div#pcTabletNav {
+            margin:0px;
+        }
+    </style>
+    <link rel="stylesheet" href="@routes.MyAssets.css("system/floorMap.css")"/>
+    <script type="text/javascript" src="@routes.MyAssets.js("system/floorMap.js")"></script>
     <script></script>
 </head>
 
@@ -36,7 +45,7 @@ mapViewer: Seq[FloorAll]
     </div>
     <br/>
     <br/>
-    <form id="viewForm" method="post" action=/manage/uploadFloorMap" class = "hidden">
+    <form id="viewForm" method="post" action=/system/uploadFloorMap" class = "hidden">
         <tbody class="scrollBodyT" id = "tBody">
         <table class="table table-condensed table-bordered">
             <thead class="scrollHead">
@@ -75,7 +84,7 @@ mapViewer: Seq[FloorAll]
         </div>
         @mapViewer.zipWithIndex.map { case(map, i) =>
         <div id="beaconMap-@map.display_order" class = "hidden level level--@i layer-beacon" aria-label="Level @i">
-            <form action="/manage/uploadFloorMap" method="POST" enctype="multipart/form-data" class="img__area--frame">
+            <form action="/system/uploadFloorMap" method="POST" enctype="multipart/form-data" class="img__area--frame">
                 <div class = "inputFrame map__input--frame">
                     <input id="inputNum-@i" class="map__image--input"   type="file" name="map_image[@i]" accept="image/gif,image/jpeg,image/png"  >
                     <input id="map_id" class ="hidden"  type="text"  value=@map.floor_id  name="map_id[@i]">

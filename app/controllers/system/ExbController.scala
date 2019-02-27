@@ -1,9 +1,9 @@
-package controllers.manage
+package controllers.system
 
 import javax.inject.{Inject, Singleton}
 import com.mohiva.play.silhouette.api.Silhouette
 import controllers.{BaseController, site}
-import models.manage.{ExbDeleteForm, ExbUpdateForm}
+import models.system.{ExbDeleteForm, ExbUpdateForm}
 import play.api._
 import play.api.data.Form
 import play.api.data.Forms.{mapping, _}
@@ -22,8 +22,8 @@ class ExbController @Inject()(config: Configuration
   , val silhouette: Silhouette[MyEnv]
   , val messagesApi: MessagesApi
   , placeDAO: models.placeDAO
-  , floorDAO: models.manage.floorDAO
-  , exbDAO: models.manage.ExbDAO
+  , floorDAO: models.system.floorDAO
+  , exbDAO: models.system.ExbDAO
   ) extends BaseController with I18nSupport {
 
   /** 初期表示 */
@@ -37,7 +37,7 @@ class ExbController @Inject()(config: Configuration
       // exb情報の取得
       val exbInfoList = exbDAO.selectExbAll(placeId)
 
-      Ok(views.html.manage.exb(exbInfoList,floorInfoList))
+      Ok(views.html.system.exb(exbInfoList,floorInfoList))
     }else {
       Redirect(site.routes.ItemCarMaster.index)
     }

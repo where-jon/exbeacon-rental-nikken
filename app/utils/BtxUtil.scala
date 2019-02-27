@@ -1,7 +1,7 @@
 package utils
 
 import models.exCloudBtxData
-import models.manage.FloorInfo
+import models.system.FloorInfo
 
 object BtxUtil {
   /**
