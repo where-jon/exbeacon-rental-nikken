@@ -186,78 +186,85 @@ success.tenanat.Region.update=現場情報を更新しました。
 success.tenanat.Region.passwordUpdate=パスワードを更新しました。
 success.tenanat.Region.delete=現場情報を削除しました。
 
+
+lang.system.floorManager = フロア管理
+lang.system.mapManager = フロアマップ登録
+error.system.mapManager.image.empty=選択されたフロアマップがないです。
+lang.system.exbManager = EXB管理
+lang.system.exbViewerManager = EXB設置管理
+
 #フロア
 success.cms.Floor.floorDelete=フロアを削除しました。
 success.cms.Floor.floorUpdate=フロア情報を更新しました。
 
-lang.manage.floor.title=フロア管理
-lang.manage.floor.displayOrder=表示順
-lang.manage.floor.name=フロア名
-lang.manage.floor.display=現場状況画面表示
-lang.manage.floor.floorId=ID
+lang.system.floor.title=フロア管理
+lang.system.floor.displayOrder=表示順
+lang.system.floor.name=フロア名
+lang.system.floor.display=現場状況画面表示
+lang.system.floor.floorId=ID
 
-lang.manage.floor.floorUpdate.popup.displayOrder=表示順
-lang.manage.floor.floorUpdate.popup.displayOrder.placeholder=1
-lang.manage.floor.floorUpdate.popup.name=フロア名
-lang.manage.floor.floorUpdate.popup.name.placeholder=8F
-lang.manage.floor.floor.button.floorEdit=フロア編集
-lang.manage.floor.floor.button.addFloor=フロア追加
-lang.manage.floor.floor.button.deleteFloor=フロア削除
-lang.manage.floor.floorDelete.popup.title=フロア削除
-lang.manage.floor.floorUpdate.popup.title=フロア更新
-lang.manage.floor.floorDelete.popup.message=フロアを削除します。\nよろしいですか？
-error.manage.floor.delete.exb=EXBがフロアに設置されてるため、削除できません。
-error.manage.floor.floorUpdate.inputFloorName.empty=フロア名を入力してください。
-error.manage.floor.floorUpdate.displayOrder.empty=表示順を数字で入力して下さい。
-error.manage.floor.floorUpdate.inputDisplayOrder.duplicate=表示順「{0}」はすでに登録されてます。
-error.manage.floor.floorUpdate.inputExbDeviceNoListComma.empty=EXBeaconデバイスNoを入力してください。
-error.manage.floor.floorUpdate.delete.empty=削除対象フロアを選択してください。
-error.manage.floor.floorUpdate.inputFloorName.duplicate=フロア名が重複しています。
-error.manage.floor.floorUpdate.inputDeviceNo.notNumeric=EXBeaconデバイスNoは半角数字で入力してください。
-error.manage.floor.floorUpdate.inputDeviceNo.duplicate=EXBeaconデバイスNoが重複しています。(デバイスNo：{0})
-error.manage.floor.floorUpdate.DeviceId.notfound=EXBeaconデバイスID設定がありません。管理者に問い合わせてください。(デバイスNo：{0})
+lang.system.floor.floorUpdate.popup.displayOrder=表示順
+lang.system.floor.floorUpdate.popup.displayOrder.placeholder=1
+lang.system.floor.floorUpdate.popup.name=フロア名
+lang.system.floor.floorUpdate.popup.name.placeholder=8F
+lang.system.floor.floor.button.floorEdit=フロア編集
+lang.system.floor.floor.button.addFloor=フロア追加
+lang.system.floor.floor.button.deleteFloor=フロア削除
+lang.system.floor.floorDelete.popup.title=フロア削除
+lang.system.floor.floorUpdate.popup.title=フロア更新
+lang.system.floor.floorDelete.popup.message=フロアを削除します。\nよろしいですか？
+error.system.floor.delete.exb=EXBがフロアに設置されてるため、削除できません。
+error.system.floor.floorUpdate.inputFloorName.empty=フロア名を入力してください。
+error.system.floor.floorUpdate.displayOrder.empty=表示順を数字で入力して下さい。
+error.system.floor.floorUpdate.inputDisplayOrder.duplicate=表示順「{0}」はすでに登録されてます。
+error.system.floor.floorUpdate.inputExbDeviceNoListComma.empty=EXBeaconデバイスNoを入力してください。
+error.system.floor.floorUpdate.delete.empty=削除対象フロアを選択してください。
+error.system.floor.floorUpdate.inputFloorName.duplicate=フロア名が重複しています。
+error.system.floor.floorUpdate.inputDeviceNo.notNumeric=EXBeaconデバイスNoは半角数字で入力してください。
+error.system.floor.floorUpdate.inputDeviceNo.duplicate=EXBeaconデバイスNoが重複しています。(デバイスNo：{0})
+error.system.floor.floorUpdate.DeviceId.notfound=EXBeaconデバイスID設定がありません。管理者に問い合わせてください。(デバイスNo：{0})
 
 
 #EXB
 # CMS文字列（EXB管理）
-lang.manage.exb.title=EXB管理
-lang.manage.exb.exbId =EXB設置番号（固定）
-lang.manage.exb.show =表示
-lang.manage.exb.floor =フロア
-lang.manage.exb.type =表示種別
-lang.manage.exb.count =表示数
-lang.manage.exb.x =X座標
-lang.manage.exb.y =Y座標
-lang.manage.exb.size =サイズ
-lang.manage.exb.margin =幅間隔
+lang.system.exb.title=EXB管理
+lang.system.exb.exbId =EXB設置番号（固定）
+lang.system.exb.show =表示
+lang.system.exb.floor =フロア
+lang.system.exb.type =表示種別
+lang.system.exb.count =表示数
+lang.system.exb.x =X座標
+lang.system.exb.y =Y座標
+lang.system.exb.size =サイズ
+lang.system.exb.margin =幅間隔
 
-lang.manage.exb.deviceId=EXBデバイスID
-lang.manage.exb.deviceId.popup.placeholder=1
-lang.manage.exb.deviceNo=デバイス番号
-lang.manage.exb.deviceNo.popup.placeholder=1
-lang.manage.exb.deviceName=デバイス名
-lang.manage.exb.deviceName.popup.placeholder=Beacon名
-lang.manage.exb.posName=設置場所名
-lang.manage.exb.posName.popup.placeholder=1F 会議室
-lang.manage.exb.setupFloorId=フロア管理番号（固定）
-lang.manage.exb.setupFloorName=設置フロア名
+lang.system.exb.deviceId=EXBデバイスID
+lang.system.exb.deviceId.popup.placeholder=1
+lang.system.exb.deviceNo=デバイス番号
+lang.system.exb.deviceNo.popup.placeholder=1
+lang.system.exb.deviceName=デバイス名
+lang.system.exb.deviceName.popup.placeholder=Beacon名
+lang.system.exb.posName=設置場所名
+lang.system.exb.posName.popup.placeholder=1F 会議室
+lang.system.exb.setupFloorId=フロア管理番号（固定）
+lang.system.exb.setupFloorName=設置フロア名
 
-lang.manage.exb.exb.button.exbEdit=EXB編集
-lang.manage.exb.exb.button.addExb=EXB追加
-lang.manage.exb.exb.button.deleteExb=EXB削除
-lang.manage.exb.exbDelete.popup.title=EXB削除
-lang.manage.exb.exbDelete.popup.message=EXBを削除します。\nよろしいですか？
-lang.manage.exb.exbUpdate.popup.title=EXB更新
+lang.system.exb.exb.button.exbEdit=EXB編集
+lang.system.exb.exb.button.addExb=EXB追加
+lang.system.exb.exb.button.deleteExb=EXB削除
+lang.system.exb.exbDelete.popup.title=EXB削除
+lang.system.exb.exbDelete.popup.message=EXBを削除します。\nよろしいですか？
+lang.system.exb.exbUpdate.popup.title=EXB更新
 
-error.manage.exb.exbUpdate.delete.empty=削除対象EXBを選択してください。
-error.manage.exb.exbUpdate.inputDeviceId.empty=EXBデバイスIDは半角数字入力してください。
-error.manage.exb.exbUpdate.inputDeviceNo.empty=デバイスNOは半角数字で入力してください。
-error.manage.exb.exbUpdate.inputDeviceName.empty=デバイス名を入力してください。
-error.manage.exb.exbUpdate.inputPosName.empty=場所名を入力してください。
-error.manage.exb.exbUpdate.setupFloorId.empty=設置フロアIDは半角数字で入力してください。
-error.manage.exb.exbUpdate.setupNumCheck.duplicate=EXBデバイスID「{0}」はすでに登録されてます。
-success.manage.exb.exbUpdate=EXB情報を更新しました。
-success.manage.exb.exbDelete=EXBを削除しました。
+error.system.exb.exbUpdate.delete.empty=削除対象EXBを選択してください。
+error.system.exb.exbUpdate.inputDeviceId.empty=EXBデバイスIDは半角数字入力してください。
+error.system.exb.exbUpdate.inputDeviceNo.empty=デバイスNOは半角数字で入力してください。
+error.system.exb.exbUpdate.inputDeviceName.empty=デバイス名を入力してください。
+error.system.exb.exbUpdate.inputPosName.empty=場所名を入力してください。
+error.system.exb.exbUpdate.setupFloorId.empty=設置フロアIDは半角数字で入力してください。
+error.system.exb.exbUpdate.setupNumCheck.duplicate=EXBデバイスID「{0}」はすでに登録されてます。
+success.system.exb.exbUpdate=EXB情報を更新しました。
+success.system.exb.exbDelete=EXBを削除しました。
 
 success.cms.CompanyManage.delete=業者情報を削除しました。
 success.cms.CompanyManage.update=業者情報を更新しました。
@@ -585,12 +592,6 @@ lang.OtherItem.itemTableTitle.name=資材名
 lang.OtherItem.itemTableTitle.value=利用状況
 
 
-# Manage(旧)
-lang.manage.floorManager = フロア管理
-lang.manage.mapManager = フロアマップ登録
-error.manage.mapManager.image.empty=選択されたフロアマップがないです。
-lang.manage.exbManager = EXB管理
-lang.manage.exbViewerManager = EXB設置管理
 
 
 

@@ -36,9 +36,9 @@ class FloorController @Inject()(config: Configuration
     val inputForm = Form(mapping(
       "inputFloorId" -> text
       ,"inputPreDisplayOrder" -> text
-      ,"inputDisplayOrder" -> text.verifying(Messages("error.manage.floor.floorUpdate.displayOrder.empty"), {_.matches("^[0-9]+$")})
+      ,"inputDisplayOrder" -> text.verifying(Messages("error.system.floor.floorUpdate.displayOrder.empty"), {_.matches("^[0-9]+$")})
       ,"activeFlg" -> boolean
-      , "inputFloorName" -> text.verifying(Messages("error.manage.floor.floorUpdate.inputFloorName.empty"), {!_.isEmpty})
+      , "inputFloorName" -> text.verifying(Messages("error.system.floor.floorUpdate.inputFloorName.empty"), {!_.isEmpty})
     )(FloorUpdateForm.apply)(FloorUpdateForm.unapply))
     val placeId = securedRequest2User.currentPlaceId.get
     // フォームの取得
@@ -60,7 +60,7 @@ class FloorController @Inject()(config: Configuration
       }
       // 編集の場合前回表示順と現在表示順が違う場合チェックを行う
       if(vDisplayOrderDuplicateCheck > 0){   //display_order重複判断
-        Redirect(routes.FloorController.index()).flashing(ERROR_MSG_KEY -> Messages("error.manage.floor.floorUpdate.inputDisplayOrder.duplicate",f.inputDisplayOrder.toInt))
+        Redirect(routes.FloorController.index()).flashing(ERROR_MSG_KEY -> Messages("error.system.floor.floorUpdate.inputDisplayOrder.duplicate",f.inputDisplayOrder.toInt))
       }else {
         if(f.inputFloorId.isEmpty){// 新規フロア登録の場合
           // DB処理
@@ -99,7 +99,7 @@ class FloorController @Inject()(config: Configuration
       val vTarget = floorInfoList.filter(_.floor_id == vDeleteFloorId)
       val vAlreadySetupExb = vTarget.last.exbDeviceIdList.last
       if(vAlreadySetupExb.nonEmpty){  // exbが設置されてる
-        Redirect(routes.FloorController.index()).flashing(ERROR_MSG_KEY -> Messages("error.manage.floor.delete.exb"))
+        Redirect(routes.FloorController.index()).flashing(ERROR_MSG_KEY -> Messages("error.system.floor.delete.exb"))
       }else{  // 正常の場合削除を行う
        floorDAO.deleteById(vDeleteFloorId) // 削除処理
         Redirect(routes.FloorController.index)

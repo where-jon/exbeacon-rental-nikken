@@ -48,11 +48,11 @@ class ExbController @Inject()(config: Configuration
   def exbUpdate = SecuredAction { implicit request =>
     val inputForm = Form(mapping(
       "inputExbId" -> text
-      , "inputDeviceId" -> text.verifying(Messages("error.manage.exb.exbUpdate.inputDeviceId.empty"), {_.matches("^[0-9]+$")})
+      , "inputDeviceId" -> text.verifying(Messages("error.system.exb.exbUpdate.inputDeviceId.empty"), {_.matches("^[0-9]+$")})
       , "inputPreDeviceId" -> text
-      , "inputDeviceNo" -> text.verifying(Messages("error.manage.exb.exbUpdate.inputDeviceNo.empty"), {_.matches("^[0-9]+$")})
-      , "inputDeviceName" -> text.verifying(Messages("error.manage.exb.exbUpdate.inputDeviceName.empty"), {!_.isEmpty})
-      , "inputPosName" -> text.verifying(Messages("error.manage.exb.exbUpdate.inputPosName.empty"), {!_.isEmpty})
+      , "inputDeviceNo" -> text.verifying(Messages("error.system.exb.exbUpdate.inputDeviceNo.empty"), {_.matches("^[0-9]+$")})
+      , "inputDeviceName" -> text.verifying(Messages("error.system.exb.exbUpdate.inputDeviceName.empty"), {!_.isEmpty})
+      , "inputPosName" -> text.verifying(Messages("error.system.exb.exbUpdate.inputPosName.empty"), {!_.isEmpty})
       , "setupFloorId" -> text
     )(ExbUpdateForm.apply)(ExbUpdateForm.unapply))
 
@@ -76,17 +76,17 @@ class ExbController @Inject()(config: Configuration
         }
       // 編集の場合前回設置場所番号と現在設置場所番号が違う場合チェックを行う
       if(vExbSetupNumCheck > 0) { //inputPreDeviceId重複判断
-        Redirect(routes.ExbController.index()).flashing(ERROR_MSG_KEY -> Messages("error.manage.exb.exbUpdate.setupNumCheck.duplicate",f.inputDeviceId.toInt))
+        Redirect(routes.ExbController.index()).flashing(ERROR_MSG_KEY -> Messages("error.system.exb.exbUpdate.setupNumCheck.duplicate",f.inputDeviceId.toInt))
       }else{
         if(f.inputExbId.isEmpty) {  // 新規EXB登録の場合
           // DB処理
           exbDAO.insertData(f.inputDeviceId.toInt,f.inputDeviceNo.toInt,f.inputDeviceName,f.inputPosName,f.setupFloorId.toInt,placeId)
           Redirect(routes.ExbController.index)
-            .flashing(SUCCESS_MSG_KEY -> Messages("success.manage.exb.exbUpdate"))
+            .flashing(SUCCESS_MSG_KEY -> Messages("success.system.exb.exbUpdate"))
         }else{ // EXB更新の場合
           exbDAO.update(f.inputDeviceId.toInt,f.inputDeviceNo.toInt,f.inputDeviceName,f.inputPosName,f.setupFloorId.toInt,f.inputExbId.toInt,placeId)
           Redirect(routes.ExbController.index)
-            .flashing(SUCCESS_MSG_KEY -> Messages("success.manage.exb.exbUpdate"))
+            .flashing(SUCCESS_MSG_KEY -> Messages("success.system.exb.exbUpdate"))
         }
       }
     }
@@ -95,7 +95,7 @@ class ExbController @Inject()(config: Configuration
   def exbDelete = SecuredAction { implicit request =>
     // フォームの準備
     val deleteForm = Form(mapping(
-      "deleteExbId" -> text.verifying(Messages("error.manage.exb.exbUpdate.delete.empty"), {!_.isEmpty}),
+      "deleteExbId" -> text.verifying(Messages("error.system.exb.exbUpdate.delete.empty"), {!_.isEmpty}),
       "floorId"  -> text
     )(ExbDeleteForm.apply)(ExbDeleteForm.unapply))
 
@@ -118,11 +118,11 @@ class ExbController @Inject()(config: Configuration
       else vTarget.last.exbDeviceIdList.last
 
       if(vAlreadySetupExb.nonEmpty) { // exbが設置されてる
-        Redirect(routes.ExbController.index()).flashing(ERROR_MSG_KEY -> Messages("error.manage.floor.delete.exb"))
+        Redirect(routes.ExbController.index()).flashing(ERROR_MSG_KEY -> Messages("error.system.floor.delete.exb"))
       }else{  // 正常の場合削除を行う
         exbDAO.deleteById(vDeleteExbId) // 削除処理
         Redirect(routes.ExbController.index)
-          .flashing(SUCCESS_MSG_KEY -> Messages("success.manage.exb.exbDelete"))
+          .flashing(SUCCESS_MSG_KEY -> Messages("success.system.exb.exbDelete"))
       }
     }
   }

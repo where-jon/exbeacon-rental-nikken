@@ -72,7 +72,7 @@ class FloorMapController @Inject()(config: Configuration
               Redirect("/system/floorMap").flashing("resultNG" -> Messages("error"))
             }
           }else{
-            Redirect("/system/floorMap").flashing("resultNG" -> Messages("error.manage.mapManager.image.empty"))
+            Redirect("/system/floorMap").flashing("resultNG" -> Messages("error.system.mapManager.image.empty"))
           }
 
         }.getOrElse {
