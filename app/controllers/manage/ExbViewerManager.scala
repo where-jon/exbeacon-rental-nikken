@@ -20,7 +20,7 @@ class ExbViewerManager @Inject()(config: Configuration
   , val messagesApi: MessagesApi
   , ws: WSClient
   , exbDAO: models.manage.ExbDAO
-  , floorDAO: models.floorDAO
+  , floorDAO: models.manage.floorDAO
   , viewTypeDAO: models.ViewTypeDAO
   ) extends BaseController with I18nSupport {
 

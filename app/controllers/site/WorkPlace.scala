@@ -20,7 +20,7 @@ class WorkPlace @Inject()(config: Configuration
   , beaconService: BeaconService
   , ws: WSClient
   , exbDAO: models.manage.ExbDAO
-  , floorDAO: models.floorDAO
+  , floorDAO: models.manage.floorDAO
   , itemTypeDAO: models.ItemTypeDAO
   ) extends BaseController with I18nSupport {
 

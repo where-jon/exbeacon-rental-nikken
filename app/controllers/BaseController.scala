@@ -1,8 +1,7 @@
 package controllers
 
-import utils.silhouette.{AuthController, MyEnv}
 import com.mohiva.play.silhouette.api.actions.SecuredRequest
-import models.{FloorInfo, exCloudBtxData}
+import utils.silhouette.{AuthController, MyEnv}
 
 /**
   * 基底クラス

@@ -1,4 +1,4 @@
-package models
+package models.manage
 
 import javax.inject.Inject
 

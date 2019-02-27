@@ -1,6 +1,7 @@
 package utils
 
-import models.{FloorInfo, exCloudBtxData}
+import models.exCloudBtxData
+import models.manage.FloorInfo
 
 object BtxUtil {
   /**

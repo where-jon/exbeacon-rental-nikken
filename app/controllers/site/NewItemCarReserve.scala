@@ -2,16 +2,18 @@ package controllers.site
 
 import java.text.SimpleDateFormat
 import java.util.{Date, Locale}
-import javax.inject.{Inject, Singleton}
 
+import javax.inject.{Inject, Singleton}
 import com.mohiva.play.silhouette.api.Silhouette
 import controllers.{BaseController, BeaconService, errors}
 import models._
+import models.manage.Floor
 import play.api._
 import play.api.data.Form
 import play.api.data.Forms.{text, _}
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import utils.silhouette.MyEnv
+
 import util.control.Breaks._
 
 /**
@@ -27,7 +29,7 @@ class NewItemCarReserve @Inject()(config: Configuration
 , carDAO: models.itemCarDAO
 , companyDAO: models.companyDAO
 , beaconService: BeaconService
-, floorDAO: models.floorDAO
+, floorDAO: models.manage.floorDAO
 , btxDAO: models.btxDAO
 , reserveMasterDAO: models.ReserveMasterDAO
 , itemTypeDAO: models.ItemTypeDAO

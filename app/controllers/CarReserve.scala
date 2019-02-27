@@ -40,7 +40,7 @@ class CarReserve @Inject()(config: Configuration
                            , ws: WSClient
                            , carReserveDAO: models.carReserveDAO
                            , reserveDAO: models.reserveDAO
-                           , floorDAO: models.floorDAO
+                           , floorDAO: models.manage.floorDAO
                            , placeDAO: models.placeDAO
                            , carDAO: models.itemCarDAO
                            , companyDAO: models.companyDAO

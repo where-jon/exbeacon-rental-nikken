@@ -1,10 +1,10 @@
 package controllers.site
 
 import javax.inject.{Inject, Singleton}
-
 import com.mohiva.play.silhouette.api.Silhouette
 import controllers.{BaseController, BeaconService, errors}
 import models._
+import models.manage.Floor
 import play.api._
 import play.api.data.Form
 import play.api.data.Forms._
@@ -25,7 +25,7 @@ class ItemOtherCancel @Inject()(config: Configuration
 , otherDAO: models.itemOtherDAO
 , companyDAO: models.companyDAO
 , beaconService: BeaconService
-, floorDAO: models.floorDAO
+, floorDAO: models.manage.floorDAO
 , btxDAO: models.btxDAO
 , itemTypeDAO: models.ItemTypeDAO
 , workTypeDAO: models.WorkTypeDAO

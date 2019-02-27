@@ -25,7 +25,7 @@ class FloorMapController @Inject()(config: Configuration
   , val silhouette: Silhouette[MyEnv]
   , val messagesApi: MessagesApi
   , ws: WSClient
-  , floorDAO: models.floorDAO
+  , floorDAO: models.manage.floorDAO
   ) extends BaseController with I18nSupport {
 
   val IMAGE_WIDTH = config.getInt("web.btxmaster.mapWidth").get

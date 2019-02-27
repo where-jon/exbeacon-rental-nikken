@@ -23,7 +23,7 @@ class RegionController @Inject() (
   val silhouette: Silhouette[MyEnv],
   val messagesApi: MessagesApi,
   placeDAO: models.placeDAO,
-  floorDAO: models.floorDAO,
+  floorDAO: models.manage.floorDAO,
   exbDAO: models.manage.ExbDAO,
   passwordHasherRegistry: PasswordHasherRegistry,
   userService: UserService,

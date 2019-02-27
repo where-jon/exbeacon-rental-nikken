@@ -26,7 +26,7 @@ class FloorController @Inject()(config: Configuration
   , val silhouette: Silhouette[MyEnv]
   , val messagesApi: MessagesApi
   , placeDAO: models.placeDAO
-  , floorDAO: models.floorDAO
+  , floorDAO: models.manage.floorDAO
   , exbDAO: models.manage.ExbDAO
   ) extends BaseController with I18nSupport {
 
