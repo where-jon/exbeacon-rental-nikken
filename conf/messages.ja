@@ -76,16 +76,6 @@ error.tenanat.Region.noDelete.byCarMaster=この現場に紐づく作業車・�
 error.tenanat.Region.noDelete.byExb=この現場に紐づくEXBが存在しているので削除できません。
 error.tenanat.Region.noDelete.byFloor=この現場に紐づくフロアが存在しているので削除できません。
 
-
-
-
-error.cms.floorManage.floorUpdate.inputFloorName.duplicate=フロア名が重複しています。
-error.cms.floorManage.floorUpdate.inputDeviceNo.notNumeric=EXBeaconデバイスNoは半角数字で入力してください。
-error.cms.floorManage.floorUpdate.inputDeviceNo.duplicate=EXBeaconデバイスNoが重複しています。(デバイスNo：{0})
-error.cms.floorManage.floorUpdate.DeviceId.notfound=EXBeaconデバイスID設定がありません。管理者に問い合わせてください。(デバイスNo：{0})
-error.cms.floorManage.floorUpdate.inputExbDeviceNoListComma.empty=EXBeaconデバイスNoを入力してください。
-error.cms.floorManage.floorUpdate.delete.empty=削除対象フロアを選択してください。
-
 error.cms.CompanyManage.update.inputCompanyName.empty=業者名を入力してください。
 error.cms.CompanyManage.update.inputCompanyName.duplicate=業者名が重複しています。(業者名：{0})
 error.cms.CompanyManage.update.inputCompanyName.use.noChange=業者は現在予約されている為、更新と削除ができません。(業者名：{0})
@@ -190,13 +180,44 @@ error.unmatched.data=APIと登録データが違うため正しく表示でき�
 # SUCCESS
 success.CarReserve.registerModal=予約を登録しました。
 
+#リージョン
 success.tenanat.Region.register=現場情報を登録しました。
 success.tenanat.Region.update=現場情報を更新しました。
 success.tenanat.Region.passwordUpdate=パスワードを更新しました。
 success.tenanat.Region.delete=現場情報を削除しました。
-success.cms.FloorManage.floorDelete=フロアを削除しました。
+
+#フロア
+success.cms.Floor.floorDelete=フロアを削除しました。
+success.cms.Floor.floorUpdate=フロア情報を更新しました。
+
+lang.cms.floor.title=フロア管理
+lang.cms.floor.displayOrder=表示順
+lang.cms.floor.name=フロア名
+lang.cms.floor.display=現場状況画面表示
+lang.cms.floor.floorId=ID
+
+lang.cms.floor.floorUpdate.popup.displayOrder=表示順
+lang.cms.floor.floorUpdate.popup.displayOrder.placeholder=1
+lang.cms.floor.floorUpdate.popup.name=フロア名
+lang.cms.floor.floorUpdate.popup.name.placeholder=8F
+lang.cms.floor.floor.button.floorEdit=フロア編集
+lang.cms.floor.floor.button.addFloor=フロア追加
+lang.cms.floor.floor.button.deleteFloor=フロア削除
+lang.cms.floor.floorDelete.popup.title=フロア削除
+lang.cms.floor.floorUpdate.popup.title=フロア更新
+lang.cms.floor.floorDelete.popup.message=フロアを削除します。\nよろしいですか？
+error.cms.floor.delete.exb=EXBがフロアに設置されてるため、削除できません。
+error.cms.floor.floorUpdate.inputFloorName.empty=フロア名を入力してください。
+error.cms.floor.floorUpdate.displayOrder.empty=表示順を数字で入力して下さい。
+error.cms.floor.floorUpdate.inputDisplayOrder.duplicate=表示順「{0}」はすでに登録されてます。
+error.cms.floor.floorUpdate.inputExbDeviceNoListComma.empty=EXBeaconデバイスNoを入力してください。
+error.cms.floor.floorUpdate.delete.empty=削除対象フロアを選択してください。
+error.cms.floor.floorUpdate.inputFloorName.duplicate=フロア名が重複しています。
+error.cms.floor.floorUpdate.inputDeviceNo.notNumeric=EXBeaconデバイスNoは半角数字で入力してください。
+error.cms.floor.floorUpdate.inputDeviceNo.duplicate=EXBeaconデバイスNoが重複しています。(デバイスNo：{0})
+error.cms.floor.floorUpdate.DeviceId.notfound=EXBeaconデバイスID設定がありません。管理者に問い合わせてください。(デバイスNo：{0})
+
 success.cms.ExbManage.exbDelete=EXBを削除しました。
-success.cms.FloorManage.floorUpdate=フロア情報を更新しました。
 
 success.cms.CompanyManage.delete=業者情報を削除しました。
 success.cms.CompanyManage.update=業者情報を更新しました。
@@ -314,27 +335,6 @@ lang.cms.placeManage.changePassword.button.title=パスワードを変更する
 lang.cms.placeManage.changePassword.popup.name=パスワードを変更します。よろしいですか？
 
 
-# CMS文字列（フロア管理）
-lang.cms.floorManage.title=フロア管理
-lang.cms.floorManage.displayOrder=表示順
-lang.cms.floorManage.name=フロア名
-lang.cms.floorManage.display=現場状況画面表示
-lang.cms.floorManage.floorId=ID
-
-lang.cms.floorManage.floorUpdate.popup.displayOrder=表示順
-lang.cms.floorManage.floorUpdate.popup.displayOrder.placeholder=1
-lang.cms.floorManage.floorUpdate.popup.name=フロア名
-lang.cms.floorManage.floorUpdate.popup.name.placeholder=8F
-lang.cms.floorManage.floor.button.floorEdit=フロア編集
-lang.cms.floorManage.floor.button.addFloor=フロア追加
-lang.cms.floorManage.floor.button.deleteFloor=フロア削除
-lang.cms.floorManage.floorDelete.popup.title=フロア削除
-lang.cms.floorManage.floorUpdate.popup.title=フロア更新
-lang.cms.floorManage.floorDelete.popup.message=フロアを削除します。\nよろしいですか？
-error.cms.floorManage.delete.exb=EXBがフロアに設置されてるため、削除できません。
-error.cms.floorManage.floorUpdate.inputFloorName.empty=フロア名を入力してください。
-error.cms.floorManage.floorUpdate.displayOrder.empty=表示順を数字で入力して下さい。
-error.cms.floorManage.floorUpdate.inputDisplayOrder.duplicate=表示順「{0}」はすでに登録されてます。
 
 # CMS文字列（EXB管理）
 lang.cms.exbManage.title=EXB管理

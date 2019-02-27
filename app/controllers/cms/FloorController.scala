@@ -22,7 +22,7 @@ case class FloorDeleteForm(deleteFloorId: String)
 case class FloorUpdateForm(inputFloorId: String,inputPreDisplayOrder:String,inputDisplayOrder:String,activeFlg:Boolean,inputFloorName: String)
 
 @Singleton
-class FloorManage @Inject()(config: Configuration
+class FloorController @Inject()(config: Configuration
   , val silhouette: Silhouette[MyEnv]
   , val messagesApi: MessagesApi
   , placeDAO: models.placeDAO
@@ -36,9 +36,9 @@ class FloorManage @Inject()(config: Configuration
     val inputForm = Form(mapping(
       "inputFloorId" -> text
       ,"inputPreDisplayOrder" -> text
-      ,"inputDisplayOrder" -> text.verifying(Messages("error.cms.floorManage.floorUpdate.displayOrder.empty"), {_.matches("^[0-9]+$")})
+      ,"inputDisplayOrder" -> text.verifying(Messages("error.cms.floor.floorUpdate.displayOrder.empty"), {_.matches("^[0-9]+$")})
       ,"activeFlg" -> boolean
-      , "inputFloorName" -> text.verifying(Messages("error.cms.floorManage.floorUpdate.inputFloorName.empty"), {!_.isEmpty})
+      , "inputFloorName" -> text.verifying(Messages("error.cms.floor.floorUpdate.inputFloorName.empty"), {!_.isEmpty})
     )(FloorUpdateForm.apply)(FloorUpdateForm.unapply))
     val placeId = securedRequest2User.currentPlaceId.get
     // フォームの取得
@@ -47,7 +47,7 @@ class FloorManage @Inject()(config: Configuration
       // エラーメッセージ
       val errMsg = form.errors.map(_.message).mkString(HTML_BR)
       // リダイレクトで画面遷移
-      Redirect(routes.FloorManage.index()).flashing(ERROR_MSG_KEY -> errMsg)
+      Redirect(routes.FloorController.index()).flashing(ERROR_MSG_KEY -> errMsg)
     }else{
       val f = form.get
       val vDisplayOrderDuplicateCheck =
@@ -60,20 +60,20 @@ class FloorManage @Inject()(config: Configuration
       }
       // 編集の場合前回表示順と現在表示順が違う場合チェックを行う
       if(vDisplayOrderDuplicateCheck > 0){   //display_order重複判断
-        Redirect(routes.FloorManage.index()).flashing(ERROR_MSG_KEY -> Messages("error.cms.floorManage.floorUpdate.inputDisplayOrder.duplicate",f.inputDisplayOrder.toInt))
+        Redirect(routes.FloorController.index()).flashing(ERROR_MSG_KEY -> Messages("error.cms.floor.floorUpdate.inputDisplayOrder.duplicate",f.inputDisplayOrder.toInt))
       }else {
         if(f.inputFloorId.isEmpty){// 新規フロア登録の場合
           // DB処理
           floorDAO.insert(f.inputFloorName,f.inputDisplayOrder.toInt,f.activeFlg,placeId)
           // 成功で遷移
-          Redirect(routes.FloorManage.index)
-            .flashing(SUCCESS_MSG_KEY -> Messages("success.cms.FloorManage.floorUpdate"))
+          Redirect(routes.FloorController.index)
+            .flashing(SUCCESS_MSG_KEY -> Messages("success.cms.Floor.floorUpdate"))
 
         }else{  // フロア更新の場合 --------------------------
           // DB処理
           floorDAO.update(f.inputFloorId.toInt,f.inputFloorName,f.inputDisplayOrder.toInt,f.activeFlg,placeId)
-          Redirect(routes.FloorManage.index)
-            .flashing(SUCCESS_MSG_KEY -> Messages("success.cms.FloorManage.floorUpdate"))
+          Redirect(routes.FloorController.index)
+            .flashing(SUCCESS_MSG_KEY -> Messages("success.cms.Floor.floorUpdate"))
         }
       }
     }
@@ -82,7 +82,7 @@ class FloorManage @Inject()(config: Configuration
   def floorDelete = SecuredAction { implicit request =>
     // フォームの準備
     val deleteForm = Form(mapping(
-        "deleteFloorId" -> text.verifying(Messages("error.cms.floorManage.floorUpdate.delete.empty"), {!_.isEmpty})
+        "deleteFloorId" -> text.verifying(Messages("error.cms.Floor.floorUpdate.delete.empty"), {!_.isEmpty})
     )(FloorDeleteForm.apply)(FloorDeleteForm.unapply))
 
     // フォームの取得
@@ -91,7 +91,7 @@ class FloorManage @Inject()(config: Configuration
       // エラーメッセージ
       val errMsg = form.errors.map(_.message).mkString(HTML_BR)
       // リダイレクトで画面遷移
-      Redirect(routes.FloorManage.index()).flashing(ERROR_MSG_KEY -> errMsg)
+      Redirect(routes.FloorController.index()).flashing(ERROR_MSG_KEY -> errMsg)
     }else {
       val vDeleteFloorId = form.get.deleteFloorId.toInt
       val placeId = securedRequest2User.currentPlaceId.get
@@ -99,11 +99,11 @@ class FloorManage @Inject()(config: Configuration
       val vTarget = floorInfoList.filter(_.floor_id == vDeleteFloorId)
       val vAlreadySetupExb = vTarget.last.exbDeviceIdList.last
       if(vAlreadySetupExb.nonEmpty){  // exbが設置されてる
-        Redirect(routes.FloorManage.index()).flashing(ERROR_MSG_KEY -> Messages("error.cms.floorManage.delete.exb"))
+        Redirect(routes.FloorController.index()).flashing(ERROR_MSG_KEY -> Messages("error.cms.floor.delete.exb"))
       }else{  // 正常の場合削除を行う
        floorDAO.deleteById(vDeleteFloorId) // 削除処理
-        Redirect(routes.FloorManage.index)
-          .flashing(SUCCESS_MSG_KEY -> Messages("success.cms.FloorManage.floorDelete"))
+        Redirect(routes.FloorController.index)
+          .flashing(SUCCESS_MSG_KEY -> Messages("success.cms.Floor.floorDelete"))
       }
     }
   }
@@ -116,7 +116,7 @@ class FloorManage @Inject()(config: Configuration
       val placeId = securedRequest2User.currentPlaceId.get
       // フロア情報の取得
       val floorInfoList = floorDAO.selectFloorInfoData(placeId)
-      Ok(views.html.cms.floorManage(floorInfoList))
+      Ok(views.html.cms.floor(floorInfoList))
     }else {
       Redirect(site.routes.ItemCarMaster.index)
     }

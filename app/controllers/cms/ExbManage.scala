@@ -112,7 +112,7 @@ class ExbManage @Inject()(config: Configuration
       else vTarget.last.exbDeviceIdList.last
 
       if(vAlreadySetupExb.nonEmpty) { // exbが設置されてる
-        Redirect(routes.ExbManage.index()).flashing(ERROR_MSG_KEY -> Messages("error.cms.floorManage.delete.exb"))
+        Redirect(routes.ExbManage.index()).flashing(ERROR_MSG_KEY -> Messages("error.cms.floor.delete.exb"))
       }else{  // 正常の場合削除を行う
         exbDAO.deleteById(vDeleteExbId) // 削除処理
         Redirect(routes.ExbManage.index)
