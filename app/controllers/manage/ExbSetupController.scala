@@ -60,7 +60,6 @@ class ExbSetupController @Inject()(config: Configuration
 
 
   def updateExbSetup = SecuredAction { implicit request =>
-    System.out.println("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------start viewManagerControllerUpdate:");
     // 部署情報
     val placeId = super.getCurrentPlaceId
     val exbViewer = exbDAO.selectExbAll(placeId)
@@ -74,9 +73,7 @@ class ExbSetupController @Inject()(config: Configuration
       formWithErrors => BadRequest(views.html.manage.exbSetup(formWithErrors, exbViewer,mapViewer,viewType)),
       ExbViewerData => {
         exbViewerData = exbViewerForm.bindFromRequest.get
-
         val result = exbDAO.updateExbMaster(new ExbMasterData(exbViewerData.viewerId, exbViewerData.viewerVisible, exbViewerData.viewerPosType, exbViewerData.viewerPosX, exbViewerData.viewerPosY, exbViewerData.viewerPosMargin, exbViewerData.viewerPosCount, exbViewerData.viewerPosFloor, exbViewerData.viewerPosSize, exbViewerData.viewerPosNum))
-        System.out.println("exbViewerData.result////" + result);
         if (result == "success") {
           Redirect("/manage/exbSetup").flashing("resultOK" -> Messages("db.update.ok"))
         } else {
