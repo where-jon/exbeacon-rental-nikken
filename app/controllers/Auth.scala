@@ -1,36 +1,33 @@
 package controllers
 
-import models._
-import utils.silhouette._
-import utils.silhouette.Implicits._
-import com.mohiva.play.silhouette.api.{ Silhouette, LoginInfo, SignUpEvent, LoginEvent, LogoutEvent }
-import com.mohiva.play.silhouette.api.repositories.AuthInfoRepository
-import com.mohiva.play.silhouette.api.util.{ Credentials, PasswordHasherRegistry, Clock }
-import com.mohiva.play.silhouette.api.exceptions.ProviderException
-import com.mohiva.play.silhouette.impl.providers.CredentialsProvider
-import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
-import com.mohiva.play.silhouette.impl.exceptions.{ IdentityNotFoundException, InvalidPasswordException }
 import com.mohiva.play.silhouette.api.Authenticator.Implicits._
+import com.mohiva.play.silhouette.api.exceptions.ProviderException
+import com.mohiva.play.silhouette.api.repositories.AuthInfoRepository
+import com.mohiva.play.silhouette.api.util.{Clock, Credentials, PasswordHasherRegistry}
+import com.mohiva.play.silhouette.api.{LoginEvent, LogoutEvent, Silhouette}
+import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
+import com.mohiva.play.silhouette.impl.exceptions.{IdentityNotFoundException, InvalidPasswordException}
+import com.mohiva.play.silhouette.impl.providers.CredentialsProvider
+import javax.inject.{Inject, Singleton}
+import models._
+import net.ceedubs.ficus.Ficus._
 import play.api._
-import play.api.mvc._
-import play.api.Play.current
 import play.api.data.Form
 import play.api.data.Forms._
-import play.api.data.validation.Constraints._
-import play.api.i18n.{ MessagesApi, Messages }
+import play.api.i18n.{Messages, MessagesApi}
+import play.api.mvc._
 import utils.MailService
-import utils.Mailer
-import scala.concurrent.Future
+import utils.silhouette._
+import views.html.{auth => viewsAuth}
+
 import scala.concurrent.ExecutionContext.Implicits._
+import scala.concurrent.Future
 import scala.concurrent.duration._
-import net.ceedubs.ficus.Ficus._
-import javax.inject.{ Inject, Singleton }
-import views.html.{ auth => viewsAuth }
 
 /**
   * パスワード変更画面で使うFORM
   */
-case class ChangePasswordForm(
+case class PassWordForm(
   email: String = "", // ユーザID
   currentPassword: String = "", // 入力された現在のパスワード
   newPassword1: String = "", // 入力された新しいパスワード
@@ -154,9 +151,6 @@ class Auth @Inject() (
     env.authenticatorService.discard(request.authenticator, Redirect(routes.Application.index).withNewSession)
   }
 
-  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  // CHANGE PASSWORD
-
   var changePasswordForm = Form(
     mapping(
       "email" -> nonEmptyText, // ユーザID
@@ -164,17 +158,14 @@ class Auth @Inject() (
       "newPassword1" -> passwordValidation, // 入力された新しいパスワード
       "newPassword2" -> nonEmptyText // 入力された確認用パスワード
     )
-    (ChangePasswordForm.apply)
-    (ChangePasswordForm.unapply)
+    (PassWordForm.apply)
+    (PassWordForm.unapply)
       verifying(
         Messages("error.changePassword.password.notequal"),
         form => form.newPassword1 == form.newPassword2
       )
   )
 
-  /**
-   * Starts the change password mechanism. It shows a form to insert his current password and the new one.
-   */
   def changePassword = SecuredAction { implicit request =>
     if (request.identity.level >= 4) {
       // Viewを表示
@@ -185,10 +176,7 @@ class Auth @Inject() (
     }
   }
 
-  /**
-   * Saves the new password and renew the cookie
-   */
-  def handleChangePassword = SecuredAction.async { implicit request =>
+  def setupPassword = SecuredAction.async { implicit request =>
     changePasswordForm.bindFromRequest().fold(
       formWithErrors => {
         // Varidationエラーがあった場合Viewに戻ってエラー表示
@@ -233,7 +221,7 @@ class Auth @Inject() (
           case e: ProviderException => {
             // 例外発生時は普通に元の画面に戻す
             var passForm = changePasswordForm.fill(
-              ChangePasswordForm.apply(
+              PassWordForm.apply(
               )
             )
             BadRequest(views.html.tenant.changePassword(

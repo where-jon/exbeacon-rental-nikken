@@ -1,18 +1,21 @@
-# An example controller showing a sample home page
+# ホーム
 GET         /                                               controllers.Application.index
 
 ###  tenant　#################################
 # 現場管理
-GET         /tenant/region                               controllers.tenant.RegionController.region
-GET         /tenant/regionList/:number                   controllers.tenant.RegionController.regionList(number: Int)
-GET         /tenant/region/detail                        controllers.tenant.RegionController.regionDetail
-POST        /tenant/region/register                      controllers.tenant.RegionController.regionRegister
-POST        /tenant/region/change                        controllers.tenant.RegionController.regionChange
-POST        /tenant/region/update                        controllers.tenant.RegionController.regionUpdate
-POST        /tenant/region/delete                        controllers.tenant.RegionController.regionDelete
-POST        /tenant/region/passwordUpdate                controllers.tenant.RegionController.regionPasswordUpdate
-POST        /tenant/region/regionLogin                   controllers.tenant.RegionController.regionLogin
+GET         /tenant/region                                  controllers.tenant.RegionController.region
+GET         /tenant/regionList/:number                      controllers.tenant.RegionController.regionList(number: Int)
+GET         /tenant/region/detail                           controllers.tenant.RegionController.regionDetail
+POST        /tenant/region/register                         controllers.tenant.RegionController.regionRegister
+POST        /tenant/region/change                           controllers.tenant.RegionController.regionChange
+POST        /tenant/region/update                           controllers.tenant.RegionController.regionUpdate
+POST        /tenant/region/delete                           controllers.tenant.RegionController.regionDelete
+POST        /tenant/region/passwordUpdate                   controllers.tenant.RegionController.regionPasswordUpdate
+POST        /tenant/region/regionLogin                      controllers.tenant.RegionController.regionLogin
 
+# PASSWORD管理
+GET         /password                                       controllers.Auth.changePassword
+POST        /password                                       controllers.Auth.setupPassword
 ###  業務ページ ############################
 # 作業車利用状況
 GET         /carSummery                                     controllers.CarSummery.index
@@ -144,12 +147,10 @@ POST        /cms/accountManage/passwordUpdate               controllers.cms.Acco
 POST        /cms/accountManage/delete                       controllers.cms.AccountManage.delete
 
 
-## 認証周り（日立APから移植）
+## 認証周り
 GET         /signin                                         controllers.Auth.signIn
 POST        /authenticate                                   controllers.Auth.authenticate
 GET         /signout                                        controllers.Auth.signOut
-GET         /password                                       controllers.Auth.changePassword
-POST        /password                                       controllers.Auth.handleChangePassword
 GET         /myaccount                                      controllers.Application.myAccount
 
 # Map static resources from the /public folder to the /assets URL path
