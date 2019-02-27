@@ -21,7 +21,7 @@ import utils.silhouette.MyEnv
 /**
   * フロアマップ登録クラス.
   */
-class MapManager @Inject()(config: Configuration
+class MapController @Inject()(config: Configuration
   , val silhouette: Silhouette[MyEnv]
   , val messagesApi: MessagesApi
   , ws: WSClient
@@ -70,12 +70,12 @@ class MapManager @Inject()(config: Configuration
             System.out.println("11height:" + org.getHeight);
 
             if (1 == floorDAO.updateFloorMap(mapId.get.toInt, b64img, org.getWidth, org.getHeight)) {
-              Redirect("/manage/mapManager").flashing("resultOK" -> Messages("db.update.ok"))
+              Redirect("/manage/map").flashing("resultOK" -> Messages("db.update.ok"))
             } else {
-              Redirect("/manage/mapManager").flashing("resultNG" -> Messages("error"))
+              Redirect("/manage/map").flashing("resultNG" -> Messages("error"))
             }
           }else{
-            Redirect("/manage/mapManager").flashing("resultNG" -> Messages("error.manage.mapManager.image.empty"))
+            Redirect("/manage/map").flashing("resultNG" -> Messages("error.manage.mapManager.image.empty"))
           }
 
         }.getOrElse {
