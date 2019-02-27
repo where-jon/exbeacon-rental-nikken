@@ -42,7 +42,7 @@ class FloorMapController @Inject()(config: Configuration
   )(MapViewerData.apply)(MapViewerData.unapply))
 
 
-  def uploadMap = SecuredAction(parse.multipartFormData) { implicit request =>
+  def uploadFloorMap = SecuredAction(parse.multipartFormData) { implicit request =>
         System.out.println("mapUpload");
         val indexId = request.body.dataParts.get("index_id").map { t => t.head }
         System.out.println(indexId.get.toInt);
@@ -54,12 +54,9 @@ class FloorMapController @Inject()(config: Configuration
           System.out.println("filename:" + filename);
           val contentType = picture.contentType.get
           val byteArray = Files.readAllBytes(picture.ref.file.toPath)
-          //System.out.println("IMAGE_WIDTH:" + IMAGE_WIDTH);
-          //System.out.println("IMAGE_HEIGHT:" + IMAGE_HEIGHT);
 
-          //val scaledByteArray = scaleImage2(byteArray, IMAGE_WIDTH, IMAGE_HEIGHT)
           if(byteArray.length > 0){
-            val scaledByteArray = scaleMoto(byteArray, IMAGE_WIDTH, IMAGE_HEIGHT)
+            val scaledByteArray = originScale(byteArray, IMAGE_WIDTH, IMAGE_HEIGHT)
 
             val b64 = Base64.getEncoder.encodeToString(scaledByteArray)
             val b64img = s"data:image/false;base64,${b64}"
@@ -84,7 +81,7 @@ class FloorMapController @Inject()(config: Configuration
 
   }
 
-  private def scaleMoto(bytes: Array[Byte], width: Int, height: Int): Array[Byte] = {
+  private def originScale(bytes: Array[Byte], width: Int, height: Int): Array[Byte] = {
     val in = new ByteArrayInputStream(bytes)
     val org = ImageIO.read(in)
     // 既存サイズにする
@@ -95,19 +92,16 @@ class FloorMapController @Inject()(config: Configuration
       val vImgWidth = BigDecimal(fixWidth)
       val vImgHeight = BigDecimal(fixHeight)
       var divideResult = vImgWidth / vImgHeight
-      //val vGetAspect = divideResult.setScale(2, scala.math.BigDecimal.RoundingMode.HALF_UP)
       System.out.println("vGetAspect:" + divideResult)
       if (fixWidth > 4000) {
         fixWidth = 4000;
         var v4000 = 4000 / divideResult
-        //var divideResult2 = vImgWidth / vImgHeight
         val vGetAspect2 = v4000.setScale(0, scala.math.BigDecimal.RoundingMode.FLOOR)
         System.out.println("v4000:" + vGetAspect2)
         fixHeight = vGetAspect2.intValue()
       } else {
         fixHeight = 4000;
         var v4000 = 4000 / divideResult
-        //var divideResult2 = vImgWidth / vImgHeight
         val vGetAspect2 = v4000.setScale(0, scala.math.BigDecimal.RoundingMode.FLOOR)
         System.out.println("v4000:" + vGetAspect2)
         fixWidth = vGetAspect2.intValue()

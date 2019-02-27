@@ -28,7 +28,7 @@ POST        /manage/floor/floorDelete                    controllers.manage.Floo
 
 # マップマネージャー
 GET         /manage/floorMap                                controllers.manage.FloorMapController.index
-POST        /manage/uploadMap                               controllers.manage.FloorMapController.uploadMap
+POST        /manage/uploadFloorMap                          controllers.manage.FloorMapController.uploadFloorMap
 
 ###  システム管理 .end　#################################
 

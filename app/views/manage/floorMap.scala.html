@@ -6,54 +6,36 @@ mapViewer: Seq[FloorAll]
 @import controllers.routes
 @import helper._
 
-
 <!doctype html>
 <html lang="ja">
 <head>
-
     @templates.htmlHead(title = Messages("lang.manage.mapManager"))
-    <style type="text/css">
-        .navbar-brand {
-            margin-left: 5px;
-            text-align: center;
-        }
-        div#pcTabletNav {
-            margin:0px;
-        }
-    </style>
+    <link rel="stylesheet" href="@routes.MyAssets.css("manage/floorMap.css")"/>
     <script type="text/javascript" src="@routes.MyAssets.js("manage/floorMap.js")"></script>
     <script></script>
 </head>
 
 <body>
-    <!--loading部-->
     @views.html.templates.totalLoading()
-    <!-- ナビバー  -->
     @views.html.templates.navBar()
-
     @mapViewerForm.globalError.map { error =>
     @tags.alert(error.message, "error")
     }
-
     <div class="top-area">
         <div class="top__btn--area mainSpace">
             <div id="top-title" class="top__btn--text form-group">@Messages("lang.manage.mapManager")</div>
             <div class=" top__map__btn--area">
-
                 <select id="floor-category" class=" manager__data--floor">
                     @mapViewer.zipWithIndex.map { case(map, i) =>
                      <option value="@map.display_order" @{if(i == 0) "selected" else ""} >@map.floor_name</option>
                     }
                 </select>
             </div>
-
         </div>
     </div>
-
     <br/>
     <br/>
-
-    <form id="viewForm" method="post" action=/manage/uploadMap" class = "hidden">
+    <form id="viewForm" method="post" action=/manage/uploadFloorMap" class = "hidden">
         <tbody class="scrollBodyT" id = "tBody">
         <table class="table table-condensed table-bordered">
             <thead class="scrollHead">
@@ -63,7 +45,6 @@ mapViewer: Seq[FloorAll]
                 <th class="table__flame--title viewer__posFloor--frame">height</th>
                 <th class="table__flame--title viewer__posType--frame" >image</th>
                 <th class="table__flame--title viewer__posType--frame" >postion</th>
-
             </tr>
             </thead>
             @mapViewer.zipWithIndex.map { case(map, i) =>
@@ -78,26 +59,22 @@ mapViewer: Seq[FloorAll]
                     <input class="form-control input-sm" type="text" id="input_map_height-@i" value="@map.floor_map_height" name="map_height[@i]" >
                 </td>
                 <td id="mapImage-@i" class="item viewer__posType--frame ">
-                    <!--<input class="form-control input-sm" type="file" id="input_map_image-@i" value="picture" accept="image/gif,image/jpeg,image/png" name="map_image[@i]" >-->
                 </td>
 
             </tr>
             }
-
             </tbody>
         </table>
-
         @CSRF.formField
     </form>
-    <div class="map__main--frame" id ="map__main--frame" style="margin-top: 15px;">
+    <div class="map__main--frame main-style" id ="map__main--frame">
         <div class = "alert__result--frame">
             @tags.alertFromRequestDbResult(request, "resultOK")
             @tags.alertFromRequestDbResult(request, "resultNG")
         </div>
         @mapViewer.zipWithIndex.map { case(map, i) =>
         <div id="beaconMap-@map.display_order" class = "hidden level level--@i layer-beacon" aria-label="Level @i">
-
-            <form action="/manage/uploadMap" method="POST" enctype="multipart/form-data" class="img__area--frame">
+            <form action="/manage/uploadFloorMap" method="POST" enctype="multipart/form-data" class="img__area--frame">
                 <div class = "inputFrame map__input--frame">
                     <input id="inputNum-@i" class="map__image--input"   type="file" name="map_image[@i]" accept="image/gif,image/jpeg,image/png"  >
                     <input id="map_id" class ="hidden"  type="text"  value=@map.floor_id  name="map_id[@i]">
@@ -113,11 +90,7 @@ mapViewer: Seq[FloorAll]
             </div>
         </div>
         }
-
-
     </div>
-
 </body>
-
 </html>
 
