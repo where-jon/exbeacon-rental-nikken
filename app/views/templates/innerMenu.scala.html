@@ -169,7 +169,7 @@
     @if(
         (request.path contains "/manage/floor") ||
         (request.path contains "/manage/floorMap") ||
-        (request.path contains "/cms/exbManage") ||
+        (request.path contains "/manage/exb") ||
         (request.path contains "/manage/exbViewerManager")
     ) {
         <div style="margin: 20px 0px 30px 0px;">
@@ -193,7 +193,7 @@
                         </div>
                         <div class="innerMenu row" style="margin: 0px 3px 10px 3px;">
                             <div class="text-center col-xs-12 col-sm-12 col-md-12" style="padding:0px 3px;">
-                                <a href="/cms/exbManage" class="btn menuBtn">@Messages("lang.manage.exbManager")</a>
+                                <a href="/manage/exb" class="btn menuBtn">@Messages("lang.manage.exbManager")</a>
                             </div>
                         </div>
                         <div class="innerMenu row" style="margin: 0px 3px 0px 3px;">

@@ -25,12 +25,12 @@ function showExbModal(exbId){
         $('#inputDeviceName').val($('#'+exbId).find('.deviceName').text());
         $('#inputPosName').val($('#'+exbId).find('.posName').text());
 
-        var vShow =$('#'+exbId).find('.setupFloorId').text()
-        var vResult = -1
+        var vShow =$('#'+exbId).find('.setupFloorId').text();
+        var vResult = -1;
         if(vShow == "未設置"){
-            vResult = -1
+            vResult = -1;
         }else{
-            vResult = Number(vShow)
+            vResult = Number(vShow);
         }
         $("#PD_FLOOR").val(vResult).prop("selected", true);
         $('#setupFloorId').val(vResult);
@@ -58,8 +58,8 @@ function showExbDeleteModal(){
     if($('.rowHoverSelectedColor').length > 0){
         var exbId = $('.rowHoverSelectedColor').attr('data-exbId');
         var floorId = $('.rowHoverSelectedColor').attr('data-floorId');
-        $('#deleteExbId').val(exbId)
-        $('#deleteFloorId').val(floorId)
+        $('#deleteExbId').val(exbId);
+        $('#deleteFloorId').val(floorId);
         $('#exbDeleteModal').modal();
     }
 }
@@ -119,7 +119,7 @@ function btnEvent(){
              var result = $('#PD_FLOOR option:selected').val();
              console.log("select:" + result)
              var vActiveFlgElement = document.getElementById("setupFloorId");
-             vActiveFlgElement.value = Number(result)
+             vActiveFlgElement.value = Number(result);
         });
     }
 }

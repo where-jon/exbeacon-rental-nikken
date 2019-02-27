@@ -217,7 +217,47 @@ error.manage.floor.floorUpdate.inputDeviceNo.notNumeric=EXBeaconデバイスNo�
 error.manage.floor.floorUpdate.inputDeviceNo.duplicate=EXBeaconデバイスNoが重複しています。(デバイスNo：{0})
 error.manage.floor.floorUpdate.DeviceId.notfound=EXBeaconデバイスID設定がありません。管理者に問い合わせてください。(デバイスNo：{0})
 
-success.cms.ExbManage.exbDelete=EXBを削除しました。
+
+#EXB
+# CMS文字列（EXB管理）
+lang.manage.exb.title=EXB管理
+lang.manage.exb.exbId =EXB設置番号（固定）
+lang.manage.exb.show =表示
+lang.manage.exb.floor =フロア
+lang.manage.exb.type =表示種別
+lang.manage.exb.count =表示数
+lang.manage.exb.x =X座標
+lang.manage.exb.y =Y座標
+lang.manage.exb.size =サイズ
+lang.manage.exb.margin =幅間隔
+
+lang.manage.exb.deviceId=EXBデバイスID
+lang.manage.exb.deviceId.popup.placeholder=1
+lang.manage.exb.deviceNo=デバイス番号
+lang.manage.exb.deviceNo.popup.placeholder=1
+lang.manage.exb.deviceName=デバイス名
+lang.manage.exb.deviceName.popup.placeholder=Beacon名
+lang.manage.exb.posName=設置場所名
+lang.manage.exb.posName.popup.placeholder=1F 会議室
+lang.manage.exb.setupFloorId=フロア管理番号（固定）
+lang.manage.exb.setupFloorName=設置フロア名
+
+lang.manage.exb.exb.button.exbEdit=EXB編集
+lang.manage.exb.exb.button.addExb=EXB追加
+lang.manage.exb.exb.button.deleteExb=EXB削除
+lang.manage.exb.exbDelete.popup.title=EXB削除
+lang.manage.exb.exbDelete.popup.message=EXBを削除します。\nよろしいですか？
+lang.manage.exb.exbUpdate.popup.title=EXB更新
+
+error.manage.exb.exbUpdate.delete.empty=削除対象EXBを選択してください。
+error.manage.exb.exbUpdate.inputDeviceId.empty=EXBデバイスIDは半角数字入力してください。
+error.manage.exb.exbUpdate.inputDeviceNo.empty=デバイスNOは半角数字で入力してください。
+error.manage.exb.exbUpdate.inputDeviceName.empty=デバイス名を入力してください。
+error.manage.exb.exbUpdate.inputPosName.empty=場所名を入力してください。
+error.manage.exb.exbUpdate.setupFloorId.empty=設置フロアIDは半角数字で入力してください。
+error.manage.exb.exbUpdate.setupNumCheck.duplicate=EXBデバイスID「{0}」はすでに登録されてます。
+success.manage.exb.exbUpdate=EXB情報を更新しました。
+success.manage.exb.exbDelete=EXBを削除しました。
 
 success.cms.CompanyManage.delete=業者情報を削除しました。
 success.cms.CompanyManage.update=業者情報を更新しました。
@@ -334,46 +374,6 @@ lang.cms.placeManage.changePassword.label.newPassword2=確認用パスワード
 lang.cms.placeManage.changePassword.button.title=パスワードを変更する
 lang.cms.placeManage.changePassword.popup.name=パスワードを変更します。よろしいですか？
 
-
-
-# CMS文字列（EXB管理）
-lang.cms.exbManage.title=EXB管理
-lang.cms.exbManage.exbId =EXB設置番号（固定）
-lang.cms.exbManage.show =表示
-lang.cms.exbManage.floor =フロア
-lang.cms.exbManage.type =表示種別
-lang.cms.exbManage.count =表示数
-lang.cms.exbManage.x =X座標
-lang.cms.exbManage.y =Y座標
-lang.cms.exbManage.size =サイズ
-lang.cms.exbManage.margin =幅間隔
-
-lang.cms.exbManage.deviceId=EXBデバイスID
-lang.cms.exbManage.deviceId.popup.placeholder=1
-lang.cms.exbManage.deviceNo=デバイス番号
-lang.cms.exbManage.deviceNo.popup.placeholder=1
-lang.cms.exbManage.deviceName=デバイス名
-lang.cms.exbManage.deviceName.popup.placeholder=Beacon名
-lang.cms.exbManage.posName=設置場所名
-lang.cms.exbManage.posName.popup.placeholder=1F 会議室
-lang.cms.exbManage.setupFloorId=フロア管理番号（固定）
-lang.cms.exbManage.setupFloorName=設置フロア名
-
-lang.cms.exbManage.exb.button.exbEdit=EXB編集
-lang.cms.exbManage.exb.button.addExb=EXB追加
-lang.cms.exbManage.exb.button.deleteExb=EXB削除
-lang.cms.exbManage.exbDelete.popup.title=EXB削除
-lang.cms.exbManage.exbDelete.popup.message=EXBを削除します。\nよろしいですか？
-lang.cms.exbManage.exbUpdate.popup.title=EXB更新
-
-error.cms.exbManage.exbUpdate.delete.empty=削除対象EXBを選択してください。
-error.cms.exbManage.exbUpdate.inputDeviceId.empty=EXBデバイスIDは半角数字入力してください。
-error.cms.exbManage.exbUpdate.inputDeviceNo.empty=デバイスNOは半角数字で入力してください。
-error.cms.exbManage.exbUpdate.inputDeviceName.empty=デバイス名を入力してください。
-error.cms.exbManage.exbUpdate.inputPosName.empty=場所名を入力してください。
-error.cms.exbManage.exbUpdate.setupFloorId.empty=設置フロアIDは半角数字で入力してください。
-error.cms.exbManage.exbUpdate.setupNumCheck.duplicate=EXBデバイスID「{0}」はすでに登録されてます。
-success.cms.exbManage.exbUpdate=EXB情報を更新しました。
 
 # CMS文字列（作業車・立馬管理）
 lang.cms.itemCarManage.title=作業車・立馬管理

@@ -30,6 +30,12 @@ POST        /manage/floor/floorDelete                    controllers.manage.Floo
 GET         /manage/floorMap                                controllers.manage.FloorMapController.index
 POST        /manage/uploadFloorMap                          controllers.manage.FloorMapController.uploadFloorMap
 
+
+# EXB管理（新）
+GET         /manage/exb                                  controllers.manage.ExbController.index
+POST        /manage/exb/exbUpdate                        controllers.manage.ExbController.exbUpdate
+POST        /manage/exb/exbDelete                        controllers.manage.ExbController.exbDelete
+
 ###  システム管理 .end　#################################
 
 ###  業務ページ ############################
@@ -114,17 +120,6 @@ GET         /analysis/telemetry                             controllers.analysis
 # GW状態監視
 GET         /analysis/gateway                               controllers.analysis.Gateway.index
 
-
-# EXB管理（旧）
-GET         /manage/exbManager                              controllers.manage.ExbManager.index
-POST        /exb/deleteExb                                  controllers.manage.ExbManager.deleteExb
-#POST   /exb/updateExb      		       controllers.manage.ExbManager.updateExb
-
-
-# EXB管理（新）
-GET         /cms/exbManage                                  controllers.cms.ExbManage.index
-POST        /cms/exbManage/exbUpdate                        controllers.cms.ExbManage.exbUpdate
-POST        /cms/exbManage/exbDelete                        controllers.cms.ExbManage.exbDelete
 
 # EXB位置管理
 GET         /manage/exbViewerManager                        controllers.manage.ExbViewerManager.index
