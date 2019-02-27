@@ -58,14 +58,14 @@
                     @if(user.services.contains("level3") || user.services.contains("master") ) {
                     <li class="pull-left tabFrame" style="margin-left:2px">
                         @if(
-                        (request.path contains "/cms/floor") ||
+                        (request.path contains "/manage/floor") ||
                         (request.path contains "/manage/mapManager") ||
                         (request.path contains "/cms/exbManage") ||
                         (request.path contains "/manage/exbViewerManager")
                         ) {
                         <a class="text-center tabSelected"><i class="fa fa-wrench"></i>&nbsp;@Messages("lang.navbar.tab.systemManagement")</a>
                         }else{
-                        <a href="/cms/floor" class="tabLoading text-center tab"><i class="fa fa-wrench"></i>&nbsp;@Messages("lang.navbar.tab.systemManagement")</a>
+                        <a href="/manage/floor" class="tabLoading text-center tab"><i class="fa fa-wrench"></i>&nbsp;@Messages("lang.navbar.tab.systemManagement")</a>
                         }
                     </li>
                     }

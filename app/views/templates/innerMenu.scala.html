@@ -167,7 +167,7 @@
 }
 @if(user.services.contains("level3") || user.services.contains("master") ) {
     @if(
-        (request.path contains "/cms/floor") ||
+        (request.path contains "/manage/floor") ||
         (request.path contains "/manage/mapManager") ||
         (request.path contains "/cms/exbManage") ||
         (request.path contains "/manage/exbViewerManager")
@@ -183,7 +183,7 @@
                     <div class="text-center col-xs-12 col-sm-12 col-md-12" style="padding:0;">
                         <div class="innerMenu row" style="margin: 0px 3px 10px 3px;">
                             <div class="text-center col-xs-12 col-sm-12 col-md-12" style="padding:0px 3px;">
-                                <a href="/cms/floor" class="btn menuBtn">@Messages("lang.manage.floorManager")</a>
+                                <a href="/manage/floor" class="btn menuBtn">@Messages("lang.manage.floorManager")</a>
                             </div>
                         </div>
                         <div class="innerMenu row" style="margin: 0px 3px 10px 3px;">

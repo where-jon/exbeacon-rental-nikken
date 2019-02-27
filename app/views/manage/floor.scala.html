@@ -8,7 +8,7 @@ floorInfoList: Seq[FloorInfoData]
 <!doctype html>
 <html lang="ja">
 <head>
-    @templates.htmlHead(title = Messages("lang.cms.floor.title"))
+    @templates.htmlHead(title = Messages("lang.manage.floor.title"))
     <link rel="stylesheet" href="@routes.MyAssets.css("tenant/regionDetail.css")"/>
     <script></script>
 </head>
@@ -29,7 +29,7 @@ floorInfoList: Seq[FloorInfoData]
             <div class="mainSpace col-xs-10 col-sm-10 col-md-10 col-lg-10">
                 <!-- 画面題字 -->
                 <div class="form-group" style="font-weight:bold;font-size:19px;margin:15px 0px;">
-                    @Messages("lang.cms.floor.title")
+                    @Messages("lang.manage.floor.title")
                 </div>
                 <!-- テーブルのROW -->
                 <div class="row tableRow">
@@ -38,13 +38,13 @@ floorInfoList: Seq[FloorInfoData]
                             <table class="table table-bordered table-condensed itemTable floorTable">
                                 <thead>
                                     <tr class ="hidden">
-                                        <th colspan="6" class="tableTitleTh">@Messages("lang.cms.floor.title")</th>
+                                        <th colspan="6" class="tableTitleTh">@Messages("lang.manage.floor.title")</th>
                                     </tr>
                                     <tr>
-                                        <th class="hidden tableTh deviceTh">@Messages("lang.cms.floor.floorId")</th>
-                                        <th class="tableTh deviceTh">@Messages("lang.cms.floor.displayOrder")</th>
-                                        <th class="tableTh deviceTh">@Messages("lang.cms.floor.display")</th>
-                                        <th class="tableTh floorTh">@Messages("lang.cms.floor.name")</th>
+                                        <th class="hidden tableTh deviceTh">@Messages("lang.manage.floor.floorId")</th>
+                                        <th class="tableTh deviceTh">@Messages("lang.manage.floor.displayOrder")</th>
+                                        <th class="tableTh deviceTh">@Messages("lang.manage.floor.display")</th>
+                                        <th class="tableTh floorTh">@Messages("lang.manage.floor.name")</th>
                                         <th class="tableTh deviceTh">@Messages("lang.cms.exbManage.deviceId")</th>
                                     </tr>
                                 </thead>
@@ -74,13 +74,13 @@ floorInfoList: Seq[FloorInfoData]
                 <!-- ボタン-->
                 <div class="row tableRow" style="margin-top: 10px;">
                     <div class="text-right col-xs-4 col-sm-4 col-md-4" style="padding:0;">
-                        <a href="javascript:showFloorUpdateModal(false);" class="btn link">@Messages("lang.cms.floor.floor.button.floorEdit")</a>
+                        <a href="javascript:showFloorUpdateModal(false);" class="btn link">@Messages("lang.manage.floor.floor.button.floorEdit")</a>
                     </div>
                     <div class="text-center col-xs-4 col-sm-4 col-md-4" style="padding:0;">
-                        <a href="javascript:showFloorUpdateModal(true);" class="btn link">@Messages("lang.cms.floor.floor.button.addFloor")</a>
+                        <a href="javascript:showFloorUpdateModal(true);" class="btn link">@Messages("lang.manage.floor.floor.button.addFloor")</a>
                     </div>
                     <div class="text-left col-xs-4 col-sm-4 col-md-4" style="padding:0;">
-                        <a href="javascript:showFloorDeleteModal();" class="btn link">@Messages("lang.cms.floor.floor.button.deleteFloor")</a>
+                        <a href="javascript:showFloorDeleteModal();" class="btn link">@Messages("lang.manage.floor.floor.button.deleteFloor")</a>
                     </div>
                 </div>
             </div>
@@ -90,18 +90,18 @@ floorInfoList: Seq[FloorInfoData]
     <div class="modal" id="floorUpdateModal" tabindex="-1" role="dialog" aria-labelledby="floorUpdateModalLabel" aria-hidden="true" data-show="true" data-keyboard="false" data-backdrop="static">
         <div class="modal-dialog">
             <div class="modal-content">
-                <form id="floorForm" name="floorForm" enctype="multipart/form-data" class="form-horizontal" enctype="multipart/form-data" class="form-horizontal" method="post" action="@controllers.cms.routes.FloorController.floorUpdate.path">
+                <form id="floorForm" name="floorForm" enctype="multipart/form-data" class="form-horizontal" enctype="multipart/form-data" class="form-horizontal" method="post" action="@controllers.manage.routes.FloorController.floorUpdate.path">
                     @CSRF.formField
                     <input type="hidden" id="inputFloorId" name="inputFloorId">
                     <input type="hidden" id="inputPreDisplayOrder" name="inputPreDisplayOrder">
                     <input type="hidden" id="inputExbDeviceNoListComma" name="inputExbDeviceNoListComma">
-                    <div class="modal-header">@Messages("lang.cms.floor.floorUpdate.popup.title")</div>
+                    <div class="modal-header">@Messages("lang.manage.floor.floorUpdate.popup.title")</div>
                     <div class="modal-body">
 
                         <div class="form-group">
-                            <label class="control-label col-xs-5">@Messages("lang.cms.floor.floorUpdate.popup.displayOrder")</label>
+                            <label class="control-label col-xs-5">@Messages("lang.manage.floor.floorUpdate.popup.displayOrder")</label>
                             <div class="col-xs-2" style="padding-left: 0px;padding-right: 0px;">
-                                <input type="number" name="inputDisplayOrder" id="inputDisplayOrder" class="form-control" placeholder="@Messages("lang.cms.floor.floorUpdate.popup.displayOrder.placeholder")">
+                                <input type="number" name="inputDisplayOrder" id="inputDisplayOrder" class="form-control" placeholder="@Messages("lang.manage.floor.floorUpdate.popup.displayOrder.placeholder")">
                             </div>
                         </div>
 
@@ -115,16 +115,16 @@ floorInfoList: Seq[FloorInfoData]
                         </div>
 
                         <div class="form-group">
-                            <label class="control-label col-xs-5">@Messages("lang.cms.floor.floorUpdate.popup.name")</label>
+                            <label class="control-label col-xs-5">@Messages("lang.manage.floor.floorUpdate.popup.name")</label>
                             <div class="col-xs-2" style="padding-left: 0px;padding-right: 0px;">
-                                <input type="text" name="inputFloorName" id="inputFloorName" class="form-control" placeholder="@Messages("lang.cms.floor.floorUpdate.popup.name.placeholder")">
+                                <input type="text" name="inputFloorName" id="inputFloorName" class="form-control" placeholder="@Messages("lang.manage.floor.floorUpdate.popup.name.placeholder")">
                             </div>
                         </div>
 
                         <div class="form-group hidden" style="margin-bottom: 5px;">
-                            <label class="control-label col-xs-5">@Messages("lang.cms.floor.floorUpdate.popup.deviceNo")</label>
+                            <label class="control-label col-xs-5">@Messages("lang.manage.floor.floorUpdate.popup.deviceNo")</label>
                             <div class="col-xs-2" style="padding-left: 0px;padding-right: 0px;margin-right:10px;">
-                                <input type="text" name="inputDeviceNo" id="inputDeviceNo" class="form-control" placeholder="@Messages("lang.cms.floor.floorUpdate.popup.deviceNo.placeholder")">
+                                <input type="text" name="inputDeviceNo" id="inputDeviceNo" class="form-control" placeholder="@Messages("lang.manage.floor.floorUpdate.popup.deviceNo.placeholder")">
                             </div>
                             <div class="col-xs-1" style="padding-left: 0px;padding-right: 0px;">
                                 <a href="javascript:addTagRow();"class="btn btn-default"><i class="fa fa-plus" aria-hidden="true"></i></a>
@@ -159,13 +159,13 @@ floorInfoList: Seq[FloorInfoData]
     <div class="modal" id="floorDeleteModal" tabindex="-1" role="dialog" aria-labelledby="floorDeleteModalLabel" aria-hidden="true" data-show="true" data-keyboard="false" data-backdrop="static">
         <div class="modal-dialog">
             <div class="modal-content">
-                <form id="deleteForm" name="deleteForm" class="form-horizontal" enctype="multipart/form-data" class="form-horizontal" method="post" action="@controllers.cms.routes.FloorController.floorDelete.path">
+                <form id="deleteForm" name="deleteForm" class="form-horizontal" enctype="multipart/form-data" class="form-horizontal" method="post" action="@controllers.manage.routes.FloorController.floorDelete.path">
                     @CSRF.formField
                     <input type="hidden" id="deleteFloorId" name="deleteFloorId">
-                    <div class="modal-header">@Messages("lang.cms.floor.floorDelete.popup.title")</div>
+                    <div class="modal-header">@Messages("lang.manage.floor.floorDelete.popup.title")</div>
                     <div class="modal-body">
                         <div class="text-center">
-                            @Html(Messages("lang.cms.floor.floorDelete.popup.message").replaceAll("(\r\n|\r|\n)","<br>"))
+                            @Html(Messages("lang.manage.floor.floorDelete.popup.message").replaceAll("(\r\n|\r|\n)","<br>"))
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -181,7 +181,7 @@ floorInfoList: Seq[FloorInfoData]
         </div>
     </div>
 
-    <script type="text/javascript" src="@routes.MyAssets.js("cms/floor.js")"></script>
+    <script type="text/javascript" src="@routes.MyAssets.js("manage/floor.js")"></script>
     <script></script>
 </body>
 </html>

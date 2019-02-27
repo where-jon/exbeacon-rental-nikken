@@ -1,7 +1,7 @@
 # ホーム
 GET         /                                               controllers.Application.index
 
-###  tenant　#################################
+###  tenant .start　#################################
 # 現場管理
 GET         /tenant/region                                  controllers.tenant.RegionController.region
 GET         /tenant/regionList/:number                      controllers.tenant.RegionController.regionList(number: Int)
@@ -16,6 +16,17 @@ POST        /tenant/region/regionLogin                      controllers.tenant.R
 # PASSWORD管理
 GET         /password                                       controllers.Auth.changePassword
 POST        /password                                       controllers.Auth.setupPassword
+###  tenant .end　#################################
+
+###  システム管理 .start #################################
+
+# フロア管理
+GET         /manage/floor                                controllers.manage.FloorController.index
+POST        /manage/floor/floorUpdate                    controllers.manage.FloorController.floorUpdate
+POST        /manage/floor/floorDelete                    controllers.manage.FloorController.floorDelete
+
+###  システム管理 .end　#################################
+
 ###  業務ページ ############################
 # 作業車利用状況
 GET         /carSummery                                     controllers.CarSummery.index
@@ -31,11 +42,6 @@ GET         /otherItem                                      controllers.OtherIte
 GET         /otherItem/getPlotInfo                          controllers.OtherItem.getPlotInfo
 
 
-
-# フロア管理
-GET         /cms/floor                                controllers.cms.FloorController.index
-POST        /cms/floor/floorUpdate                    controllers.cms.FloorController.floorUpdate
-POST        /cms/floor/floorDelete                    controllers.cms.FloorController.floorDelete
 
 
 # API未検知
