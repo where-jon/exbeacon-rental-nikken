@@ -24,7 +24,7 @@ class RegionController @Inject() (
   val messagesApi: MessagesApi,
   placeDAO: models.placeDAO,
   floorDAO: models.floorDAO,
-  exbDAO: models.ExbDAO,
+  exbDAO: models.manage.ExbDAO,
   passwordHasherRegistry: PasswordHasherRegistry,
   userService: UserService,
   companyDAO: models.companyDAO,

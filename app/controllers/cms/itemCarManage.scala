@@ -46,7 +46,7 @@ class ItemCarManage @Inject()(
   , val silhouette: Silhouette[MyEnv]
   , val messagesApi: MessagesApi
   , carDAO: models.itemCarDAO
-  , exbDAO: models.ExbDAO
+  , exbDAO: models.manage.ExbDAO
   , itemTypeDAO: models.ItemTypeDAO
   , itemOtherDAO: models.itemOtherDAO
 ) extends BaseController with I18nSupport {

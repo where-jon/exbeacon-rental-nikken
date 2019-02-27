@@ -1,3 +1,4 @@
+@import models.manage.ExbAll
 @(
  exbInfoList: Seq[ExbAll]
 ,floorInfoList: Seq[FloorInfoData]
@@ -15,24 +16,17 @@
 <body>
     <!-- content -->
     <div class="container">
-        <!--loading部-->
         @views.html.templates.totalLoading()
-        <!-- ナビバー  -->
         @views.html.templates.navBar()
         <div class="row">
-            <!-- 左サイドバー -->
             @views.html.templates.sideMenu()
             <span class="col-xs-10 col-sm-10 col-md-10 col-lg-10">
-                <!-- メッセージ -->
                 @views.html.templates.msgDiv()
             </span>
-            <!-- メイン -->
             <div class="mainSpace col-xs-10 col-sm-10 col-md-10 col-lg-10">
-                <!-- 画面題字 -->
                 <div class="form-group" style="font-weight:bold;font-size:19px;margin:15px 0px;">
                     @Messages("lang.manage.exb.title")
                 </div>
-                <!-- テーブルのROW -->
                 <div class="row tableRow">
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="padding:0;">
                         <div class="table-responsive-body">
@@ -72,7 +66,6 @@
                         </div>
                     </div>
                 </div>
-                <!-- ボタン-->
                 <div class="row tableRow" style="margin-top: 10px;">
                     <div class="text-right col-xs-4 col-sm-4 col-md-4" style="padding:0;">
                         <a href="javascript:showExbUpdateModal(false);" class="btn link">@Messages("lang.manage.exb.exb.button.exbEdit")</a>
@@ -88,7 +81,6 @@
         </div>
     </div>
 
-    <!-- EXB登録、更新モーダル画面 -->
     <div class="modal" id="exbUpdateModal" tabindex="-1" role="dialog" aria-labelledby="exbUpdateModalLabel" aria-hidden="true" data-show="true" data-keyboard="false" data-backdrop="static">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -98,21 +90,18 @@
                     <input type="hidden" id="inputPreDeviceId" name="inputPreDeviceId">
                     <div class="modal-header">@Messages("lang.manage.exb.exbUpdate.popup.title")</div>
                     <div class="modal-body">
-                        <!--デバイスID-->
                         <div class="form-group">
                             <label class="control-label col-xs-5">@Messages("lang.manage.exb.deviceId")</label>
                             <div class="col-xs-2" style="padding-left: 0px;padding-right: 0px;">
                                 <input type="number" value = null name="inputDeviceId" id="inputDeviceId" class="form-control" placeholder="@Messages("lang.manage.exb.deviceId.popup.placeholder")">
                             </div>
                         </div>
-                        <!--場所名-->
                         <div class="form-group">
                             <label class="control-label col-xs-5">@Messages("lang.manage.exb.posName")</label>
                             <div class="col-xs-2" style="padding-left: 0px;padding-right: 0px;">
                                 <input type="text" name="inputPosName" id="inputPosName" class="form-control" placeholder="@Messages("lang.manage.exb.posName.popup.placeholder")">
                             </div>
                         </div>
-                        <!--連動フロアID-->
                         <div class="form-group">
                             <label class="control-label col-xs-5">@Messages("lang.manage.exb.setupFloorName")</label>
                             <select id="PD_FLOOR" style="height: 30px; width: 100px;">
@@ -124,7 +113,6 @@
                             <input class="hidden form-control" type="number" name="setupFloorId" id="setupFloorId" value ="-1" >
                         </div>
 
-                        <!--デバイス番号-->
                         <div class="form-group">
                             <label class="control-label col-xs-5">@Messages("lang.manage.exb.deviceNo")</label>
                             <div class="col-xs-2" style="padding-left: 0px;padding-right: 0px;">
@@ -173,7 +161,6 @@
             </div>
         </div>
     </div>
-    <!-- フロア削除モーダル画面 -->
     <div class="modal" id="exbDeleteModal" tabindex="-1" role="dialog" aria-labelledby="exbDeleteModalLabel" aria-hidden="true" data-show="true" data-keyboard="false" data-backdrop="static">
         <div class="modal-dialog">
             <div class="modal-content">

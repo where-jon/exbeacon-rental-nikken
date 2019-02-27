@@ -1,9 +1,9 @@
 package controllers.manage
 
 import javax.inject.{Inject, Singleton}
-
 import com.mohiva.play.silhouette.api.Silhouette
 import controllers.{BaseController, site}
+import models.manage.{ExbDeleteForm, ExbUpdateForm}
 import play.api._
 import play.api.data.Form
 import play.api.data.Forms.{mapping, _}
@@ -17,26 +17,32 @@ import utils.silhouette.MyEnv
   *
   */
 
-// フォーム定義
-case class ExbDeleteForm(deleteExbId: String, floorId: String)
-case class ExbUpdateForm(
-  inputExbId: String
-  ,inputDeviceId:String
-  ,inputPreDeviceId:String
-  ,inputDeviceNo:String
-  ,inputDeviceName: String
-  ,inputPosName: String
-  ,setupFloorId: String
-)
-
 @Singleton
 class ExbController @Inject()(config: Configuration
   , val silhouette: Silhouette[MyEnv]
   , val messagesApi: MessagesApi
   , placeDAO: models.placeDAO
   , floorDAO: models.floorDAO
-  , exbDAO: models.ExbDAO
+  , exbDAO: models.manage.ExbDAO
   ) extends BaseController with I18nSupport {
+
+  /** 初期表示 */
+  def index = SecuredAction { implicit request =>
+    val reqIdentity = request.identity
+    if(reqIdentity.level >= 3){
+      // 選択されている現場の現場ID
+      val placeId = securedRequest2User.currentPlaceId.get
+      // フロア情報の取得
+      val floorInfoList = floorDAO.selectFloorInfoData(placeId)
+      // exb情報の取得
+      val exbInfoList = exbDAO.selectExbAll(placeId)
+
+      Ok(views.html.manage.exb(exbInfoList,floorInfoList))
+    }else {
+      Redirect(site.routes.ItemCarMaster.index)
+    }
+
+  }
 
   /** フロア更新 */
   def exbUpdate = SecuredAction { implicit request =>
@@ -119,24 +125,6 @@ class ExbController @Inject()(config: Configuration
           .flashing(SUCCESS_MSG_KEY -> Messages("success.manage.exb.exbDelete"))
       }
     }
-  }
-
-  /** 初期表示 */
-  def index = SecuredAction { implicit request =>
-    val reqIdentity = request.identity
-    if(reqIdentity.level >= 3){
-      // 選択されている現場の現場ID
-      val placeId = securedRequest2User.currentPlaceId.get
-      // フロア情報の取得
-      val floorInfoList = floorDAO.selectFloorInfoData(placeId)
-      // exb情報の取得
-      val exbInfoList = exbDAO.selectExbAll(placeId)
-
-      Ok(views.html.manage.exb(exbInfoList,floorInfoList))
-    }else {
-      Redirect(site.routes.ItemCarMaster.index)
-    }
-
   }
 
 }

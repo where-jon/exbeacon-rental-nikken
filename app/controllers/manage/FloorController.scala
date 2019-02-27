@@ -27,7 +27,7 @@ class FloorController @Inject()(config: Configuration
   , val messagesApi: MessagesApi
   , placeDAO: models.placeDAO
   , floorDAO: models.floorDAO
-  , exbDAO: models.exbModelDAO
+  , exbDAO: models.manage.ExbDAO
   ) extends BaseController with I18nSupport {
 
   /** フロア更新 */

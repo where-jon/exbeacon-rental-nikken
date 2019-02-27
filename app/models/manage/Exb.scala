@@ -1,12 +1,38 @@
-package models
+package models.manage
 
 import java.sql.SQLException
-import javax.inject.Inject
 
 import anorm.SqlParser._
 import anorm._
+import javax.inject.Inject
+import models.Btx
 import play.api.Logger
 import play.api.db._
+
+// フォーム定義
+
+case class ExbInfo(
+  floorId: Int,
+  exbDeviceNo: Int,
+  exbDeviceId: Int
+)
+
+case class ExbDeviceInfo(
+  place_id: Int,
+  exbDeviceNo: Int,
+  exbDeviceId: Int
+)
+
+case class ExbDeleteForm(deleteExbId: String, floorId: String)
+case class ExbUpdateForm(
+  inputExbId: String
+  ,inputDeviceId:String
+  ,inputPreDeviceId:String
+  ,inputDeviceNo:String
+  ,inputDeviceName: String
+  ,inputPosName: String
+  ,setupFloorId: String
+)
 
 case class Exb(
   exb_id: Int,
@@ -60,7 +86,6 @@ case class ExbData(
   exbPosName: List[String]
 
 )
-
 
 case class ExbAll(
    exb_id: Int,

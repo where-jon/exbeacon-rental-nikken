@@ -4,7 +4,7 @@ import javax.inject.Inject
 
 import com.mohiva.play.silhouette.api.Silhouette
 import controllers.{BaseController, site}
-import models.ExbMasterData
+import models.manage.ExbMasterData
 import play.api.Configuration
 import play.api.data.Form
 import play.api.data.Forms._
@@ -19,7 +19,7 @@ class ExbViewerManager @Inject()(config: Configuration
   , val silhouette: Silhouette[MyEnv]
   , val messagesApi: MessagesApi
   , ws: WSClient
-  , exbDAO: models.ExbDAO
+  , exbDAO: models.manage.ExbDAO
   , floorDAO: models.floorDAO
   , viewTypeDAO: models.ViewTypeDAO
   ) extends BaseController with I18nSupport {

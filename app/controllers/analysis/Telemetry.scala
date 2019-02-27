@@ -21,7 +21,7 @@ class Telemetry @Inject()(
   , val messagesApi: MessagesApi
   , beaconService: BeaconService
   , ws: WSClient
-  , exbDao:models.ExbDAO
+  , exbDao:models.manage.ExbDAO
   , btxLastPositionDAO: models.btxLastPositionDAO
   ) extends BaseController with I18nSupport {
 
