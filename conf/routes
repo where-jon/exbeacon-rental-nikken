@@ -122,8 +122,8 @@ GET         /analysis/gateway                               controllers.analysis
 
 
 # EXB位置管理
-GET         /manage/exbViewerManager                        controllers.manage.ExbViewerManager.index
-POST        /manage/updateExbViewer                         controllers.manage.ExbViewerManager.updateViewerManager
+GET         /manage/exbSetup                              controllers.manage.ExbSetupController.index
+POST        /manage/updateExbSetup                        controllers.manage.ExbSetupController.updateExbSetup
 
 # 作業車・立馬管理
 GET         /cms/itemCarManage                              controllers.cms.ItemCarManage.index

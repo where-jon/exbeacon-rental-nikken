@@ -61,7 +61,7 @@
                         (request.path contains "/manage/floor") ||
                         (request.path contains "/manage/floorMap") ||
                         (request.path contains "/manage/exb") ||
-                        (request.path contains "/manage/exbViewerManager")
+                        (request.path contains "/manage/exbSetup")
                         ) {
                         <a class="text-center tabSelected"><i class="fa fa-wrench"></i>&nbsp;@Messages("lang.navbar.tab.systemManagement")</a>
                         }else{
@@ -95,7 +95,7 @@
 @if(
     (request.path contains "/site/workPlace") ||
     (request.path contains "/manage/floorMap") ||
-    (request.path contains "/manage/exbViewerManager")
+    (request.path contains "/manage/exbSetup")
 ) {
     @views.html.templates.sideBar()
 }

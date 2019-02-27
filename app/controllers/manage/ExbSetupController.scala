@@ -15,7 +15,7 @@ import utils.silhouette.MyEnv
 /**
   * EXB設置管理クラス.
   */
-class ExbViewerManager @Inject()(config: Configuration
+class ExbSetupController @Inject()(config: Configuration
   , val silhouette: Silhouette[MyEnv]
   , val messagesApi: MessagesApi
   , ws: WSClient
@@ -23,6 +23,26 @@ class ExbViewerManager @Inject()(config: Configuration
   , floorDAO: models.manage.floorDAO
   , viewTypeDAO: models.ViewTypeDAO
   ) extends BaseController with I18nSupport {
+
+   /** 初期表示 */
+  def index = SecuredAction { implicit request =>
+    val reqIdentity = request.identity
+    if(reqIdentity.level >= 3){
+      // exbMaster情報
+      val placeId = super.getCurrentPlaceId
+      val exbViewer = exbDAO.selectExbAll(placeId)
+
+      // map情報
+      val mapViewer = floorDAO.selectFloorAll(placeId)
+
+      // viewType情報
+      val viewType = viewTypeDAO.selectAll()
+
+      Ok(views.html.manage.exbSetup(exbViewerForm, exbViewer,mapViewer,viewType))
+    }else{
+      Redirect(site.routes.ItemCarMaster.index)
+    }
+  }
 
   val exbViewerForm = Form(mapping(
     "viewerId" -> list(number),
@@ -38,7 +58,8 @@ class ExbViewerManager @Inject()(config: Configuration
 
   )(ExbMasterData.apply)(ExbMasterData.unapply))
 
-  def updateViewerManager = SecuredAction { implicit request =>
+
+  def updateExbSetup = SecuredAction { implicit request =>
     System.out.println("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------start viewManagerControllerUpdate:");
     // 部署情報
     val placeId = super.getCurrentPlaceId
@@ -50,42 +71,21 @@ class ExbViewerManager @Inject()(config: Configuration
     val viewType = viewTypeDAO.selectAll()
 
     exbViewerForm.bindFromRequest.fold(
-      formWithErrors => BadRequest(views.html.manage.exbViewerManager(formWithErrors, exbViewer,mapViewer,viewType)),
+      formWithErrors => BadRequest(views.html.manage.exbSetup(formWithErrors, exbViewer,mapViewer,viewType)),
       ExbViewerData => {
         exbViewerData = exbViewerForm.bindFromRequest.get
-        System.out.println("exbViewerData" + exbViewerData);
-        //System.out.println("exbViewerData.viewerId(0)" + exbViewerData.viewerId(0));
 
         val result = exbDAO.updateExbMaster(new ExbMasterData(exbViewerData.viewerId, exbViewerData.viewerVisible, exbViewerData.viewerPosType, exbViewerData.viewerPosX, exbViewerData.viewerPosY, exbViewerData.viewerPosMargin, exbViewerData.viewerPosCount, exbViewerData.viewerPosFloor, exbViewerData.viewerPosSize, exbViewerData.viewerPosNum))
         System.out.println("exbViewerData.result////" + result);
         if (result == "success") {
-          Redirect("/manage/exbViewerManager").flashing("resultOK" -> Messages("db.update.ok"))
+          Redirect("/manage/exbSetup").flashing("resultOK" -> Messages("db.update.ok"))
         } else {
-          Redirect("/manage/exbViewerManager").flashing("resultNG" -> Messages(result))
+          Redirect("/manage/exbSetup").flashing("resultNG" -> Messages(result))
         }
       }
     )
 
   }
 
-  /** 初期表示 */
-  def index = SecuredAction { implicit request =>
-    val reqIdentity = request.identity
-    if(reqIdentity.level >= 3){
-      // exbMaster情報
-      val placeId = super.getCurrentPlaceId
-      val exbViewer = exbDAO.selectExbAll(placeId)
-
-      // map情報
-      val mapViewer = floorDAO.selectFloorAll(placeId)
-
-      // viewType情報
-      val viewType = viewTypeDAO.selectAll()
-
-      Ok(views.html.manage.exbViewerManager(exbViewerForm, exbViewer,mapViewer,viewType))
-    }else{
-      Redirect(site.routes.ItemCarMaster.index)
-    }
-  }
 
 }

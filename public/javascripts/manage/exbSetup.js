@@ -1,24 +1,20 @@
 
-var gPosX
-var gPosY
+var gPosX;
+var gPosY;
 var gClickPos = null;
 var gMovePos = -1;
 var gMapPos = 1;
 var preClickPos = -1;
 
 var bCheckUpdate = false;
-var VIEW_COUNT = 1000
+var VIEW_COUNT = 1000;
+var newExbViewerData;
+var vExbViewerData;
 
-var workerBtn;
 
 $( window ).resize(function() {
 	location.reload();
 });
-
-
-var newExbViewerData;
-var vExbViewerData;
-
 
 $(function () {
 
@@ -39,29 +35,23 @@ $(function () {
             initClickFrame();
         }
 
-        var vMapTestElemet = document.getElementById("map__main--frame")
-        vMapTestElemet.addEventListener('click', function(event) {
-            console.log("levelclick")
-            console.log("clientX:" +  (event.clientX))
-            console.log("offsetY:" +  (event.offsetY))
-        });
         var vMapElement = document.getElementsByClassName("level")
             for (var i = 0;i< vMapElement.length; ++i){
                 vMapElement[i].addEventListener('click', function(event) {
                         if(gClickPos!=null){
                             // 設定pullDown位置を表示
-                           var getDisplayOrder =  document.getElementsByClassName("item-" + gClickPos)[0].textContent
+                           var getDisplayOrder =  document.getElementsByClassName("item-" + gClickPos)[0].textContent;
                             $('#input-floor-category-' + gClickPos ).val(getDisplayOrder);
                         }
                        if(preClickPos == gClickPos){
                             //alert("同じところ")
-                            var vTempElement = document.getElementById("viewer-list-" + gClickPos)
+                            var vTempElement = document.getElementById("viewer-list-" + gClickPos);
                             vTempElement.classList.add("hidden");
                             gClickPos = null;
                             gViewer.pinRemove();
 
                        }else if (gClickPos != null){
-                            var vIconSize = Number(document.getElementById("input_viewer_pos_size-" + gClickPos).value)
+                            var vIconSize = Number(document.getElementById("input_viewer_pos_size-" + gClickPos).value);
                                gPosX = (event.clientX) - (vIconSize/2);
                                gPosY = (event.offsetY) - (vIconSize/2);
 
@@ -74,14 +64,14 @@ $(function () {
 
                                     vExbViewerData.forEach(function(exbData, pos) {
                                         if(exbData.id == gClickPos){
-                                            var vClickElement = document.getElementById("exb_id_" + gClickPos)
-                                            vClickElement.style.left = gPosX + "px"
-                                            vClickElement.style.top = gPosY + "px"
+                                            var vClickElement = document.getElementById("exb_id_" + gClickPos);
+                                            vClickElement.style.left = gPosX + "px";
+                                            vClickElement.style.top = gPosY + "px";
                                             vClickElement.classList.remove("exb__pin--active");
                                             vClickElement.classList.add("exb__pin--move");
 
-                                            exbData.x = gPosX
-                                            exbData.y = gPosY
+                                            exbData.x = gPosX;
+                                            exbData.y = gPosY;
 
                                            // 画面クリア
                                             var delElement = [].slice.call(document.querySelectorAll(".exb__viewer--frame"));
@@ -121,23 +111,21 @@ $(function () {
                     gViewer.inputViewerRemove();
                     gViewer.pinRemove();
                     gViewer.inputSelectPosNum();
-                    //vViewerListElement[gClickPos].classList.remove("hidden");
-                    //document.getElementById("viewer-list-" + gClickPos ).classList.remove("hidden");
 
                       // exbの処理選択されたもの
-                    var pinElement = document.getElementById("exb_id_" + gClickPos)
+                    var pinElement = document.getElementById("exb_id_" + gClickPos);
                     pinElement.classList.add("exb__pin--active");
 
                     // input変更イベントをoff
-                    var vTitle = document.getElementsByClassName("manager__data--frame")[0]
+                    var vTitle = document.getElementsByClassName("manager__data--frame")[0];
                     vTitle.classList.remove("hidden");
                     gPosX = -1;
                     gPosY = -1;
 
                     viewHidden();
-                    var vFloor = document.getElementById("input_viewer_pos_floor-" + gClickPos ).value
-                    var vMapIndex = Number(document.getElementsByClassName("item-" + gClickPos)[0].textContent)
-                    gMapPos = vMapIndex
+                    var vFloor = document.getElementById("input_viewer_pos_floor-" + gClickPos ).value;
+                    var vMapIndex = Number(document.getElementsByClassName("item-" + gClickPos)[0].textContent);
+                    gMapPos = vMapIndex;
                    document.getElementById("beaconMap-" + vMapIndex).classList.remove("hidden");
 
              });
@@ -149,7 +137,7 @@ $(function () {
             vVisible.addEventListener('change', function() {
                  var result = $(vVisible).val();
                  console.dir("result::" + result);
-                 var vElement = document.getElementById("input_viewer_visible-" + gClickPos)
+                 var vElement = document.getElementById("input_viewer_visible-" + gClickPos);
                  vElement.value = result;
                  vExbViewerData[pos].visible = result;
                  reloadManager();
@@ -166,10 +154,10 @@ $(function () {
                 viewHidden();
                 document.getElementById("beaconMap-" + result).classList.remove("hidden");
 
-                var vElement = document.getElementById("input_viewer_pos_floor-" + gClickPos)
+                var vElement = document.getElementById("input_viewer_pos_floor-" + gClickPos);
                 vElement.value =  $('.dataFloorId-' + result).attr('data-floorId');
                 vExbViewerData[pos].displayOrder = result;
-                document.getElementsByClassName("item-" + gClickPos)[0].textContent = result
+                document.getElementsByClassName("item-" + gClickPos)[0].textContent = result;
                 //　フロア マップ位置変更
                 $('#floor-category').val(result).prop("selected", true);
                 reloadManager();
@@ -182,12 +170,12 @@ $(function () {
           vInputPosType.forEach(function(vPosType, pos) {
             vPosType.addEventListener('change', function() {
                  var result = $(vPosType).val();
-                 var vId = "#" + $(vPosType)[0].id +" option:selected"
+                 var vId = "#" + $(vPosType)[0].id +" option:selected";
                  var vPosName =$(vId).data("typename");
                  console.dir("result::" + result);
-                 var vElement = document.getElementById("input_viewer_pos_type-" + gClickPos)
+                 var vElement = document.getElementById("input_viewer_pos_type-" + gClickPos);
                  vElement.value = result;
-                 var vElementTypeName = document.getElementById("input_viewer_pos_type_name-" + gClickPos)
+                 var vElementTypeName = document.getElementById("input_viewer_pos_type_name-" + gClickPos);
                  vElementTypeName.value = vPosName;
                  vExbViewerData[pos].viewType = vPosName;
                  reloadManager();
@@ -200,7 +188,7 @@ $(function () {
             vPosSize.addEventListener('change', function() {
                var result = $(vPosSize).val();
                console.dir("result::" + result);
-               var vElement = document.getElementById("input_viewer_pos_size-" + gClickPos)
+               var vElement = document.getElementById("input_viewer_pos_size-" + gClickPos);
                vElement.value = result;
                vExbViewerData[pos].size = result;
 
@@ -212,8 +200,7 @@ $(function () {
          /* input formのselectイベント.end*/
          // 現在位置表示
          if(gClickPos > -1){
-             var vElement = document.getElementById("exb_id_"+ gClickPos)
-             //vElement.classList.add("exb__pin--active");
+             var vElement = document.getElementById("exb_id_"+ gClickPos);
          }
 
     }
@@ -239,7 +226,7 @@ $(function () {
                      vViewerListElement[i].classList.add("hidden");
              }
 
-              var vTempElement = document.getElementById("viewer-list-" + gClickPos)
+              var vTempElement = document.getElementById("viewer-list-" + gClickPos);
              vTempElement.classList.remove("hidden");
         },
 
@@ -272,13 +259,10 @@ $(function () {
                     // input変更イベントをoff
                     vInputCheck = false;
 
-                    var vTitle = document.getElementsByClassName("manager__data--frame")[0]
+                    var vTitle = document.getElementsByClassName("manager__data--frame")[0];
                     vTitle.classList.remove("hidden");
                     gPosX = -1;
                     gPosY = -1;
-
-                    // ataiを設定する
-                    console.log("ataiを設定する")
 
             });
          });
@@ -333,14 +317,6 @@ $(function () {
     // 復元
     var vResetBtn = document.getElementById("reset-btn");
     vResetBtn.addEventListener('click', function() {
-//        // 画面再更新
-//        var delElement = [].slice.call(document.querySelectorAll(".exb__viewer--frame"));
-//         $(delElement).remove();
-//        // 画面再描画
-//        gViewerManage.drawExbeacon();
-//
-//        initManager();
-
         // 画面再更新
         location.reload();
     });
@@ -350,19 +326,18 @@ $(function () {
     $("input").change(function(event) {
         console.log("値変更がありました");
         vInputCheck = true;
-        event.currentTarget.value = $(event.currentTarget).val()
-        event.currentTarget.textContent = $(event.currentTarget).val()
+        event.currentTarget.value = $(event.currentTarget).val();
+        event.currentTarget.textContent = $(event.currentTarget).val();
 
         // 変更されたらまたデータ最新に更新する
         for(var i = 0; i < vExbViewerData.length ; ++i){
             if(vExbViewerData[i].id == gClickPos){
                 // id
-                var id = vExbViewerData[i].id
-                vExbViewerData[i].id = Number(id)
+                var id = vExbViewerData[i].id;
+                vExbViewerData[i].id = Number(id);
 
-                //var result = $('#input-visible-category-' + gClickPos).val();
                 // visble
-                var vElement = document.getElementById("input_viewer_visible-" + gClickPos)
+                var vElement = document.getElementById("input_viewer_visible-" + gClickPos);
                 vExbViewerData[i].visible = vElement.value;
 
                 // floor
@@ -393,10 +368,6 @@ $(function () {
                 // count
                 var viewer_pos_count = document.getElementById("input_viewer_pos_count-" + gClickPos).value;
                 vExbViewerData[i].posCount = Number(viewer_pos_count);
-//
-//                // floor
-//                var viewer_pos_display_order = document.getElementById("viewer_pos_display_order-" + gClickPos).value;
-//                vExbViewerData[i].displayOrder = Number(viewer_pos_display_order);
 
 
             }
@@ -407,10 +378,8 @@ $(function () {
         // 画面再描画
         gViewerManage.reDrawExbeacon(vExbViewerData);
 
-        //initManager();
         initClickFrame();
 
-        //vInputCheck = false;
     });
     /* btnイベント .end*/
 
@@ -428,7 +397,7 @@ function updateBtnEvent() {
             // 基準サイズかをチェックして基準の値に変換する。
             gResize.viewDataMotoChange();
             // modal処理
-            gModal.confirm(gTitle.update,gMessage.update,"../manage/updateExbViewer")
+            gModal.confirm(gTitle.update,gMessage.update,"../manage/updateExbSetup");
         }else{
            bCheckUpdate = false;
         }
@@ -438,14 +407,11 @@ function updateBtnEvent() {
 function formCheck(type) {
     var vMessage = "default";
     var vResult = false;
-    var checkLength = document.getElementsByClassName("pos-search").length
+    var checkLength = document.getElementsByClassName("pos-search").length;
     if (type == "update"){
         // 更新処理
-        vMessage = "「更新」"
-        //vUrl ="../exbViewer/updateExbViewer"
+        vMessage = "「更新」";
         vResult = true;
-
     }
-
     return vResult;
 }

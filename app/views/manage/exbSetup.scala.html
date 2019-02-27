@@ -16,23 +16,13 @@ viewType: Seq[ViewType]
 <html lang="ja">
 <head>
 @templates.htmlHead(title = Messages("lang.manage.exbViewerManager"))
-<style type="text/css">
-    .navbar-brand {
-        margin-left: 5px;
-        text-align: center;
-    }
-    div#pcTabletNav {
-        margin:0px;
-    }
-</style>
+	<link rel="stylesheet" href="@routes.MyAssets.css("manage/floorMap.css")"/>
 	<link rel="stylesheet" href="@routes.MyAssets.css("cms/itemCarManage.css")"/>
 <script></script>
 </head>
 
 <body>
-	<!--loading部-->
 	@views.html.templates.totalLoading()
-	<!-- ナビバー  -->
 	@views.html.templates.navBar()
 	<div class="top__btn--area mainSpace">
 		<div id ="top-title" class = "top__btn--text form-group">
@@ -197,7 +187,7 @@ viewType: Seq[ViewType]
 		}
 	</div>
 
-	<script type="text/javascript" src="@routes.MyAssets.js("manage/exbViewerManager.js")"></script>
+	<script type="text/javascript" src="@routes.MyAssets.js("manage/exbSetup.js")"></script>
 
 </body>
 </html>
