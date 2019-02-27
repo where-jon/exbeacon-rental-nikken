@@ -25,6 +25,11 @@ GET         /manage/floor                                controllers.manage.Floo
 POST        /manage/floor/floorUpdate                    controllers.manage.FloorController.floorUpdate
 POST        /manage/floor/floorDelete                    controllers.manage.FloorController.floorDelete
 
+
+# マップマネージャー
+GET         /manage/floorMap                                controllers.manage.FloorMapController.index
+POST        /manage/uploadMap                               controllers.manage.FloorMapController.uploadMap
+
 ###  システム管理 .end　#################################
 
 ###  業務ページ ############################
@@ -109,9 +114,6 @@ GET         /analysis/telemetry                             controllers.analysis
 # GW状態監視
 GET         /analysis/gateway                               controllers.analysis.Gateway.index
 
-# マップマネージャー
-GET         /manage/map                                     controllers.manage.MapController.index
-POST        /manage/uploadMap                               controllers.manage.MapController.uploadMap
 
 # EXB管理（旧）
 GET         /manage/exbManager                              controllers.manage.ExbManager.index

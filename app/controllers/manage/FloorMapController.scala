@@ -21,7 +21,7 @@ import utils.silhouette.MyEnv
 /**
   * フロアマップ登録クラス.
   */
-class MapController @Inject()(config: Configuration
+class FloorMapController @Inject()(config: Configuration
   , val silhouette: Silhouette[MyEnv]
   , val messagesApi: MessagesApi
   , ws: WSClient
@@ -70,12 +70,12 @@ class MapController @Inject()(config: Configuration
             System.out.println("11height:" + org.getHeight);
 
             if (1 == floorDAO.updateFloorMap(mapId.get.toInt, b64img, org.getWidth, org.getHeight)) {
-              Redirect("/manage/map").flashing("resultOK" -> Messages("db.update.ok"))
+              Redirect("/manage/floorMap").flashing("resultOK" -> Messages("db.update.ok"))
             } else {
-              Redirect("/manage/map").flashing("resultNG" -> Messages("error"))
+              Redirect("/manage/floorMap").flashing("resultNG" -> Messages("error"))
             }
           }else{
-            Redirect("/manage/map").flashing("resultNG" -> Messages("error.manage.mapManager.image.empty"))
+            Redirect("/manage/floorMap").flashing("resultNG" -> Messages("error.manage.mapManager.image.empty"))
           }
 
         }.getOrElse {
@@ -133,7 +133,7 @@ class MapController @Inject()(config: Configuration
     if(reqIdentity.level >= 3) {
       val placeId = super.getCurrentPlaceId
       val mapViewer = floorDAO.selectFloorAll(placeId)
-      Ok(views.html.manage.mapManager(mapViewerForm, mapViewer))
+      Ok(views.html.manage.floorMap(mapViewerForm, mapViewer))
     }else{
       Redirect(site.routes.ItemCarMaster.index)
     }

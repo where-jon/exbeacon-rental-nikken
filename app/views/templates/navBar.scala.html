@@ -59,7 +59,7 @@
                     <li class="pull-left tabFrame" style="margin-left:2px">
                         @if(
                         (request.path contains "/manage/floor") ||
-                        (request.path contains "/manage/map") ||
+                        (request.path contains "/manage/floorMap") ||
                         (request.path contains "/cms/exbManage") ||
                         (request.path contains "/manage/exbViewerManager")
                         ) {
@@ -94,7 +94,7 @@
 </div>
 @if(
     (request.path contains "/site/workPlace") ||
-    (request.path contains "/manage/map") ||
+    (request.path contains "/manage/floorMap") ||
     (request.path contains "/manage/exbViewerManager")
 ) {
     @views.html.templates.sideBar()
