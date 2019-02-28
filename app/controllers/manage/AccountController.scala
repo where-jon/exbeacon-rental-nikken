@@ -54,7 +54,7 @@ case class AccountDeleteForm(
   * 現場アカウント管理のコントローラー
   */
 @Singleton
-class AccountManage @Inject()(
+class AccountController @Inject()(
   config: Configuration,
   val silhouette: Silhouette[MyEnv],
   val messagesApi: MessagesApi,
@@ -67,7 +67,7 @@ class AccountManage @Inject()(
     */
   def index = SecuredAction { implicit request =>
     if (request.identity.level >= 2){
-      Ok(views.html.manage.accountManage(
+      Ok(views.html.manage.account(
         userService.selectAccountByPlaceId(placeId = super.getCurrentPlaceId),
         UserLevelEnum().map)
       )
@@ -103,7 +103,7 @@ class AccountManage @Inject()(
     val form = inputForm.bindFromRequest
     if (form.hasErrors) {
       val errMsg = form.errors.map(_.message).mkString(HTML_BR)
-      Redirect(routes.AccountManage.index()).flashing(ERROR_MSG_KEY -> errMsg)
+      Redirect(routes.AccountController.index()).flashing(ERROR_MSG_KEY -> errMsg)
     } else {
       val placeId = super.getCurrentPlaceId
       val hs = passwordHasherRegistry.current.hash(form.get.userPassword1)
@@ -113,7 +113,7 @@ class AccountManage @Inject()(
         true, form.get.userLevel.toInt, null
       )
       userService.insert(user)
-      Redirect(routes.AccountManage.index.path)
+      Redirect(routes.AccountController.index.path)
         .flashing(SUCCESS_MSG_KEY -> Messages("success.cms.AccountManage.create"))
     }
   }
@@ -139,11 +139,11 @@ class AccountManage @Inject()(
     val form = inputForm.bindFromRequest
     if (form.hasErrors) {
       val errMsg = form.errors.map(_.message).mkString(HTML_BR)
-      Redirect(routes.AccountManage.index()).flashing(ERROR_MSG_KEY -> errMsg)
+      Redirect(routes.AccountController.index()).flashing(ERROR_MSG_KEY -> errMsg)
     } else {
       val inForm = form.get
       userService.updateUserNameLevelById(inForm.userId, inForm.userName, inForm.userLoginId, inForm.userLevel)
-      Redirect(routes.AccountManage.index.path)
+      Redirect(routes.AccountController.index.path)
         .flashing(SUCCESS_MSG_KEY -> Messages("success.cms.AccountManage.update"))
     }
   }
@@ -162,14 +162,14 @@ class AccountManage @Inject()(
     ))
     val form = inputForm.bindFromRequest
     if (form.hasErrors){
-      Redirect(routes.AccountManage.index())
+      Redirect(routes.AccountController.index())
         .flashing(ERROR_MSG_KEY -> form.errors.map(_.message).mkString(HTML_BR))
     } else {
         userService.changePasswordById(
           form.get.userId,
           passwordHasherRegistry.current.hash(form.get.userPassword1).password
         )
-        Redirect(routes.AccountManage.index.path)
+        Redirect(routes.AccountController.index.path)
           .flashing(SUCCESS_MSG_KEY -> Messages("success.cms.AccountManage.passwordUpdate"))
     }
   }
@@ -184,11 +184,11 @@ class AccountManage @Inject()(
     )
     val form = inputForm.bindFromRequest
     if (form.hasErrors){
-      Redirect(routes.AccountManage.index())
+      Redirect(routes.AccountController.index())
         .flashing(ERROR_MSG_KEY -> form.errors.map(_.message).mkString(HTML_BR))
     } else {
       userService.deleteLogicalById(form.get.userId)
-      Redirect(routes.AccountManage.index.path)
+      Redirect(routes.AccountController.index.path)
         .flashing(SUCCESS_MSG_KEY -> Messages("success.cms.AccountManage.delete"))
     }
   }
