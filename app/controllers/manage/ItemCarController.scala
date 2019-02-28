@@ -6,7 +6,7 @@ import java.util.{Calendar, Date, Locale}
 import com.mohiva.play.silhouette.api.Silhouette
 import controllers.{BaseController, site}
 import javax.inject.{Inject, Singleton}
-import models.{ItemType, ItemTypeOrder}
+import models.ItemTypeOrder
 import play.api._
 import play.api.data.Form
 import play.api.data.Forms.{mapping, _}
@@ -41,7 +41,7 @@ case class CarDeleteForm(
 )
 
 @Singleton
-class ItemCarManage @Inject()(
+class ItemCarController @Inject()(
   config: Configuration
   , val silhouette: Silhouette[MyEnv]
   , val messagesApi: MessagesApi
@@ -67,7 +67,7 @@ class ItemCarManage @Inject()(
       /*仮設材種別取得*/
       itemTypeList = itemTypeDAO.selectItemCarInfoOrder(placeId);
 
-      Ok(views.html.manage.itemCarManage(ITEM_TYPE_FILTER, carList, itemTypeList, placeId))
+      Ok(views.html.manage.itemCar(ITEM_TYPE_FILTER, carList, itemTypeList, placeId))
     }else {
       Redirect(site.routes.ItemCarMaster.index)
     }
@@ -97,7 +97,7 @@ class ItemCarManage @Inject()(
     val form = inputForm.bindFromRequest
     if (form.hasErrors){
       // エラーでリダイレクト遷移
-      Redirect(routes.ItemCarManage.index()).flashing(ERROR_MSG_KEY -> form.errors.map(_.message).mkString(HTML_BR))
+      Redirect(routes.ItemCarController.index()).flashing(ERROR_MSG_KEY -> form.errors.map(_.message).mkString(HTML_BR))
     } else {
       var errMsg = Seq[String]()
       val f = form.get
@@ -118,7 +118,7 @@ class ItemCarManage @Inject()(
       }
       if (errMsg.isEmpty == false) {
         // エラーで遷移
-        Redirect(routes.ItemCarManage.index).flashing(ERROR_MSG_KEY -> errMsg.mkString(HTML_BR))
+        Redirect(routes.ItemCarController.index).flashing(ERROR_MSG_KEY -> errMsg.mkString(HTML_BR))
       } else {
         if (f.inputCarId.isEmpty) {
           // 新規登録の場合 --------------------------
@@ -146,7 +146,7 @@ class ItemCarManage @Inject()(
           }
           if (errMsg.isEmpty == false) {
             // エラーで遷移
-            Redirect(routes.ItemCarManage.index).flashing(ERROR_MSG_KEY -> errMsg.mkString(HTML_BR))
+            Redirect(routes.ItemCarController.index).flashing(ERROR_MSG_KEY -> errMsg.mkString(HTML_BR))
           } else {
             // DB処理
             carDAO.insert(
@@ -157,7 +157,7 @@ class ItemCarManage @Inject()(
               , f.inputCarTypeId.toInt
               , f.inputCarNote
               , f.inputPlaceId.toInt)
-            Redirect(routes.ItemCarManage.index)
+            Redirect(routes.ItemCarController.index)
               .flashing(SUCCESS_MSG_KEY -> Messages("success.cms.CarManage.update"))
           }
         } else {
@@ -293,7 +293,7 @@ class ItemCarManage @Inject()(
           }
           if (errMsg.isEmpty == false) {
             // エラーで遷移
-            Redirect(routes.ItemCarManage.index)
+            Redirect(routes.ItemCarController.index)
               .flashing(ERROR_MSG_KEY -> errMsg.mkString(HTML_BR))
           } else {
             // DB処理
@@ -309,7 +309,7 @@ class ItemCarManage @Inject()(
               , preCarInfo.itemCarBtxId
               , preCarInfo.itemCarKeyBtxId
             )
-            Redirect(routes.ItemCarManage.index)
+            Redirect(routes.ItemCarController.index)
               .flashing(SUCCESS_MSG_KEY -> Messages("success.cms.CarManage.update"))
           }
         }
@@ -336,7 +336,7 @@ class ItemCarManage @Inject()(
       // エラーメッセージ
       val errMsg = form.errors.map(_.message).mkString(HTML_BR)
       // リダイレクトで画面遷移
-      Redirect(routes.ItemCarManage.index).flashing(ERROR_MSG_KEY -> errMsg)
+      Redirect(routes.ItemCarController.index).flashing(ERROR_MSG_KEY -> errMsg)
     } else {
       val f = form.get
 
@@ -414,13 +414,13 @@ class ItemCarManage @Inject()(
       }
       if(errMsg.nonEmpty) {
         // エラーで遷移
-        Redirect(routes.ItemCarManage.index)
+        Redirect(routes.ItemCarController.index)
           .flashing(ERROR_MSG_KEY -> errMsg.mkString(HTML_BR))
       }else{
         // 削除
         carDAO.delete(f.deleteCarId.toInt, super.getCurrentPlaceId)
         // リダイレクト
-        Redirect(routes.ItemCarManage.index)
+        Redirect(routes.ItemCarController.index)
           .flashing(SUCCESS_MSG_KEY -> Messages("success.cms.CarManage.delete"))
       }
     }

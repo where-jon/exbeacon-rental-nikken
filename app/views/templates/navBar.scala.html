@@ -43,7 +43,7 @@
                     </li>
                     <li class="pull-left tabFrame" style="margin-left:2px">
                         @if(
-                        (request.path contains "/manage/itemCarManage") ||
+                        (request.path contains "/manage/itemCar") ||
                         (request.path contains "/manage/itemOtherManage") ||
                         (request.path contains "/manage/itemTypeManage") ||
                         (request.path contains "/manage/companyManage") ||
@@ -51,7 +51,7 @@
                         ) {
                         <a class="text-center tabSelected"><i class="fa fa-gear"></i>&nbsp;@Messages("lang.navbar.tab.maintenance")</a>
                         }else{
-                        <a href="/manage/itemCarManage" class="tabLoading text-center tab"><i class="fa fa-gear"></i>&nbsp;@Messages("lang.navbar.tab.maintenance")</a>
+                        <a href="/manage/itemCar" class="tabLoading text-center tab"><i class="fa fa-gear"></i>&nbsp;@Messages("lang.navbar.tab.maintenance")</a>
                         }
                     </li>
                     }

@@ -42,6 +42,33 @@ POST        /system/updateExbSetup                        controllers.system.Exb
 
 ###  システム管理 .end　#################################
 
+
+###  メンテナンス .start　#################################
+# 作業車・立馬管理
+GET         /manage/itemCar                              controllers.manage.ItemCarController.index
+POST        /manage/itemCar/update                       controllers.manage.ItemCarController.update
+POST        /manage/itemCar/delete                       controllers.manage.ItemCarController.delete
+# 仮設材管理
+GET         /manage/itemOtherManage                            controllers.manage.ItemOtherManage.index
+POST        /manage/itemOtherManage/update                     controllers.manage.ItemOtherManage.update
+POST        /manage/itemOtherManage/delete                     controllers.manage.ItemOtherManage.delete
+# 仮設材種別管理
+GET         /manage/itemTypeManage                             controllers.manage.ItemTypeManage.index
+POST        /manage/itemTypeManage/update                      controllers.manage.ItemTypeManage.update
+POST        /manage/itemTypeManage/delete                      controllers.manage.ItemTypeManage.delete
+# 業者管理
+GET         /manage/companyManage                              controllers.manage.CompanyManage.index
+POST        /manage/companyManage/update                       controllers.manage.CompanyManage.update
+POST        /manage/companyManage/delete                       controllers.manage.CompanyManage.delete
+# 現場アカウント管理
+GET         /manage/accountManage                              controllers.manage.AccountManage.index
+POST        /manage/accountManage/create                       controllers.manage.AccountManage.create
+POST        /manage/accountManage/update                       controllers.manage.AccountManage.update
+POST        /manage/accountManage/passwordUpdate               controllers.manage.AccountManage.passwordUpdate
+POST        /manage/accountManage/delete                       controllers.manage.AccountManage.delete
+###  メンテナンス .end　#################################
+
+
 ###  業務ページ ############################
 # 作業車利用状況
 GET         /carSummery                                     controllers.CarSummery.index
@@ -123,31 +150,6 @@ GET         /analysis/telemetry                             controllers.analysis
 
 # GW状態監視
 GET         /analysis/gateway                               controllers.analysis.Gateway.index
-
-
-
-# 作業車・立馬管理
-GET         /manage/itemCarManage                              controllers.manage.ItemCarManage.index
-POST        /manage/itemCarManage/update                       controllers.manage.ItemCarManage.update
-POST        /manage/itemCarManage/delete                       controllers.manage.ItemCarManage.delete
-# 仮設材管理
-GET         /manage/itemOtherManage                            controllers.manage.ItemOtherManage.index
-POST        /manage/itemOtherManage/update                     controllers.manage.ItemOtherManage.update
-POST        /manage/itemOtherManage/delete                     controllers.manage.ItemOtherManage.delete
-# 仮設材種別管理
-GET         /manage/itemTypeManage                             controllers.manage.ItemTypeManage.index
-POST        /manage/itemTypeManage/update                      controllers.manage.ItemTypeManage.update
-POST        /manage/itemTypeManage/delete                      controllers.manage.ItemTypeManage.delete
-# 業者管理
-GET         /manage/companyManage                              controllers.manage.CompanyManage.index
-POST        /manage/companyManage/update                       controllers.manage.CompanyManage.update
-POST        /manage/companyManage/delete                       controllers.manage.CompanyManage.delete
-# 現場アカウント管理
-GET         /manage/accountManage                              controllers.manage.AccountManage.index
-POST        /manage/accountManage/create                       controllers.manage.AccountManage.create
-POST        /manage/accountManage/update                       controllers.manage.AccountManage.update
-POST        /manage/accountManage/passwordUpdate               controllers.manage.AccountManage.passwordUpdate
-POST        /manage/accountManage/delete                       controllers.manage.AccountManage.delete
 
 
 ## 認証周り

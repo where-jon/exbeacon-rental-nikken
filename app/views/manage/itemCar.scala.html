@@ -11,7 +11,7 @@
 <html lang="ja">
 <head>
     @templates.htmlHead(title = Messages("lang.cms.itemCarManage.title"))
-    <link rel="stylesheet" href="@routes.MyAssets.css("manage/itemCarManage.css")"/>
+    <link rel="stylesheet" href="@routes.MyAssets.css("manage/itemCar.css")"/>
     <script></script>
 </head>
 <body>
@@ -96,14 +96,14 @@
             </div>
         </div>
     </div>
-    <script type="text/javascript" src="@routes.MyAssets.js("manage/itemCarManage.js")"></script>
+    <script type="text/javascript" src="@routes.MyAssets.js("manage/itemCar.js")"></script>
     <script></script>
 
     <!-- 更新モーダル画面 -->
     <div class="modal" id="inputModal" tabindex="-1" role="dialog" aria-labelledby="inputModalLabel" aria-hidden="true" data-show="true" data-keyboard="false" data-backdrop="static">
         <div class="modal-dialog">
             <div class="modal-content">
-                <form id="carForm" name="carForm" enctype="multipart/form-data" class="form-horizontal" method="post" action="@controllers.manage.routes.ItemCarManage.update.path">
+                <form id="carForm" name="carForm" enctype="multipart/form-data" class="form-horizontal" method="post" action="@controllers.manage.routes.ItemCarController.update.path">
                     @CSRF.formField
                     <input type="hidden" name="inputPlaceId" value="@placeId">
                     <input type="hidden" id="inputCarId" name="inputCarId">
@@ -170,7 +170,7 @@
     <div class="modal" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true" data-show="true" data-keyboard="false" data-backdrop="static">
         <div class="modal-dialog">
             <div class="modal-content">
-                <form id="deleteForm" name="deleteForm" class="form-horizontal" method="post" enctype="multipart/form-data" action="@controllers.manage.routes.ItemCarManage.delete.path">
+                <form id="deleteForm" name="deleteForm" class="form-horizontal" method="post" enctype="multipart/form-data" action="@controllers.manage.routes.ItemCarController.delete.path">
                     @CSRF.formField
                     <input type="hidden" id="deleteCarId" name="deleteCarId">
                     <input type="hidden" id="deleteCarTypeId" name="deleteCarTypeId">
