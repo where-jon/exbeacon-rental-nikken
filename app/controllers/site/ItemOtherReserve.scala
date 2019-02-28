@@ -6,6 +6,7 @@ import java.util.{Date, Locale}
 import com.mohiva.play.silhouette.api.Silhouette
 import controllers.{BaseController, BeaconService, errors}
 import javax.inject.{Inject, Singleton}
+import models.manage.Company
 import models.system.Floor
 import models.{ItemOtherReserveData, _}
 import play.api._
@@ -28,7 +29,7 @@ class ItemOtherReserve @Inject()(config: Configuration
   , val messagesApi: MessagesApi
   , carDAO: models.manage.itemCarDAO
   , otherDAO: models.itemOtherDAO
-  , companyDAO: models.companyDAO
+  , companyDAO: models.manage.companyDAO
   , beaconService: BeaconService
   , floorDAO: models.system.floorDAO
   , btxDAO: models.btxDAO

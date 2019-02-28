@@ -30,7 +30,7 @@ case class CompanyDeleteForm(deleteCompanyId: String)
 class CompanyController @Inject()(config: Configuration
                                   , val silhouette: Silhouette[MyEnv]
                                   , val messagesApi: MessagesApi
-                                  , companyDAO: models.companyDAO
+                                  , companyDAO: models.manage.companyDAO
                                  ) extends BaseController with I18nSupport {
 
 
@@ -57,7 +57,7 @@ class CompanyController @Inject()(config: Configuration
     val inputForm = Form(mapping(
       "inputPlaceId" -> text
       , "inputCompanyId" -> text
-      , "inputCompanyName" -> text.verifying(Messages("error.cms.CompanyManage.update.inputCompanyName.empty"), {
+      , "inputCompanyName" -> text.verifying(Messages("error.manage.Company.update.inputCompanyName.empty"), {
         !_.isEmpty
       })
       , "inputNote" -> text
@@ -78,7 +78,7 @@ class CompanyController @Inject()(config: Configuration
         // 名称重複チェック
         val companyList = companyDAO.selectCompany(super.getCurrentPlaceId, f.inputCompanyName)
         if (companyList.nonEmpty) {
-          errMsg :+= Messages("error.cms.CompanyManage.update.inputCompanyName.duplicate", f.inputCompanyName)
+          errMsg :+= Messages("error.manage.Company.update.inputCompanyName.duplicate", f.inputCompanyName)
         }
         if (errMsg.nonEmpty) {
           // エラーで遷移
@@ -89,7 +89,7 @@ class CompanyController @Inject()(config: Configuration
           companyDAO.insert(f.inputCompanyName, f.inputNote, f.inputPlaceId.toInt)
 
           Redirect(routes.CompanyController.index)
-            .flashing(SUCCESS_MSG_KEY -> Messages("success.cms.CompanyManage.update"))
+            .flashing(SUCCESS_MSG_KEY -> Messages("success.manage.Company.update"))
         }
 
       } else {
@@ -98,7 +98,7 @@ class CompanyController @Inject()(config: Configuration
         var companyList = companyDAO.selectCompany(super.getCurrentPlaceId)
         companyList = companyList.filter(_.companyId != f.inputCompanyId.toInt).filter(_.companyName == f.inputCompanyName)
         if (companyList.nonEmpty) {
-          errMsg :+= Messages("error.cms.CompanyManage.update.inputCompanyName.duplicate", f.inputCompanyName)
+          errMsg :+= Messages("error.manage.Company.update.inputCompanyName.duplicate", f.inputCompanyName)
         }
 
         // 予約情報テーブルに作業車・立馬IDが存在していないか
@@ -160,11 +160,11 @@ class CompanyController @Inject()(config: Configuration
             }
           }
           if (chkFlg == 1) {
-            errMsg :+= Messages("error.cms.CompanyManage.update.inputCompanyName.use.noChange", companyNm);
+            errMsg :+= Messages("error.manage.Company.update.inputCompanyName.use.noChange", companyNm);
           } else if (chkFlg == 2) {
             if (reqIdentity.level < 3) {
               // 権限がレベル３以下のみ予約情報が有る場合エラーにする
-              errMsg :+= Messages("error.cms.CompanyManage.update.inputCompanyName.use.exceed", companyNm);
+              errMsg :+= Messages("error.manage.Company.update.inputCompanyName.use.exceed", companyNm);
             }
           }
         }
@@ -178,7 +178,7 @@ class CompanyController @Inject()(config: Configuration
           companyDAO.updateById(f.inputCompanyId.toInt, f.inputCompanyName, f.inputNote)
 
           Redirect(routes.CompanyController.index)
-            .flashing(SUCCESS_MSG_KEY -> Messages("success.cms.CompanyManage.update"))
+            .flashing(SUCCESS_MSG_KEY -> Messages("success.manage.Company.update"))
         }
       }
     }
@@ -265,11 +265,11 @@ class CompanyController @Inject()(config: Configuration
           }
         }
         if (chkFlg == 1) {
-          errMsg :+= Messages("error.cms.CompanyManage.delete.inputCompanyName.use.noChange", companyNm);
+          errMsg :+= Messages("error.manage.Company.delete.inputCompanyName.use.noChange", companyNm);
         } else if (chkFlg == 2) {
           if (reqIdentity.level < 3) {
             // 権限がレベル３以下のみ予約情報が有る場合エラーにする
-            errMsg :+= Messages("error.cms.CompanyManage.delete.inputCompanyName.use.exceed", companyNm);
+            errMsg :+= Messages("error.manage.Company.delete.inputCompanyName.use.exceed", companyNm);
           }
         }
       }
@@ -282,7 +282,7 @@ class CompanyController @Inject()(config: Configuration
         companyDAO.deleteById(f.deleteCompanyId.toInt)
 
         // リダイレクト
-        Redirect(routes.CompanyController.index).flashing(SUCCESS_MSG_KEY -> Messages("success.cms.CompanyManage.delete"))
+        Redirect(routes.CompanyController.index).flashing(SUCCESS_MSG_KEY -> Messages("success.manage.Company.delete"))
       }
     }
   }

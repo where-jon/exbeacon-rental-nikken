@@ -1,4 +1,5 @@
 @import models.system.FloorInfo
+@import models.manage.Company
 @(companyList: Seq[Company], floorList:Seq[FloorInfo], reservePlotList:Seq[CarReserveModelPlotInfo], workPlotList:Seq[CarReserveModelPlotInfo], reserveDateObj: org.joda.time.DateTime)(implicit user: User, messages: Messages, request: RequestHeader, flash: Flash)
 
 @import controllers.routes

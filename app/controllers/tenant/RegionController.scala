@@ -27,7 +27,7 @@ class RegionController @Inject() (
   exbDAO: models.system.ExbDAO,
   passwordHasherRegistry: PasswordHasherRegistry,
   userService: UserService,
-  companyDAO: models.companyDAO,
+  companyDAO: models.manage.companyDAO,
   itemTypeDAO: models.ItemTypeDAO,
   itemOtherDAO: models.itemOtherDAO,
   itemCarDAO: models.manage.itemCarDAO

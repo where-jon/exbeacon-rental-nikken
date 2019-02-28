@@ -164,12 +164,19 @@ error.manage.ItemCar.delete.inputCarId.empty=IDは登録されていません。
 error.manage.ItemCar.update.NotTypeName=種別が存在しません。
 error.manage.ItemCar.update.inputCarKey.duplicate=TagIDと鍵TagIDに同一のIDが入力されています。
 
-
+# 業者管理
+success.manage.Company.delete=業者情報を削除しました。
+success.manage.Company.update=業者情報を更新しました。
+error.manage.Company.update.inputCompanyName.empty=業者名を入力してください。
+error.manage.Company.update.inputCompanyName.use.noChange=業者は現在予約されている為、更新と削除ができません。(業者名：{0})
+error.manage.Company.delete.inputCompanyName.use.noChange=業者は現在予約されている為、更新と削除ができません。(業者名：{0})
+error.manage.Company.update.inputCompanyName.use.exceed=対象の業者は予約履歴が有ります。システム管理権限以上をお持ちの方が更新と削除ができます。(業者名：{0})
+error.manage.Company.update.inputCompanyName.duplicate=業者名が重複しています。(業者名：{0})
+error.manage.Company.delete.inputCompanyName.use.exceed=対象の業者は予約履歴が有ります。システム管理権限以上をお持ちの方が更新と削除ができます。(業者名：{0})
 
 ### メンテナンス　.end
 
-success.cms.CompanyManage.delete=業者情報を削除しました。
-success.cms.CompanyManage.update=業者情報を更新しました。
+
 
 
 success.cms.ItemOtherManage.delete=仮設材情報を削除しました。
@@ -217,13 +224,6 @@ error.tenanat.Region.noDelete.byOtherMaster=この現場に紐づくその他仮
 error.tenanat.Region.noDelete.byCarMaster=この現場に紐づく作業車・立馬が存在しているので削除できません。
 error.tenanat.Region.noDelete.byExb=この現場に紐づくEXBが存在しているので削除できません。
 error.tenanat.Region.noDelete.byFloor=この現場に紐づくフロアが存在しているので削除できません。
-
-error.cms.CompanyManage.update.inputCompanyName.empty=業者名を入力してください。
-error.cms.CompanyManage.update.inputCompanyName.duplicate=業者名が重複しています。(業者名：{0})
-error.cms.CompanyManage.update.inputCompanyName.use.noChange=業者は現在予約されている為、更新と削除ができません。(業者名：{0})
-error.cms.CompanyManage.update.inputCompanyName.use.exceed=対象の業者は予約履歴が有ります。システム管理権限以上をお持ちの方が更新と削除ができます。(業者名：{0})
-error.cms.CompanyManage.delete.inputCompanyName.use.noChange=業者は現在予約されている為、更新と削除ができません。(業者名：{0})
-error.cms.CompanyManage.delete.inputCompanyName.use.exceed=対象の業者は予約履歴が有ります。システム管理権限以上をお持ちの方が更新と削除ができます。(業者名：{0})
 
 
 error.cms.ItemOtherManage.update.inputItemOtherNo.empty=仮設材番号を入力してください。

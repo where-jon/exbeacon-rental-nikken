@@ -27,7 +27,7 @@ class UnDetected @Inject()(config: Configuration
 , val messagesApi: MessagesApi
 , carDAO: models.manage.itemCarDAO
 , itemLogDao: models.ItemLogDAO
-, companyDAO: models.companyDAO
+, companyDAO: models.manage.companyDAO
 , beaconService: BeaconService
 , floorDAO: models.system.floorDAO
 , btxDAO: models.btxDAO

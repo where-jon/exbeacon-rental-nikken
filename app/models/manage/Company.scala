@@ -1,29 +1,10 @@
-package models
-
-import javax.inject.Inject
+package models.manage
 
 import anorm.SqlParser._
 import anorm._
+import javax.inject.Inject
 import play.api.Logger
 import play.api.db._
-import play.api.libs.functional.syntax._
-import play.api.libs.json.{JsPath, Json, Reads}
-
-//case class roomPosition(
-//  room_id: String,
-//  room_name: String,
-//  description: String
-//)
-//object roomPosition {
-//
-//  implicit val jsonReads: Reads[roomPosition] = (
-//      ((JsPath \ "room_id").read[String] | Reads.pure("")) ~
-//      ((JsPath \ "room_name").read[String] | Reads.pure(""))~
-//      ((JsPath \ "description").read[String] | Reads.pure(""))
-//    )(roomPosition.apply _)
-//
-//  implicit def jsonWrites = Json.writes[roomPosition]
-//}
 
 
 

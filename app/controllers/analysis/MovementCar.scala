@@ -29,7 +29,7 @@ class MovementCar @Inject()(config: Configuration
 , val silhouette: Silhouette[MyEnv]
 , val messagesApi: MessagesApi
 , carDAO: models.manage.itemCarDAO
-, companyDAO: models.companyDAO
+, companyDAO: models.manage.companyDAO
 , beaconService: BeaconService
 , floorDAO: models.system.floorDAO
 , btxDAO: models.btxDAO

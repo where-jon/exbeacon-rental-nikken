@@ -4,6 +4,7 @@ import javax.inject.{Inject, Singleton}
 import com.mohiva.play.silhouette.api.Silhouette
 import controllers.{BaseController, BeaconService, errors}
 import models._
+import models.manage.Company
 import models.system.Floor
 import play.api._
 import play.api.data.Form
@@ -23,7 +24,7 @@ class ItemOtherCancel @Inject()(config: Configuration
 , val silhouette: Silhouette[MyEnv]
 , val messagesApi: MessagesApi
 , otherDAO: models.itemOtherDAO
-, companyDAO: models.companyDAO
+, companyDAO: models.manage.companyDAO
 , beaconService: BeaconService
 , floorDAO: models.system.floorDAO
 , btxDAO: models.btxDAO
