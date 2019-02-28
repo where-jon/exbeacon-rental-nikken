@@ -47,20 +47,20 @@ class AccountController @Inject()(
   def create = SecuredAction { implicit request =>
     val inputForm = Form(
       mapping(
-        "userName" -> text.verifying(Messages("error.cms.AccountManage.create.userName.empty"), {!_.isEmpty}),
-        "userLoginId" -> text.verifying(Messages("error.cms.AccountManage.create.userLoginId.empty"), {!_.isEmpty}),
-        "userLevel" -> text.verifying(Messages("error.cms.AccountManage.create.userLevel.empty"), {!_.isEmpty}),
-        "userPassword1" -> text.verifying(Messages("error.cms.AccountManage.create.userPassword1.empty"), {!_.isEmpty}),
-        "userPassword2" -> text.verifying(Messages("error.cms.AccountManage.create.userPassword2.empty"), {!_.isEmpty})
+        "userName" -> text.verifying(Messages("error.manage.Account.create.userName.empty"), {!_.isEmpty}),
+        "userLoginId" -> text.verifying(Messages("error.manage.Account.create.userLoginId.empty"), {!_.isEmpty}),
+        "userLevel" -> text.verifying(Messages("error.manage.Account.create.userLevel.empty"), {!_.isEmpty}),
+        "userPassword1" -> text.verifying(Messages("error.manage.Account.create.userPassword1.empty"), {!_.isEmpty}),
+        "userPassword2" -> text.verifying(Messages("error.manage.Account.create.userPassword2.empty"), {!_.isEmpty})
       )
       (AccountCreateForm.apply)
       (AccountCreateForm.unapply)
       verifying (
-        Messages("error.cms.AccountManage.create.passwords.notEqual"),
+        Messages("error.manage.Account.create.passwords.notEqual"),
         form => form.userPassword1 == form.userPassword2
       )
       verifying (
-        Messages("error.cms.AccountManage.create.userLoginId.exist"), // 指定されたログインIDは既に使われています。
+        Messages("error.manage.Account.create.userLoginId.exist"), // 指定されたログインIDは既に使われています。
         form => (userService.selectByLoginId(form.userLoginId).length == 0)
       )
     )
@@ -78,7 +78,7 @@ class AccountController @Inject()(
       )
       userService.insert(user)
       Redirect(routes.AccountController.index.path)
-        .flashing(SUCCESS_MSG_KEY -> Messages("success.cms.AccountManage.create"))
+        .flashing(SUCCESS_MSG_KEY -> Messages("success.manage.Account.create"))
     }
   }
 
@@ -88,15 +88,15 @@ class AccountController @Inject()(
   def update = SecuredAction { implicit request =>
     val inputForm = Form(
       mapping(
-        "userId" -> text.verifying(Messages("error.cms.AccountManage.update.userId.empty"), {!_.isEmpty}),
-        "userName" -> text.verifying(Messages("error.cms.AccountManage.update.userName.empty"), {!_.isEmpty}),
-        "userLoginId" -> text.verifying(Messages("error.cms.AccountManage.update.userLoginId.empty"), {!_.isEmpty}),
-        "userLevel" -> text.verifying(Messages("error.cms.AccountManage.update.userLevel.empty"), {!_.isEmpty})
+        "userId" -> text.verifying(Messages("error.manage.Account.update.userId.empty"), {!_.isEmpty}),
+        "userName" -> text.verifying(Messages("error.manage.Account.update.userName.empty"), {!_.isEmpty}),
+        "userLoginId" -> text.verifying(Messages("error.manage.Account.update.userLoginId.empty"), {!_.isEmpty}),
+        "userLevel" -> text.verifying(Messages("error.manage.Account.update.userLevel.empty"), {!_.isEmpty})
       )
       (AccountUpdateForm.apply)
       (AccountUpdateForm.unapply)
       verifying (
-        Messages("error.cms.AccountManage.update.userLoginId.exist"), // 指定されたログインIDは既に使われています。
+        Messages("error.manage.Account.update.userLoginId.exist"), // 指定されたログインIDは既に使われています。
         form => (userService.checkExistByLoginId(form.userLoginId, form.userId.toInt).length == 0)
       )
     )
@@ -108,20 +108,20 @@ class AccountController @Inject()(
       val inForm = form.get
       userService.updateUserNameLevelById(inForm.userId, inForm.userName, inForm.userLoginId, inForm.userLevel)
       Redirect(routes.AccountController.index.path)
-        .flashing(SUCCESS_MSG_KEY -> Messages("success.cms.AccountManage.update"))
+        .flashing(SUCCESS_MSG_KEY -> Messages("success.manage.Account.update"))
     }
   }
 
   /** パスワード更新 */
   def passwordUpdate = SecuredAction { implicit request =>
     val inputForm = Form(mapping(
-      "userId" -> text.verifying(Messages("error.cms.AccountManage.passwordUpdate.userId.empty"), {!_.isEmpty}),
-      "userPassword1" -> text.verifying(Messages("error.cms.AccountManage.passwordUpdate.userPassword1.empty"), {!_.isEmpty}),
-      "userPassword2" -> text.verifying(Messages("error.cms.AccountManage.passwordUpdate.userPassword2.empty"), {!_.isEmpty})
+      "userId" -> text.verifying(Messages("error.manage.Account.passwordUpdate.userId.empty"), {!_.isEmpty}),
+      "userPassword1" -> text.verifying(Messages("error.manage.Account.passwordUpdate.userPassword1.empty"), {!_.isEmpty}),
+      "userPassword2" -> text.verifying(Messages("error.manage.Account.passwordUpdate.userPassword2.empty"), {!_.isEmpty})
     )
     (AccountPasswordUpdateForm.apply)(AccountPasswordUpdateForm.unapply)
     verifying (
-      Messages("error.cms.AccountManage.passwordUpdate.notEqual"),
+      Messages("error.manage.Account.passwordUpdate.notEqual"),
       form => form.userPassword1 == form.userPassword2
     ))
     val form = inputForm.bindFromRequest
@@ -134,7 +134,7 @@ class AccountController @Inject()(
           passwordHasherRegistry.current.hash(form.get.userPassword1).password
         )
         Redirect(routes.AccountController.index.path)
-          .flashing(SUCCESS_MSG_KEY -> Messages("success.cms.AccountManage.passwordUpdate"))
+          .flashing(SUCCESS_MSG_KEY -> Messages("success.manage.Account.passwordUpdate"))
     }
   }
 
@@ -142,7 +142,7 @@ class AccountController @Inject()(
   def delete = SecuredAction { implicit request =>
     val inputForm = Form(
       mapping(
-        "userId" -> text.verifying(Messages("error.cms.AccountManage.delete.userId.empty"), {!_.isEmpty})
+        "userId" -> text.verifying(Messages("error.manage.Account.delete.userId.empty"), {!_.isEmpty})
       )
       (AccountDeleteForm.apply)(AccountDeleteForm.unapply)
     )
@@ -153,7 +153,7 @@ class AccountController @Inject()(
     } else {
       userService.deleteLogicalById(form.get.userId)
       Redirect(routes.AccountController.index.path)
-        .flashing(SUCCESS_MSG_KEY -> Messages("success.cms.AccountManage.delete"))
+        .flashing(SUCCESS_MSG_KEY -> Messages("success.manage.Account.delete"))
     }
   }
 

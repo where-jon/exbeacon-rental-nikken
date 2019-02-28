@@ -222,6 +222,62 @@ error.manage.Company.update.inputCompanyName.use.exceed=対象の業者は予約
 error.manage.Company.update.inputCompanyName.duplicate=業者名が重複しています。(業者名：{0})
 error.manage.Company.delete.inputCompanyName.use.exceed=対象の業者は予約履歴が有ります。システム管理権限以上をお持ちの方が更新と削除ができます。(業者名：{0})
 
+
+# 現場アカウント管理
+lang.manage.Account.title=現場アカウント管理
+lang.manage.Account.page.title=現場アカウント管理
+lang.manage.Account.list.header.title=現場アカウント一覧
+lang.manage.Account.list.header.userLoginId=ID
+lang.manage.Account.list.header.userName=名前
+lang.manage.Account.list.header.userLevel=権限
+lang.manage.Account.button.update=アカウント編集
+lang.manage.Account.button.passwordUpdate=パスワード変更
+lang.manage.Account.button.create=アカウント追加
+lang.manage.Account.button.delete=アカウント削除
+lang.manage.Account.create.popup.title=現場アカウント新規作成
+lang.manage.Account.create.popup.userName=名前
+lang.manage.Account.create.popup.userName.placeholder=名前を入力してください
+lang.manage.Account.create.popup.userLoginId=ID
+lang.manage.Account.create.popup.userLoginId.placeholder=新しいIDを入力してください
+lang.manage.Account.create.popup.userLevel=権限
+lang.manage.Account.create.popup.userPassword1=パスワード
+lang.manage.Account.create.popup.userPassword1.placeholder=新しいパスワードを入力してください
+lang.manage.Account.create.popup.userPassword2=確認用パスワード
+lang.manage.Account.create.popup.userPassword2.placeholder=同じパスワードを入力してください
+lang.manage.Account.update.popup.title=現場アカウント更新
+lang.manage.Account.update.popup.userName=名前
+lang.manage.Account.update.popup.userName.placeholder=名前を入力してください
+lang.manage.Account.update.popup.userLoginId=ログインID
+lang.manage.Account.update.popup.userLoginId.placeholder=ログインIDを入力してください
+lang.manage.Account.update.popup.userLevel=権限
+lang.manage.Account.passwordUpdate.popup.title=パスワード変更
+lang.manage.Account.passwordUpdate.popup.userPassword1=パスワード
+lang.manage.Account.passwordUpdate.popup.userPassword2=確認パスワード
+lang.manage.Account.delete.popup.title=アカウント削除
+lang.manage.Account.delete.popup.message=アカウントを削除します。\nよろしいですか？
+
+success.manage.Account.create=新規追加しました。
+success.manage.Account.update=更新しました。
+success.manage.Account.passwordUpdate=パスワードを変更しました。
+success.manage.Account.delete=削除しました。
+error.manage.Account.create.userName.empty=名前を入力してください。
+error.manage.Account.create.userLoginId.empty=IDを入力してください。
+error.manage.Account.create.userLoginId.exist=指定されたログインIDは既に使われています。
+error.manage.Account.create.userLevel.empty=権限を選択してください。
+error.manage.Account.create.userPassword1.empty=パスワードを入力してください。
+error.manage.Account.create.userPassword2.empty=確認用パスワードを入力してください。
+error.manage.Account.create.passwords.notEqual=パスワードと確認用パスワードが異なります。
+error.manage.Account.update.userId.empty=USER.IDを入力してください。
+error.manage.Account.update.userName.empty=名前を入力してください。
+error.manage.Account.update.userLoginId.empty=ログインIDを入力してください。
+error.manage.Account.update.userLoginId.exist=指定されたログインIDは既に使われています。
+error.manage.Account.update.userLevel.empty=権限を選択してください。
+error.manage.Account.passwordUpdate.userId.empty=USER.IDを入力してください。
+error.manage.Account.passwordUpdate.userPassword1.empty=パスワードを入力してください。
+error.manage.Account.passwordUpdate.userPassword2.empty=確認パスワードを入力してください。
+error.manage.Account.passwordUpdate.notEqual=パスワードと確認パスワードが異なります。
+error.cms.AccountManage.delete.userId.empty=削除するアカウントを指定してください。
+
 ### メンテナンス　.end
 
 
@@ -236,10 +292,6 @@ success.cms.ItemTypeManage.update=仮設材種別を更新しました
 success.changePassword.devUser.update=開発管理者のパスワードを更新しました。
 success.changePassword.sysUser.update=システム管理者のパスワードを更新しました。
 
-success.cms.AccountManage.create=新規追加しました。
-success.cms.AccountManage.update=更新しました。
-success.cms.AccountManage.passwordUpdate=パスワードを変更しました。
-success.cms.AccountManage.delete=削除しました。
 
 ################################################################################################
 # ERRORS
@@ -321,24 +373,6 @@ error.changePassword.newPassword2.error.minLength=確認用パスワードが短
 error.changePassword.newPassword2.error.required=確認用パスワードは必須入力です。
 error.changePassword.password.notequal=新しいパスワードと確認用パスワードが異なります。
 error.changePassword.password.current.notequal=現在のパスワードが異なります。
-
-error.cms.AccountManage.create.userName.empty=名前を入力してください。
-error.cms.AccountManage.create.userLoginId.empty=IDを入力してください。
-error.cms.AccountManage.create.userLoginId.exist=指定されたログインIDは既に使われています。
-error.cms.AccountManage.create.userLevel.empty=権限を選択してください。
-error.cms.AccountManage.create.userPassword1.empty=パスワードを入力してください。
-error.cms.AccountManage.create.userPassword2.empty=確認用パスワードを入力してください。
-error.cms.AccountManage.create.passwords.notEqual=パスワードと確認用パスワードが異なります。
-error.cms.AccountManage.update.userId.empty=USER.IDを入力してください。
-error.cms.AccountManage.update.userName.empty=名前を入力してください。
-error.cms.AccountManage.update.userLoginId.empty=ログインIDを入力してください。
-error.cms.AccountManage.update.userLoginId.exist=指定されたログインIDは既に使われています。
-error.cms.AccountManage.update.userLevel.empty=権限を選択してください。
-error.cms.AccountManage.passwordUpdate.userId.empty=USER.IDを入力してください。
-error.cms.AccountManage.passwordUpdate.userPassword1.empty=パスワードを入力してください。
-error.cms.AccountManage.passwordUpdate.userPassword2.empty=確認パスワードを入力してください。
-error.cms.AccountManage.passwordUpdate.notEqual=パスワードと確認パスワードが異なります。
-error.cms.AccountManage.delete.userId.empty=削除するアカウントを指定してください。
 
 error.undetected.api=この現場はAPIデータが正しくありません。管理者確認が必要です。
 error.unmatched.data=APIと登録データが違うため正しく表示できません。正しいデータ登録が必要です。
@@ -493,42 +527,6 @@ lang.cms.itemTypeManage.itemTypeUpdate.popup.font.color=アイコン文字色
 lang.cms.itemTypeManage.itemTypeUpdate.popup.row.color=行色
 lang.cms.itemTypeManage.itemTypeDelete.popup.title=仮設材種別情報削除
 lang.cms.itemTypeManage.itemTypeDelete.popup.message=仮設材種別情報を削除します。\nよろしいですか？
-
-
-# CMS文字列（現場アカウント管理）
-lang.cms.accountManage.title=現場アカウント管理
-lang.cms.accountManage.page.title=現場アカウント管理
-lang.cms.accountManage.list.header.title=現場アカウント一覧
-lang.cms.accountManage.list.header.userLoginId=ID
-lang.cms.accountManage.list.header.userName=名前
-lang.cms.accountManage.list.header.userLevel=権限
-lang.cms.accountManage.button.update=アカウント編集
-lang.cms.accountManage.button.passwordUpdate=パスワード変更
-lang.cms.accountManage.button.create=アカウント追加
-lang.cms.accountManage.button.delete=アカウント削除
-lang.cms.accountManage.create.popup.title=現場アカウント新規作成
-lang.cms.accountManage.create.popup.userName=名前
-lang.cms.accountManage.create.popup.userName.placeholder=名前を入力してください
-lang.cms.accountManage.create.popup.userLoginId=ID
-lang.cms.accountManage.create.popup.userLoginId.placeholder=新しいIDを入力してください
-lang.cms.accountManage.create.popup.userLevel=権限
-lang.cms.accountManage.create.popup.userPassword1=パスワード
-lang.cms.accountManage.create.popup.userPassword1.placeholder=新しいパスワードを入力してください
-lang.cms.accountManage.create.popup.userPassword2=確認用パスワード
-lang.cms.accountManage.create.popup.userPassword2.placeholder=同じパスワードを入力してください
-lang.cms.accountManage.update.popup.title=現場アカウント更新
-lang.cms.accountManage.update.popup.userName=名前
-lang.cms.accountManage.update.popup.userName.placeholder=名前を入力してください
-lang.cms.accountManage.update.popup.userLoginId=ログインID
-lang.cms.accountManage.update.popup.userLoginId.placeholder=ログインIDを入力してください
-lang.cms.accountManage.update.popup.userLevel=権限
-lang.cms.accountManage.passwordUpdate.popup.title=パスワード変更
-lang.cms.accountManage.passwordUpdate.popup.userPassword1=パスワード
-lang.cms.accountManage.passwordUpdate.popup.userPassword2=確認パスワード
-lang.cms.accountManage.delete.popup.title=アカウント削除
-lang.cms.accountManage.delete.popup.message=アカウントを削除します。\nよろしいですか？
-
-
 
 
 # CMS文字列（Beaconタグ電池残量）
