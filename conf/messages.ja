@@ -281,7 +281,13 @@ error.cms.AccountManage.delete.userId.empty=削除するアカウントを指定
 ### メンテナンス　.end
 
 
-
+### 仮設材　.start
+# 新作業車・立馬予約
+lang.site.reserveCar.page.title=作業車・立馬予約
+error.site.reserveCar.inputDate.empty=日付「yyyy/MM/dd」で検索お願いします。
+error.site.reserveCar.searchDate.over = 「0~10」まで半角数字入力をお願いします。
+success.site.reserveCar.update=作業車・立馬予約を完了しました。
+### 仮設材　.end
 
 success.cms.ItemOtherManage.delete=仮設材情報を削除しました。
 success.cms.ItemOtherManage.update=仮設材情報を更新しました。
@@ -710,11 +716,6 @@ lang.site.itemCarMaster.term=期間
 lang.site.itemCarMaster.reserveId=予約ID
 
 
-# 新作業車・立馬予約
-lang.site.newItemCarReserve.page.title=作業車・立馬予約
-error.site.newItemCarReserve.inputDate.empty=日付「yyyy/MM/dd」で検索お願いします。
-error.site.newItemCarReserve.searchDate.over = 「0~10」まで半角数字入力をお願いします。
-success.site.newItemCarReserve.update=作業車・立馬予約を完了しました。
 
 # 作業車・立馬予約
 lang.site.itemCarReserve.page.title=作業車・立馬予約

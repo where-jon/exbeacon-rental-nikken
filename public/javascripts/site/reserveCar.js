@@ -66,7 +66,7 @@ function btnEvent(){
             var floorNameFilterResult = $('#FLOOR_NAME_FILTER_MODAL option:selected').val();
             var inputFloorName = document.getElementById("floorNameModal")
             inputFloorName.value = floorNameFilterResult
-            dbExecuteManager("../site/newItemCarReserve/reserve","reserve")
+            dbExecuteManager("../site/reserveCar/reserve","reserve")
         }
     });
 
@@ -94,7 +94,7 @@ function btnEvent(){
         var inputFloorName = document.getElementById("floorName")
         inputFloorName.value = floorNameFilterResult
 
-        dbExecuteManager("../site/newItemCarReserve","search")
+        dbExecuteManager("../site/reserveCar","search")
     });
 
 }

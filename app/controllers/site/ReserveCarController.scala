@@ -24,7 +24,7 @@ import util.control.Breaks._
   */
 
 @Singleton
-class NewItemCarReserve @Inject()(config: Configuration
+class ReserveCarController @Inject()(config: Configuration
 , val silhouette: Silhouette[MyEnv]
 , val messagesApi: MessagesApi
 , carDAO: models.manage.itemCarDAO
@@ -117,7 +117,7 @@ class NewItemCarReserve @Inject()(config: Configuration
     val form = itemCarForm.bindFromRequest
     if (form.hasErrors){
       // エラーでリダイレクト遷移
-      Redirect(routes.NewItemCarReserve.index()).flashing(ERROR_MSG_KEY -> form.errors.map(_.message).mkString(HTML_BR))
+      Redirect(routes.ReserveCarController.index()).flashing(ERROR_MSG_KEY -> form.errors.map(_.message).mkString(HTML_BR))
     }else{
 
       var vTodayCheck = false
@@ -184,21 +184,21 @@ class NewItemCarReserve @Inject()(config: Configuration
             System.out.println("---testCode .start---")
             System.out.println("errMsg::::" + errMsg)
             System.out.println("---testCode .end---")
-            Redirect(routes.NewItemCarReserve.index())
+            Redirect(routes.ReserveCarController.index())
               .flashing(ERROR_MSG_KEY -> errMsg.mkString(HTML_BR))
           }else{
             //　エラーチェック通ったら更新ロジック
             val result = carDAO.reserveItemCar(setData)
             if (result == "success") {
-              Redirect(routes.NewItemCarReserve.index())
+              Redirect(routes.ReserveCarController.index())
                 .flashing(SUCCESS_MSG_KEY -> Messages("success.site.carReserve.update"))
             }else {
-              Redirect(routes.NewItemCarReserve.index())
+              Redirect(routes.ReserveCarController.index())
                 .flashing(ERROR_MSG_KEY -> Messages("error.site.carReserve.update"))
             }
           }
       }else{
-        Redirect(routes.NewItemCarReserve.index())
+        Redirect(routes.ReserveCarController.index())
           .flashing(ERROR_MSG_KEY -> Messages("error.site.carReserve.noselect"))
       }
 
@@ -208,8 +208,8 @@ class NewItemCarReserve @Inject()(config: Configuration
   /** 　検索ロジック */
   def search = SecuredAction { implicit request =>
     val itemCarSearchForm = Form(mapping(
-      "inputDate" -> text.verifying(Messages("error.site.newItemCarReserve.inputDate.empty"), {inputDate => !inputDate.isEmpty() && inputDate.length > 0})
-      ,"inputSearchDate" -> text.verifying(Messages("error.site.newItemCarReserve.searchDate.over"), {inputSearchDate => !inputSearchDate.isEmpty() && inputSearchDate.toInt >=0 && inputSearchDate.toInt <=10})
+      "inputDate" -> text.verifying(Messages("error.site.reserveCar.inputDate.empty"), {inputDate => !inputDate.isEmpty() && inputDate.length > 0})
+      ,"inputSearchDate" -> text.verifying(Messages("error.site.reserveCar.searchDate.over"), {inputSearchDate => !inputSearchDate.isEmpty() && inputSearchDate.toInt >=0 && inputSearchDate.toInt <=10})
       ,"inputName" -> text
       , "itemTypeId" -> number
       ,"floorName" -> text
@@ -222,7 +222,7 @@ class NewItemCarReserve @Inject()(config: Configuration
 
     val form = itemCarSearchForm.bindFromRequest
     if (form.hasErrors){
-      Redirect(routes.NewItemCarReserve.index()).flashing(ERROR_MSG_KEY -> form.errors.map(_.message).mkString(HTML_BR))
+      Redirect(routes.ReserveCarController.index()).flashing(ERROR_MSG_KEY -> form.errors.map(_.message).mkString(HTML_BR))
     }else{
       // 部署情報
       val carFormSearchData = itemCarSearchForm.bindFromRequest.get
@@ -261,7 +261,7 @@ class NewItemCarReserve @Inject()(config: Configuration
 
 
       if(carListApi!=null){
-        Ok(views.html.site.newItemCarReserve(ITEM_TYPE_FILTER,FLOOR_NAME_FILTER,ITEM_NAME_FILTER,WORK_TYPE_FILTER,RESERVE_DATE
+        Ok(views.html.site.reserveCar(ITEM_TYPE_FILTER,FLOOR_NAME_FILTER,ITEM_NAME_FILTER,WORK_TYPE_FILTER,RESERVE_DATE
           ,carListApi,itemTypeList,companyNameList,floorNameList,workTypeList,WORK_TYPE,DETECT_DATE,TERM_DAY,arReserveDays,TOTAL_LENGTH))
       }else{
         // apiと登録データが違う場合
@@ -297,7 +297,7 @@ class NewItemCarReserve @Inject()(config: Configuration
       }
 
       if(carListApi!=null){
-        Ok(views.html.site.newItemCarReserve(ITEM_TYPE_FILTER,FLOOR_NAME_FILTER,ITEM_NAME_FILTER,WORK_TYPE_FILTER,RESERVE_DATE
+        Ok(views.html.site.reserveCar(ITEM_TYPE_FILTER,FLOOR_NAME_FILTER,ITEM_NAME_FILTER,WORK_TYPE_FILTER,RESERVE_DATE
           ,carListApi,itemTypeList,companyNameList,floorNameList,workTypeList,WORK_TYPE,DETECT_DATE,TERM_DAY,arReserveDays,TOTAL_LENGTH))
       }else{
         // apiと登録データが違う場合
