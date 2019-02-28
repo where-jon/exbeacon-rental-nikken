@@ -1,22 +1,12 @@
 package models
 
-import utils.silhouette.IdentitySilhouette
-import com.mohiva.play.silhouette.password.BCryptPasswordHasher
-import scala.concurrent.Future
-import scala.concurrent.ExecutionContext.Implicits.global
-import anorm._
 import anorm.SqlParser._
-import concurrent.Await
+import anorm._
 import javax.inject.Inject
 import play.api.db._
-import play.api.Logger
+import utils.silhouette.IdentitySilhouette
 
-case class UserLevelEnum(
-  map: Map[Int, String] = Map[Int,String] (
-    1 -> "一般",
-    2 -> "管理者"
-  )
-)
+import scala.concurrent.Future
 
 case class UserAllLevelEnum(
   map: Map[Int, String] = Map[Int,String] (

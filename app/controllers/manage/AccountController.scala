@@ -5,50 +5,14 @@ import com.mohiva.play.silhouette.api.Silhouette
 import com.mohiva.play.silhouette.api.util.PasswordHasherRegistry
 import controllers.BaseController
 import controllers.site
-import models.{UserLevelEnum, User}
+import models.manage._
+import models.User
 import play.api._
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.data.Forms.mapping
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import utils.silhouette.{MyEnv, UserService}
-
-/**
-  * アカウント新規作成時のForm
-  */
-case class AccountCreateForm(
-  userName: String, // アカウント名
-  userLoginId: String, // アカウントID
-  userLevel: String, // アカウント権限
-  userPassword1: String, // パスワード
-  userPassword2: String // 確認用パスワード
-)
-
-/**
-  * アカウント更新時のForm
-  */
-case class AccountUpdateForm(
-  userId: String, // アカウントID
-  userName: String, // アカウント名
-  userLoginId: String, // ログインID
-  userLevel: String // アカウント権限
-)
-
-/**
-  * アカウントパスワード更新時のForm
-  */
-case class AccountPasswordUpdateForm(
-  userId: String,
-  userPassword1: String,
-  userPassword2: String
-)
-
-/**
-  * アカウント削除時のForm
-  */
-case class AccountDeleteForm(
-  userId: String
-)
 
 /**
   * 現場アカウント管理のコントローラー
