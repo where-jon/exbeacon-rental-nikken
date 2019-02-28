@@ -94,6 +94,11 @@ GET         /site/reserveCar                         controllers.site.ReserveCar
 POST        /site/reserveCar                         controllers.site.ReserveCarController.search
 POST        /site/reserveCar/reserve                 controllers.site.ReserveCarController.reserve
 
+
+# 未検出の仮設材
+GET         /site/unDetected                                controllers.site.UnDetectedController.index
+POST        /site/unDetected                                controllers.site.UnDetectedController.search
+
 ###  仮設材 .end　#################################
 
 ###  業務ページ ############################
@@ -152,9 +157,6 @@ GET         /site/itemOtherCancel                           controllers.site.Ite
 POST        /site/itemOtherCancel                           controllers.site.ItemOtherCancel.search
 POST        /site/itemOtherCancel/cancel                    controllers.site.ItemOtherCancel.cancel
 
-# 未検出の仮設材
-GET         /site/unDetected                                controllers.site.UnDetected.index
-POST        /site/unDetected                                controllers.site.UnDetected.search
 
 # ビーコンタグ電池残量確認
 GET         /site/txTagManage                               controllers.site.TxTagManage.index
