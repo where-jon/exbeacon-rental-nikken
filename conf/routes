@@ -57,9 +57,9 @@ GET         /manage/itemTypeManage                             controllers.manag
 POST        /manage/itemTypeManage/update                      controllers.manage.ItemTypeManage.update
 POST        /manage/itemTypeManage/delete                      controllers.manage.ItemTypeManage.delete
 # 業者管理
-GET         /manage/companyManage                              controllers.manage.CompanyManage.index
-POST        /manage/companyManage/update                       controllers.manage.CompanyManage.update
-POST        /manage/companyManage/delete                       controllers.manage.CompanyManage.delete
+GET         /manage/company                              controllers.manage.CompanyController.index
+POST        /manage/company/update                       controllers.manage.CompanyController.update
+POST        /manage/company/delete                       controllers.manage.CompanyController.delete
 # 現場アカウント管理
 GET         /manage/accountManage                              controllers.manage.AccountManage.index
 POST        /manage/accountManage/create                       controllers.manage.AccountManage.create
