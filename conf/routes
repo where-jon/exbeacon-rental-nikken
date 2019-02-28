@@ -77,7 +77,7 @@ POST        /manage/itemTypeManage/delete                      controllers.manag
 GET         /analysis/telemetry                             controllers.analysis.TelemetryController.index
 
 # GW状態監視
-GET         /analysis/gateway                               controllers.analysis.Gateway.index
+GET         /analysis/gateway                               controllers.analysis.GatewayController.index
 ###  分析 .end　#################################
 
 ###  業務ページ ############################

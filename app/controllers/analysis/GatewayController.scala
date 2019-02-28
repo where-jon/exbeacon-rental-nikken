@@ -1,12 +1,12 @@
 package controllers.analysis
 
 import javax.inject.{Inject, Singleton}
-
 import com.mohiva.play.silhouette.api.Silhouette
 import controllers.{BaseController, BeaconService, errors, site}
 import play.api._
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.libs.ws._
+import services.analysis.TelemetryService
 import utils.silhouette.MyEnv
 
 /**
@@ -15,11 +15,12 @@ import utils.silhouette.MyEnv
   *
   */
 @Singleton
-class Gateway @Inject()(
+class GatewayController @Inject()(
    config: Configuration
   , val silhouette: Silhouette[MyEnv]
   , val messagesApi: MessagesApi
   , beaconService: BeaconService
+  , telemetryService: TelemetryService
   , ws: WSClient
   , exbDao:models.system.ExbDAO
   , btxLastPositionDAO: models.btxLastPositionDAO
@@ -34,7 +35,7 @@ class Gateway @Inject()(
     val reqIdentity = request.identity
     if(reqIdentity.level >= 2){
       if(beaconService.getCloudUrl(placeId)){
-        val gwListApi = beaconService.getGatewayState(placeId)
+        val gwListApi = telemetryService.getGatewayState(placeId)
         if(gwListApi!=null){
           Ok(views.html.analysis.gateway(gwListApi))
         }else{

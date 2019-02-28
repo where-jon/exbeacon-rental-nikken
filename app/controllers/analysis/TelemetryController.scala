@@ -1,12 +1,12 @@
 package controllers.analysis
 
 import javax.inject.{Inject, Singleton}
-
 import com.mohiva.play.silhouette.api.Silhouette
 import controllers.{BaseController, BeaconService, errors, site}
 import play.api._
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.libs.ws._
+import services.analysis.TelemetryService
 import utils.silhouette.MyEnv
 
 /**
@@ -19,6 +19,7 @@ class TelemetryController @Inject()(
    config: Configuration
   , val silhouette: Silhouette[MyEnv]
   , val messagesApi: MessagesApi
+  , telemetryService: TelemetryService
   , beaconService: BeaconService
   , ws: WSClient
   ) extends BaseController with I18nSupport {
@@ -32,7 +33,7 @@ class TelemetryController @Inject()(
     val reqIdentity = request.identity
     if(reqIdentity.level >= 2){
       if(beaconService.getCloudUrl(placeId)){
-        val exbListApi = beaconService.getTelemetryState(placeId)
+        val exbListApi = telemetryService.getTelemetryState(placeId)
         if(exbListApi!=null){
           Ok(views.html.analysis.telemetry(exbListApi))
         }else{
