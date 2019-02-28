@@ -40,7 +40,7 @@ class ItemTypeManage @Inject()(config: Configuration
                               , itemTypeDAO: models.ItemTypeDAO
                               , carDAO: models.manage.itemCarDAO
                               , itemOtherDAO: models.itemOtherDAO
-                              , reserveMasterDAO: models.ReserveMasterDAO
+                              , reserveMasterDAO: models.site.ReserveMasterDAO
                                ) extends BaseController with I18nSupport {
 
   var ITEM_TYPE_FILTER = "";

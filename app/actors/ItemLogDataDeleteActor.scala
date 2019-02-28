@@ -6,6 +6,7 @@ import java.util.Calendar
 import akka.actor.Actor
 import javax.inject.Inject
 import models._
+import models.site.ReserveMasterDAO
 import org.joda.time.DateTime
 import play.api.libs.ws.WSClient
 import play.api.{Configuration, Logger}

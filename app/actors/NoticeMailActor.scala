@@ -14,6 +14,8 @@ import play.api.{Configuration, Logger}
 import play.libs.mailer.MailerClient
 import java.util.regex.Pattern
 
+import models.site.ReserveMasterDAO
+
 case class MailInfo(
     magType: String
   , fromUser: String

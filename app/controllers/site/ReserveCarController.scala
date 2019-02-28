@@ -32,7 +32,7 @@ class ReserveCarController @Inject()(config: Configuration
 , beaconService: BeaconService
 , floorDAO: models.system.floorDAO
 , btxDAO: models.btxDAO
-, reserveMasterDAO: models.ReserveMasterDAO
+, reserveMasterDAO: models.site.ReserveMasterDAO
 , itemTypeDAO: models.ItemTypeDAO
 , workTypeDAO: models.WorkTypeDAO
 , calendarDAO: models.LogCalendarDAO

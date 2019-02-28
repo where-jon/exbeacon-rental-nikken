@@ -1,4 +1,4 @@
-package models
+package models.site
 
 import javax.inject.Inject
 
