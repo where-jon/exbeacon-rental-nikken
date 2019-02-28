@@ -45,7 +45,7 @@ class ItemOtherManage @Inject()(
   , itemOtherDAO: models.itemOtherDAO
   , itemDAO: models.itemDAO
   , itemTypeDAO:models.ItemTypeDAO
-  , carDAO: models.itemCarDAO
+  , carDAO: models.manage.itemCarDAO
 ) extends BaseController with I18nSupport {
 
   /*enum形*/

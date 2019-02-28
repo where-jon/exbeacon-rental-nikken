@@ -25,7 +25,7 @@ import utils.silhouette.MyEnv
 class UnDetected @Inject()(config: Configuration
 , val silhouette: Silhouette[MyEnv]
 , val messagesApi: MessagesApi
-, carDAO: models.itemCarDAO
+, carDAO: models.manage.itemCarDAO
 , itemLogDao: models.ItemLogDAO
 , companyDAO: models.companyDAO
 , beaconService: BeaconService

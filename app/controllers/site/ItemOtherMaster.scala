@@ -4,6 +4,7 @@ import com.mohiva.play.silhouette.api.Silhouette
 import controllers.{BaseController, BeaconService, errors}
 import javax.inject.{Inject, Singleton}
 import models._
+import models.manage.ItemCarData
 import models.system.Floor
 import play.api._
 import play.api.data.Form

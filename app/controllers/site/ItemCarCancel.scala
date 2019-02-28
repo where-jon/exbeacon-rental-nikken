@@ -4,6 +4,7 @@ import javax.inject.{Inject, Singleton}
 import com.mohiva.play.silhouette.api.Silhouette
 import controllers.{BaseController, BeaconService, errors}
 import models._
+import models.manage.{CarViewer, ItemCarCancelData, ItemCarCancelSearchData}
 import models.system.Floor
 import play.api._
 import play.api.data.Form
@@ -30,7 +31,7 @@ case class CancelItem(
 class ItemCarCancel @Inject()(config: Configuration
 , val silhouette: Silhouette[MyEnv]
 , val messagesApi: MessagesApi
-, carDAO: models.itemCarDAO
+, carDAO: models.manage.itemCarDAO
 , companyDAO: models.companyDAO
 , beaconService: BeaconService
 , floorDAO: models.system.floorDAO

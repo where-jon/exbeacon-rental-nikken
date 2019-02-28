@@ -25,7 +25,7 @@ class CarSummery @Inject()(config: Configuration
                            , carSummeryDAO: models.carSummeryDAO
                            , floorDAO: models.system.floorDAO
                            , placeDAO: models.placeDAO
-                           , carDAO: models.itemCarDAO
+                           , carDAO: models.manage.itemCarDAO
                            , companyDAO: models.companyDAO
                            , btxLastPositionDAO: models.btxLastPositionDAO
                                ) extends BaseController with I18nSupport {

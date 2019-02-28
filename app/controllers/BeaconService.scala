@@ -6,9 +6,10 @@ import java.time.format.DateTimeFormatter
 import java.time.{ZoneId, ZonedDateTime}
 import java.util.concurrent.TimeUnit
 import java.util.{Calendar, Date, Locale}
-import javax.inject.Inject
 
+import javax.inject.Inject
 import akka.util.Timeout
+import models.manage.{CarReserveViewer, CarViewer}
 import models.{beaconPosition, _}
 import play.api.Configuration
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
@@ -33,7 +34,7 @@ case class CReserveData(
 class BeaconService @Inject() (config: Configuration,
   ws: WSClient
   , val messagesApi: MessagesApi
-  , carDAO: models.itemCarDAO
+  , carDAO: models.manage.itemCarDAO
   ,exbDao:models.system.ExbDAO
   ,otherDAO: models.itemOtherDAO
   ,placeDAO: models.placeDAO

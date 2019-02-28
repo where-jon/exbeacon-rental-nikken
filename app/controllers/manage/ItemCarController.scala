@@ -45,7 +45,7 @@ class ItemCarController @Inject()(
   config: Configuration
   , val silhouette: Silhouette[MyEnv]
   , val messagesApi: MessagesApi
-  , carDAO: models.itemCarDAO
+  , carDAO: models.manage.itemCarDAO
   , exbDAO: models.system.ExbDAO
   , itemTypeDAO: models.ItemTypeDAO
   , itemOtherDAO: models.itemOtherDAO

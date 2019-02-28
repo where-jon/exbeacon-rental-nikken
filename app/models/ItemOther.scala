@@ -1,11 +1,12 @@
 package models
 
 import java.sql.SQLException
-import javax.inject.Inject
 
+import javax.inject.Inject
 import anorm.SqlParser._
 import anorm.{~, _}
 import controllers.site.{CancelItem, ReserveItem}
+import models.manage.ReserveMasterCheck
 import play.api.Logger
 import play.api.db._
 

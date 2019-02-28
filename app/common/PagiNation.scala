@@ -1,8 +1,7 @@
 package common
 
 import javax.inject.Inject
-
-import models.CarViewer
+import models.manage.CarViewer
 import play.api.Configuration
 
 /**

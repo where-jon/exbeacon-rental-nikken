@@ -30,7 +30,7 @@ class RegionController @Inject() (
   companyDAO: models.companyDAO,
   itemTypeDAO: models.ItemTypeDAO,
   itemOtherDAO: models.itemOtherDAO,
-  itemCarDAO: models.itemCarDAO
+  itemCarDAO: models.manage.itemCarDAO
 ) extends BaseController with I18nSupport {
 
   /** 選択されている並び順 */
