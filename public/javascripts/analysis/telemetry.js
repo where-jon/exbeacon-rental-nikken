@@ -1,9 +1,8 @@
-var secUpdateUnit = 300000 // 5分更新
+var secUpdateUnit = 300000; // 5分更新
 // 表示ボタンをクリックする時に発生するイベント
 function btnEvent(){
 
-
-    btnUpdate = $("#btn-update");
+    var btnUpdate = $("#btn-update");
     btnUpdate.on("click", function() {
         gInit.reloadView();
     });
@@ -11,7 +10,7 @@ function btnEvent(){
     var vTrAllElement = [].slice.call(document.querySelectorAll(".checkTd"))
     for (var i = 0;i<vTrAllElement.length;++i){
         if(vTrAllElement[i] != null){
-            vTrAllElement[i].title=("最終受信時刻\n" + vTrAllElement[i].children[0].textContent)
+            vTrAllElement[i].title=("最終受信時刻\n" + vTrAllElement[i].children[0].textContent);
         }
     }
 
