@@ -1,6 +1,6 @@
 // サブミット
 function doSubmit(formId, action){
-    $('#' + formId).attr('action', action)
+    $('#' + formId).attr('action', action);
     $('#' + formId).submit();
 }
 
