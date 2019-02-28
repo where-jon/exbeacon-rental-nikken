@@ -1,4 +1,4 @@
-package controllers.cms
+package controllers.manage
 
 import java.text.SimpleDateFormat
 import java.util.{Calendar, Date, Locale}
@@ -63,7 +63,7 @@ class ItemOtherManage @Inject()(
 
       // その他仮設材情報
       val itemOtherList = itemOtherDAO.selectOtherMasterInfo(placeId)
-      Ok(views.html.cms.itemOtherManage(ITEM_TYPE_FILTER, ITEM_TYPE, itemOtherList, itemTypeList, placeId))
+      Ok(views.html.manage.itemOtherManage(ITEM_TYPE_FILTER, ITEM_TYPE, itemOtherList, itemTypeList, placeId))
     }else {
       Redirect(site.routes.ItemCarMaster.index)
     }

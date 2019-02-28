@@ -7,7 +7,7 @@
 <html lang="ja">
 <head>
     @templates.htmlHead(title = Messages("lang.cms.companyManage.title"))
-    <link rel="stylesheet" href="@routes.MyAssets.css("cms/companyManage.css")"/>
+    <link rel="stylesheet" href="@routes.MyAssets.css("manage/companyManage.css")"/>
     <script></script>
 </head>
 <body>
@@ -73,14 +73,14 @@
             </div>
         </div>
     </div>
-    <script type="text/javascript" src="@routes.MyAssets.js("cms/companyManage.js")"></script>
+    <script type="text/javascript" src="@routes.MyAssets.js("manage/companyManage.js")"></script>
     <script></script>
 
     <!-- 更新モーダル画面 -->
     <div class="modal" id="inputModal" tabindex="-1" role="dialog" aria-labelledby="inputModalLabel" aria-hidden="true" data-show="true" data-keyboard="false" data-backdrop="static">
         <div class="modal-dialog">
             <div class="modal-content">
-                <form id="companyForm" name="companyForm" enctype="multipart/form-data" class="form-horizontal" method="post" action="@controllers.cms.routes.CompanyManage.update.path">
+                <form id="companyForm" name="companyForm" enctype="multipart/form-data" class="form-horizontal" method="post" action="@controllers.manage.routes.CompanyManage.update.path">
                     @CSRF.formField
                     <input type="hidden" name="inputPlaceId" value="@placeId">
                     <input type="hidden" id="inputCompanyId" name="inputCompanyId">
@@ -116,7 +116,7 @@
     <div class="modal" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true" data-show="true" data-keyboard="false" data-backdrop="static">
         <div class="modal-dialog">
             <div class="modal-content">
-                <form id="deleteForm" name="deleteForm" enctype="multipart/form-data" class="form-horizontal" method="post" action="@controllers.cms.routes.CompanyManage.delete.path">
+                <form id="deleteForm" name="deleteForm" enctype="multipart/form-data" class="form-horizontal" method="post" action="@controllers.manage.routes.CompanyManage.delete.path">
                     @CSRF.formField
                     <input type="hidden" id="deleteCompanyId" name="deleteCompanyId">
                     <div class="modal-header">@Messages("lang.cms.companyManage.companyDelete.popup.title")</div>

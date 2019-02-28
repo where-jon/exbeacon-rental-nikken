@@ -1,4 +1,4 @@
-package controllers.cms
+package controllers.manage
 
 import java.text.SimpleDateFormat
 import java.util.{Calendar, Date, Locale}
@@ -56,7 +56,7 @@ class ItemTypeManage @Inject()(config: Configuration
       val placeId = super.getCurrentPlaceId
       // 仮設材種別情報
       val itemTypeList = itemTypeDAO.selectItemTypeInfo(placeId)
-      Ok(views.html.cms.itemTypeManage(ITEM_TYPE_FILTER, ITEM_TYPE, itemTypeList, placeId))
+      Ok(views.html.manage.itemTypeManage(ITEM_TYPE_FILTER, ITEM_TYPE, itemTypeList, placeId))
     }else {
       Redirect(site.routes.ItemCarMaster.index)
     }

@@ -8,7 +8,7 @@
 <head>
 @templates.htmlHead(title = Messages("lang.cms.itemTypeManage.title"))
 <link rel="stylesheet" href='@routes.MyAssets.lib("bootstrap-colorpickersliders/bootstrap.colorpickersliders.min.css")'/>
-<link rel="stylesheet" href='@routes.MyAssets.css("cms/itemTypeManage.css")'/>
+<link rel="stylesheet" href='@routes.MyAssets.css("manage/itemTypeManage.css")'/>
 <script type="text/javascript" src='@routes.MyAssets.lib("jquery.tablefix_1.0.1.js")'></script>
 <script type="text/javascript" src='@routes.MyAssets.lib("TinyColor/tinycolor-min.js")'></script>
 <script type="text/javascript" src='@routes.MyAssets.lib("bootstrap-colorpickersliders/bootstrap.colorpickersliders.min.js")'></script>
@@ -97,13 +97,13 @@
         </div>
     </div>
 </div>
-<script type="text/javascript" src='@routes.MyAssets.js("cms/itemTypeManage.js")'></script>
+<script type="text/javascript" src='@routes.MyAssets.js("manage/itemTypeManage.js")'></script>
 
 <!-- 更新モーダル画面 -->
 <div class="modal" id="inputModal" tabindex="-1" role="dialog" aria-labelledby="inputModalLabel" aria-hidden="true" data-show="true" data-keyboard="false" data-backdrop="static">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form id="itemTypeForm" name="itemTypeForm" enctype="multipart/form-data" class="form-horizontal" method="post" action="@controllers.cms.routes.ItemTypeManage.update.path">
+            <form id="itemTypeForm" name="itemTypeForm" enctype="multipart/form-data" class="form-horizontal" method="post" action="@controllers.manage.routes.ItemTypeManage.update.path">
                 @CSRF.formField
                 <!-- 現場ID -->
                 <input type="hidden" name="inputPlaceId" value="@placeId" />
@@ -182,7 +182,7 @@
 <div class="modal" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true" data-show="true" data-keyboard="false" data-backdrop="static">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form id="deleteForm" name="deleteForm" enctype="multipart/form-data" class="form-horizontal" method="post" action="@controllers.cms.routes.ItemTypeManage.delete.path">
+            <form id="deleteForm" name="deleteForm" enctype="multipart/form-data" class="form-horizontal" method="post" action="@controllers.manage.routes.ItemTypeManage.delete.path">
                 @CSRF.formField
                 <input type="hidden" id="deleteItemTypeId" name="deleteItemTypeId" />
                 <div class="modal-header">@Messages("lang.cms.itemTypeManage.itemTypeDelete.popup.title")</div>

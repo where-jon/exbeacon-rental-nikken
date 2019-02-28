@@ -127,27 +127,27 @@ GET         /analysis/gateway                               controllers.analysis
 
 
 # 作業車・立馬管理
-GET         /cms/itemCarManage                              controllers.cms.ItemCarManage.index
-POST        /cms/itemCarManage/update                       controllers.cms.ItemCarManage.update
-POST        /cms/itemCarManage/delete                       controllers.cms.ItemCarManage.delete
+GET         /manage/itemCarManage                              controllers.manage.ItemCarManage.index
+POST        /manage/itemCarManage/update                       controllers.manage.ItemCarManage.update
+POST        /manage/itemCarManage/delete                       controllers.manage.ItemCarManage.delete
 # 仮設材管理
-GET         /cms/itemOtherManage                            controllers.cms.ItemOtherManage.index
-POST        /cms/itemOtherManage/update                     controllers.cms.ItemOtherManage.update
-POST        /cms/itemOtherManage/delete                     controllers.cms.ItemOtherManage.delete
+GET         /manage/itemOtherManage                            controllers.manage.ItemOtherManage.index
+POST        /manage/itemOtherManage/update                     controllers.manage.ItemOtherManage.update
+POST        /manage/itemOtherManage/delete                     controllers.manage.ItemOtherManage.delete
 # 仮設材種別管理
-GET         /cms/itemTypeManage                             controllers.cms.ItemTypeManage.index
-POST        /cms/itemTypeManage/update                      controllers.cms.ItemTypeManage.update
-POST        /cms/itemTypeManage/delete                      controllers.cms.ItemTypeManage.delete
+GET         /manage/itemTypeManage                             controllers.manage.ItemTypeManage.index
+POST        /manage/itemTypeManage/update                      controllers.manage.ItemTypeManage.update
+POST        /manage/itemTypeManage/delete                      controllers.manage.ItemTypeManage.delete
 # 業者管理
-GET         /cms/companyManage                              controllers.cms.CompanyManage.index
-POST        /cms/companyManage/update                       controllers.cms.CompanyManage.update
-POST        /cms/companyManage/delete                       controllers.cms.CompanyManage.delete
+GET         /manage/companyManage                              controllers.manage.CompanyManage.index
+POST        /manage/companyManage/update                       controllers.manage.CompanyManage.update
+POST        /manage/companyManage/delete                       controllers.manage.CompanyManage.delete
 # 現場アカウント管理
-GET         /cms/accountManage                              controllers.cms.AccountManage.index
-POST        /cms/accountManage/create                       controllers.cms.AccountManage.create
-POST        /cms/accountManage/update                       controllers.cms.AccountManage.update
-POST        /cms/accountManage/passwordUpdate               controllers.cms.AccountManage.passwordUpdate
-POST        /cms/accountManage/delete                       controllers.cms.AccountManage.delete
+GET         /manage/accountManage                              controllers.manage.AccountManage.index
+POST        /manage/accountManage/create                       controllers.manage.AccountManage.create
+POST        /manage/accountManage/update                       controllers.manage.AccountManage.update
+POST        /manage/accountManage/passwordUpdate               controllers.manage.AccountManage.passwordUpdate
+POST        /manage/accountManage/delete                       controllers.manage.AccountManage.delete
 
 
 ## 認証周り

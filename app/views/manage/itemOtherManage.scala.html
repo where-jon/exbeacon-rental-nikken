@@ -13,7 +13,7 @@ placeId: Int
 <html lang="ja">
 <head>
     @templates.htmlHead(title = Messages("lang.cms.itemOtherManage.title"))
-    <link rel="stylesheet" href="@routes.MyAssets.css("cms/itemOtherManage.css")"/>
+    <link rel="stylesheet" href="@routes.MyAssets.css("manage/itemOtherManage.css")"/>
     <script></script>
 </head>
 <body>
@@ -91,14 +91,14 @@ placeId: Int
             </div>
         </div>
     </div>
-    <script type="text/javascript" src="@routes.MyAssets.js("cms/itemOtherManage.js")"></script>
+    <script type="text/javascript" src="@routes.MyAssets.js("manage/itemOtherManage.js")"></script>
     <script></script>
 
     <!-- 更新モーダル画面 -->
     <div class="modal" id="inputModal" tabindex="-1" role="dialog" aria-labelledby="InputModalLabel" aria-hidden="true" data-show="true" data-keyboard="false" data-backdrop="static">
         <div class="modal-dialog">
             <div class="modal-content">
-                <form id="itemForm" name="itemForm" enctype="multipart/form-data" class="form-horizontal" method="post" action="@controllers.cms.routes.ItemOtherManage.update.path">
+                <form id="itemForm" name="itemForm" enctype="multipart/form-data" class="form-horizontal" method="post" action="@controllers.manage.routes.ItemOtherManage.update.path">
                     @CSRF.formField
                     <input type="hidden" name="inputPlaceId" value="@placeId">
                     <input type="hidden" id="inputItemOtherId" name="inputItemOtherId">
@@ -155,7 +155,7 @@ placeId: Int
     <div class="modal" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true" data-show="true" data-keyboard="false" data-backdrop="static">
         <div class="modal-dialog">
             <div class="modal-content">
-                <form id="deleteForm" name="deleteForm" class="form-horizontal" method="post" enctype="multipart/form-data" action="@controllers.cms.routes.ItemOtherManage.delete.path">
+                <form id="deleteForm" name="deleteForm" class="form-horizontal" method="post" enctype="multipart/form-data" action="@controllers.manage.routes.ItemOtherManage.delete.path">
                     @CSRF.formField
                     <input type="hidden" id="deleteItemOtherId" name="deleteItemOtherId">
                     <input type="hidden" id="deleteItemTypeId" name="deleteItemTypeId">

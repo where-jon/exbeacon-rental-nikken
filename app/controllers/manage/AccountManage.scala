@@ -1,4 +1,4 @@
-package controllers.cms
+package controllers.manage
 
 import javax.inject.{Inject, Singleton}
 import com.mohiva.play.silhouette.api.Silhouette
@@ -67,7 +67,7 @@ class AccountManage @Inject()(
     */
   def index = SecuredAction { implicit request =>
     if (request.identity.level >= 2){
-      Ok(views.html.cms.accountManage(
+      Ok(views.html.manage.accountManage(
         userService.selectAccountByPlaceId(placeId = super.getCurrentPlaceId),
         UserLevelEnum().map)
       )

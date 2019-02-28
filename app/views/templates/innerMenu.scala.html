@@ -113,11 +113,11 @@
         </div>
     }
     @if(
-        (request.path contains "/cms/itemCarManage") ||
-        (request.path contains "/cms/itemOtherManage") ||
-        (request.path contains "/cms/itemTypeManage") ||
-        (request.path contains "/cms/companyManage") ||
-        (request.path contains "/cms/accountManage")
+        (request.path contains "/manage/itemCarManage") ||
+        (request.path contains "/manage/itemOtherManage") ||
+        (request.path contains "/manage/itemTypeManage") ||
+        (request.path contains "/manage/companyManage") ||
+        (request.path contains "/manage/accountManage")
     ) {
         <div style="margin: 20px 0px 30px 0px;">
             <div class="row text-center">
@@ -130,27 +130,27 @@
                     <div class="text-center col-xs-12 col-sm-12 col-md-12" style="padding:0;">
                         <div class="innerMenu row" style="margin: 0px 3px 10px 3px;">
                             <div class="text-center col-xs-12 col-sm-12 col-md-12" style="padding:0px 3px;">
-                                <a href="/cms/itemCarManage" class="btn menuBtn">@Messages("lang.cms.itemCarManage.title")</a>
+                                <a href="/manage/itemCarManage" class="btn menuBtn">@Messages("lang.cms.itemCarManage.title")</a>
                             </div>
                         </div>
                         <div class="innerMenu row" style="margin: 0px 3px 10px 3px;">
                             <div class="text-center col-xs-12 col-sm-12 col-md-12" style="padding:0px 3px;">
-                                <a href="/cms/itemOtherManage" class="btn menuBtn">@Messages("lang.cms.itemOtherManage.title")</a>
+                                <a href="/manage/itemOtherManage" class="btn menuBtn">@Messages("lang.cms.itemOtherManage.title")</a>
                             </div>
                         </div>
                         <div class="innerMenu row" style="margin: 0px 3px 10px 3px;">
                             <div class="text-center col-xs-12 col-sm-12 col-md-12" style="padding:0px 3px;">
-                                <a href="/cms/itemTypeManage" class="btn menuBtn">@Messages("lang.cms.itemTypeManage.title")</a>
+                                <a href="/manage/itemTypeManage" class="btn menuBtn">@Messages("lang.cms.itemTypeManage.title")</a>
                             </div>
                         </div>
                         <div class="innerMenu row" style="margin: 0px 3px 10px 3px;">
                             <div class="text-center col-xs-12 col-sm-12 col-md-12" style="padding:0px 3px;">
-                                <a href="/cms/companyManage" class="btn menuBtn">@Messages("lang.cms.companyManage.title")</a>
+                                <a href="/manage/companyManage" class="btn menuBtn">@Messages("lang.cms.companyManage.title")</a>
                             </div>
                         </div>
                         <div class="innerMenu row" style="margin: 0px 3px 0px 3px;">
                             <div class="text-center col-xs-12 col-sm-12 col-md-12" style="padding:0px 3px;">
-                                <a href="/cms/accountManage" class="btn menuBtn">@Messages("lang.cms.accountManage.title")</a>
+                                <a href="/manage/accountManage" class="btn menuBtn">@Messages("lang.cms.accountManage.title")</a>
                             </div>
                         </div>
                     </div>

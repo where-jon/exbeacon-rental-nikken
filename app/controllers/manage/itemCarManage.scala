@@ -1,4 +1,4 @@
-package controllers.cms
+package controllers.manage
 
 import java.text.SimpleDateFormat
 import java.util.{Calendar, Date, Locale}
@@ -67,7 +67,7 @@ class ItemCarManage @Inject()(
       /*仮設材種別取得*/
       itemTypeList = itemTypeDAO.selectItemCarInfoOrder(placeId);
 
-      Ok(views.html.cms.itemCarManage(ITEM_TYPE_FILTER, carList, itemTypeList, placeId))
+      Ok(views.html.manage.itemCarManage(ITEM_TYPE_FILTER, carList, itemTypeList, placeId))
     }else {
       Redirect(site.routes.ItemCarMaster.index)
     }

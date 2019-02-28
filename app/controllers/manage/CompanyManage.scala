@@ -1,4 +1,4 @@
-package controllers.cms
+package controllers.manage
 
 import java.text.SimpleDateFormat
 import java.util.{Calendar, Date, Locale}
@@ -41,7 +41,7 @@ class CompanyManage @Inject()(config: Configuration
       val placeId = super.getCurrentPlaceId
       // 業者情報
       val companyList = companyDAO.selectCompany(placeId)
-      Ok(views.html.cms.companyManage(companyList, placeId))
+      Ok(views.html.manage.companyManage(companyList, placeId))
     }else {
       Redirect(site.routes.ItemCarMaster.index)
     }
