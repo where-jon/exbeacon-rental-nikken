@@ -4,10 +4,9 @@ import java.io.{File, FileOutputStream, OutputStreamWriter, PrintWriter}
 import java.text.SimpleDateFormat
 import java.util.{Date, Locale}
 
-import javax.inject.{Inject, Singleton}
 import com.mohiva.play.silhouette.api.Silhouette
-import controllers.site
-import controllers.{BaseController, BeaconService}
+import controllers.{BaseController, BeaconService, site}
+import javax.inject.{Inject, Singleton}
 import models._
 import models.manage.MovementCarData
 import play.api._
@@ -25,7 +24,7 @@ import utils.silhouette.MyEnv
   */
 
 @Singleton
-class MovementCar @Inject()(config: Configuration
+class MovementCarController @Inject()(config: Configuration
 , val silhouette: Silhouette[MyEnv]
 , val messagesApi: MessagesApi
 , carDAO: models.manage.itemCarDAO
@@ -303,7 +302,7 @@ class MovementCar @Inject()(config: Configuration
     //System.out.println("start csvExport:")
     if (form.hasErrors){
       // エラーでリダイレクト遷移
-      Redirect(routes.MovementCar.index(1)).flashing(ERROR_MSG_KEY -> form.errors.map(_.message).mkString(HTML_BR))
+      Redirect(routes.MovementCarController.index(1)).flashing(ERROR_MSG_KEY -> form.errors.map(_.message).mkString(HTML_BR))
 
     }else {
       val placeId = super.getCurrentPlaceId
@@ -351,7 +350,7 @@ class MovementCar @Inject()(config: Configuration
         Ok.sendFile(content = file, fileName = _ => CSV_HEAD +".csv")
       }catch {
         case e: Exception =>
-          Redirect(routes.MovementCar.index(1))
+          Redirect(routes.MovementCarController.index(1))
             .flashing(ERROR_MSG_KEY -> Messages("error.analysis.movementCar.csvExport"))
       }
 
@@ -363,7 +362,7 @@ class MovementCar @Inject()(config: Configuration
   def search(page:Int) = SecuredAction { implicit request =>
     movementCarSearchForm.bindFromRequest.fold(
       formWithErrors =>
-        Redirect(routes.MovementCar.index(1))
+        Redirect(routes.MovementCarController.index(1))
             .flashing(ERROR_MSG_KEY -> Messages("error.analysis.movementCar.search.date.empty")),
       searchForm => {
         val placeId = super.getCurrentPlaceId
