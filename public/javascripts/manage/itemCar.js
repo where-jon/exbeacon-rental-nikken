@@ -3,7 +3,7 @@ var btxIdBack = "-1";
 
 // サブミット
 function doSubmit(formId, action){
-    $('#' + formId).attr('action', action)
+    $('#' + formId).attr('action', action);
     $('#' + formId).submit();
 }
 
@@ -76,16 +76,16 @@ function showDeleteModal(){
 function deleteCar(){
     if($('.rowHoverSelectedColor').length > 0){
         var carId = $('.rowHoverSelectedColor').attr('data-carId');
-        $('#deleteCarId').val(carId)
-        $('#deleteForm').submit()
+        $('#deleteCarId').val(carId);
+        $('#deleteForm').submit();
     }
 }
 
 // サブミット
 function getFilterCheck(){
-    var inputItemType = document.getElementById("inputCarTypeName")
+    var inputItemType = document.getElementById("inputCarTypeName");
     if(inputItemType!=null){
-         $('#ITEM_TYPE_FILTER').val(inputItemType.value)
+         $('#ITEM_TYPE_FILTER').val(inputItemType.value);
     }
 }
 
