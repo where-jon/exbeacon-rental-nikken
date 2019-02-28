@@ -7,6 +7,9 @@ import play.api.Logger
 import play.api.db._
 
 
+// フォームの定義
+case class CompanyUpdateForm(inputPlaceId: String, inputCompanyId: String, inputCompanyName: String, inputNote: String = "")
+case class CompanyDeleteForm(deleteCompanyId: String)
 
 case class Company(
   companyId: Int,

@@ -7,6 +7,7 @@ import javax.inject.{Inject, Singleton}
 import com.mohiva.play.silhouette.api.Silhouette
 import controllers.BaseController
 import controllers.site
+import models.manage.{CompanyDeleteForm, CompanyUpdateForm}
 import play.api._
 import play.api.data.Form
 import play.api.data.Forms._
@@ -20,11 +21,6 @@ import utils.silhouette.MyEnv
   *
   *
   */
-
-// フォームの定義
-case class CompanyUpdateForm(inputPlaceId: String, inputCompanyId: String, inputCompanyName: String, inputNote: String = "")
-
-case class CompanyDeleteForm(deleteCompanyId: String)
 
 @Singleton
 class CompanyController @Inject()(config: Configuration

@@ -137,6 +137,37 @@ success.system.exb.exbDelete=EXBを削除しました。
 ################################################################################################
 ### メンテナンス　.start
 #作業車管理
+
+# CMS文字列（作業車・立馬管理）
+lang.manage.ItemCar.title=作業車・立馬管理
+lang.manage.ItemCar.page.title=作業車・立馬管理
+lang.manage.ItemCar.car.list.header.title=作業車・立馬管理
+lang.manage.ItemCar.car.list.header.carTagId=Tag ID
+lang.manage.ItemCar.car.list.header.carKeyTagId=鍵Tag ID
+lang.manage.ItemCar.car.list.header.carType=種別
+lang.manage.ItemCar.car.list.header.carName=名称
+lang.manage.ItemCar.car.list.header.carId=ID
+lang.manage.ItemCar.car.list.header.carNo=番号
+lang.manage.ItemCar.car.list.header.carNote=備考
+lang.manage.ItemCar.car.button.editCar=作業車・立馬編集
+lang.manage.ItemCar.car.button.addCar=作業車・立馬追加
+lang.manage.ItemCar.car.button.deleteCar=作業車・立馬削除
+lang.manage.ItemCar.carUpdate.popup.name=作業車・立馬情報更新
+lang.manage.ItemCar.carUpdate.popup.carBtxId=Tag ID
+lang.manage.ItemCar.carUpdate.popup.carBtxId.placeholder=001
+lang.manage.ItemCar.carUpdate.popup.carKeyBtxId=鍵Tag ID
+lang.manage.ItemCar.carUpdate.popup.carKeyBtxId.placeholder=002
+lang.manage.ItemCar.carUpdate.popup.carTypeName=種別
+lang.manage.ItemCar.carUpdate.popup.carTypeName.placeholder=作業車
+lang.manage.ItemCar.carUpdate.popup.carName=名称
+lang.manage.ItemCar.carUpdate.popup.carName.placeholder=作業車1
+lang.manage.ItemCar.carUpdate.popup.carId=ID
+lang.manage.ItemCar.carUpdate.popup.carNo=番号
+lang.manage.ItemCar.carUpdate.popup.carNo.placeholder=100
+lang.manage.ItemCar.carUpdate.popup.carNote=備考
+lang.manage.ItemCar.carDelete.popup.title=作業車・立馬情報削除
+lang.manage.ItemCar.carDelete.popup.message=作業車・立馬情報を削除します。\nよろしいですか？
+
 success.manage.ItemCar.delete=作業車情報・立馬を削除しました。
 success.manage.ItemCar.update=作業車情報・立馬を更新しました。
 error.manage.ItemCar.update.inputCarNo.empty=作業車・立馬番号を入力してください。
@@ -165,6 +196,23 @@ error.manage.ItemCar.update.NotTypeName=種別が存在しません。
 error.manage.ItemCar.update.inputCarKey.duplicate=TagIDと鍵TagIDに同一のIDが入力されています。
 
 # 業者管理
+
+# CMS文字列（業者管理）
+lang.manage.Company.title=業者管理
+lang.manage.Company.page.title=業者管理
+lang.manage.Company.company.list.header.title=業者管理
+lang.manage.Company.company.list.header.id=ID
+lang.manage.Company.company.list.header.name=名称
+lang.manage.Company.companyUpdate.popup.title=業者情報更新
+lang.manage.Company.companyUpdate.popup.itemName=名称
+lang.manage.Company.companyUpdate.popup.itemName.placeholder=〇〇業者
+lang.manage.Company.company.list.header.biko=備考
+lang.manage.Company.company.button.editItem=業者編集
+lang.manage.Company.company.button.addItem=業者追加
+lang.manage.Company.company.button.deleteItem=業者削除
+lang.manage.Company.companyUpdate.popup.biko=備考
+lang.manage.Company.companyDelete.popup.title=業者情報削除
+lang.manage.Company.companyDelete.popup.message=業者情報を削除します。\nよろしいですか？
 success.manage.Company.delete=業者情報を削除しました。
 success.manage.Company.update=業者情報を更新しました。
 error.manage.Company.update.inputCompanyName.empty=業者名を入力してください。
@@ -394,36 +442,6 @@ lang.cms.placeManage.changePassword.button.title=パスワードを変更する
 lang.cms.placeManage.changePassword.popup.name=パスワードを変更します。よろしいですか？
 
 
-# CMS文字列（作業車・立馬管理）
-lang.cms.itemCarManage.title=作業車・立馬管理
-lang.cms.itemCarManage.page.title=作業車・立馬管理
-lang.cms.itemCarManage.car.list.header.title=作業車・立馬管理
-lang.cms.itemCarManage.car.list.header.carTagId=Tag ID
-lang.cms.itemCarManage.car.list.header.carKeyTagId=鍵Tag ID
-lang.cms.itemCarManage.car.list.header.carType=種別
-lang.cms.itemCarManage.car.list.header.carName=名称
-lang.cms.itemCarManage.car.list.header.carId=ID
-lang.cms.itemCarManage.car.list.header.carNo=番号
-lang.cms.itemCarManage.car.list.header.carNote=備考
-lang.cms.itemCarManage.car.button.editCar=作業車・立馬編集
-lang.cms.itemCarManage.car.button.addCar=作業車・立馬追加
-lang.cms.itemCarManage.car.button.deleteCar=作業車・立馬削除
-lang.cms.itemCarManage.carUpdate.popup.name=作業車・立馬情報更新
-lang.cms.itemCarManage.carUpdate.popup.carBtxId=Tag ID
-lang.cms.itemCarManage.carUpdate.popup.carBtxId.placeholder=001
-lang.cms.itemCarManage.carUpdate.popup.carKeyBtxId=鍵Tag ID
-lang.cms.itemCarManage.carUpdate.popup.carKeyBtxId.placeholder=002
-lang.cms.itemCarManage.carUpdate.popup.carTypeName=種別
-lang.cms.itemCarManage.carUpdate.popup.carTypeName.placeholder=作業車
-lang.cms.itemCarManage.carUpdate.popup.carName=名称
-lang.cms.itemCarManage.carUpdate.popup.carName.placeholder=作業車1
-lang.cms.itemCarManage.carUpdate.popup.carId=ID
-lang.cms.itemCarManage.carUpdate.popup.carNo=番号
-lang.cms.itemCarManage.carUpdate.popup.carNo.placeholder=100
-lang.cms.itemCarManage.carUpdate.popup.carNote=備考
-lang.cms.itemCarManage.carDelete.popup.title=作業車・立馬情報削除
-lang.cms.itemCarManage.carDelete.popup.message=作業車・立馬情報を削除します。\nよろしいですか？
-
 # CMS文字列（その他仮設材管理）
 lang.cms.itemOtherManage.title=その他仮設材管理
 lang.cms.itemOtherManage.page.title=その他仮設材管理
@@ -476,22 +494,6 @@ lang.cms.itemTypeManage.itemTypeUpdate.popup.row.color=行色
 lang.cms.itemTypeManage.itemTypeDelete.popup.title=仮設材種別情報削除
 lang.cms.itemTypeManage.itemTypeDelete.popup.message=仮設材種別情報を削除します。\nよろしいですか？
 
-# CMS文字列（業者管理）
-lang.cms.companyManage.title=業者管理
-lang.cms.companyManage.page.title=業者管理
-lang.cms.companyManage.company.list.header.title=業者管理
-lang.cms.companyManage.company.list.header.id=ID
-lang.cms.companyManage.company.list.header.name=名称
-lang.cms.companyManage.company.list.header.biko=備考
-lang.cms.companyManage.company.button.editItem=業者編集
-lang.cms.companyManage.company.button.addItem=業者追加
-lang.cms.companyManage.company.button.deleteItem=業者削除
-lang.cms.companyManage.companyUpdate.popup.title=業者情報更新
-lang.cms.companyManage.companyUpdate.popup.itemName=名称
-lang.cms.companyManage.companyUpdate.popup.itemName.placeholder=〇〇業者
-lang.cms.companyManage.companyUpdate.popup.biko=備考
-lang.cms.companyManage.companyDelete.popup.title=業者情報削除
-lang.cms.companyManage.companyDelete.popup.message=業者情報を削除します。\nよろしいですか？
 
 # CMS文字列（現場アカウント管理）
 lang.cms.accountManage.title=現場アカウント管理
