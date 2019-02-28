@@ -3,15 +3,13 @@ package controllers.manage
 import java.text.SimpleDateFormat
 import java.util.{Calendar, Date, Locale}
 
-import javax.inject.{Inject, Singleton}
 import com.mohiva.play.silhouette.api.Silhouette
-import controllers.BaseController
-import controllers.site
+import controllers.{BaseController, site}
+import javax.inject.{Inject, Singleton}
 import models.manage.{CompanyDeleteForm, CompanyUpdateForm}
 import play.api._
 import play.api.data.Form
-import play.api.data.Forms._
-import play.api.data.Forms.mapping
+import play.api.data.Forms.{mapping, _}
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import utils.silhouette.MyEnv
 
@@ -23,11 +21,12 @@ import utils.silhouette.MyEnv
   */
 
 @Singleton
-class CompanyController @Inject()(config: Configuration
-                                  , val silhouette: Silhouette[MyEnv]
-                                  , val messagesApi: MessagesApi
-                                  , companyDAO: models.manage.companyDAO
-                                 ) extends BaseController with I18nSupport {
+class CompanyController @Inject()(
+ config: Configuration,
+ val silhouette: Silhouette[MyEnv],
+ val messagesApi: MessagesApi,
+ companyService: services.manage.CompanyService
+) extends BaseController with I18nSupport {
 
 
   /** 初期表示 */
@@ -37,7 +36,7 @@ class CompanyController @Inject()(config: Configuration
       // 選択された現場の現場ID
       val placeId = super.getCurrentPlaceId
       // 業者情報
-      val companyList = companyDAO.selectCompany(placeId)
+      val companyList = companyService.selectCompanyByPlaceId(placeId)
       Ok(views.html.manage.company(companyList, placeId))
     } else {
       Redirect(site.routes.ItemCarMaster.index)
@@ -72,7 +71,7 @@ class CompanyController @Inject()(config: Configuration
       if (f.inputCompanyId.isEmpty) {
         // 新規登録の場合 --------------------------
         // 名称重複チェック
-        val companyList = companyDAO.selectCompany(super.getCurrentPlaceId, f.inputCompanyName)
+        val companyList = companyService.selectCompanyByPlaceId(super.getCurrentPlaceId, f.inputCompanyName)
         if (companyList.nonEmpty) {
           errMsg :+= Messages("error.manage.Company.update.inputCompanyName.duplicate", f.inputCompanyName)
         }
@@ -82,7 +81,7 @@ class CompanyController @Inject()(config: Configuration
             .flashing(ERROR_MSG_KEY -> errMsg.mkString(HTML_BR))
         } else {
           // DB処理
-          companyDAO.insert(f.inputCompanyName, f.inputNote, f.inputPlaceId.toInt)
+          companyService.insertCompany(f.inputCompanyName, f.inputNote, f.inputPlaceId.toInt)
 
           Redirect(routes.CompanyController.index)
             .flashing(SUCCESS_MSG_KEY -> Messages("success.manage.Company.update"))
@@ -91,14 +90,14 @@ class CompanyController @Inject()(config: Configuration
       } else {
         // 更新の場合 --------------------------
         // 名称重複チェック
-        var companyList = companyDAO.selectCompany(super.getCurrentPlaceId)
+        var companyList = companyService.selectCompanyByPlaceId(super.getCurrentPlaceId)
         companyList = companyList.filter(_.companyId != f.inputCompanyId.toInt).filter(_.companyName == f.inputCompanyName)
         if (companyList.nonEmpty) {
           errMsg :+= Messages("error.manage.Company.update.inputCompanyName.duplicate", f.inputCompanyName)
         }
 
         // 予約情報テーブルに作業車・立馬IDが存在していないか
-        val itemReserveList = companyDAO.selectCarReserveCheck(super.getCurrentPlaceId, f.inputCompanyId.toInt)
+        val itemReserveList = companyService.selectCarReserveCheck(super.getCurrentPlaceId, f.inputCompanyId.toInt)
         if (itemReserveList.length > 0) {
           var chkFlg: Int = 0
           var companyNm: String = ""
@@ -171,8 +170,7 @@ class CompanyController @Inject()(config: Configuration
             .flashing(ERROR_MSG_KEY -> errMsg.mkString(HTML_BR))
         } else {
           // DB処理
-          companyDAO.updateById(f.inputCompanyId.toInt, f.inputCompanyName, f.inputNote)
-
+          companyService.updateCompanyById(f.inputCompanyId.toInt, f.inputCompanyName, f.inputNote)
           Redirect(routes.CompanyController.index)
             .flashing(SUCCESS_MSG_KEY -> Messages("success.manage.Company.update"))
         }
@@ -203,7 +201,7 @@ class CompanyController @Inject()(config: Configuration
     } else {
       val f = form.get
       // 予約情報テーブルに作業車・立馬IDが存在していないか
-      val itemReserveList = companyDAO.selectCarReserveCheck(super.getCurrentPlaceId, f.deleteCompanyId.toInt)
+      val itemReserveList = companyService.selectCarReserveCheck(super.getCurrentPlaceId, f.deleteCompanyId.toInt)
       if (itemReserveList.length > 0) {
         var chkFlg: Int = 0
         var companyNm: String = ""
@@ -275,7 +273,7 @@ class CompanyController @Inject()(config: Configuration
           .flashing(ERROR_MSG_KEY -> errMsg.mkString(HTML_BR))
       } else {
         // DB処理
-        companyDAO.deleteById(f.deleteCompanyId.toInt)
+        companyService.deleteCompanyById(f.deleteCompanyId.toInt)
 
         // リダイレクト
         Redirect(routes.CompanyController.index).flashing(SUCCESS_MSG_KEY -> Messages("success.manage.Company.delete"))
