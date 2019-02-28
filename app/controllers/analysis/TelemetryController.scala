@@ -15,7 +15,7 @@ import utils.silhouette.MyEnv
   *
   */
 @Singleton
-class Telemetry @Inject()(
+class TelemetryController @Inject()(
    config: Configuration
   , val silhouette: Silhouette[MyEnv]
   , val messagesApi: MessagesApi

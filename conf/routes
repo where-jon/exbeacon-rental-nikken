@@ -72,6 +72,13 @@ POST        /manage/itemTypeManage/delete                      controllers.manag
 
 ###  メンテナンス .end　#################################
 
+###  分析 .start　#################################
+# EXB状態監視
+GET         /analysis/telemetry                             controllers.analysis.TelemetryController.index
+
+# GW状態監視
+GET         /analysis/gateway                               controllers.analysis.Gateway.index
+###  分析 .end　#################################
 
 ###  業務ページ ############################
 # 作業車利用状況
@@ -147,13 +154,6 @@ GET         /analysis/movementCar/:page                     controllers.analysis
 POST        /analysis/movementCar/:page                     controllers.analysis.MovementCar.search(page: Integer)
 GET         /analysis/movementCar/searchPaging/:page        controllers.analysis.MovementCar.searchPaging(page: Integer)
 POST        /analysis/movementCar/csvExport/:page           controllers.analysis.MovementCar.csvExport(page: Integer)
-
-
-# EXB状態監視
-GET         /analysis/telemetry                             controllers.analysis.Telemetry.index
-
-# GW状態監視
-GET         /analysis/gateway                               controllers.analysis.Gateway.index
 
 
 ## 認証周り
