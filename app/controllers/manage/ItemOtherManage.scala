@@ -96,7 +96,7 @@ class ItemOtherManage @Inject()(
       // 種別存在チェック
       val itemTypeList = itemTypeDAO.selectItemTypeCheck(f.inputItemTypeName, f.inputPlaceId.toInt)
       if(itemTypeList.isEmpty){
-        errMsg :+= Messages("error.cms.CarManage.update.NotTypeName", f.inputItemOtherNo)
+        errMsg :+= Messages("error.manage.ItemCar.update.NotTypeName", f.inputItemOtherNo)
       }
       if(f.inputItemOtherId.isEmpty){
         // 新規登録

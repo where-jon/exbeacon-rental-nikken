@@ -10,6 +10,27 @@ import play.api.Logger
 import play.api.db._
 
 
+
+// フォームの定義
+case class CarUpdateForm(
+     inputPlaceId: String
+   , inputCarId: String
+   , inputCarNo: String
+   , inputCarBtxId: String
+   , inputCarKeyBtxIdDsp: String
+   , inputCarKeyBtxId: String
+   , inputCarTypeName: String
+   , inputCarTypeId: String
+   , inputCarTypeCategoryId: Int
+   , inputCarName: String
+   , inputCarNote: String
+)
+
+case class CarDeleteForm(
+    deleteCarId: String
+    , deleteCarTypeId: String
+)
+
 /*作業車・立馬予約用formクラス*/
 case class NewItemCarReserveData(
    checkList: List[String]

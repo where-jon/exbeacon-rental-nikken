@@ -43,6 +43,148 @@ auth.credentials.incorrect=ログインIDまたはパスワードが違います
 
 denied.title=Access denied!
 denied.text=You have no privileges to be here.
+################################################################################################
+### テナント .start
+#リージョン
+success.tenanat.Region.register=現場情報を登録しました。
+success.tenanat.Region.update=現場情報を更新しました。
+success.tenanat.Region.passwordUpdate=パスワードを更新しました。
+success.tenanat.Region.delete=現場情報を削除しました。
+### テナント .end
+
+################################################################################################
+### システム管理 .start
+
+lang.system.floorManager = フロア管理
+lang.system.mapManager = フロアマップ登録
+error.system.mapManager.image.empty=選択されたフロアマップがないです。
+lang.system.exbManager = EXB管理
+lang.system.exbViewerManager = EXB設置管理
+
+#フロア
+success.cms.Floor.floorDelete=フロアを削除しました。
+success.cms.Floor.floorUpdate=フロア情報を更新しました。
+
+lang.system.floor.title=フロア管理
+lang.system.floor.displayOrder=表示順
+lang.system.floor.name=フロア名
+lang.system.floor.display=現場状況画面表示
+lang.system.floor.floorId=ID
+
+lang.system.floor.floorUpdate.popup.displayOrder=表示順
+lang.system.floor.floorUpdate.popup.displayOrder.placeholder=1
+lang.system.floor.floorUpdate.popup.name=フロア名
+lang.system.floor.floorUpdate.popup.name.placeholder=8F
+lang.system.floor.floor.button.floorEdit=フロア編集
+lang.system.floor.floor.button.addFloor=フロア追加
+lang.system.floor.floor.button.deleteFloor=フロア削除
+lang.system.floor.floorDelete.popup.title=フロア削除
+lang.system.floor.floorUpdate.popup.title=フロア更新
+lang.system.floor.floorDelete.popup.message=フロアを削除します。\nよろしいですか？
+error.system.floor.delete.exb=EXBがフロアに設置されてるため、削除できません。
+error.system.floor.floorUpdate.inputFloorName.empty=フロア名を入力してください。
+error.system.floor.floorUpdate.displayOrder.empty=表示順を数字で入力して下さい。
+error.system.floor.floorUpdate.inputDisplayOrder.duplicate=表示順「{0}」はすでに登録されてます。
+error.system.floor.floorUpdate.inputExbDeviceNoListComma.empty=EXBeaconデバイスNoを入力してください。
+error.system.floor.floorUpdate.delete.empty=削除対象フロアを選択してください。
+error.system.floor.floorUpdate.inputFloorName.duplicate=フロア名が重複しています。
+error.system.floor.floorUpdate.inputDeviceNo.notNumeric=EXBeaconデバイスNoは半角数字で入力してください。
+error.system.floor.floorUpdate.inputDeviceNo.duplicate=EXBeaconデバイスNoが重複しています。(デバイスNo：{0})
+error.system.floor.floorUpdate.DeviceId.notfound=EXBeaconデバイスID設定がありません。管理者に問い合わせてください。(デバイスNo：{0})
+
+
+# EXB管理
+lang.system.exb.title=EXB管理
+lang.system.exb.exbId =EXB設置番号（固定）
+lang.system.exb.show =表示
+lang.system.exb.floor =フロア
+lang.system.exb.type =表示種別
+lang.system.exb.count =表示数
+lang.system.exb.x =X座標
+lang.system.exb.y =Y座標
+lang.system.exb.size =サイズ
+lang.system.exb.margin =幅間隔
+
+lang.system.exb.deviceId=EXBデバイスID
+lang.system.exb.deviceId.popup.placeholder=1
+lang.system.exb.deviceNo=デバイス番号
+lang.system.exb.deviceNo.popup.placeholder=1
+lang.system.exb.deviceName=デバイス名
+lang.system.exb.deviceName.popup.placeholder=Beacon名
+lang.system.exb.posName=設置場所名
+lang.system.exb.posName.popup.placeholder=1F 会議室
+lang.system.exb.setupFloorId=フロア管理番号（固定）
+lang.system.exb.setupFloorName=設置フロア名
+
+lang.system.exb.exb.button.exbEdit=EXB編集
+lang.system.exb.exb.button.addExb=EXB追加
+lang.system.exb.exb.button.deleteExb=EXB削除
+lang.system.exb.exbDelete.popup.title=EXB削除
+lang.system.exb.exbDelete.popup.message=EXBを削除します。\nよろしいですか？
+lang.system.exb.exbUpdate.popup.title=EXB更新
+
+error.system.exb.exbUpdate.delete.empty=削除対象EXBを選択してください。
+error.system.exb.exbUpdate.inputDeviceId.empty=EXBデバイスIDは半角数字入力してください。
+error.system.exb.exbUpdate.inputDeviceNo.empty=デバイスNOは半角数字で入力してください。
+error.system.exb.exbUpdate.inputDeviceName.empty=デバイス名を入力してください。
+error.system.exb.exbUpdate.inputPosName.empty=場所名を入力してください。
+error.system.exb.exbUpdate.setupFloorId.empty=設置フロアIDは半角数字で入力してください。
+error.system.exb.exbUpdate.setupNumCheck.duplicate=EXBデバイスID「{0}」はすでに登録されてます。
+success.system.exb.exbUpdate=EXB情報を更新しました。
+success.system.exb.exbDelete=EXBを削除しました。
+### システム管理 .end
+
+################################################################################################
+### メンテナンス　.start
+#作業車管理
+success.manage.ItemCar.delete=作業車情報・立馬を削除しました。
+success.manage.ItemCar.update=作業車情報・立馬を更新しました。
+error.manage.ItemCar.update.inputCarNo.empty=作業車・立馬番号を入力してください。
+error.manage.ItemCar.update.inputCarBtxId.empty=作業車TagIDを半角数字で入力してください。
+error.manage.ItemCar.update.inputCarKeyBtxId.empty=鍵TagIDを半角数字で入力してください。
+error.manage.ItemCar.update.inputCarTypeName.empty=種別を入力してください。
+error.manage.ItemCar.update.inputCarTypeId.empty=種別を入力してください。
+error.manage.ItemCar.update.inputCarName.empty=名称を入力してください。
+error.manage.ItemCar.update.inputCarBtxId.inputCarKeyBtxId.duplicate=作業車TagIDと鍵TagIDが重複しています。
+error.manage.ItemCar.update.inputCarBtxId.use=作業車TagIDは既に使用されています。(作業車TagID：{0})
+error.manage.ItemCar.update.inputCarBtxId.useOther=作業車TagIDはその他仮設材で既に使用されています。(作業車TagID：{0})
+error.manage.ItemCar.update.inputCarKeyBtxId.use=鍵TagIDは既に使用されています。(鍵TagID：{0})
+error.manage.ItemCar.update.inputCarKeyBtxId.useOther=鍵TagIDはその他仮設材で既に使用されています。(鍵TagID：{0})
+error.manage.ItemCar.update.inputCarIdReserve.use=IDは既に予約されています。(ID：{0})
+error.manage.ItemCar.update.inputCarBtxId.duplicate=作業車TagIDが重複しています。(作業車TagID:{0})
+error.manage.ItemCar.update.inputCarKeyBtxId.duplicate=鍵TagIDが重複しています。(鍵TagID:{0})
+error.manage.ItemCar.update.inputBtxId.duplicate=作業車・立馬番号が重複しています。(作業車・立馬番号：{0})
+error.manage.ItemCar.update.inputCarIdReserve.use.noChange=IDは現在予約されている為、更新と削除ができません。(ID：{0})
+error.manage.ItemCar.update.inputCarIdReserve.use.exceed=IDは予約履歴が有ります。システム管理権限以上をお持ちの方が更新と削除ができます。(ID：{0})
+error.manage.ItemCar.delete.empty=削除対象作業車を選択してください。
+error.manage.ItemCar.delete.inputCarIdReserve.use=IDは既に予約されています。(ID：{0})
+error.manage.ItemCar.delete.inputCarIdReserve.use.noChange=IDは現在予約されている為、更新と削除ができません。(ID：{0})
+error.manage.ItemCar.delete.inputCarIdReserve.use.exceed=IDは予約履歴が有ります。システム管理権限以上をお持ちの方が更新と削除ができます。(ID：{0})
+error.manage.ItemCar.delete.inputCarId.empty=IDは登録されていません。(ID：{0})
+error.manage.ItemCar.update.NotTypeName=種別が存在しません。
+error.manage.ItemCar.update.inputCarKey.duplicate=TagIDと鍵TagIDに同一のIDが入力されています。
+
+
+
+### メンテナンス　.end
+
+success.cms.CompanyManage.delete=業者情報を削除しました。
+success.cms.CompanyManage.update=業者情報を更新しました。
+
+
+success.cms.ItemOtherManage.delete=仮設材情報を削除しました。
+success.cms.ItemOtherManage.update=仮設材情報を更新しました。
+
+success.cms.ItemTypeManage.delete=仮設材種別情報を削除しました。
+success.cms.ItemTypeManage.update=仮設材種別を更新しました
+
+success.changePassword.devUser.update=開発管理者のパスワードを更新しました。
+success.changePassword.sysUser.update=システム管理者のパスワードを更新しました。
+
+success.cms.AccountManage.create=新規追加しました。
+success.cms.AccountManage.update=更新しました。
+success.cms.AccountManage.passwordUpdate=パスワードを変更しました。
+success.cms.AccountManage.delete=削除しました。
 
 ################################################################################################
 # ERRORS
@@ -83,30 +225,6 @@ error.cms.CompanyManage.update.inputCompanyName.use.exceed=対象の業者は予
 error.cms.CompanyManage.delete.inputCompanyName.use.noChange=業者は現在予約されている為、更新と削除ができません。(業者名：{0})
 error.cms.CompanyManage.delete.inputCompanyName.use.exceed=対象の業者は予約履歴が有ります。システム管理権限以上をお持ちの方が更新と削除ができます。(業者名：{0})
 
-error.cms.CarManage.update.inputCarNo.empty=作業車・立馬番号を入力してください。
-error.cms.CarManage.update.inputCarBtxId.empty=作業車TagIDを半角数字で入力してください。
-error.cms.CarManage.update.inputCarKeyBtxId.empty=鍵TagIDを半角数字で入力してください。
-error.cms.CarManage.update.inputCarTypeName.empty=種別を入力してください。
-error.cms.CarManage.update.inputCarTypeId.empty=種別を入力してください。
-error.cms.CarManage.update.inputCarName.empty=名称を入力してください。
-error.cms.CarManage.update.inputCarBtxId.inputCarKeyBtxId.duplicate=作業車TagIDと鍵TagIDが重複しています。
-error.cms.CarManage.update.inputCarBtxId.use=作業車TagIDは既に使用されています。(作業車TagID：{0})
-error.cms.CarManage.update.inputCarBtxId.useOther=作業車TagIDはその他仮設材で既に使用されています。(作業車TagID：{0})
-error.cms.CarManage.update.inputCarKeyBtxId.use=鍵TagIDは既に使用されています。(鍵TagID：{0})
-error.cms.CarManage.update.inputCarKeyBtxId.useOther=鍵TagIDはその他仮設材で既に使用されています。(鍵TagID：{0})
-error.cms.CarManage.update.inputCarIdReserve.use=IDは既に予約されています。(ID：{0})
-error.cms.CarManage.update.inputCarBtxId.duplicate=作業車TagIDが重複しています。(作業車TagID:{0})
-error.cms.CarManage.update.inputCarKeyBtxId.duplicate=鍵TagIDが重複しています。(鍵TagID:{0})
-error.cms.CarManage.update.inputBtxId.duplicate=作業車・立馬番号が重複しています。(作業車・立馬番号：{0})
-error.cms.CarManage.update.inputCarIdReserve.use.noChange=IDは現在予約されている為、更新と削除ができません。(ID：{0})
-error.cms.CarManage.update.inputCarIdReserve.use.exceed=IDは予約履歴が有ります。システム管理権限以上をお持ちの方が更新と削除ができます。(ID：{0})
-error.cms.CarManage.delete.empty=削除対象作業車を選択してください。
-error.cms.CarManage.delete.inputCarIdReserve.use=IDは既に予約されています。(ID：{0})
-error.cms.CarManage.delete.inputCarIdReserve.use.noChange=IDは現在予約されている為、更新と削除ができません。(ID：{0})
-error.cms.CarManage.delete.inputCarIdReserve.use.exceed=IDは予約履歴が有ります。システム管理権限以上をお持ちの方が更新と削除ができます。(ID：{0})
-error.cms.CarManage.delete.inputCarId.empty=IDは登録されていません。(ID：{0})
-error.cms.CarManage.update.NotTypeName=種別が存在しません。
-error.cms.CarManage.update.inputCarKey.duplicate=TagIDと鍵TagIDに同一のIDが入力されています。
 
 error.cms.ItemOtherManage.update.inputItemOtherNo.empty=仮設材番号を入力してください。
 error.cms.ItemOtherManage.update.inputItemOtherBtxId.empty=TagIDを半角数字で入力してください。
@@ -179,112 +297,6 @@ error.unmatched.data=APIと登録データが違うため正しく表示でき�
 ################################################################################################
 # SUCCESS
 success.CarReserve.registerModal=予約を登録しました。
-
-#リージョン
-success.tenanat.Region.register=現場情報を登録しました。
-success.tenanat.Region.update=現場情報を更新しました。
-success.tenanat.Region.passwordUpdate=パスワードを更新しました。
-success.tenanat.Region.delete=現場情報を削除しました。
-
-
-lang.system.floorManager = フロア管理
-lang.system.mapManager = フロアマップ登録
-error.system.mapManager.image.empty=選択されたフロアマップがないです。
-lang.system.exbManager = EXB管理
-lang.system.exbViewerManager = EXB設置管理
-
-#フロア
-success.cms.Floor.floorDelete=フロアを削除しました。
-success.cms.Floor.floorUpdate=フロア情報を更新しました。
-
-lang.system.floor.title=フロア管理
-lang.system.floor.displayOrder=表示順
-lang.system.floor.name=フロア名
-lang.system.floor.display=現場状況画面表示
-lang.system.floor.floorId=ID
-
-lang.system.floor.floorUpdate.popup.displayOrder=表示順
-lang.system.floor.floorUpdate.popup.displayOrder.placeholder=1
-lang.system.floor.floorUpdate.popup.name=フロア名
-lang.system.floor.floorUpdate.popup.name.placeholder=8F
-lang.system.floor.floor.button.floorEdit=フロア編集
-lang.system.floor.floor.button.addFloor=フロア追加
-lang.system.floor.floor.button.deleteFloor=フロア削除
-lang.system.floor.floorDelete.popup.title=フロア削除
-lang.system.floor.floorUpdate.popup.title=フロア更新
-lang.system.floor.floorDelete.popup.message=フロアを削除します。\nよろしいですか？
-error.system.floor.delete.exb=EXBがフロアに設置されてるため、削除できません。
-error.system.floor.floorUpdate.inputFloorName.empty=フロア名を入力してください。
-error.system.floor.floorUpdate.displayOrder.empty=表示順を数字で入力して下さい。
-error.system.floor.floorUpdate.inputDisplayOrder.duplicate=表示順「{0}」はすでに登録されてます。
-error.system.floor.floorUpdate.inputExbDeviceNoListComma.empty=EXBeaconデバイスNoを入力してください。
-error.system.floor.floorUpdate.delete.empty=削除対象フロアを選択してください。
-error.system.floor.floorUpdate.inputFloorName.duplicate=フロア名が重複しています。
-error.system.floor.floorUpdate.inputDeviceNo.notNumeric=EXBeaconデバイスNoは半角数字で入力してください。
-error.system.floor.floorUpdate.inputDeviceNo.duplicate=EXBeaconデバイスNoが重複しています。(デバイスNo：{0})
-error.system.floor.floorUpdate.DeviceId.notfound=EXBeaconデバイスID設定がありません。管理者に問い合わせてください。(デバイスNo：{0})
-
-
-#EXB
-# CMS文字列（EXB管理）
-lang.system.exb.title=EXB管理
-lang.system.exb.exbId =EXB設置番号（固定）
-lang.system.exb.show =表示
-lang.system.exb.floor =フロア
-lang.system.exb.type =表示種別
-lang.system.exb.count =表示数
-lang.system.exb.x =X座標
-lang.system.exb.y =Y座標
-lang.system.exb.size =サイズ
-lang.system.exb.margin =幅間隔
-
-lang.system.exb.deviceId=EXBデバイスID
-lang.system.exb.deviceId.popup.placeholder=1
-lang.system.exb.deviceNo=デバイス番号
-lang.system.exb.deviceNo.popup.placeholder=1
-lang.system.exb.deviceName=デバイス名
-lang.system.exb.deviceName.popup.placeholder=Beacon名
-lang.system.exb.posName=設置場所名
-lang.system.exb.posName.popup.placeholder=1F 会議室
-lang.system.exb.setupFloorId=フロア管理番号（固定）
-lang.system.exb.setupFloorName=設置フロア名
-
-lang.system.exb.exb.button.exbEdit=EXB編集
-lang.system.exb.exb.button.addExb=EXB追加
-lang.system.exb.exb.button.deleteExb=EXB削除
-lang.system.exb.exbDelete.popup.title=EXB削除
-lang.system.exb.exbDelete.popup.message=EXBを削除します。\nよろしいですか？
-lang.system.exb.exbUpdate.popup.title=EXB更新
-
-error.system.exb.exbUpdate.delete.empty=削除対象EXBを選択してください。
-error.system.exb.exbUpdate.inputDeviceId.empty=EXBデバイスIDは半角数字入力してください。
-error.system.exb.exbUpdate.inputDeviceNo.empty=デバイスNOは半角数字で入力してください。
-error.system.exb.exbUpdate.inputDeviceName.empty=デバイス名を入力してください。
-error.system.exb.exbUpdate.inputPosName.empty=場所名を入力してください。
-error.system.exb.exbUpdate.setupFloorId.empty=設置フロアIDは半角数字で入力してください。
-error.system.exb.exbUpdate.setupNumCheck.duplicate=EXBデバイスID「{0}」はすでに登録されてます。
-success.system.exb.exbUpdate=EXB情報を更新しました。
-success.system.exb.exbDelete=EXBを削除しました。
-
-success.cms.CompanyManage.delete=業者情報を削除しました。
-success.cms.CompanyManage.update=業者情報を更新しました。
-
-success.cms.CarManage.delete=作業車情報・立馬を削除しました。
-success.cms.CarManage.update=作業車情報・立馬を更新しました。
-
-success.cms.ItemOtherManage.delete=仮設材情報を削除しました。
-success.cms.ItemOtherManage.update=仮設材情報を更新しました。
-
-success.cms.ItemTypeManage.delete=仮設材種別情報を削除しました。
-success.cms.ItemTypeManage.update=仮設材種別を更新しました
-
-success.changePassword.devUser.update=開発管理者のパスワードを更新しました。
-success.changePassword.sysUser.update=システム管理者のパスワードを更新しました。
-
-success.cms.AccountManage.create=新規追加しました。
-success.cms.AccountManage.update=更新しました。
-success.cms.AccountManage.passwordUpdate=パスワードを変更しました。
-success.cms.AccountManage.delete=削除しました。
 
 # MAILS
 

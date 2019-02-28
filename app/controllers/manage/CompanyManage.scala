@@ -189,7 +189,7 @@ class CompanyManage @Inject()(config: Configuration
     var errMsg = Seq[String]()
     // フォームの準備
     val inputForm = Form(mapping(
-      "deleteCompanyId" -> text.verifying(Messages("error.cms.CarManage.delete.empty"), {!_.isEmpty})
+      "deleteCompanyId" -> text.verifying(Messages("error.manage.ItemCar.delete.empty"), {!_.isEmpty})
     )(CompanyDeleteForm.apply)(CompanyDeleteForm.unapply))
 
     // フォームの取得
