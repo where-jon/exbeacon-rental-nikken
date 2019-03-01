@@ -1,4 +1,4 @@
-package models
+package models.system
 
 import java.sql.SQLException
 import javax.inject.Inject
@@ -24,7 +24,7 @@ case class MapViewerData(
 )
 
 @javax.inject.Singleton
-class MapViewerDAO @Inject() (dbapi: DBApi) {
+class FloorMapDAO @Inject()(dbapi: DBApi) {
 
   private val db = dbapi.database("default")
 

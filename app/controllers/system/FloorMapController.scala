@@ -4,12 +4,12 @@ import java.awt.image.BufferedImage
 import java.io.{ByteArrayInputStream, ByteArrayOutputStream}
 import java.nio.file.Files
 import java.util.Base64
-import javax.imageio.ImageIO
-import javax.inject.Inject
 
 import com.mohiva.play.silhouette.api.Silhouette
 import controllers.{BaseController, site}
-import models.MapViewerData
+import javax.imageio.ImageIO
+import javax.inject.Inject
+import models.system.MapViewerData
 import play.api.Configuration
 import play.api.data.Form
 import play.api.data.Forms._
