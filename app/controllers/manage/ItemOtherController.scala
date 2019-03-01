@@ -6,8 +6,7 @@ import java.util.{Calendar, Date, Locale}
 import com.mohiva.play.silhouette.api.Silhouette
 import controllers.{BaseController, site}
 import javax.inject.{Inject, Singleton}
-import models.ItemCategoryEnum
-import models.manage.{ItemDeleteForm, ItemUpdateForm}
+import models.manage.{ItemCategoryEnum, ItemDeleteForm, ItemUpdateForm}
 import play.api._
 import play.api.data.Form
 import play.api.data.Forms.{mapping, _}
@@ -27,7 +26,7 @@ class ItemOtherController @Inject()(
   , val messagesApi: MessagesApi
   , itemOtherDAO: models.manage.ItemOtherDAO
   , itemDAO: models.itemDAO
-  , itemTypeDAO:models.ItemTypeDAO
+  , itemTypeDAO:models.manage.ItemTypeDAO
   , carDAO: models.manage.ItemCarDAO
 ) extends BaseController with I18nSupport {
 

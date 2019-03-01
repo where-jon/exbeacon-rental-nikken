@@ -2,11 +2,11 @@ package controllers.manage
 
 import java.text.SimpleDateFormat
 import java.util.{Calendar, Date, Locale}
+
 import com.mohiva.play.silhouette.api.Silhouette
 import controllers.{BaseController, site}
 import javax.inject.{Inject, Singleton}
-import models.ItemTypeOrder
-import models.manage.{CarDeleteForm, CarUpdateForm}
+import models.manage.{CarDeleteForm, CarUpdateForm, ItemTypeOrder}
 import play.api._
 import play.api.data.Form
 import play.api.data.Forms.{mapping, _}
@@ -26,7 +26,7 @@ class ItemCarController @Inject()(
   , val messagesApi: MessagesApi
   , carDAO: models.manage.ItemCarDAO
   , exbDAO: models.system.ExbDAO
-  , itemTypeDAO: models.ItemTypeDAO
+  , itemTypeDAO: models.manage.ItemTypeDAO
   , itemOtherDAO: models.manage.ItemOtherDAO
 ) extends BaseController with I18nSupport {
 

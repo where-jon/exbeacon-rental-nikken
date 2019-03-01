@@ -1,10 +1,10 @@
 package controllers.site
 
-import javax.inject.{Inject, Singleton}
 import com.mohiva.play.silhouette.api.Silhouette
 import controllers.{BaseController, BeaconService, errors}
+import javax.inject.{Inject, Singleton}
+import models.manage.{ItemType, PowerEnum}
 import models.site.TxSearchForm
-import models.{ItemType, PowerEnum}
 import play.api._
 import play.api.data.Form
 import play.api.data.Forms.{mapping, _}
@@ -22,7 +22,7 @@ class TxBatteryController @Inject()(config: Configuration
   , val silhouette: Silhouette[MyEnv]
   , val messagesApi: MessagesApi
   , ws: WSClient
-  , itemTypeDAO: models.ItemTypeDAO
+  , itemTypeDAO: models.manage.ItemTypeDAO
   , beaconService: BeaconService
   , beaconDAO: models.beaconDAO
   ) extends BaseController with I18nSupport {

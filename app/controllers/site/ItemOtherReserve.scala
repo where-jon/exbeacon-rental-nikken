@@ -7,7 +7,7 @@ import com.mohiva.play.silhouette.api.Silhouette
 import controllers.{BaseController, BeaconService, errors}
 import javax.inject.{Inject, Singleton}
 import models._
-import models.manage.{Company, ItemOtherReserveData, ItemOtherSearchData, OtherViewer}
+import models.manage._
 import models.system.Floor
 import play.api._
 import play.api.data.Form
@@ -34,7 +34,7 @@ class ItemOtherReserve @Inject()(config: Configuration
   , floorDAO: models.system.floorDAO
   , btxDAO: models.btxDAO
   ,reserveMasterDAO: models.site.ReserveMasterDAO
-  , itemTypeDAO: models.ItemTypeDAO
+  , itemTypeDAO: models.manage.ItemTypeDAO
   , workTypeDAO: models.WorkTypeDAO
   ) extends BaseController with I18nSupport {
 

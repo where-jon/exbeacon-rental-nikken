@@ -28,7 +28,7 @@ class RegionController @Inject() (
                                    passwordHasherRegistry: PasswordHasherRegistry,
                                    userService: UserService,
                                    companyDAO: models.manage.CompanyDAO,
-                                   itemTypeDAO: models.ItemTypeDAO,
+                                   itemTypeDAO: models.manage.ItemTypeDAO,
                                    itemOtherDAO: models.manage.ItemOtherDAO,
                                    itemCarDAO: models.manage.ItemCarDAO
 ) extends BaseController with I18nSupport {

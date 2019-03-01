@@ -8,7 +8,7 @@ import com.mohiva.play.silhouette.api.Silhouette
 import controllers.{BaseController, BeaconService, site}
 import javax.inject.{Inject, Singleton}
 import models._
-import models.manage.MovementCarData
+import models.manage.{ItemType, MovementCarData}
 import play.api._
 import play.api.data.Form
 import play.api.data.Forms._
@@ -33,7 +33,7 @@ class MovementCarController @Inject()(config: Configuration
 , floorDAO: models.system.floorDAO
 , btxDAO: models.btxDAO
 , itemlogDAO: ItemLogDAO
-, itemTypeDAO: models.ItemTypeDAO
+, itemTypeDAO: models.manage.ItemTypeDAO
 , workTypeDAO: models.WorkTypeDAO
 , calendarDAO: models.LogCalendarDAO
 , pagiNationHelper: common.PagiNation

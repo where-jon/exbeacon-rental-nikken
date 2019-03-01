@@ -21,7 +21,7 @@ class WorkPlaceController @Inject()(config: Configuration
   , ws: WSClient
   , exbDAO: models.system.ExbDAO
   , floorDAO: models.system.floorDAO
-  , itemTypeDAO: models.ItemTypeDAO
+  , itemTypeDAO: models.manage.ItemTypeDAO
   ) extends BaseController with I18nSupport {
 
 

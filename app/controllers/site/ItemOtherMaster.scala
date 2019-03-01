@@ -4,7 +4,7 @@ import com.mohiva.play.silhouette.api.Silhouette
 import controllers.{BaseController, BeaconService, errors}
 import javax.inject.{Inject, Singleton}
 import models._
-import models.manage.{Company, ItemCarData, OtherViewer}
+import models.manage._
 import models.system.Floor
 import play.api._
 import play.api.data.Form
@@ -29,7 +29,7 @@ class ItemOtherMaster @Inject()(config: Configuration
 , beaconService: BeaconService
 , floorDAO: models.system.floorDAO
 , btxDAO: models.btxDAO
-, itemTypeDAO: models.ItemTypeDAO
+, itemTypeDAO: models.manage.ItemTypeDAO
 , workTypeDAO: models.WorkTypeDAO
 ) extends BaseController with I18nSupport {
 

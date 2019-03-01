@@ -3,11 +3,11 @@ package controllers.site
 import java.text.SimpleDateFormat
 import java.util.{Date, Locale}
 
-import javax.inject.{Inject, Singleton}
 import com.mohiva.play.silhouette.api.Silhouette
 import controllers.{BaseController, BeaconService, errors}
-import models.{ItemType, WorkType, WorkTypeEnum}
-import models.manage.{CarViewer, Company, ItemCarReserveData, ItemCarSearchData}
+import javax.inject.{Inject, Singleton}
+import models.WorkType
+import models.manage._
 import models.system.Floor
 import play.api._
 import play.api.data.Form
@@ -45,7 +45,7 @@ class ItemCarReserve @Inject()(config: Configuration
 , floorDAO: models.system.floorDAO
 , btxDAO: models.btxDAO
 , reserveMasterDAO: models.site.ReserveMasterDAO
-, itemTypeDAO: models.ItemTypeDAO
+, itemTypeDAO: models.manage.ItemTypeDAO
 , workTypeDAO: models.WorkTypeDAO
 ) extends BaseController with I18nSupport {
 

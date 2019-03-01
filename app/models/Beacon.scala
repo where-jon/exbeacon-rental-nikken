@@ -2,16 +2,16 @@ package models
 
 import java.text.SimpleDateFormat
 import java.util.{Calendar, Date, Locale}
-import javax.inject.Inject
 
+import javax.inject.Inject
 import anorm.SqlParser.get
 import anorm.{SQL, ~}
 import controllers.CReserveData
+import models.manage.WorkTypeIdEnum
 import play.api.db.DBApi
 import play.api.libs.json._
 
 import scala.collection.immutable.List
-//import play.api.Logger
 import play.api.libs.functional.syntax._
 
 /**

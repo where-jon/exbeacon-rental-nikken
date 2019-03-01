@@ -1,3 +1,4 @@
+@import models.manage.ItemType
 @(ITEM_TYPE_FILTER: String, itemTypeMap: Map[Int,String],itemTypeList: Seq[ItemType], placeId: Int)(implicit user: User, messages: Messages, request: RequestHeader, flash: Flash)
 
 @import controllers.routes
@@ -97,7 +98,7 @@
         </div>
     </div>
 </div>
-<script type="text/javascript" src='@routes.MyAssets.js("manage/itemTypeManage.js")'></script>
+<script type="text/javascript" src='@routes.MyAssets.js("manage/itemType.js")'></script>
 
 <!-- 更新モーダル画面 -->
 <div class="modal" id="inputModal" tabindex="-1" role="dialog" aria-labelledby="inputModalLabel" aria-hidden="true" data-show="true" data-keyboard="false" data-backdrop="static">

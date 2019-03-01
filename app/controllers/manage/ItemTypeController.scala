@@ -3,15 +3,13 @@ package controllers.manage
 import java.text.SimpleDateFormat
 import java.util.{Calendar, Date, Locale}
 
-import javax.inject.{Inject, Singleton}
 import com.mohiva.play.silhouette.api.Silhouette
-import controllers.BaseController
-import controllers.site
-import models.ItemCategoryEnum
+import controllers.{BaseController, site}
+import javax.inject.{Inject, Singleton}
+import models.manage.ItemCategoryEnum
 import play.api._
 import play.api.data.Form
-import play.api.data.Forms._
-import play.api.data.Forms.mapping
+import play.api.data.Forms.{mapping, _}
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import utils.silhouette.MyEnv
 
@@ -37,7 +35,7 @@ case class ItemTypeDeleteForm(deleteItemTypeId: String)
 class ItemTypeController @Inject()(config: Configuration
                               , val silhouette: Silhouette[MyEnv]
                               , val messagesApi: MessagesApi
-                              , itemTypeDAO: models.ItemTypeDAO
+                              , itemTypeDAO: models.manage.ItemTypeDAO
                               , carDAO: models.manage.ItemCarDAO
                               , itemOtherDAO: models.manage.ItemOtherDAO
                               , reserveMasterDAO: models.site.ReserveMasterDAO
