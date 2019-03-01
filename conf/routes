@@ -66,9 +66,9 @@ GET         /manage/itemOther                            controllers.manage.Item
 POST        /manage/itemOther/update                     controllers.manage.ItemOtherController.update
 POST        /manage/itemOther/delete                     controllers.manage.ItemOtherController.delete
 # 仮設材種別管理(旧)
-GET         /manage/itemTypeManage                             controllers.manage.ItemTypeManage.index
-POST        /manage/itemTypeManage/update                      controllers.manage.ItemTypeManage.update
-POST        /manage/itemTypeManage/delete                      controllers.manage.ItemTypeManage.delete
+GET         /manage/itemType                             controllers.manage.ItemTypeController.index
+POST        /manage/itemType/update                      controllers.manage.ItemTypeController.update
+POST        /manage/itemType/delete                      controllers.manage.ItemTypeController.delete
 
 ###  メンテナンス .end　#################################
 

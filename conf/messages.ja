@@ -294,6 +294,31 @@ lang.manage.itemOther.itemUpdate.popup.Note=備考
 lang.manage.itemOther.itemUpdate.popup.txNo.placeholder=TxタグNo
 lang.manage.itemOther.itemDelete.popup.title=仮設材情報削除
 lang.manage.itemOther.itemDelete.popup.message=仮設材情報を削除します。\nよろしいですか？
+
+# 仮設材種別管理
+lang.cms.itemTypeManage.title=仮設材種別管理
+lang.cms.itemTypeManage.page.title=仮設材種別管理
+lang.cms.itemTypeManage.itemType.list.header.title=仮設材種別管理
+lang.cms.itemTypeManage.itemType.list.header.id=ID
+lang.cms.itemTypeManage.itemType.list.header.name=名称
+lang.cms.itemTypeManage.itemType.list.header.category=カテゴリー名
+lang.cms.itemTypeManage.itemType.list.header.biko=備考
+lang.cms.itemTypeManage.itemType.list.header.color.disp=色表示
+lang.cms.itemTypeManage.itemType.list.header.color.conf=色設定
+lang.cms.itemTypeManage.itemType.button.editItem=仮設材種別編集
+lang.cms.itemTypeManage.itemType.button.addItem=仮設材種別追加
+lang.cms.itemTypeManage.itemType.button.deleteItem=仮設材種別削除
+lang.cms.itemTypeManage.itemType.select.category1=作業車
+lang.cms.itemTypeManage.itemType.select.category2=その他
+lang.cms.itemTypeManage.itemTypeUpdate.popup.title=仮設材種別情報更新
+lang.cms.itemTypeManage.itemTypeUpdate.popup.itemName=名称
+lang.cms.itemTypeManage.itemTypeUpdate.popup.category=カテゴリー名
+lang.cms.itemTypeManage.itemTypeUpdate.popup.biko=備考
+lang.cms.itemTypeManage.itemTypeUpdate.popup.icon.color=アイコン色
+lang.cms.itemTypeManage.itemTypeUpdate.popup.font.color=アイコン文字色
+lang.cms.itemTypeManage.itemTypeUpdate.popup.row.color=行色
+lang.cms.itemTypeManage.itemTypeDelete.popup.title=仮設材種別情報削除
+lang.cms.itemTypeManage.itemTypeDelete.popup.message=仮設材種別情報を削除します。\nよろしいですか？
 ### メンテナンス　.end
 ################################################################################################
 ### 仮設材　.start
@@ -506,31 +531,6 @@ lang.cms.placeManage.changePassword.label.newPassword1=新しいパスワード
 lang.cms.placeManage.changePassword.label.newPassword2=確認用パスワード
 lang.cms.placeManage.changePassword.button.title=パスワードを変更する
 lang.cms.placeManage.changePassword.popup.name=パスワードを変更します。よろしいですか？
-
-# CMS文字列（仮設材種別管理）
-lang.cms.itemTypeManage.title=仮設材種別管理
-lang.cms.itemTypeManage.page.title=仮設材種別管理
-lang.cms.itemTypeManage.itemType.list.header.title=仮設材種別管理
-lang.cms.itemTypeManage.itemType.list.header.id=ID
-lang.cms.itemTypeManage.itemType.list.header.name=名称
-lang.cms.itemTypeManage.itemType.list.header.category=カテゴリー名
-lang.cms.itemTypeManage.itemType.list.header.biko=備考
-lang.cms.itemTypeManage.itemType.list.header.color.disp=色表示
-lang.cms.itemTypeManage.itemType.list.header.color.conf=色設定
-lang.cms.itemTypeManage.itemType.button.editItem=仮設材種別編集
-lang.cms.itemTypeManage.itemType.button.addItem=仮設材種別追加
-lang.cms.itemTypeManage.itemType.button.deleteItem=仮設材種別削除
-lang.cms.itemTypeManage.itemType.select.category1=作業車
-lang.cms.itemTypeManage.itemType.select.category2=その他
-lang.cms.itemTypeManage.itemTypeUpdate.popup.title=仮設材種別情報更新
-lang.cms.itemTypeManage.itemTypeUpdate.popup.itemName=名称
-lang.cms.itemTypeManage.itemTypeUpdate.popup.category=カテゴリー名
-lang.cms.itemTypeManage.itemTypeUpdate.popup.biko=備考
-lang.cms.itemTypeManage.itemTypeUpdate.popup.icon.color=アイコン色
-lang.cms.itemTypeManage.itemTypeUpdate.popup.font.color=アイコン文字色
-lang.cms.itemTypeManage.itemTypeUpdate.popup.row.color=行色
-lang.cms.itemTypeManage.itemTypeDelete.popup.title=仮設材種別情報削除
-lang.cms.itemTypeManage.itemTypeDelete.popup.message=仮設材種別情報を削除します。\nよろしいですか？
 
 # メイン機能の画面の文言
 # CarSummery

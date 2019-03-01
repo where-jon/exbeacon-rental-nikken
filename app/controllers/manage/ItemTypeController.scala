@@ -34,7 +34,7 @@ case class ItemTypeUpdateForm(inputPlaceId: String,
 case class ItemTypeDeleteForm(deleteItemTypeId: String)
 
 @Singleton
-class ItemTypeManage @Inject()(config: Configuration
+class ItemTypeController @Inject()(config: Configuration
                               , val silhouette: Silhouette[MyEnv]
                               , val messagesApi: MessagesApi
                               , itemTypeDAO: models.ItemTypeDAO
@@ -56,7 +56,7 @@ class ItemTypeManage @Inject()(config: Configuration
       val placeId = super.getCurrentPlaceId
       // 仮設材種別情報
       val itemTypeList = itemTypeDAO.selectItemTypeInfo(placeId)
-      Ok(views.html.manage.itemTypeManage(ITEM_TYPE_FILTER, ITEM_TYPE, itemTypeList, placeId))
+      Ok(views.html.manage.itemType(ITEM_TYPE_FILTER, ITEM_TYPE, itemTypeList, placeId))
     }else {
       Redirect(site.routes.ItemCarMaster.index)
     }
@@ -85,7 +85,7 @@ class ItemTypeManage @Inject()(config: Configuration
       val errMsg = form.errors.map(_.message).mkString(HTML_BR)
 
       // リダイレクトで画面遷移
-      Redirect(routes.ItemTypeManage.index()).flashing(ERROR_MSG_KEY -> errMsg)
+      Redirect(routes.ItemTypeController.index()).flashing(ERROR_MSG_KEY -> errMsg)
     }else {
       var errMsg = Seq[String]()
       val f = form.get
@@ -98,7 +98,7 @@ class ItemTypeManage @Inject()(config: Configuration
               // DB処理
               itemTypeDAO.insert(f.inputItemTypeName, f.inputItemTypeCategory.toInt, f.inputItemTypeIconColor, f.inputItemTypeTextColor, f.inputItemTypeRowColor, f.inputNote, f.inputPlaceId.toInt)
 
-              Redirect(routes.ItemTypeManage.index)
+              Redirect(routes.ItemTypeController.index)
                 .flashing(SUCCESS_MSG_KEY -> Messages("success.cms.ItemTypeManage.update"))
 
             }else{
@@ -170,23 +170,23 @@ class ItemTypeManage @Inject()(config: Configuration
               }
               if(errMsg.nonEmpty){
                 // エラーで遷移
-                Redirect(routes.ItemTypeManage.index).flashing(ERROR_MSG_KEY -> errMsg.mkString(HTML_BR))
+                Redirect(routes.ItemTypeController.index).flashing(ERROR_MSG_KEY -> errMsg.mkString(HTML_BR))
               }else {
                 // DB処理
                 itemTypeDAO.updateById(f.inputItemTypeId.toInt, f.inputItemTypeName, f.inputItemTypeCategory.toInt, f.inputItemTypeIconColor, f.inputItemTypeTextColor, f.inputItemTypeRowColor, f.inputNote)
 
-                Redirect(routes.ItemTypeManage.index).flashing(SUCCESS_MSG_KEY -> Messages("success.cms.ItemTypeManage.update"))
+                Redirect(routes.ItemTypeController.index).flashing(SUCCESS_MSG_KEY -> Messages("success.cms.ItemTypeManage.update"))
               }
             }
           }else{
-            Redirect(routes.ItemTypeManage.index()).flashing(ERROR_MSG_KEY -> Messages("error.cms.ItemTypeManage.RowColor"))
+            Redirect(routes.ItemTypeController.index()).flashing(ERROR_MSG_KEY -> Messages("error.cms.ItemTypeManage.RowColor"))
           }
         }else {
-          Redirect(routes.ItemTypeManage.index()).flashing(ERROR_MSG_KEY -> Messages("error.cms.ItemTypeManage.TextColor"))
+          Redirect(routes.ItemTypeController.index()).flashing(ERROR_MSG_KEY -> Messages("error.cms.ItemTypeManage.TextColor"))
         }
 
       }else{
-        Redirect(routes.ItemTypeManage.index()).flashing(ERROR_MSG_KEY -> Messages("error.cms.ItemTypeManage.IconColor"))
+        Redirect(routes.ItemTypeController.index()).flashing(ERROR_MSG_KEY -> Messages("error.cms.ItemTypeManage.IconColor"))
       }
     }
   }
@@ -228,7 +228,7 @@ class ItemTypeManage @Inject()(config: Configuration
       // エラーメッセージ
       val errMsg = form.errors.map(_.message).mkString(HTML_BR)
       // リダイレクトで画面遷移
-      Redirect(routes.ItemTypeManage.index).flashing(ERROR_MSG_KEY -> errMsg)
+      Redirect(routes.ItemTypeController.index).flashing(ERROR_MSG_KEY -> errMsg)
     } else {
       val f = form.get
       // 作業車・立馬マスタ　仮設材種別使用チェック
@@ -309,13 +309,13 @@ class ItemTypeManage @Inject()(config: Configuration
       }
       if(errMsg.nonEmpty){
         // エラーで遷移
-        Redirect(routes.ItemTypeManage.index).flashing(ERROR_MSG_KEY -> errMsg.mkString(HTML_BR))
+        Redirect(routes.ItemTypeController.index).flashing(ERROR_MSG_KEY -> errMsg.mkString(HTML_BR))
       }else{
         // DB処理
         itemTypeDAO.deleteById(f.deleteItemTypeId.toInt)
 
         // リダイレクト
-        Redirect(routes.ItemTypeManage.index).flashing(SUCCESS_MSG_KEY -> Messages("success.cms.ItemTypeManage.delete"))
+        Redirect(routes.ItemTypeController.index).flashing(SUCCESS_MSG_KEY -> Messages("success.cms.ItemTypeManage.delete"))
       }
     }
   }
