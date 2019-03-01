@@ -28,7 +28,7 @@
             <div class="mainSpace col-xs-10 col-sm-10 col-md-10 col-lg-10">
                 <!-- 画面題字 -->
                 <div class="form-group" style="font-weight:bold;font-size:19px;margin:15px 0px;">
-                    @Messages("lang.manage.Account.page.title")
+                    @Messages("lang.manage.account.page.title")
                 </div>
                 <!-- テーブルのROW -->
                 <div class="row tableRow">
@@ -37,12 +37,12 @@
                             <table class="table table-bordered table-condensed itemTable">
                                 <thead>
                                     <tr class ="hidden">
-                                        <th colspan="3" class="tableTitleTh">@Messages("lang.manage.Account.list.header.title")</th>
+                                        <th colspan="3" class="tableTitleTh">@Messages("lang.manage.account.list.header.title")</th>
                                     </tr>
                                     <tr>
-                                        <th class="tableTh userNameTh">@Messages("lang.manage.Account.list.header.userName")</th>
-                                        <th class="tableTh userLoginIdTh">@Messages("lang.manage.Account.list.header.userLoginId")</th>
-                                        <th class="tableTh userLevelTh">@Messages("lang.manage.Account.list.header.userLevel")</th>
+                                        <th class="tableTh userNameTh">@Messages("lang.manage.account.list.header.userName")</th>
+                                        <th class="tableTh userLoginIdTh">@Messages("lang.manage.account.list.header.userLoginId")</th>
+                                        <th class="tableTh userLevelTh">@Messages("lang.manage.account.list.header.userLevel")</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -66,16 +66,16 @@
                 <!-- ボタン-->
                 <div class="row tableRow" style="margin-top: 10px;">
                     <div class="text-center col-xs-3 col-sm-3 col-md-3" style="padding:0;">
-                        <a href="javascript:showUpdateModal();" class="btn link">@Messages("lang.manage.Account.button.update")</a>
+                        <a href="javascript:showUpdateModal();" class="btn link">@Messages("lang.manage.account.button.update")</a>
                     </div>
                     <div class="text-center col-xs-3 col-sm-3 col-md-3" style="padding:0;">
-                        <a href="javascript:showPasswordModal();" class="btn link">@Messages("lang.manage.Account.button.passwordUpdate")</a>
+                        <a href="javascript:showPasswordModal();" class="btn link">@Messages("lang.manage.account.button.passwordUpdate")</a>
                     </div>
                     <div class="text-center col-xs-3 col-sm-3 col-md-3" style="padding:0;">
-                        <a href="javascript:showCreateModal();" class="btn link">@Messages("lang.manage.Account.button.create")</a>
+                        <a href="javascript:showCreateModal();" class="btn link">@Messages("lang.manage.account.button.create")</a>
                     </div>
                     <div class="text-center col-xs-3 col-sm-3 col-md-3" style="padding:0;">
-                        <a href="javascript:showDeleteModal();" class="btn link">@Messages("lang.manage.Account.button.delete")</a>
+                        <a href="javascript:showDeleteModal();" class="btn link">@Messages("lang.manage.account.button.delete")</a>
                     </div>
                 </div>
             </div>
@@ -87,22 +87,22 @@
             <div class="modal-content">
                 <form id="accountCreateForm" name="accountCreateForm" enctype="multipart/form-data" class="form-horizontal" method="post" action="@controllers.manage.routes.AccountController.create.path">
                     @CSRF.formField
-                    <div class="modal-header" style="">@Messages("lang.manage.Account.create.popup.title")</div>
+                    <div class="modal-header" style="">@Messages("lang.manage.account.create.popup.title")</div>
                     <div class="modal-body">
                         <div class="form-group">
-                            <label class="control-label col-xs-4">@Messages("lang.manage.Account.create.popup.userName")</label>
+                            <label class="control-label col-xs-4">@Messages("lang.manage.account.create.popup.userName")</label>
                             <div class="col-xs-6" style="padding-left: 0px;padding-right: 0px;">
-                                <input type="text" name="userName" id="createUserName" class="form-control" placeholder='@Messages("lang.manage.Account.create.popup.userName.placeholder")' />
+                                <input type="text" name="userName" id="createUserName" class="form-control" placeholder='@Messages("lang.manage.account.create.popup.userName.placeholder")' />
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="control-label col-xs-4">@Messages("lang.manage.Account.create.popup.userLoginId")</label>
+                            <label class="control-label col-xs-4">@Messages("lang.manage.account.create.popup.userLoginId")</label>
                             <div class="col-xs-6" style="padding-left: 0px;padding-right: 0px;">
-                                <input type="text" name="userLoginId" id="createUserLoginId" class="form-control" placeholder='@Messages("lang.manage.Account.create.popup.userLoginId.placeholder")' />
+                                <input type="text" name="userLoginId" id="createUserLoginId" class="form-control" placeholder='@Messages("lang.manage.account.create.popup.userLoginId.placeholder")' />
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="control-label col-xs-4">@Messages("lang.manage.Account.create.popup.userLevel")</label>
+                            <label class="control-label col-xs-4">@Messages("lang.manage.account.create.popup.userLevel")</label>
                             <div class="col-xs-6" style="padding-left: 0px;padding-right: 0px;">
                                 <select name="userLevel" id="createUserLevel" class="form-control">
                                     @levelMap.map{ case (code, name) =>
@@ -112,15 +112,15 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="control-label col-xs-4">@Messages("lang.manage.Account.create.popup.userPassword1")</label>
+                            <label class="control-label col-xs-4">@Messages("lang.manage.account.create.popup.userPassword1")</label>
                             <div class="col-xs-6" style="padding-left: 0px;padding-right: 0px;">
-                                <input type="password" name="userPassword1" id="createUserPassword1" class="form-control" placeholder='@Messages("lang.manage.Account.create.popup.userPassword1.placeholder")' />
+                                <input type="password" name="userPassword1" id="createUserPassword1" class="form-control" placeholder='@Messages("lang.manage.account.create.popup.userPassword1.placeholder")' />
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="control-label col-xs-4">@Messages("lang.manage.Account.create.popup.userPassword2")</label>
+                            <label class="control-label col-xs-4">@Messages("lang.manage.account.create.popup.userPassword2")</label>
                             <div class="col-xs-6" style="padding-left: 0px;padding-right: 0px;">
-                                <input type="password" name="userPassword2" id="createUserPassword2" class="form-control" placeholder='@Messages("lang.manage.Account.create.popup.userPassword2.placeholder")' />
+                                <input type="password" name="userPassword2" id="createUserPassword2" class="form-control" placeholder='@Messages("lang.manage.account.create.popup.userPassword2.placeholder")' />
                             </div>
                         </div>
                     </div>
@@ -143,22 +143,22 @@
                 <form id="accountUpdateForm" name="accountUpdateForm" enctype="multipart/form-data" class="form-horizontal" method="post" action="@controllers.manage.routes.AccountController.update.path">
                     @CSRF.formField
                     <input type="hidden" name="userId" id="updateUserId" value="">
-                    <div class="modal-header">@Messages("lang.manage.Account.update.popup.title")</div>
+                    <div class="modal-header">@Messages("lang.manage.account.update.popup.title")</div>
                     <div class="modal-body">
                         <div class="form-group">
-                            <label class="control-label col-xs-4">@Messages("lang.manage.Account.update.popup.userName")</label>
+                            <label class="control-label col-xs-4">@Messages("lang.manage.account.update.popup.userName")</label>
                             <div class="col-xs-5" style="padding-left: 0px;padding-right: 0px;">
-                                <input type="text" name="userName" id="updateUserName" value="" class="form-control" placeholder='@Messages("lang.manage.Account.update.popup.userName.placeholder")'>
+                                <input type="text" name="userName" id="updateUserName" value="" class="form-control" placeholder='@Messages("lang.manage.account.update.popup.userName.placeholder")'>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="control-label col-xs-4">@Messages("lang.manage.Account.update.popup.userLoginId")</label>
+                            <label class="control-label col-xs-4">@Messages("lang.manage.account.update.popup.userLoginId")</label>
                             <div class="col-xs-5" style="padding-left: 0px;padding-right: 0px;">
-                                <input type="text" name="userLoginId" id="updateUserLoginId" class="form-control" placeholder='@Messages("lang.manage.Account.update.popup.userLoginId.placeholder")' />
+                                <input type="text" name="userLoginId" id="updateUserLoginId" class="form-control" placeholder='@Messages("lang.manage.account.update.popup.userLoginId.placeholder")' />
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="control-label col-xs-4" style="padding-top: 0px;">@Messages("lang.manage.Account.update.popup.userLevel")</label>
+                            <label class="control-label col-xs-4" style="padding-top: 0px;">@Messages("lang.manage.account.update.popup.userLevel")</label>
                             <div class="col-xs-5" style="padding-left: 0px;padding-right: 0px;">
                                 <select name="userLevel" id="updateUserLevel" class="form-control">
                                     @levelMap.map{case (code, name) =>
@@ -187,19 +187,19 @@
             <div class="modal-content">
                 <form id="passwordForm" name="passwordForm" class="form-horizontal" enctype="multipart/form-data" class="form-horizontal" method="post" action="@controllers.manage.routes.AccountController.passwordUpdate.path">
                     @CSRF.formField
-                    <div class="modal-header">@Messages("lang.manage.Account.passwordUpdate.popup.title")</div>
+                    <div class="modal-header">@Messages("lang.manage.account.passwordUpdate.popup.title")</div>
                     <div class="modal-body">
                         <div class="form-group">
                             <input type="hidden" name="userId" id="passwordUpdateUserId" value="">
-                            <label class="control-label col-xs-4">@Messages("lang.manage.Account.passwordUpdate.popup.userPassword1")</label>
+                            <label class="control-label col-xs-4">@Messages("lang.manage.account.passwordUpdate.popup.userPassword1")</label>
                             <div class="col-xs-6" style="padding-left: 0px;padding-right: 0px;">
-                                <input type="password" name="userPassword1" class="form-control" placeholder='@Messages("lang.manage.Account.create.popup.userPassword1.placeholder")'>
+                                <input type="password" name="userPassword1" class="form-control" placeholder='@Messages("lang.manage.account.create.popup.userPassword1.placeholder")'>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="control-label col-xs-4">@Messages("lang.manage.Account.passwordUpdate.popup.userPassword2")</label>
+                            <label class="control-label col-xs-4">@Messages("lang.manage.account.passwordUpdate.popup.userPassword2")</label>
                             <div class="col-xs-6" style="padding-left: 0px;padding-right: 0px;">
-                                <input type="password" name="userPassword2" class="form-control" placeholder='@Messages("lang.manage.Account.create.popup.userPassword2.placeholder")'>
+                                <input type="password" name="userPassword2" class="form-control" placeholder='@Messages("lang.manage.account.create.popup.userPassword2.placeholder")'>
                             </div>
                         </div>
                     </div>
@@ -222,10 +222,10 @@
                 <form id="deleteForm" name="deleteForm" class="form-horizontal" enctype="multipart/form-data" method="post" action="@controllers.manage.routes.AccountController.delete.path">
                     @CSRF.formField
                     <input type="hidden" id="deleteUserId" name="userId" value="" />
-                    <div class="modal-header">@Messages("lang.manage.Account.delete.popup.title")</div>
+                    <div class="modal-header">@Messages("lang.manage.account.delete.popup.title")</div>
                     <div class="modal-body">
                         <div class="text-center">
-                            @Html(Messages("lang.manage.Account.delete.popup.message").replaceAll("(\r\n|\r|\n)","<br>"))
+                            @Html(Messages("lang.manage.account.delete.popup.message").replaceAll("(\r\n|\r|\n)","<br>"))
                         </div>
                     </div>
                     <div class="modal-footer">

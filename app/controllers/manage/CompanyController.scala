@@ -52,7 +52,7 @@ class CompanyController @Inject()(
     val inputForm = Form(mapping(
       "inputPlaceId" -> text
       , "inputCompanyId" -> text
-      , "inputCompanyName" -> text.verifying(Messages("error.manage.Company.update.inputCompanyName.empty"), {
+      , "inputCompanyName" -> text.verifying(Messages("error.manage.company.update.inputCompanyName.empty"), {
         !_.isEmpty
       })
       , "inputNote" -> text
@@ -73,7 +73,7 @@ class CompanyController @Inject()(
         // 名称重複チェック
         val companyList = companyService.selectCompanyByPlaceId(super.getCurrentPlaceId, f.inputCompanyName)
         if (companyList.nonEmpty) {
-          errMsg :+= Messages("error.manage.Company.update.inputCompanyName.duplicate", f.inputCompanyName)
+          errMsg :+= Messages("error.manage.company.update.inputCompanyName.duplicate", f.inputCompanyName)
         }
         if (errMsg.nonEmpty) {
           // エラーで遷移
@@ -84,7 +84,7 @@ class CompanyController @Inject()(
           companyService.insertCompany(f.inputCompanyName, f.inputNote, f.inputPlaceId.toInt)
 
           Redirect(routes.CompanyController.index)
-            .flashing(SUCCESS_MSG_KEY -> Messages("success.manage.Company.update"))
+            .flashing(SUCCESS_MSG_KEY -> Messages("success.manage.company.update"))
         }
 
       } else {
@@ -93,7 +93,7 @@ class CompanyController @Inject()(
         var companyList = companyService.selectCompanyByPlaceId(super.getCurrentPlaceId)
         companyList = companyList.filter(_.companyId != f.inputCompanyId.toInt).filter(_.companyName == f.inputCompanyName)
         if (companyList.nonEmpty) {
-          errMsg :+= Messages("error.manage.Company.update.inputCompanyName.duplicate", f.inputCompanyName)
+          errMsg :+= Messages("error.manage.company.update.inputCompanyName.duplicate", f.inputCompanyName)
         }
 
         // 予約情報テーブルに作業車・立馬IDが存在していないか
@@ -155,11 +155,11 @@ class CompanyController @Inject()(
             }
           }
           if (chkFlg == 1) {
-            errMsg :+= Messages("error.manage.Company.update.inputCompanyName.use.noChange", companyNm);
+            errMsg :+= Messages("error.manage.company.update.inputCompanyName.use.noChange", companyNm);
           } else if (chkFlg == 2) {
             if (reqIdentity.level < 3) {
               // 権限がレベル３以下のみ予約情報が有る場合エラーにする
-              errMsg :+= Messages("error.manage.Company.update.inputCompanyName.use.exceed", companyNm);
+              errMsg :+= Messages("error.manage.company.update.inputCompanyName.use.exceed", companyNm);
             }
           }
         }
@@ -172,7 +172,7 @@ class CompanyController @Inject()(
           // DB処理
           companyService.updateCompanyById(f.inputCompanyId.toInt, f.inputCompanyName, f.inputNote)
           Redirect(routes.CompanyController.index)
-            .flashing(SUCCESS_MSG_KEY -> Messages("success.manage.Company.update"))
+            .flashing(SUCCESS_MSG_KEY -> Messages("success.manage.company.update"))
         }
       }
     }
@@ -186,7 +186,7 @@ class CompanyController @Inject()(
     var errMsg = Seq[String]()
     // フォームの準備
     val inputForm = Form(mapping(
-      "deleteCompanyId" -> text.verifying(Messages("error.manage.ItemCar.delete.empty"), {
+      "deleteCompanyId" -> text.verifying(Messages("error.manage.itemCar.delete.empty"), {
         !_.isEmpty
       })
     )(CompanyDeleteForm.apply)(CompanyDeleteForm.unapply))
@@ -259,11 +259,11 @@ class CompanyController @Inject()(
           }
         }
         if (chkFlg == 1) {
-          errMsg :+= Messages("error.manage.Company.delete.inputCompanyName.use.noChange", companyNm);
+          errMsg :+= Messages("error.manage.company.delete.inputCompanyName.use.noChange", companyNm);
         } else if (chkFlg == 2) {
           if (reqIdentity.level < 3) {
             // 権限がレベル３以下のみ予約情報が有る場合エラーにする
-            errMsg :+= Messages("error.manage.Company.delete.inputCompanyName.use.exceed", companyNm);
+            errMsg :+= Messages("error.manage.company.delete.inputCompanyName.use.exceed", companyNm);
           }
         }
       }
@@ -276,7 +276,7 @@ class CompanyController @Inject()(
         companyService.deleteCompanyById(f.deleteCompanyId.toInt)
 
         // リダイレクト
-        Redirect(routes.CompanyController.index).flashing(SUCCESS_MSG_KEY -> Messages("success.manage.Company.delete"))
+        Redirect(routes.CompanyController.index).flashing(SUCCESS_MSG_KEY -> Messages("success.manage.company.delete"))
       }
     }
   }

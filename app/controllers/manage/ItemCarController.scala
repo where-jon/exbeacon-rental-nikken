@@ -58,16 +58,16 @@ class ItemCarController @Inject()(
     val inputForm = Form(mapping(
         "inputPlaceId" -> text
       , "inputCarId" -> text
-      , "inputCarNo" -> text.verifying(Messages("error.manage.ItemCar.update.inputCarNo.empty"), {!_.isEmpty})
-      , "inputCarBtxId" -> text.verifying(Messages("error.manage.ItemCar.update.inputCarBtxId.empty"), {_.matches("^[0-9]+$")})
-                                    .verifying(Messages("error.manage.ItemCar.update.inputCarBtxId.empty"), {inputCarBtxId => inputCarBtxId != "0"})
+      , "inputCarNo" -> text.verifying(Messages("error.manage.itemCar.update.inputCarNo.empty"), {!_.isEmpty})
+      , "inputCarBtxId" -> text.verifying(Messages("error.manage.itemCar.update.inputCarBtxId.empty"), {_.matches("^[0-9]+$")})
+                                    .verifying(Messages("error.manage.itemCar.update.inputCarBtxId.empty"), {inputCarBtxId => inputCarBtxId != "0"})
       , "inputCarKeyBtxIdDsp" -> text
-      , "inputCarKeyBtxId" -> text.verifying(Messages("error.manage.ItemCar.update.inputCarKeyBtxId.empty"), {_.matches("^[0-9]+$")})
-                                       .verifying(Messages("error.manage.ItemCar.update.inputCarKeyBtxId.empty"), {inputCarKeyBtxId => inputCarKeyBtxId != "0"})
+      , "inputCarKeyBtxId" -> text.verifying(Messages("error.manage.itemCar.update.inputCarKeyBtxId.empty"), {_.matches("^[0-9]+$")})
+                                       .verifying(Messages("error.manage.itemCar.update.inputCarKeyBtxId.empty"), {inputCarKeyBtxId => inputCarKeyBtxId != "0"})
       , "inputCarTypeName" -> text
-      , "inputCarTypeId" -> text.verifying(Messages("error.manage.ItemCar.update.inputCarTypeId.empty"), {_.matches("^[0-9]+$")})
+      , "inputCarTypeId" -> text.verifying(Messages("error.manage.itemCar.update.inputCarTypeId.empty"), {_.matches("^[0-9]+$")})
       , "inputCarTypeCategoryId" -> number
-      , "inputCarName" -> text.verifying(Messages("error.manage.ItemCar.update.inputCarName.empty"), {!_.isEmpty})
+      , "inputCarName" -> text.verifying(Messages("error.manage.itemCar.update.inputCarName.empty"), {!_.isEmpty})
       , "inputCarNote" -> text
     )(CarUpdateForm.apply)(CarUpdateForm.unapply))
     // 権限レベルを取得
@@ -88,12 +88,12 @@ class ItemCarController @Inject()(
       }
       // TagIDと鍵TagIDが同じIDを指定していないかチェック[
       if (f.inputCarBtxId.toInt == carKeyBtxId.toInt) {
-        errMsg :+= Messages("error.manage.ItemCar.update.inputCarKey.duplicate", f.inputCarNo)
+        errMsg :+= Messages("error.manage.itemCar.update.inputCarKey.duplicate", f.inputCarNo)
       }
       // 種別存在チェック
       val itemTypeList = itemTypeDAO.selectItemTypeCheck(f.inputCarTypeName, f.inputPlaceId.toInt)
       if (itemTypeList.isEmpty) {
-        errMsg :+= Messages("error.manage.ItemCar.update.NotTypeName", f.inputCarNo)
+        errMsg :+= Messages("error.manage.itemCar.update.NotTypeName", f.inputCarNo)
       }
       if (errMsg.isEmpty == false) {
         // エラーで遷移
@@ -104,23 +104,23 @@ class ItemCarController @Inject()(
           // 作業車・立馬TxビーコンIDが存在しないか
           val chkCarTagIdInf = carDAO.selectCarTagCheck(super.getCurrentPlaceId, None, f.inputCarBtxId.toInt)
           if (chkCarTagIdInf.length > 0) {
-            errMsg :+= Messages("error.manage.ItemCar.update.inputCarBtxId.use", f.inputCarBtxId)
+            errMsg :+= Messages("error.manage.itemCar.update.inputCarBtxId.use", f.inputCarBtxId)
           }
           // その他仮設材管理にも存在してはいけない
           val itemOtherBtxList = itemOtherDAO.selectItemOtherBtxListBtxCheck(super.getCurrentPlaceId, f.inputCarBtxId.toInt)
           if (itemOtherBtxList.length > 0) {
-            errMsg :+= Messages("error.manage.ItemCar.update.inputCarBtxId.useOther", f.inputCarBtxId.toInt)
+            errMsg :+= Messages("error.manage.itemCar.update.inputCarBtxId.useOther", f.inputCarBtxId.toInt)
           }
           if (carKeyBtxId.toInt > 0) {
             // 作業車・立馬鍵TxビーコンIDが存在しないか
             val chkCarTagIdInf = carDAO.selectCarTagCheck(super.getCurrentPlaceId, None, carKeyBtxId.toInt)
             if (chkCarTagIdInf.length > 0) {
-              errMsg :+= Messages("error.manage.ItemCar.update.inputCarKeyBtxId.use", carKeyBtxId)
+              errMsg :+= Messages("error.manage.itemCar.update.inputCarKeyBtxId.use", carKeyBtxId)
             }
             // その他仮設材管理にも存在してはいけない
             val itemOtherBtxList = itemOtherDAO.selectItemOtherBtxListBtxCheck(super.getCurrentPlaceId, carKeyBtxId.toInt)
             if (itemOtherBtxList.length > 0) {
-              errMsg :+= Messages("error.manage.ItemCar.update.inputCarKeyBtxId.useOther", carKeyBtxId.toInt)
+              errMsg :+= Messages("error.manage.itemCar.update.inputCarKeyBtxId.useOther", carKeyBtxId.toInt)
             }
           }
           if (errMsg.isEmpty == false) {
@@ -137,7 +137,7 @@ class ItemCarController @Inject()(
               , f.inputCarNote
               , f.inputPlaceId.toInt)
             Redirect(routes.ItemCarController.index)
-              .flashing(SUCCESS_MSG_KEY -> Messages("success.manage.ItemCar.update"))
+              .flashing(SUCCESS_MSG_KEY -> Messages("success.manage.itemCar.update"))
           }
         } else {
           // 更新の場合 --------------------------
@@ -199,23 +199,23 @@ class ItemCarController @Inject()(
               }
             }
             if (chkFlg == 1) {
-              errMsg :+= Messages("error.manage.ItemCar.update.inputCarIdReserve.use.noChange", f.inputCarId);
+              errMsg :+= Messages("error.manage.itemCar.update.inputCarIdReserve.use.noChange", f.inputCarId);
             } else if (chkFlg == 2) {
               if(reqIdentity.level < 3) {
                 // 権限がレベル３以下のみ過去の予約情報が有る場合エラーにする
-                errMsg :+= Messages("error.manage.ItemCar.update.inputCarIdReserve.use.exceed", f.inputCarId);
+                errMsg :+= Messages("error.manage.itemCar.update.inputCarIdReserve.use.exceed", f.inputCarId);
               }
             }
           }
           // TagIDがその他仮設材管理に存在してはいけない
           val itemOtherBtxList1 = itemOtherDAO.selectItemOtherBtxListBtxCheck(super.getCurrentPlaceId, f.inputCarBtxId.toInt)
           if (itemOtherBtxList1.length > 0) {
-            errMsg :+= Messages("error.manage.ItemCar.update.inputCarBtxId.useOther", f.inputCarBtxId.toInt)
+            errMsg :+= Messages("error.manage.itemCar.update.inputCarBtxId.useOther", f.inputCarBtxId.toInt)
           }
           // 鍵tagIDがその他仮設材管理に存在してはいけない
           val itemOtherBtxList2 = itemOtherDAO.selectItemOtherBtxListBtxCheck(super.getCurrentPlaceId, carKeyBtxId.toInt)
           if (itemOtherBtxList2.length > 0) {
-            errMsg :+= Messages("error.manage.ItemCar.update.inputCarKeyBtxId.useOther", carKeyBtxId.toInt)
+            errMsg :+= Messages("error.manage.itemCar.update.inputCarKeyBtxId.useOther", carKeyBtxId.toInt)
           }
           // 変更前タグ情報
           val preCarInfo = carDAO.selectCarInfo(super.getCurrentPlaceId, "", Option(f.inputCarId.toInt)).last
@@ -240,7 +240,7 @@ class ItemCarController @Inject()(
                     } else {
                       val chkCarTagIdInf = carDAO.selectCarTagCheck(super.getCurrentPlaceId, carId = Option(f.inputCarId.toInt), f.inputCarBtxId.toInt)
                       if (chkCarTagIdInf.length > 0) {
-                        errMsg :+= Messages("error.manage.ItemCar.update.inputCarBtxId.duplicate", btxId._2)
+                        errMsg :+= Messages("error.manage.itemCar.update.inputCarBtxId.duplicate", btxId._2)
                       }
                     }
                   } else {
@@ -250,7 +250,7 @@ class ItemCarController @Inject()(
                     } else {
                       val chkCarTagIdInf = carDAO.selectCarTagCheck(super.getCurrentPlaceId, carId = Option(f.inputCarId.toInt), carKeyBtxId.toInt)
                       if (chkCarTagIdInf.length > 0) {
-                        errMsg :+= Messages("error.manage.ItemCar.update.inputCarKeyBtxId.duplicate", btxId._2)
+                        errMsg :+= Messages("error.manage.itemCar.update.inputCarKeyBtxId.duplicate", btxId._2)
                       }
                     }
                   }
@@ -262,7 +262,7 @@ class ItemCarController @Inject()(
                     } else {
                       val chkCarTagIdInf = carDAO.selectCarTagCheck(super.getCurrentPlaceId, carId = Option(f.inputCarId.toInt), f.inputCarBtxId.toInt)
                       if (chkCarTagIdInf.length > 0) {
-                        errMsg :+= Messages("error.manage.ItemCar.update.inputCarBtxId.duplicate", btxId._2)
+                        errMsg :+= Messages("error.manage.itemCar.update.inputCarBtxId.duplicate", btxId._2)
                       }
                     }
                   }
@@ -289,7 +289,7 @@ class ItemCarController @Inject()(
               , preCarInfo.itemCarKeyBtxId
             )
             Redirect(routes.ItemCarController.index)
-              .flashing(SUCCESS_MSG_KEY -> Messages("success.manage.ItemCar.update"))
+              .flashing(SUCCESS_MSG_KEY -> Messages("success.manage.itemCar.update"))
           }
         }
       }
@@ -303,7 +303,7 @@ class ItemCarController @Inject()(
     // フォームの準備
     var errMsg = Seq[String]()
     val inputForm = Form(mapping(
-      "deleteCarId" -> text.verifying(Messages("error.manage.ItemCar.delete.empty"), {
+      "deleteCarId" -> text.verifying(Messages("error.manage.itemCar.delete.empty"), {
         !_.isEmpty
       })
       ,"deleteCarTypeId" -> text
@@ -376,11 +376,11 @@ class ItemCarController @Inject()(
           }
         }
         if (chkFlg == 1) {
-          errMsg :+= Messages("error.manage.ItemCar.delete.inputCarIdReserve.use.noChange", f.deleteCarId);
+          errMsg :+= Messages("error.manage.itemCar.delete.inputCarIdReserve.use.noChange", f.deleteCarId);
         } else if (chkFlg == 2) {
           if(reqIdentity.level < 3) {
             // 権限がレベル３以下のみ予約情報が有る場合エラーにする
-            errMsg :+= Messages("error.manage.ItemCar.delete.inputCarIdReserve.use.exceed", f.deleteCarId);
+            errMsg :+= Messages("error.manage.itemCar.delete.inputCarIdReserve.use.exceed", f.deleteCarId);
           }
         }
       }
@@ -389,7 +389,7 @@ class ItemCarController @Inject()(
       val carList = carDAO.selectCarInfo(super.getCurrentPlaceId, "", Option(f.deleteCarId.toInt))
       // タグ
       if (carList.length <= 0) {
-        errMsg :+= Messages("error.manage.ItemCar.delete.inputCarId.empty", f.deleteCarId)
+        errMsg :+= Messages("error.manage.itemCar.delete.inputCarId.empty", f.deleteCarId)
       }
       if(errMsg.nonEmpty) {
         // エラーで遷移
@@ -400,7 +400,7 @@ class ItemCarController @Inject()(
         carDAO.delete(f.deleteCarId.toInt, super.getCurrentPlaceId)
         // リダイレクト
         Redirect(routes.ItemCarController.index)
-          .flashing(SUCCESS_MSG_KEY -> Messages("success.manage.ItemCar.delete"))
+          .flashing(SUCCESS_MSG_KEY -> Messages("success.manage.itemCar.delete"))
       }
     }
   }

@@ -12,7 +12,7 @@
 <!doctype html>
 <html lang="ja">
 <head>
-    @templates.htmlHead(title = Messages("lang.manage.ItemCar.title"))
+    @templates.htmlHead(title = Messages("lang.manage.itemCar.title"))
     <link rel="stylesheet" href="@routes.MyAssets.css("manage/itemCar.css")"/>
     <script></script>
 </head>
@@ -34,7 +34,7 @@
             <div class="mainSpace col-xs-10 col-sm-10 col-md-10 col-lg-10">
                 <!-- 画面題字 -->
                 <div class="form-group" style="font-weight:bold;font-size:19px;margin:15px 0px;">
-                    @Messages("lang.manage.ItemCar.page.title")
+                    @Messages("lang.manage.itemCar.page.title")
                 </div>
                 <!-- テーブルのROW -->
                 <div class="row tableRow">
@@ -43,16 +43,16 @@
                             <table class="table table-bordered table-condensed itemTable">
                                 <thead>
                                     <tr class ="hidden">
-                                        <th colspan="7" class="tableTitleTh">@Messages("lang.manage.ItemCar.car.list.header.title")</th>
+                                        <th colspan="7" class="tableTitleTh">@Messages("lang.manage.itemCar.car.list.header.title")</th>
                                     </tr>
                                     <tr>
-                                        <th class="tableTh carIdTh">@Messages("lang.manage.ItemCar.car.list.header.carId")</th>
-                                        <th class="tableTh carTagIdTh">@Messages("lang.manage.ItemCar.car.list.header.carTagId")</th>
-                                        <th class="tableTh carKeyTagIdTh">@Messages("lang.manage.ItemCar.car.list.header.carKeyTagId")</th>
-                                        <th class="tableTh carTypeNameTh">@Messages("lang.manage.ItemCar.car.list.header.carType")</th>
-                                        <th class="tableTh carNameTh">@Messages("lang.manage.ItemCar.car.list.header.carName")</th>
-                                        <th class="tableTh carNoTh">@Messages("lang.manage.ItemCar.car.list.header.carNo")</th>
-                                        <th class="tableTh carNoteTh">@Messages("lang.manage.ItemCar.car.list.header.carNote")</th>
+                                        <th class="tableTh carIdTh">@Messages("lang.manage.itemCar.car.list.header.carId")</th>
+                                        <th class="tableTh carTagIdTh">@Messages("lang.manage.itemCar.car.list.header.carTagId")</th>
+                                        <th class="tableTh carKeyTagIdTh">@Messages("lang.manage.itemCar.car.list.header.carKeyTagId")</th>
+                                        <th class="tableTh carTypeNameTh">@Messages("lang.manage.itemCar.car.list.header.carType")</th>
+                                        <th class="tableTh carNameTh">@Messages("lang.manage.itemCar.car.list.header.carName")</th>
+                                        <th class="tableTh carNoTh">@Messages("lang.manage.itemCar.car.list.header.carNo")</th>
+                                        <th class="tableTh carNoteTh">@Messages("lang.manage.itemCar.car.list.header.carNote")</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -86,13 +86,13 @@
                 <!-- ボタン-->
                 <div class="row tableRow" style="margin-top: 10px;">
                     <div class="text-right col-xs-4 col-sm-4 col-md-4" style="padding:0;">
-                        <a id = "editCarBtn" href="javascript:showInputModal(false);" class="btn link">@Messages("lang.manage.ItemCar.car.button.editCar")</a>
+                        <a id = "editCarBtn" href="javascript:showInputModal(false);" class="btn link">@Messages("lang.manage.itemCar.car.button.editCar")</a>
                     </div>
                     <div class="text-center col-xs-4 col-sm-4 col-md-4" style="padding:0;">
-                        <a href="javascript:showInputModal(true);" class="btn link">@Messages("lang.manage.ItemCar.car.button.addCar")</a>
+                        <a href="javascript:showInputModal(true);" class="btn link">@Messages("lang.manage.itemCar.car.button.addCar")</a>
                     </div>
                     <div class="text-left col-xs-4 col-sm-4 col-md-4" style="padding:0;">
-                        <a href="javascript:showDeleteModal();" class="btn link">@Messages("lang.manage.ItemCar.car.button.deleteCar")</a>
+                        <a href="javascript:showDeleteModal();" class="btn link">@Messages("lang.manage.itemCar.car.button.deleteCar")</a>
                     </div>
                 </div>
             </div>
@@ -110,10 +110,10 @@
                     <input type="hidden" name="inputPlaceId" value="@placeId">
                     <input type="hidden" id="inputCarId" name="inputCarId">
                     <input type="hidden" id="inputCarTypeId" name="inputCarTypeId">
-                    <div class="modal-header" style="">@Messages("lang.manage.ItemCar.carUpdate.popup.name")</div>
+                    <div class="modal-header" style="">@Messages("lang.manage.itemCar.carUpdate.popup.name")</div>
                     <div class="modal-body">
                         <div class="form-group">
-                            <label class="control-label col-xs-5">@Messages("lang.manage.ItemCar.carUpdate.popup.carTypeName")</label>
+                            <label class="control-label col-xs-5">@Messages("lang.manage.itemCar.carUpdate.popup.carTypeName")</label>
                             <select id="car_type" style="height: 30px; width: 120px;">
                                 <!--仮設材種別テーブルから検索フィルタを設置-->
                                 @itemTypeList.zipWithIndex.map { case(itemType, i) =>
@@ -124,32 +124,32 @@
                             <input type="hidden" id="inputCarTypeCategoryId" name="inputCarTypeCategoryId">
                         </div>
                         <div class="form-group">
-                            <label class="control-label col-xs-5">@Messages("lang.manage.ItemCar.carUpdate.popup.carBtxId")</label>
+                            <label class="control-label col-xs-5">@Messages("lang.manage.itemCar.carUpdate.popup.carBtxId")</label>
                             <div class="col-xs-2" style="padding-left: 0px;padding-right: 0px;">
-                                <input type="text" size="3" name="inputCarBtxId" id="inputCarBtxId" class="form-control" placeholder="@Messages("lang.manage.ItemCar.carUpdate.popup.carBtxId.placeholder")">
+                                <input type="text" size="3" name="inputCarBtxId" id="inputCarBtxId" class="form-control" placeholder="@Messages("lang.manage.itemCar.carUpdate.popup.carBtxId.placeholder")">
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="control-label col-xs-5">@Messages("lang.manage.ItemCar.carUpdate.popup.carKeyBtxId")</label>
+                            <label class="control-label col-xs-5">@Messages("lang.manage.itemCar.carUpdate.popup.carKeyBtxId")</label>
                             <div class="col-xs-2" style="padding-left: 0px;padding-right: 0px;">
-                                <input type="text" name="inputCarKeyBtxIdDsp" id="inputCarKeyBtxIdDsp" class="form-control" placeholder="@Messages("lang.manage.ItemCar.carUpdate.popup.carKeyBtxId.placeholder")">
+                                <input type="text" name="inputCarKeyBtxIdDsp" id="inputCarKeyBtxIdDsp" class="form-control" placeholder="@Messages("lang.manage.itemCar.carUpdate.popup.carKeyBtxId.placeholder")">
                                 <input type="hidden" name="inputCarKeyBtxId" id="inputCarKeyBtxId" class="form-control">
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="control-label col-xs-5">@Messages("lang.manage.ItemCar.carUpdate.popup.carName")</label>
+                            <label class="control-label col-xs-5">@Messages("lang.manage.itemCar.carUpdate.popup.carName")</label>
                             <div class="col-xs-5" style="padding-left: 0px;padding-right: 0px;">
-                                <input type="text" name="inputCarName" id="inputCarName" class="form-control" placeholder="@Messages("lang.manage.ItemCar.carUpdate.popup.carName.placeholder")">
+                                <input type="text" name="inputCarName" id="inputCarName" class="form-control" placeholder="@Messages("lang.manage.itemCar.carUpdate.popup.carName.placeholder")">
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="control-label col-xs-5">@Messages("lang.manage.ItemCar.carUpdate.popup.carNo")</label>
+                            <label class="control-label col-xs-5">@Messages("lang.manage.itemCar.carUpdate.popup.carNo")</label>
                             <div class="col-xs-2" style="padding-left: 0px;padding-right: 0px;">
-                                <input type="text" name="inputCarNo" id="inputCarNo" class="form-control" placeholder="@Messages("lang.manage.ItemCar.carUpdate.popup.carNo.placeholder")">
+                                <input type="text" name="inputCarNo" id="inputCarNo" class="form-control" placeholder="@Messages("lang.manage.itemCar.carUpdate.popup.carNo.placeholder")">
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="control-label col-xs-5">@Messages("lang.manage.ItemCar.carUpdate.popup.carNote")</label>
+                            <label class="control-label col-xs-5">@Messages("lang.manage.itemCar.carUpdate.popup.carNote")</label>
                             <div class="col-xs-2" style="padding-left: 0px;padding-right: 0px;">
                                 <input type="text" name="inputCarNote" id="inputCarNote" class="form-control">
                             </div>
@@ -176,10 +176,10 @@
                     @CSRF.formField
                     <input type="hidden" id="deleteCarId" name="deleteCarId">
                     <input type="hidden" id="deleteCarTypeId" name="deleteCarTypeId">
-                    <div class="modal-header">@Messages("lang.manage.ItemCar.carDelete.popup.title")</div>
+                    <div class="modal-header">@Messages("lang.manage.itemCar.carDelete.popup.title")</div>
                     <div class="modal-body">
                         <div class="text-center">
-                            @Html(Messages("lang.manage.ItemCar.carDelete.popup.message").replaceAll("(\r\n|\r|\n)","<br>"))
+                            @Html(Messages("lang.manage.itemCar.carDelete.popup.message").replaceAll("(\r\n|\r|\n)","<br>"))
                         </div>
                     </div>
                     <div class="modal-footer">

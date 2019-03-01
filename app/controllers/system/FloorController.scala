@@ -67,13 +67,13 @@ class FloorController @Inject()(config: Configuration
           floorDAO.insert(f.inputFloorName,f.inputDisplayOrder.toInt,f.activeFlg,placeId)
           // 成功で遷移
           Redirect(routes.FloorController.index)
-            .flashing(SUCCESS_MSG_KEY -> Messages("success.cms.Floor.floorUpdate"))
+            .flashing(SUCCESS_MSG_KEY -> Messages("success.system.floor.floorUpdate"))
 
         }else{  // フロア更新の場合 --------------------------
           // DB処理
           floorDAO.update(f.inputFloorId.toInt,f.inputFloorName,f.inputDisplayOrder.toInt,f.activeFlg,placeId)
           Redirect(routes.FloorController.index)
-            .flashing(SUCCESS_MSG_KEY -> Messages("success.cms.Floor.floorUpdate"))
+            .flashing(SUCCESS_MSG_KEY -> Messages("success.system.floor.floorUpdate"))
         }
       }
     }
@@ -82,7 +82,7 @@ class FloorController @Inject()(config: Configuration
   def floorDelete = SecuredAction { implicit request =>
     // フォームの準備
     val deleteForm = Form(mapping(
-        "deleteFloorId" -> text.verifying(Messages("error.cms.Floor.floorUpdate.delete.empty"), {!_.isEmpty})
+        "deleteFloorId" -> text.verifying(Messages("error.system.floor.floorUpdate.delete.empty"), {!_.isEmpty})
     )(FloorDeleteForm.apply)(FloorDeleteForm.unapply))
 
     // フォームの取得
@@ -103,7 +103,7 @@ class FloorController @Inject()(config: Configuration
       }else{  // 正常の場合削除を行う
        floorDAO.deleteById(vDeleteFloorId) // 削除処理
         Redirect(routes.FloorController.index)
-          .flashing(SUCCESS_MSG_KEY -> Messages("success.cms.Floor.floorDelete"))
+          .flashing(SUCCESS_MSG_KEY -> Messages("success.system.floor.floorDelete"))
       }
     }
   }
