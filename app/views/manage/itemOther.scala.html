@@ -12,8 +12,8 @@ placeId: Int
 <!doctype html>
 <html lang="ja">
 <head>
-    @templates.htmlHead(title = Messages("lang.cms.itemOtherManage.title"))
-    <link rel="stylesheet" href="@routes.MyAssets.css("manage/itemOtherManage.css")"/>
+    @templates.htmlHead(title = Messages("lang.manage.itemOther.title"))
+    <link rel="stylesheet" href="@routes.MyAssets.css("manage/itemOther.css")"/>
     <script></script>
 </head>
 <body>
@@ -34,7 +34,7 @@ placeId: Int
             <div class="mainSpace col-xs-10 col-sm-10 col-md-10 col-lg-10">
                 <!-- 画面題字 -->
                 <div class="form-group" style="font-weight:bold;font-size:19px;margin:15px 0px;">
-                    @Messages("lang.cms.itemOtherManage.page.title")
+                    @Messages("lang.manage.itemOther.page.title")
                 </div>
                 <!-- テーブルのROW -->
                 <div class="row tableRow">
@@ -43,15 +43,15 @@ placeId: Int
                             <table class="table table-bordered table-condensed itemTable">
                                 <thead>
                                     <tr class ="hidden">
-                                        <th colspan="6" class="tableTitleTh">@Messages("lang.cms.itemOtherManage.item.list.header.title")</th>
+                                        <th colspan="6" class="tableTitleTh">@Messages("lang.manage.itemOther.item.list.header.title")</th>
                                     </tr>
                                     <tr>
-                                        <th class="tableTh itemOtherIdTh">@Messages("lang.cms.itemOtherManage.item.list.header.otherId")</th>
-                                        <th class="tableTh noTh text-center">@Messages("lang.cms.itemOtherManage.item.list.header.tagId")</th>
-                                        <th class="tableTh itemTypeTh">@Messages("lang.cms.itemOtherManage.item.list.header.type")</th>
-                                        <th class="tableTh itemNameTh">@Messages("lang.cms.itemOtherManage.item.list.header.name")</th>
-                                        <th class="tableTh itemOtherNoTh">@Messages("lang.cms.itemOtherManage.item.list.header.otherNo")</th>
-                                        <th class="tableTh itemOtherNoteTh">@Messages("lang.cms.itemOtherManage.item.list.header.otherNote")</th>
+                                        <th class="tableTh itemOtherIdTh">@Messages("lang.manage.itemOther.item.list.header.otherId")</th>
+                                        <th class="tableTh noTh text-center">@Messages("lang.manage.itemOther.item.list.header.tagId")</th>
+                                        <th class="tableTh itemTypeTh">@Messages("lang.manage.itemOther.item.list.header.type")</th>
+                                        <th class="tableTh itemNameTh">@Messages("lang.manage.itemOther.item.list.header.name")</th>
+                                        <th class="tableTh itemOtherNoTh">@Messages("lang.manage.itemOther.item.list.header.otherNo")</th>
+                                        <th class="tableTh itemOtherNoteTh">@Messages("lang.manage.itemOther.item.list.header.otherNote")</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -79,33 +79,33 @@ placeId: Int
                 <!-- ボタン-->
                 <div class="row tableRow" style="margin-top: 10px;">
                     <div class="text-right col-xs-4 col-sm-4 col-md-4" style="padding:0;">
-                        <a href="javascript:showInputModal(false);" class="btn link">@Messages("lang.cms.itemOtherManage.item.button.editItem")</a>
+                        <a href="javascript:showInputModal(false);" class="btn link">@Messages("lang.manage.itemOther.item.button.editItem")</a>
                     </div>
                     <div class="text-center col-xs-4 col-sm-4 col-md-4" style="padding:0;">
-                        <a href="javascript:showInputModal(true);" class="btn link">@Messages("lang.cms.itemOtherManage.item.button.addItem")</a>
+                        <a href="javascript:showInputModal(true);" class="btn link">@Messages("lang.manage.itemOther.item.button.addItem")</a>
                     </div>
                     <div class="text-left col-xs-4 col-sm-4 col-md-4" style="padding:0;">
-                        <a href="javascript:showDeleteModal();" class="btn link">@Messages("lang.cms.itemOtherManage.item.button.deleteItem")</a>
+                        <a href="javascript:showDeleteModal();" class="btn link">@Messages("lang.manage.itemOther.item.button.deleteItem")</a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <script type="text/javascript" src="@routes.MyAssets.js("manage/itemOtherManage.js")"></script>
+    <script type="text/javascript" src="@routes.MyAssets.js("manage/itemOther.js")"></script>
     <script></script>
 
     <!-- 更新モーダル画面 -->
     <div class="modal" id="inputModal" tabindex="-1" role="dialog" aria-labelledby="InputModalLabel" aria-hidden="true" data-show="true" data-keyboard="false" data-backdrop="static">
         <div class="modal-dialog">
             <div class="modal-content">
-                <form id="itemForm" name="itemForm" enctype="multipart/form-data" class="form-horizontal" method="post" action="@controllers.manage.routes.ItemOtherManage.update.path">
+                <form id="itemForm" name="itemForm" enctype="multipart/form-data" class="form-horizontal" method="post" action="@controllers.manage.routes.ItemOtherController.update.path">
                     @CSRF.formField
                     <input type="hidden" name="inputPlaceId" value="@placeId">
                     <input type="hidden" id="inputItemOtherId" name="inputItemOtherId">
                     <input type="hidden" id="inputItemTypeId" name="inputItemTypeId">
-                    <div class="modal-header" style="">@Messages("lang.cms.itemOtherManage.itemUpdate.popup.title")</div>
+                    <div class="modal-header" style="">@Messages("lang.manage.itemOther.itemUpdate.popup.title")</div>
                     <div class="form-group" style="margin-top: 5px; margin-bottom: 5px;">
-                        <label class="control-label col-xs-4">@Messages("lang.cms.itemOtherManage.itemUpdate.popup.type")</label>
+                        <label class="control-label col-xs-4">@Messages("lang.manage.itemOther.itemUpdate.popup.type")</label>
                         <select id="other_type" style="height: 30px; width: 220px;">
                             <!--仮設材種別テーブルから検索フィルタを設置-->
                             @itemTypeList.zipWithIndex.map { case(itemType, name) =>
@@ -115,25 +115,25 @@ placeId: Int
                         <input class="hidden form-control input-sm" type="text" id="inputItemTypeName" name="inputItemTypeName" value="@ITEM_TYPE_FILTER">
                     </div>
                     <div class="form-group" style="margin-bottom: 5px;">
-                        <label class="control-label col-xs-4">@Messages("lang.cms.itemOtherManage.itemUpdate.popup.tagId")</label>
+                        <label class="control-label col-xs-4">@Messages("lang.manage.itemOther.itemUpdate.popup.tagId")</label>
                         <div class="col-xs-3" style="padding-left: 0px;padding-right: 0px; margin-right: 10px;">
-                            <input type="text" id="inputItemOtherBtxId" name="inputItemOtherBtxId" class="form-control" placeholder="@Messages("lang.cms.itemOtherManage.itemUpdate.popup.tagId.placeholder")">
+                            <input type="text" id="inputItemOtherBtxId" name="inputItemOtherBtxId" class="form-control" placeholder="@Messages("lang.manage.itemOther.itemUpdate.popup.tagId.placeholder")">
                         </div>
                     </div>
                     <div class="form-group" style="margin-bottom: 5px;">
-                        <label class="control-label col-xs-4">@Messages("lang.cms.itemOtherManage.itemUpdate.popup.name")</label>
+                        <label class="control-label col-xs-4">@Messages("lang.manage.itemOther.itemUpdate.popup.name")</label>
                         <div class="col-xs-3" style="padding-left: 0px;padding-right: 0px; margin-right: 10px;">
-                            <input type="text" id="inputItemOtherName" name="inputItemOtherName" class="form-control" placeholder="@Messages("lang.cms.itemOtherManage.itemUpdate.popup.name.placeholder")">
+                            <input type="text" id="inputItemOtherName" name="inputItemOtherName" class="form-control" placeholder="@Messages("lang.manage.itemOther.itemUpdate.popup.name.placeholder")">
                         </div>
                     </div>
                     <div class="form-group" style="margin-bottom: 5px;">
-                        <label class="control-label col-xs-4">@Messages("lang.cms.itemOtherManage.itemUpdate.popup.No")</label>
+                        <label class="control-label col-xs-4">@Messages("lang.manage.itemOther.itemUpdate.popup.No")</label>
                         <div class="col-xs-3" style="padding-left: 0px;padding-right: 0px;margin-right: 10px;">
-                            <input type="text" id="inputItemOtherNo" name="inputItemOtherNo" class="form-control" placeholder="@Messages("lang.cms.itemOtherManage.itemUpdate.popup.No.placeholder")">
+                            <input type="text" id="inputItemOtherNo" name="inputItemOtherNo" class="form-control" placeholder="@Messages("lang.manage.itemOther.itemUpdate.popup.No.placeholder")">
                         </div>
                     </div>
                     <div class="form-group" style="margin-bottom: 5px;">
-                        <label class="control-label col-xs-4">@Messages("lang.cms.itemOtherManage.itemUpdate.popup.Note")</label>
+                        <label class="control-label col-xs-4">@Messages("lang.manage.itemOther.itemUpdate.popup.Note")</label>
                         <div class="col-xs-3" style="padding-left: 0px;padding-right: 0px;margin-right: 10px;">
                             <input type="text" id="inputItemNote" name="inputItemNote" class="form-control">
                         </div>
@@ -155,14 +155,14 @@ placeId: Int
     <div class="modal" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true" data-show="true" data-keyboard="false" data-backdrop="static">
         <div class="modal-dialog">
             <div class="modal-content">
-                <form id="deleteForm" name="deleteForm" class="form-horizontal" method="post" enctype="multipart/form-data" action="@controllers.manage.routes.ItemOtherManage.delete.path">
+                <form id="deleteForm" name="deleteForm" class="form-horizontal" method="post" enctype="multipart/form-data" action="@controllers.manage.routes.ItemOtherController.delete.path">
                     @CSRF.formField
                     <input type="hidden" id="deleteItemOtherId" name="deleteItemOtherId">
                     <input type="hidden" id="deleteItemTypeId" name="deleteItemTypeId">
-                    <div class="modal-header">@Messages("lang.cms.itemOtherManage.itemDelete.popup.title")</div>
+                    <div class="modal-header">@Messages("lang.manage.itemOther.itemDelete.popup.title")</div>
                     <div class="modal-body">
                         <div class="text-center">
-                            @Html(Messages("lang.cms.itemOtherManage.itemDelete.popup.message").replaceAll("(\r\n|\r|\n)","<br>"))
+                            @Html(Messages("lang.manage.itemOther.itemDelete.popup.message").replaceAll("(\r\n|\r|\n)","<br>"))
                         </div>
                     </div>
                     <div class="modal-footer">

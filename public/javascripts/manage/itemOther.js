@@ -49,14 +49,14 @@ function showDeleteModal(){
 function deleteItemOtherId(){
     if($('.rowHoverSelectedColor').length > 0){
         var itemOtherId = $('.rowHoverSelectedColor').attr('data-itemOtherId');
-        $('#deleteItemOtherId').val(itemOtherId)
-        $('#deleteForm').submit()
+        $('#deleteItemOtherId').val(itemOtherId);
+        $('#deleteForm').submit();
     }
 }
 
 // 表示ボタンをクリックする時に発生するイベント
 function viewBtnEvent(){
-    var viewBtnElement = document.getElementById("itemUpdateFooter")
+    var viewBtnElement = document.getElementById("itemUpdateFooter");
         viewBtnElement.addEventListener('click', function(event) {
             // itemTypeId結果をfromへ設定
             var itemTypeFilterResult = $('#other_type option:selected').val();
@@ -65,7 +65,7 @@ function viewBtnEvent(){
             $('#inputItemTypeName').val(itemTypeNameFilterResult);
         });
 
-    var viewBtnElement = document.getElementById("itemRegisterFooter")
+    var viewBtnElement = document.getElementById("itemRegisterFooter");
         viewBtnElement.addEventListener('click', function(event) {
             // itemTypeId結果をfromへ設定
             var itemTypeFilterResult = $('#other_type option:selected').val();

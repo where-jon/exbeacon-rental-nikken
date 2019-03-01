@@ -3,15 +3,14 @@ package controllers.manage
 import java.text.SimpleDateFormat
 import java.util.{Calendar, Date, Locale}
 
-import javax.inject.{Inject, Singleton}
 import com.mohiva.play.silhouette.api.Silhouette
-import controllers.BaseController
-import controllers.site
-import models.{ItemCategoryEnum, ItemType}
+import controllers.{BaseController, site}
+import javax.inject.{Inject, Singleton}
+import models.ItemCategoryEnum
+import models.manage.{ItemDeleteForm, ItemUpdateForm}
 import play.api._
 import play.api.data.Form
-import play.api.data.Forms._
-import play.api.data.Forms.mapping
+import play.api.data.Forms.{mapping, _}
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import utils.silhouette.MyEnv
 
@@ -21,24 +20,8 @@ import utils.silhouette.MyEnv
   *
   *
   */
-// フォーム定義
-case class ItemDeleteForm(
-  deleteItemOtherId: String
-  , deleteItemTypeId: String
-)
-case class ItemUpdateForm(
-    inputPlaceId: String
-  , inputItemOtherId: String
-  , inputItemOtherBtxId: String
-  , inputItemOtherNo: String
-  , inputItemOtherName: String
-  , inputItemNote: String
-  , inputItemTypeName: String
-  , inputItemTypeId: String
-)
-
 @Singleton
-class ItemOtherManage @Inject()(
+class ItemOtherController @Inject()(
   config: Configuration
   , val silhouette: Silhouette[MyEnv]
   , val messagesApi: MessagesApi
@@ -63,7 +46,7 @@ class ItemOtherManage @Inject()(
 
       // その他仮設材情報
       val itemOtherList = itemOtherDAO.selectOtherMasterInfo(placeId)
-      Ok(views.html.manage.itemOtherManage(ITEM_TYPE_FILTER, ITEM_TYPE, itemOtherList, itemTypeList, placeId))
+      Ok(views.html.manage.itemOther(ITEM_TYPE_FILTER, ITEM_TYPE, itemOtherList, itemTypeList, placeId))
     }else {
       Redirect(site.routes.ItemCarMaster.index)
     }
@@ -89,7 +72,7 @@ class ItemOtherManage @Inject()(
     val form = inputForm.bindFromRequest
     if (form.hasErrors){
       // エラーでリダイレクト遷移
-      Redirect(routes.ItemOtherManage.index()).flashing(ERROR_MSG_KEY -> form.errors.map(_.message).mkString(HTML_BR))
+      Redirect(routes.ItemOtherController.index()).flashing(ERROR_MSG_KEY -> form.errors.map(_.message).mkString(HTML_BR))
     }else{
       var errMsg = Seq[String]()
       val f = form.get
@@ -112,7 +95,7 @@ class ItemOtherManage @Inject()(
         }
         if(errMsg.nonEmpty){
           // エラーで遷移
-          Redirect(routes.ItemOtherManage.index).flashing(ERROR_MSG_KEY -> errMsg.mkString(HTML_BR))
+          Redirect(routes.ItemOtherController.index).flashing(ERROR_MSG_KEY -> errMsg.mkString(HTML_BR))
         } else {
           var sss: Int = 0
           sss = sss + 1
@@ -124,7 +107,7 @@ class ItemOtherManage @Inject()(
                             f.inputItemNote,
                             f.inputItemTypeId.toInt,
                             super.getCurrentPlaceId)
-          Redirect(routes.ItemOtherManage.index)
+          Redirect(routes.ItemOtherController.index)
             .flashing(SUCCESS_MSG_KEY -> Messages("success.cms.ItemOtherManage.update"))
         }
       } else {
@@ -224,7 +207,7 @@ class ItemOtherManage @Inject()(
         }
         if(errMsg.nonEmpty){
           // エラーで遷移
-          Redirect(routes.ItemOtherManage.index)
+          Redirect(routes.ItemOtherController.index)
             .flashing(ERROR_MSG_KEY -> errMsg.mkString(HTML_BR))
         }else{
           // 更新の実行
@@ -237,7 +220,7 @@ class ItemOtherManage @Inject()(
                               f.inputItemTypeId.toInt,
                               super.getCurrentPlaceId)
           // リダイレクト
-          Redirect(routes.ItemOtherManage.index)
+          Redirect(routes.ItemOtherController.index)
             .flashing(SUCCESS_MSG_KEY -> Messages("success.cms.ItemOtherManage.update"))
         }
       }
@@ -263,7 +246,7 @@ class ItemOtherManage @Inject()(
       // エラーメッセージ
       val errMsg = form.errors.map(_.message).mkString(HTML_BR)
       // リダイレクトで画面遷移
-      Redirect(routes.ItemOtherManage.index).flashing(ERROR_MSG_KEY -> errMsg)
+      Redirect(routes.ItemOtherController.index).flashing(ERROR_MSG_KEY -> errMsg)
     } else {
       val f = form.get
 
@@ -335,13 +318,13 @@ class ItemOtherManage @Inject()(
 
       if(errMsg.nonEmpty){
         // エラーで遷移
-        Redirect(routes.ItemOtherManage.index)
+        Redirect(routes.ItemOtherController.index)
           .flashing(ERROR_MSG_KEY -> errMsg.mkString(HTML_BR))
       }else{
         // 削除
         itemOtherDAO.delete(f.deleteItemOtherId.toInt, super.getCurrentPlaceId)
         // リダイレクト
-        Redirect(routes.ItemOtherManage.index)
+        Redirect(routes.ItemOtherController.index)
           .flashing(SUCCESS_MSG_KEY -> Messages("success.cms.ItemOtherManage.delete"))
       }
     }
