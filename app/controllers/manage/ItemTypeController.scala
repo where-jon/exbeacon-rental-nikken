@@ -38,7 +38,7 @@ class ItemTypeController @Inject()(config: Configuration
                               , val silhouette: Silhouette[MyEnv]
                               , val messagesApi: MessagesApi
                               , itemTypeDAO: models.ItemTypeDAO
-                              , carDAO: models.manage.itemCarDAO
+                              , carDAO: models.manage.ItemCarDAO
                               , itemOtherDAO: models.itemOtherDAO
                               , reserveMasterDAO: models.site.ReserveMasterDAO
                                ) extends BaseController with I18nSupport {

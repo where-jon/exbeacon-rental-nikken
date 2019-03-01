@@ -33,7 +33,7 @@ case class CReserveData(
 class BeaconService @Inject() (config: Configuration,
   ws: WSClient
   , val messagesApi: MessagesApi
-  , carDAO: models.manage.itemCarDAO
+  , carDAO: models.manage.ItemCarDAO
   ,exbDao:models.system.ExbDAO
   ,otherDAO: models.itemOtherDAO
   ,placeDAO: models.placeDAO

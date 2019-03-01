@@ -31,7 +31,7 @@ case class CancelItem(
 class ItemCarCancel @Inject()(config: Configuration
 , val silhouette: Silhouette[MyEnv]
 , val messagesApi: MessagesApi
-, carDAO: models.manage.itemCarDAO
+, carDAO: models.manage.ItemCarDAO
 , companyDAO: models.manage.companyDAO
 , beaconService: BeaconService
 , floorDAO: models.system.floorDAO

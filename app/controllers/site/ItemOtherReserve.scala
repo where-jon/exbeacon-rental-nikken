@@ -27,7 +27,7 @@ import utils.silhouette.MyEnv
 class ItemOtherReserve @Inject()(config: Configuration
   , val silhouette: Silhouette[MyEnv]
   , val messagesApi: MessagesApi
-  , carDAO: models.manage.itemCarDAO
+  , carDAO: models.manage.ItemCarDAO
   , otherDAO: models.itemOtherDAO
   , companyDAO: models.manage.companyDAO
   , beaconService: BeaconService

@@ -169,7 +169,7 @@ case class ItemCarData(
 )
 
 @javax.inject.Singleton
-class itemCarDAO @Inject()(dbapi: DBApi) {
+class ItemCarDAO @Inject()(dbapi: DBApi) {
 
   private val db = dbapi.database("default")
 
