@@ -19,7 +19,3 @@ case class ItemUpdateForm(
   , inputItemTypeId: String
 )
 
-@javax.inject.Singleton
-class ItemOtherDAO @Inject()(dbapi: DBApi) {
-}
-

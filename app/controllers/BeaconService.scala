@@ -35,7 +35,7 @@ class BeaconService @Inject() (config: Configuration,
   , val messagesApi: MessagesApi
   , carDAO: models.manage.ItemCarDAO
   ,exbDao:models.system.ExbDAO
-  ,otherDAO: models.itemOtherDAO
+  ,otherDAO: models.ItemOtherDAO
   ,placeDAO: models.placeDAO
   ,txHelper: models.TxStatusHelper
   ) extends Controller with I18nSupport{

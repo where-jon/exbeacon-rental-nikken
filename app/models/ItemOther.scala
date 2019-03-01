@@ -114,7 +114,7 @@ case class ItemTypeSerect(
 )
 
 @javax.inject.Singleton
-class itemOtherDAO @Inject()(dbapi: DBApi) {
+class ItemOtherDAO @Inject()(dbapi: DBApi) {
 
   private val db = dbapi.database("default")
 

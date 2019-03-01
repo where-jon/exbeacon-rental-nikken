@@ -25,7 +25,7 @@ class ItemOtherController @Inject()(
   config: Configuration
   , val silhouette: Silhouette[MyEnv]
   , val messagesApi: MessagesApi
-  , itemOtherDAO: models.itemOtherDAO
+  , itemOtherDAO: models.ItemOtherDAO
   , itemDAO: models.itemDAO
   , itemTypeDAO:models.ItemTypeDAO
   , carDAO: models.manage.ItemCarDAO

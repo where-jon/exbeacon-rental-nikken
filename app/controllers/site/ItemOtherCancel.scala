@@ -23,7 +23,7 @@ import utils.silhouette.MyEnv
 class ItemOtherCancel @Inject()(config: Configuration
 , val silhouette: Silhouette[MyEnv]
 , val messagesApi: MessagesApi
-, otherDAO: models.itemOtherDAO
+, otherDAO: models.ItemOtherDAO
 , companyDAO: models.manage.CompanyDAO
 , beaconService: BeaconService
 , floorDAO: models.system.floorDAO

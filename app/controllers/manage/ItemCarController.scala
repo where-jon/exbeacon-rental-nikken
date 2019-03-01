@@ -27,7 +27,7 @@ class ItemCarController @Inject()(
   , carDAO: models.manage.ItemCarDAO
   , exbDAO: models.system.ExbDAO
   , itemTypeDAO: models.ItemTypeDAO
-  , itemOtherDAO: models.itemOtherDAO
+  , itemOtherDAO: models.ItemOtherDAO
 ) extends BaseController with I18nSupport {
 
   var ITEM_TYPE_FILTER = 0;
