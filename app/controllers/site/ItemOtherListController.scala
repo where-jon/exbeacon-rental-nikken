@@ -21,7 +21,7 @@ import utils.silhouette.MyEnv
 
 
 @Singleton
-class ItemOtherMaster @Inject()(config: Configuration
+class ItemOtherListController @Inject()(config: Configuration
 , val silhouette: Silhouette[MyEnv]
 , val messagesApi: MessagesApi
 , otherDAO: models.manage.ItemOtherDAO

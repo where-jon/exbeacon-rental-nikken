@@ -28,7 +28,7 @@ case class CancelItem(
   */
 
 @Singleton
-class ItemCarCancel @Inject()(config: Configuration
+class CancelCarController @Inject()(config: Configuration
 , val silhouette: Silhouette[MyEnv]
 , val messagesApi: MessagesApi
 , carDAO: models.manage.ItemCarDAO
@@ -117,7 +117,7 @@ class ItemCarCancel @Inject()(config: Configuration
     //val carFormData = itemCarForm.bindFromRequest.get
     itemCarCancelForm.bindFromRequest.fold(
       formWithErrors =>
-      Redirect(routes.ItemCarCancel.index())
+      Redirect(routes.CancelCarController.index())
           .flashing(ERROR_MSG_KEY -> Messages(formWithErrors.errors.map(_.message +"<br>").mkString("\n"))),
 
       ItemCarReserveData => {
@@ -140,10 +140,10 @@ class ItemCarCancel @Inject()(config: Configuration
           if(vCancelCheck == "OK"){ //　現在時刻から予約取消可能かを判定
             val result = carDAO.cancelItemCar(setData)
             if (result == "success") {
-              Redirect(routes.ItemCarCancel.index())
+              Redirect(routes.CancelCarController.index())
                 .flashing(SUCCESS_MSG_KEY -> Messages("success.site.carCancel.cancel"))
             }else {
-              Redirect(routes.ItemCarCancel.index())
+              Redirect(routes.CancelCarController.index())
                 .flashing(ERROR_MSG_KEY -> Messages("error.site.carCancel.cancel"))
             }
           }else{  // 現在時刻から予約取消可能かを判定でエラーの場合
@@ -152,20 +152,20 @@ class ItemCarCancel @Inject()(config: Configuration
                 // 過去の予約だけどシステム権限
                 val result = carDAO.cancelItemCar(setData)
                 if (result == "success") {
-                  Redirect(routes.ItemCarCancel.index())
+                  Redirect(routes.CancelCarController.index())
                     .flashing(SUCCESS_MSG_KEY -> Messages("success.site.carCancel.cancel"))
                 }else {
-                  Redirect(routes.ItemCarCancel.index())
+                  Redirect(routes.CancelCarController.index())
                     .flashing(ERROR_MSG_KEY -> Messages("error.site.carCancel.cancel"))
                 }
               }
               else{
-                Redirect(routes.ItemCarCancel.index())
+                Redirect(routes.CancelCarController.index())
                   .flashing(ERROR_MSG_KEY -> Messages(vCancelCheck))
               }
           }
         }else{
-          Redirect(routes.ItemCarCancel.index())
+          Redirect(routes.CancelCarController.index())
             .flashing(ERROR_MSG_KEY -> Messages("error.site.carCancel.noselect"))
         }
       }
@@ -203,7 +203,7 @@ class ItemCarCancel @Inject()(config: Configuration
     }
 
 
-    Ok(views.html.site.itemCarCancel(ITEM_TYPE_FILTER,COMPANY_NAME_FILTER,WORK_TYPE_FILTER,RESERVE_DATE
+    Ok(views.html.site.cancelCar(ITEM_TYPE_FILTER,COMPANY_NAME_FILTER,WORK_TYPE_FILTER,RESERVE_DATE
       ,carListApi,itemTypeList,companyNameList,floorNameList,workTypeList,WORK_TYPE,RESERVE_MAX_COUNT))
   }
 
@@ -219,7 +219,7 @@ class ItemCarCancel @Inject()(config: Configuration
       val dbDatas = carDAO.selectCarMasterCancelInitDsp(placeId,itemIdList)
       val carListApi = beaconService.getItemCarBeaconPosition(dbDatas,true,placeId)
       if(carListApi!=null){
-        Ok(views.html.site.itemCarCancel(ITEM_TYPE_FILTER,COMPANY_NAME_FILTER,WORK_TYPE_FILTER,RESERVE_DATE
+        Ok(views.html.site.cancelCar(ITEM_TYPE_FILTER,COMPANY_NAME_FILTER,WORK_TYPE_FILTER,RESERVE_DATE
           ,carListApi,itemTypeList,companyNameList,floorNameList,workTypeList,WORK_TYPE,RESERVE_MAX_COUNT))
       }else{
         // apiと登録データが違う場合

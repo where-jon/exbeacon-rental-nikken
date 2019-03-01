@@ -74,7 +74,7 @@ function btnEvent(){
             var inputDate = document.getElementById("inputDate")
             inputDate.value = gDatePicker.startSqlTime
 
-            dbExecuteManager("../site/itemCarCancel/cancel")
+            dbExecuteManager("../site/cancelCar/cancel")
         }
     });
 
@@ -143,7 +143,7 @@ function btnEvent(){
         // inputDate結果をfromへ設定
         var inputDate = document.getElementById("inputDate")
         inputDate.value = gDatePicker.startSqlTime
-        dbExecuteManager("../site/itemCarCancel")
+        dbExecuteManager("../site/cancelCar")
 
     });
 

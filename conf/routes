@@ -98,6 +98,15 @@ GET         /site/reserveCar                         controllers.site.ReserveCar
 POST        /site/reserveCar                         controllers.site.ReserveCarController.search
 POST        /site/reserveCar/reserve                 controllers.site.ReserveCarController.reserve
 
+# 作業車・立馬予約取消
+GET         /site/cancelCar                             controllers.site.CancelCarController.index
+POST        /site/cancelCar                             controllers.site.CancelCarController.search
+POST        /site/cancelCar/cancel                      controllers.site.CancelCarController.cancel
+
+# その他仮設材一覧
+GET         /site/itemOtherMaster                           controllers.site.ItemOtherListController.index
+POST        /site/itemOtherMaster                           controllers.site.ItemOtherListController.search
+
 # 未検出の仮設材
 GET         /site/unDetected                                controllers.site.UnDetectedController.index
 POST        /site/unDetected                                controllers.site.UnDetectedController.search
@@ -134,16 +143,6 @@ GET         /analysis/unDetectedApi                         controllers.errors.U
 GET         /site/itemCarReserve                            controllers.site.ItemCarReserve.index
 POST        /site/itemCarReserve                            controllers.site.ItemCarReserve.search
 POST        /site/itemCarReserve/reserve                    controllers.site.ItemCarReserve.reserve
-
-# 作業車・立馬予約取消
-GET         /site/itemCarCancel                             controllers.site.ItemCarCancel.index
-POST        /site/itemCarCancel                             controllers.site.ItemCarCancel.search
-POST        /site/itemCarCancel/cancel                      controllers.site.ItemCarCancel.cancel
-
-
-# その他仮設材一覧
-GET         /site/itemOtherMaster                           controllers.site.ItemOtherMaster.index
-POST        /site/itemOtherMaster                           controllers.site.ItemOtherMaster.search
 
 # その他仮設材予約
 GET         /site/itemOtherReserve                          controllers.site.ItemOtherReserve.index
