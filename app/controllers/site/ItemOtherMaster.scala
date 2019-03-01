@@ -4,7 +4,7 @@ import com.mohiva.play.silhouette.api.Silhouette
 import controllers.{BaseController, BeaconService, errors}
 import javax.inject.{Inject, Singleton}
 import models._
-import models.manage.{Company, ItemCarData}
+import models.manage.{Company, ItemCarData, OtherViewer}
 import models.system.Floor
 import play.api._
 import play.api.data.Form
@@ -24,7 +24,7 @@ import utils.silhouette.MyEnv
 class ItemOtherMaster @Inject()(config: Configuration
 , val silhouette: Silhouette[MyEnv]
 , val messagesApi: MessagesApi
-, otherDAO: models.ItemOtherDAO
+, otherDAO: models.manage.ItemOtherDAO
 , companyDAO: models.manage.CompanyDAO
 , beaconService: BeaconService
 , floorDAO: models.system.floorDAO

@@ -8,7 +8,7 @@ import java.util.{Calendar, Date, Locale}
 
 import akka.util.Timeout
 import javax.inject.Inject
-import models.manage.{CarReserveViewer, CarViewer}
+import models.manage.{CarReserveViewer, CarViewer, OtherViewer}
 import models.{beaconPosition, _}
 import play.api.Configuration
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
@@ -35,7 +35,7 @@ class BeaconService @Inject() (config: Configuration,
   , val messagesApi: MessagesApi
   , carDAO: models.manage.ItemCarDAO
   ,exbDao:models.system.ExbDAO
-  ,otherDAO: models.ItemOtherDAO
+  ,otherDAO: models.manage.ItemOtherDAO
   ,placeDAO: models.placeDAO
   ,txHelper: models.TxStatusHelper
   ) extends Controller with I18nSupport{

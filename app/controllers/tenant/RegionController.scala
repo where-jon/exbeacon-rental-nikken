@@ -29,7 +29,7 @@ class RegionController @Inject() (
                                    userService: UserService,
                                    companyDAO: models.manage.CompanyDAO,
                                    itemTypeDAO: models.ItemTypeDAO,
-                                   itemOtherDAO: models.ItemOtherDAO,
+                                   itemOtherDAO: models.manage.ItemOtherDAO,
                                    itemCarDAO: models.manage.ItemCarDAO
 ) extends BaseController with I18nSupport {
 
