@@ -4,7 +4,6 @@ import javax.inject.Inject
 
 import anorm.SqlParser._
 import anorm.{~, _}
-//import play.api.Logger
 import play.api.db._
 
 

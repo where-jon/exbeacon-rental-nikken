@@ -1,9 +1,9 @@
 package controllers.site
 
 import javax.inject.{Inject, Singleton}
-
 import com.mohiva.play.silhouette.api.Silhouette
 import controllers.{BaseController, BeaconService, errors}
+import models.site.TxSearchForm
 import models.{ItemType, PowerEnum}
 import play.api._
 import play.api.data.Form
@@ -12,7 +12,6 @@ import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.libs.ws._
 import utils.silhouette.MyEnv
 
-case class TxSearchForm(powerValue: String,itemTypeId:String)
 /**
   * BeaconTxタグ管理アクションクラス
   *
