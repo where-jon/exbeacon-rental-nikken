@@ -38,7 +38,7 @@ function btnEvent(){
         var inputItemTypeId = document.getElementById("itemTypeId")
         inputItemTypeId.value = itemTypeFilterResult
 
-        dbExecuteManager("../site/txTagManage ")
+        dbExecuteManager("../site/txBattery ")
     });
 
 }

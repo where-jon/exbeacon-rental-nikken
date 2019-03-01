@@ -54,23 +54,17 @@ success.tenanat.Region.delete=現場情報を削除しました。
 
 ################################################################################################
 ### システム管理 .start
-
+#フロア
 lang.system.floorManager = フロア管理
 lang.system.mapManager = フロアマップ登録
 error.system.mapManager.image.empty=選択されたフロアマップがないです。
 lang.system.exbManager = EXB管理
 lang.system.exbViewerManager = EXB設置管理
-
-#フロア
-success.cms.Floor.floorDelete=フロアを削除しました。
-success.cms.Floor.floorUpdate=フロア情報を更新しました。
-
 lang.system.floor.title=フロア管理
 lang.system.floor.displayOrder=表示順
 lang.system.floor.name=フロア名
 lang.system.floor.display=現場状況画面表示
 lang.system.floor.floorId=ID
-
 lang.system.floor.floorUpdate.popup.displayOrder=表示順
 lang.system.floor.floorUpdate.popup.displayOrder.placeholder=1
 lang.system.floor.floorUpdate.popup.name=フロア名
@@ -81,6 +75,8 @@ lang.system.floor.floor.button.deleteFloor=フロア削除
 lang.system.floor.floorDelete.popup.title=フロア削除
 lang.system.floor.floorUpdate.popup.title=フロア更新
 lang.system.floor.floorDelete.popup.message=フロアを削除します。\nよろしいですか？
+success.cms.Floor.floorDelete=フロアを削除しました。
+success.cms.Floor.floorUpdate=フロア情報を更新しました。
 error.system.floor.delete.exb=EXBがフロアに設置されてるため、削除できません。
 error.system.floor.floorUpdate.inputFloorName.empty=フロア名を入力してください。
 error.system.floor.floorUpdate.displayOrder.empty=表示順を数字で入力して下さい。
@@ -91,7 +87,6 @@ error.system.floor.floorUpdate.inputFloorName.duplicate=フロア名が重複し
 error.system.floor.floorUpdate.inputDeviceNo.notNumeric=EXBeaconデバイスNoは半角数字で入力してください。
 error.system.floor.floorUpdate.inputDeviceNo.duplicate=EXBeaconデバイスNoが重複しています。(デバイスNo：{0})
 error.system.floor.floorUpdate.DeviceId.notfound=EXBeaconデバイスID設定がありません。管理者に問い合わせてください。(デバイスNo：{0})
-
 
 # EXB管理
 lang.system.exb.title=EXB管理
@@ -137,8 +132,6 @@ success.system.exb.exbDelete=EXBを削除しました。
 ################################################################################################
 ### メンテナンス　.start
 #作業車管理
-
-# CMS文字列（作業車・立馬管理）
 lang.manage.ItemCar.title=作業車・立馬管理
 lang.manage.ItemCar.page.title=作業車・立馬管理
 lang.manage.ItemCar.car.list.header.title=作業車・立馬管理
@@ -196,8 +189,6 @@ error.manage.ItemCar.update.NotTypeName=種別が存在しません。
 error.manage.ItemCar.update.inputCarKey.duplicate=TagIDと鍵TagIDに同一のIDが入力されています。
 
 # 業者管理
-
-# CMS文字列（業者管理）
 lang.manage.Company.title=業者管理
 lang.manage.Company.page.title=業者管理
 lang.manage.Company.company.list.header.title=業者管理
@@ -221,7 +212,6 @@ error.manage.Company.delete.inputCompanyName.use.noChange=業者は現在予約�
 error.manage.Company.update.inputCompanyName.use.exceed=対象の業者は予約履歴が有ります。システム管理権限以上をお持ちの方が更新と削除ができます。(業者名：{0})
 error.manage.Company.update.inputCompanyName.duplicate=業者名が重複しています。(業者名：{0})
 error.manage.Company.delete.inputCompanyName.use.exceed=対象の業者は予約履歴が有ります。システム管理権限以上をお持ちの方が更新と削除ができます。(業者名：{0})
-
 
 # 現場アカウント管理
 lang.manage.Account.title=現場アカウント管理
@@ -279,16 +269,26 @@ error.manage.Account.passwordUpdate.notEqual=パスワードと確認パスワ�
 error.cms.AccountManage.delete.userId.empty=削除するアカウントを指定してください。
 
 ### メンテナンス　.end
-
-
+################################################################################################
 ### 仮設材　.start
-# 新作業車・立馬予約
+
+# 作業車・立馬予約
 lang.site.reserveCar.page.title=作業車・立馬予約
 error.site.reserveCar.inputDate.empty=日付「yyyy/MM/dd」で検索お願いします。
 error.site.reserveCar.searchDate.over = 「0~10」まで半角数字入力をお願いします。
 success.site.reserveCar.update=作業車・立馬予約を完了しました。
-### 仮設材　.end
 
+# Beaconタグ電池残量
+lang.site.txBattery.title= TX電池残量確認
+lang.site.txBattery.txTag.id= Tag ID
+lang.site.txBattery.txTag.powerLevel=電池残量
+lang.site.txBattery.txTag.curfloor=現在フロア
+lang.site.txBattery.txTag.curpos=現在位置
+lang.site.txBattery.txTag.kind=種別
+lang.site.txBattery.txTag.name=名称
+
+### 仮設材　.end
+################################################################################################
 success.cms.ItemOtherManage.delete=仮設材情報を削除しました。
 success.cms.ItemOtherManage.update=仮設材情報を更新しました。
 
@@ -533,16 +533,6 @@ lang.cms.itemTypeManage.itemTypeUpdate.popup.font.color=アイコン文字色
 lang.cms.itemTypeManage.itemTypeUpdate.popup.row.color=行色
 lang.cms.itemTypeManage.itemTypeDelete.popup.title=仮設材種別情報削除
 lang.cms.itemTypeManage.itemTypeDelete.popup.message=仮設材種別情報を削除します。\nよろしいですか？
-
-
-# CMS文字列（Beaconタグ電池残量）
-lang.site.txTagManage.title= TX電池残量確認
-lang.site.txTagManage.txTag.id= Tag ID
-lang.site.txTagManage.txTag.powerLevel=電池残量
-lang.site.txTagManage.txTag.curfloor=現在フロア
-lang.site.txTagManage.txTag.curpos=現在位置
-lang.site.txTagManage.txTag.kind=種別
-lang.site.txTagManage.txTag.name=名称
 
 # メイン機能の画面の文言
 # CarSummery

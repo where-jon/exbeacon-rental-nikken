@@ -19,7 +19,7 @@ case class TxSearchForm(powerValue: String,itemTypeId:String)
   *
   */
 @Singleton
-class TxTagManage @Inject()(config: Configuration
+class TxBatteryController @Inject()(config: Configuration
   , val silhouette: Silhouette[MyEnv]
   , val messagesApi: MessagesApi
   , ws: WSClient
@@ -97,7 +97,7 @@ class TxTagManage @Inject()(config: Configuration
         beaconListApi = beaconListApi.filter(_.power_level >= POWER_FILTER)
       }
     }
-    Ok(views.html.site.txTagManage(POWER_ENUM,POWER_FILTER,ITEM_TYPE_FILTER,itemTypeList,beaconListApi))
+    Ok(views.html.site.txBattery(POWER_ENUM,POWER_FILTER,ITEM_TYPE_FILTER,itemTypeList,beaconListApi))
   }
 
   /**
@@ -120,7 +120,7 @@ class TxTagManage @Inject()(config: Configuration
 
       if(beaconListApi!=null){
         val POWER_ENUM = PowerEnum().map;
-        Ok(views.html.site.txTagManage(POWER_ENUM,POWER_FILTER,ITEM_TYPE_FILTER,itemTypeList,beaconListApi))
+        Ok(views.html.site.txBattery(POWER_ENUM,POWER_FILTER,ITEM_TYPE_FILTER,itemTypeList,beaconListApi))
       }else{
         // apiと登録データが違う場合
         Redirect(errors.routes.UnDetectedApi.indexSite)
