@@ -48,7 +48,7 @@ function viewBtnEvent(){
         inputWorkTypeName.value = workTypeNameFilterResult
 
         var formElement = $("#viewForm")
-        formElement[0].action = "../site/itemOtherMaster"
+        formElement[0].action = "../site/itemOtherList"
         // 送信ボタン生成
         var vButton = document.createElement("button");
         vButton.id = "dbExecuteBtn"

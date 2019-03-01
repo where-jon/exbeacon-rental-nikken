@@ -123,7 +123,7 @@ class ItemOtherListController @Inject()(config: Configuration
       otherListApi = otherListApi.filter(_.company_name == COMPANY_NAME_FILTER)
     }
 
-    Ok(views.html.site.itemOtherMaster(ITEM_TYPE_FILTER,COMPANY_NAME_FILTER,FLOOR_NAME_FILTER,WORK_TYPE_FILTER
+    Ok(views.html.site.itemOtherList(ITEM_TYPE_FILTER,COMPANY_NAME_FILTER,FLOOR_NAME_FILTER,WORK_TYPE_FILTER
       ,otherListApi,itemTypeList,companyNameList,floorNameList,workTypeList,WORK_TYPE))
   }
 
@@ -139,7 +139,7 @@ class ItemOtherListController @Inject()(config: Configuration
       val dbDatas = this.getItemListDuplicateWorkType(otherDAO.selectOtherMasterSql(placeId,itemIdList))
       val otherListApi = beaconService.getItemOtherBeaconPosition(dbDatas,true,placeId)
       if(otherListApi!=null){
-        Ok(views.html.site.itemOtherMaster(ITEM_TYPE_FILTER, COMPANY_NAME_FILTER,FLOOR_NAME_FILTER,WORK_TYPE_FILTER
+        Ok(views.html.site.itemOtherList(ITEM_TYPE_FILTER, COMPANY_NAME_FILTER,FLOOR_NAME_FILTER,WORK_TYPE_FILTER
           ,otherListApi,itemTypeList,companyNameList,floorNameList,workTypeList,WORK_TYPE))
       }else{
         // apiと登録データが違う場合

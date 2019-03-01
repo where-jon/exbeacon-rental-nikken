@@ -104,8 +104,8 @@ POST        /site/cancelCar                             controllers.site.CancelC
 POST        /site/cancelCar/cancel                      controllers.site.CancelCarController.cancel
 
 # その他仮設材一覧
-GET         /site/itemOtherMaster                           controllers.site.ItemOtherListController.index
-POST        /site/itemOtherMaster                           controllers.site.ItemOtherListController.search
+GET         /site/itemOtherList                           controllers.site.ItemOtherListController.index
+POST        /site/itemOtherList                           controllers.site.ItemOtherListController.search
 
 # 未検出の仮設材
 GET         /site/unDetected                                controllers.site.UnDetectedController.index
