@@ -30,7 +30,7 @@
                         @if(request.path contains "/site/") {
                         <a class="text-center tabSelected menu-title"><i class="fa fa-eye"></i>&nbsp;@Messages("lang.navbar.tab.temporaryMaterialManagement")</a>
                         }else{
-                        <a href="/site/itemCarMaster" class="tabLoading text-center tab menu-title"><i class="fa fa-eye"></i>&nbsp;@Messages("lang.navbar.tab.temporaryMaterialManagement")</a>
+                        <a href="/site/itemCarList" class="tabLoading text-center tab menu-title"><i class="fa fa-eye"></i>&nbsp;@Messages("lang.navbar.tab.temporaryMaterialManagement")</a>
                         }
                     </li>
                     @if(user.services.contains("level2") || user.services.contains("level3") || user.services.contains("master") ) {

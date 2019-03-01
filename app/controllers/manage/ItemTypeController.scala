@@ -56,7 +56,7 @@ class ItemTypeController @Inject()(config: Configuration
       val itemTypeList = itemTypeDAO.selectItemTypeInfo(placeId)
       Ok(views.html.manage.itemType(ITEM_TYPE_FILTER, ITEM_TYPE, itemTypeList, placeId))
     }else {
-      Redirect(site.routes.ItemCarMaster.index)
+      Redirect(site.routes.ItemCarListController.index)
     }
   }
 

@@ -51,7 +51,7 @@ class RegionController @Inject() (
         }
       }
     } else {
-      Redirect(site.routes.ItemCarMaster.index)
+      Redirect(site.routes.ItemCarListController.index)
     }
   }
 
@@ -72,7 +72,7 @@ class RegionController @Inject() (
         }
       }
     }else {
-      Redirect(site.routes.ItemCarMaster.index)
+      Redirect(site.routes.ItemCarListController.index)
     }
   }
 

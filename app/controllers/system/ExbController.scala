@@ -39,7 +39,7 @@ class ExbController @Inject()(config: Configuration
 
       Ok(views.html.system.exb(exbInfoList,floorInfoList))
     }else {
-      Redirect(site.routes.ItemCarMaster.index)
+      Redirect(site.routes.ItemCarListController.index)
     }
 
   }

@@ -118,7 +118,7 @@ class FloorController @Inject()(config: Configuration
       val floorInfoList = floorDAO.selectFloorInfoData(placeId)
       Ok(views.html.system.floor(floorInfoList))
     }else {
-      Redirect(site.routes.ItemCarMaster.index)
+      Redirect(site.routes.ItemCarListController.index)
     }
 
   }

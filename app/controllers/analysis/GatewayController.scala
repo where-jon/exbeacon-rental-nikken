@@ -49,7 +49,7 @@ class GatewayController @Inject()(
           .flashing(ERROR_MSG_KEY -> Messages("error.undetected.api"))
       }
     }else{
-      Redirect(site.routes.ItemCarMaster.index)
+      Redirect(site.routes.ItemCarListController.index)
     }
   }
 }

@@ -37,7 +37,7 @@ class AccountController @Inject()(
       )
     }else {
       // 権限無いとき退場
-      Redirect(site.routes.ItemCarMaster.index)
+      Redirect(site.routes.ItemCarListController.index)
     }
   }
 

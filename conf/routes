@@ -89,6 +89,10 @@ POST        /analysis/movementCar/csvExport/:page           controllers.analysis
 ###  分析 .end　#################################
 
 ###  仮設材 .start　#################################
+# 作業車・立馬一覧
+GET         /site/itemCarList                             controllers.site.ItemCarListController.index
+POST        /site/itemCarList                             controllers.site.ItemCarListController.search
+
 # 作業車・立馬予約
 GET         /site/reserveCar                         controllers.site.ReserveCarController.index
 POST        /site/reserveCar                         controllers.site.ReserveCarController.search
@@ -125,12 +129,6 @@ GET         /otherItem/getPlotInfo                          controllers.OtherIte
 # API未検知
 GET         /site/unDetectedApi                             controllers.errors.UnDetectedApi.indexSite
 GET         /analysis/unDetectedApi                         controllers.errors.UnDetectedApi.indexAnalysis
-
-
-# 作業車・立馬一覧
-GET         /site/itemCarMaster                             controllers.site.ItemCarMaster.index
-POST        /site/itemCarMaster                             controllers.site.ItemCarMaster.search
-
 
 # 作業車・立馬予約
 GET         /site/itemCarReserve                            controllers.site.ItemCarReserve.index

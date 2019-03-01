@@ -40,7 +40,7 @@ class ExbSetupController @Inject()(config: Configuration
 
       Ok(views.html.system.exbSetup(exbViewerForm, exbViewer,mapViewer,viewType))
     }else{
-      Redirect(site.routes.ItemCarMaster.index)
+      Redirect(site.routes.ItemCarListController.index)
     }
   }
 

@@ -408,7 +408,7 @@ class MovementCarController @Inject()(config: Configuration
       val logItemAllList =  getAllItemLogData(placeId,itemIdList,calendarList)
       Ok(views.html.analysis.movementCar(logItemAllList,calendarList,DETECT_MONTH,TOTAL_LENGTH, pagiNationHelper.PAGE, pagiNationHelper.MAX_PAGE))
     }else{
-      Redirect(site.routes.ItemCarMaster.index)
+      Redirect(site.routes.ItemCarListController.index)
     }
   }
 

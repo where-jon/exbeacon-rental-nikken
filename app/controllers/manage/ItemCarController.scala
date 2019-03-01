@@ -48,7 +48,7 @@ class ItemCarController @Inject()(
 
       Ok(views.html.manage.itemCar(ITEM_TYPE_FILTER, carList, itemTypeList, placeId))
     }else {
-      Redirect(site.routes.ItemCarMaster.index)
+      Redirect(site.routes.ItemCarListController.index)
     }
   }
 

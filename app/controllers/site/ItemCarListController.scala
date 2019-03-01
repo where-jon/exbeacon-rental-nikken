@@ -21,7 +21,7 @@ import utils.silhouette.MyEnv
 
 
 @Singleton
-class ItemCarMaster @Inject()(config: Configuration
+class ItemCarListController @Inject()(config: Configuration
 , val silhouette: Silhouette[MyEnv]
 , val messagesApi: MessagesApi
 , carDAO: models.manage.ItemCarDAO
@@ -126,7 +126,7 @@ class ItemCarMaster @Inject()(config: Configuration
       carListApi = carListApi.filter(_.work_type_name == WORK_TYPE_FILTER)
     }
 
-    Ok(views.html.site.itemCarMaster(ITEM_TYPE_FILTER,COMPANY_NAME_FILTER,FLOOR_NAME_FILTER,WORK_TYPE_FILTER
+    Ok(views.html.site.itemCarList(ITEM_TYPE_FILTER,COMPANY_NAME_FILTER,FLOOR_NAME_FILTER,WORK_TYPE_FILTER
       ,carListApi,itemTypeList,companyNameList,floorNameList,workTypeList,WORK_TYPE))
   }
 
@@ -143,7 +143,7 @@ class ItemCarMaster @Inject()(config: Configuration
       val dbDatas = this.getItemListDuplicateWorkType(carDAO.selectCarMasterSql(placeId,itemIdList))
       val carListApi = beaconService.getItemCarBeaconPosition(dbDatas,true,placeId)
       if(carListApi!=null){
-        Ok(views.html.site.itemCarMaster(ITEM_TYPE_FILTER, COMPANY_NAME_FILTER,FLOOR_NAME_FILTER,WORK_TYPE_FILTER
+        Ok(views.html.site.itemCarList(ITEM_TYPE_FILTER, COMPANY_NAME_FILTER,FLOOR_NAME_FILTER,WORK_TYPE_FILTER
           ,carListApi,itemTypeList,companyNameList,floorNameList,workTypeList,WORK_TYPE))
       }else{
         // apiと登録データが違う場合

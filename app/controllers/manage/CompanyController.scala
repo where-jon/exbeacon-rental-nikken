@@ -39,7 +39,7 @@ class CompanyController @Inject()(
       val companyList = companyService.selectCompanyByPlaceId(placeId)
       Ok(views.html.manage.company(companyList, placeId))
     } else {
-      Redirect(site.routes.ItemCarMaster.index)
+      Redirect(site.routes.ItemCarListController.index)
     }
   }
 

@@ -9,7 +9,7 @@ import utils.silhouette.{AuthController, MyEnv}
 trait BaseController extends AuthController {
 
   val CMS_LOGGED_SESSION_KEY = "cmsLogged"
-  val CMS_NOT_LOGGED_RETURN_PATH = "/site/itemCarMaster"
+  val CMS_NOT_LOGGED_RETURN_PATH = "/site/itemCarList"
 
   val HTML_BR = "<br/>"
 

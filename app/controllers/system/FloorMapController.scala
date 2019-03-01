@@ -129,7 +129,7 @@ class FloorMapController @Inject()(config: Configuration
       val mapViewer = floorDAO.selectFloorAll(placeId)
       Ok(views.html.system.floorMap(mapViewerForm, mapViewer))
     }else{
-      Redirect(site.routes.ItemCarMaster.index)
+      Redirect(site.routes.ItemCarListController.index)
     }
   }
 
