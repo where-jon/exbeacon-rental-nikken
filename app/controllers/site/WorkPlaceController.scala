@@ -13,7 +13,7 @@ import utils.silhouette.MyEnv
 /**
   * 現場状況クラス.
   */
-class WorkPlace @Inject()(config: Configuration
+class WorkPlaceController @Inject()(config: Configuration
   , val silhouette: Silhouette[MyEnv]
   , val messagesApi: MessagesApi
   , beaconDAO: models.beaconDAO

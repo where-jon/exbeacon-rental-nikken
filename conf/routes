@@ -101,6 +101,11 @@ POST        /site/unDetected                                controllers.site.UnD
 # ビーコンタグ電池残量確認
 GET         /site/txBattery                               controllers.site.TxBatteryController.index
 POST        /site/txBattery                               controllers.site.TxBatteryController.search
+
+# 現場状況
+GET         /site/workPlace                                 controllers.site.WorkPlaceController.index
+GET         /site/workPlace/getData                         controllers.site.WorkPlaceController.getData
+
 ###  仮設材 .end　#################################
 
 ###  業務ページ ############################
@@ -117,16 +122,10 @@ POST        /carReserve/delete                              controllers.CarReser
 GET         /otherItem                                      controllers.OtherItem.index
 GET         /otherItem/getPlotInfo                          controllers.OtherItem.getPlotInfo
 
-
-
-
 # API未検知
 GET         /site/unDetectedApi                             controllers.errors.UnDetectedApi.indexSite
 GET         /analysis/unDetectedApi                         controllers.errors.UnDetectedApi.indexAnalysis
 
-# 現場状況
-GET         /site/workPlace                                 controllers.site.WorkPlace.index
-GET         /site/workPlace/getData                         controllers.site.WorkPlace.getData
 
 # 作業車・立馬一覧
 GET         /site/itemCarMaster                             controllers.site.ItemCarMaster.index

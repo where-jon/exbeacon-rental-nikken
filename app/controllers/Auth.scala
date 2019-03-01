@@ -172,7 +172,7 @@ class Auth @Inject() (
       Ok(views.html.tenant.changePassword(changePasswordForm, userService.selectSuperUserList()))
     } else {
       // 権限無いとき退場
-      Redirect(site.routes.WorkPlace.index())
+      Redirect(site.routes.WorkPlaceController.index())
     }
   }
 
