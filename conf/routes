@@ -107,6 +107,11 @@ POST        /site/cancelCar/cancel                      controllers.site.CancelC
 GET         /site/itemOtherList                           controllers.site.ItemOtherListController.index
 POST        /site/itemOtherList                           controllers.site.ItemOtherListController.search
 
+# その他仮設材予約
+GET         /site/reserveOther                          controllers.site.ReserveOtherController.index
+POST        /site/reserveOther                          controllers.site.ReserveOtherController.search
+POST        /site/reserveOther/reserve                  controllers.site.ReserveOtherController.reserve
+
 # 未検出の仮設材
 GET         /site/unDetected                                controllers.site.UnDetectedController.index
 POST        /site/unDetected                                controllers.site.UnDetectedController.search
@@ -143,12 +148,6 @@ GET         /analysis/unDetectedApi                         controllers.errors.U
 GET         /site/itemCarReserve                            controllers.site.ItemCarReserve.index
 POST        /site/itemCarReserve                            controllers.site.ItemCarReserve.search
 POST        /site/itemCarReserve/reserve                    controllers.site.ItemCarReserve.reserve
-
-# その他仮設材予約
-GET         /site/itemOtherReserve                          controllers.site.ItemOtherReserve.index
-POST        /site/itemOtherReserve                          controllers.site.ItemOtherReserve.search
-POST        /site/itemOtherReserve/reserve                  controllers.site.ItemOtherReserve.reserve
-
 
 # その他仮設材予約取消
 GET         /site/itemOtherCancel                           controllers.site.ItemOtherCancel.index

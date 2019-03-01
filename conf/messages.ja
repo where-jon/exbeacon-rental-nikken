@@ -387,6 +387,26 @@ lang.site.itemOtherList.reserveFloor=予約フロア
 lang.site.itemOtherList.term=期間
 lang.site.itemOtherList.reserveId=予約ID
 
+# その他仮設材予約
+lang.site.reserveOther.page.title=その他仮設材予約
+lang.site.reserveOther.select=選択
+lang.site.reserveOther.floor=現在フロア
+lang.site.reserveOther.pos=現在位置
+lang.site.reserveOther.itemId=実ID
+lang.site.reserveOther.txId=Tag ID
+lang.site.reserveOther.typeId=種別ID
+lang.site.reserveOther.typeName=種別
+lang.site.reserveOther.name=名称
+lang.site.reserveOther.reserveStartDate=予約最初日
+lang.site.reserveOther.reserveEndDate=予約最終日
+lang.site.reserveOther.reserveTerm=予約期間
+lang.site.reserveOther.reserveId=予約ID
+error.site.reserveOther.reserve = その他仮設材予約に問題が発生しました。
+error.site.reserveOther.id =「Tag ID」{0}
+error.site.reserveOther.workType =「期間」{0}
+error.site.reserveOther.reserveDate =「予約日 」{0} ~ {1}
+error.site.reserveOther.already = すでに予約されてます。
+
 # Beaconタグ電池残量
 lang.site.txBattery.title= TX電池残量確認
 lang.site.txBattery.txTag.id= Tag ID
@@ -786,28 +806,6 @@ lang.site.itemOtherCancel.reserveEndDate=予約最終日
 lang.site.itemOtherCancel.reserveTerm=予約期間
 lang.site.itemOtherCancel.reserveId=予約ID
 lang.site.itemOtherCancel.page.delete=選択されたその他仮設材予約を取消します。
-
-# その他仮設材予約
-lang.site.itemOtherReserve.page.title=その他仮設材予約
-lang.site.itemOtherReserve.select=選択
-lang.site.itemOtherReserve.floor=現在フロア
-lang.site.itemOtherReserve.pos=現在位置
-lang.site.itemOtherReserve.itemId=実ID
-lang.site.itemOtherReserve.txId=Tag ID
-lang.site.itemOtherReserve.typeId=種別ID
-lang.site.itemOtherReserve.typeName=種別
-lang.site.itemOtherReserve.name=名称
-lang.site.itemOtherReserve.reserveStartDate=予約最初日
-lang.site.itemOtherReserve.reserveEndDate=予約最終日
-lang.site.itemOtherReserve.reserveTerm=予約期間
-lang.site.itemOtherReserve.reserveId=予約ID
-
-
-error.site.itemOtherReserve.reserve = その他仮設材予約に問題が発生しました。
-error.site.itemOtherReserve.id =「Tag ID」{0}
-error.site.itemOtherReserve.workType =「期間」{0}
-error.site.itemOtherReserve.reserveDate =「予約日 」{0} ~ {1}
-error.site.itemOtherReserve.already = すでに予約されてます。
 
 
 # 予約画面共通

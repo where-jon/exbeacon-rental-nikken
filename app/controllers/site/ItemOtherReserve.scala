@@ -24,7 +24,7 @@ import utils.silhouette.MyEnv
 
 
 @Singleton
-class ItemOtherReserve @Inject()(config: Configuration
+class ReserveOtherController @Inject()(config: Configuration
   , val silhouette: Silhouette[MyEnv]
   , val messagesApi: MessagesApi
   , carDAO: models.manage.ItemCarDAO
@@ -120,7 +120,7 @@ class ItemOtherReserve @Inject()(config: Configuration
     val form = itemOtherForm.bindFromRequest
     if (form.hasErrors){
       // エラーでリダイレクト遷移
-      Redirect(routes.ItemOtherReserve.index()).flashing(ERROR_MSG_KEY -> form.errors.map(_.message).mkString(HTML_BR))
+      Redirect(routes.ReserveOtherController.index()).flashing(ERROR_MSG_KEY -> form.errors.map(_.message).mkString(HTML_BR))
     }else{
       val ItemOtherReserveData = form.get
       if(ItemOtherReserveData.checkVal.zipWithIndex.length > 0){
@@ -151,20 +151,20 @@ class ItemOtherReserve @Inject()(config: Configuration
           if(vAlerdyReserveData.isEmpty) { // 予約されたものがない
             val result = otherDAO.reserveItemOther(setData)
             if (result == "success") {
-              Redirect(routes.ItemOtherReserve.index())
+              Redirect(routes.ReserveOtherController.index())
                 .flashing(SUCCESS_MSG_KEY -> Messages("success.site.otherReserve.update"))
             }else {
-              Redirect(routes.ItemOtherReserve.index())
+              Redirect(routes.ReserveOtherController.index())
                 .flashing(ERROR_MSG_KEY -> Messages("error.site.otherReserve.update" ))
             }
           }else{ // 予約されたものがある
-            errMsg :+= Messages("error.site.itemOtherReserve.reserve")
-            errMsg :+= Messages("error.site.itemOtherReserve.id" ,vAlerdyReserveData.last.txId)
-            errMsg :+= Messages("error.site.itemOtherReserve.workType" ,vAlerdyReserveData.last.workTypeName)
-            errMsg :+= Messages("error.site.itemOtherReserve.reserveDate"  ,vAlerdyReserveData.last.reserveStartDate,vAlerdyReserveData.last.reserveEndDate)
+            errMsg :+= Messages("error.site.reserveOther.reserve")
+            errMsg :+= Messages("error.site.reserveOther.id" ,vAlerdyReserveData.last.txId)
+            errMsg :+= Messages("error.site.reserveOther.workType" ,vAlerdyReserveData.last.workTypeName)
+            errMsg :+= Messages("error.site.reserveOther.reserveDate"  ,vAlerdyReserveData.last.reserveStartDate,vAlerdyReserveData.last.reserveEndDate)
             errMsg :+= Messages("error.site.itemCarReserve.already" )
 
-            Redirect(routes.ItemOtherReserve.index())
+            Redirect(routes.ReserveOtherController.index())
               .flashing(ERROR_MSG_KEY -> errMsg.mkString(HTML_BR))
           }
         }else{ // 現在時刻から予約可能かを判定でエラーの場合
@@ -176,15 +176,15 @@ class ItemOtherReserve @Inject()(config: Configuration
             errMsg :+= vCurrentTimeCheck
             errMsg :+= Messages("error.site.reserve.overtime", mCurrentTime,ItemOtherReserveData.workTypeName)
             errMsg :+= Messages("error.site.reserve.overtime.define")
-            Redirect(routes.ItemOtherReserve.index())
+            Redirect(routes.ReserveOtherController.index())
               .flashing(ERROR_MSG_KEY -> errMsg.mkString(HTML_BR))
           }else{
-            Redirect(routes.ItemOtherReserve.index())
+            Redirect(routes.ReserveOtherController.index())
               .flashing(ERROR_MSG_KEY -> Messages(vCurrentTimeCheck))
           }
         }
       }else{
-        Redirect(routes.ItemOtherReserve.index())
+        Redirect(routes.ReserveOtherController.index())
           .flashing(ERROR_MSG_KEY -> Messages("error.site.otherReserve.noselect"))
       }
     }
@@ -225,7 +225,7 @@ class ItemOtherReserve @Inject()(config: Configuration
       otherListApi = otherListApi.filter(_.item_type_id == ITEM_TYPE_FILTER)
     }
 
-    Ok(views.html.site.itemOtherReserve(ITEM_TYPE_FILTER,WORK_TYPE_FILTER,RESERVE_START_DATE,RESERVE_END_DATE
+    Ok(views.html.site.reserveOther(ITEM_TYPE_FILTER,WORK_TYPE_FILTER,RESERVE_START_DATE,RESERVE_END_DATE
       ,otherListApi,itemTypeList,companyNameList,floorNameList,workTypeList,WORK_TYPE,RESERVE_MAX_COUNT))
   }
 
@@ -242,7 +242,7 @@ class ItemOtherReserve @Inject()(config: Configuration
       val dbDatas = otherDAO.selectOtherMasterReserve(placeId,itemIdList)
       val otherListApi = beaconService.getItemOtherBeaconPosition(dbDatas,true,placeId)
       if(otherListApi!=null){
-        Ok(views.html.site.itemOtherReserve(ITEM_TYPE_FILTER,WORK_TYPE_FILTER,RESERVE_START_DATE,RESERVE_END_DATE
+        Ok(views.html.site.reserveOther(ITEM_TYPE_FILTER,WORK_TYPE_FILTER,RESERVE_START_DATE,RESERVE_END_DATE
           ,otherListApi,itemTypeList,companyNameList,floorNameList,workTypeList,WORK_TYPE,RESERVE_MAX_COUNT))
       }else{
         // apiと登録データが違う場合
