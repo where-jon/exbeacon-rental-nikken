@@ -20,7 +20,7 @@ import utils.silhouette.MyEnv
   */
 
 @Singleton
-class ItemOtherCancel @Inject()(config: Configuration
+class CancelOtherController @Inject()(config: Configuration
 , val silhouette: Silhouette[MyEnv]
 , val messagesApi: MessagesApi
 , otherDAO: models.manage.ItemOtherDAO
@@ -111,7 +111,7 @@ class ItemOtherCancel @Inject()(config: Configuration
     var otherListApi = beaconService.getItemOtherBeaconPosition(dbDatas,true,placeId)
     itemOtherCancelForm.bindFromRequest.fold(
       formWithErrors =>
-      Redirect(routes.ItemOtherCancel.index())
+      Redirect(routes.CancelOtherController.index())
           .flashing(ERROR_MSG_KEY -> Messages(formWithErrors.errors.map(_.message +"<br>").mkString("\n"))),
 
       ItemOtherReserveData => {
@@ -134,10 +134,10 @@ class ItemOtherCancel @Inject()(config: Configuration
           if(vCancelCheck == "OK") { //　現在時刻から予約取消可能かを判定
             val result = otherDAO.cancelItemOther(setData)
             if (result == "success") {
-              Redirect(routes.ItemOtherCancel.index())
+              Redirect(routes.CancelOtherController.index())
                 .flashing(SUCCESS_MSG_KEY -> Messages("success.site.otherCancel.cancel"))
             }else {
-              Redirect(routes.ItemOtherCancel.index())
+              Redirect(routes.CancelOtherController.index())
                 .flashing(ERROR_MSG_KEY -> Messages("error.site.otherCancel.cancel"))
             }
           }else{  // 現在時刻から予約取消可能かを判定でエラーの場合
@@ -146,21 +146,21 @@ class ItemOtherCancel @Inject()(config: Configuration
               // 過去の予約だけどシステム権限
               val result = otherDAO.cancelItemOther(setData)
               if (result == "success") {
-                Redirect(routes.ItemOtherCancel.index())
+                Redirect(routes.CancelOtherController.index())
                   .flashing(SUCCESS_MSG_KEY -> Messages("success.site.otherCancel.cancel"))
               }else {
-                Redirect(routes.ItemOtherCancel.index())
+                Redirect(routes.CancelOtherController.index())
                   .flashing(ERROR_MSG_KEY -> Messages("error.site.otherCancel.cancel"))
               }
 
             }else{
-              Redirect(routes.ItemOtherCancel.index())
+              Redirect(routes.CancelOtherController.index())
                 .flashing(ERROR_MSG_KEY -> Messages(vCancelCheck))
             }
           }
 
         }else{
-          Redirect(routes.ItemOtherCancel.index())
+          Redirect(routes.CancelOtherController.index())
             .flashing(ERROR_MSG_KEY -> Messages("error.site.otherCancel.noselect"))
         }
       }
@@ -199,7 +199,7 @@ class ItemOtherCancel @Inject()(config: Configuration
     }
 
 
-    Ok(views.html.site.itemOtherCancel(ITEM_TYPE_FILTER,COMPANY_NAME_FILTER,WORK_TYPE_FILTER,RESERVE_START_DATE,RESERVE_END_DATE
+    Ok(views.html.site.cancelOther(ITEM_TYPE_FILTER,COMPANY_NAME_FILTER,WORK_TYPE_FILTER,RESERVE_START_DATE,RESERVE_END_DATE
       ,otherListApi,itemTypeList,companyNameList,floorNameList,workTypeList,WORK_TYPE,RESERVE_MAX_COUNT))
   }
 
@@ -217,7 +217,7 @@ class ItemOtherCancel @Inject()(config: Configuration
       val otherListApi = beaconService.getItemOtherBeaconPosition(dbDatas,true,placeId)
 
       if(otherListApi!=null){
-        Ok(views.html.site.itemOtherCancel(ITEM_TYPE_FILTER,COMPANY_NAME_FILTER,WORK_TYPE_FILTER,RESERVE_START_DATE,RESERVE_END_DATE
+        Ok(views.html.site.cancelOther(ITEM_TYPE_FILTER,COMPANY_NAME_FILTER,WORK_TYPE_FILTER,RESERVE_START_DATE,RESERVE_END_DATE
           ,otherListApi,itemTypeList,companyNameList,floorNameList,workTypeList,WORK_TYPE,RESERVE_MAX_COUNT))
       }else{
         // apiと登録データが違う場合

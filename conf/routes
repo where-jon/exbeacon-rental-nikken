@@ -1,5 +1,14 @@
 # ホーム
 GET         /                                               controllers.Application.index
+## 認証周り
+GET         /signin                                         controllers.Auth.signIn
+POST        /authenticate                                   controllers.Auth.authenticate
+GET         /signout                                        controllers.Auth.signOut
+GET         /myaccount                                      controllers.Application.myAccount
+
+# API未検知
+GET         /site/unDetectedApi                             controllers.errors.UnDetectedApi.indexSite
+GET         /analysis/unDetectedApi                         controllers.errors.UnDetectedApi.indexAnalysis
 
 ###  tenant .start　#################################
 # 現場管理
@@ -112,6 +121,11 @@ GET         /site/reserveOther                          controllers.site.Reserve
 POST        /site/reserveOther                          controllers.site.ReserveOtherController.search
 POST        /site/reserveOther/reserve                  controllers.site.ReserveOtherController.reserve
 
+# その他仮設材予約取消
+GET         /site/cancelOther                           controllers.site.CancelOtherController.index
+POST        /site/cancelOther                           controllers.site.CancelOtherController.search
+POST        /site/cancelOther/cancel                    controllers.site.CancelOtherController.cancel
+
 # 未検出の仮設材
 GET         /site/unDetected                                controllers.site.UnDetectedController.index
 POST        /site/unDetected                                controllers.site.UnDetectedController.search
@@ -140,27 +154,10 @@ POST        /carReserve/delete                              controllers.CarReser
 GET         /otherItem                                      controllers.OtherItem.index
 GET         /otherItem/getPlotInfo                          controllers.OtherItem.getPlotInfo
 
-# API未検知
-GET         /site/unDetectedApi                             controllers.errors.UnDetectedApi.indexSite
-GET         /analysis/unDetectedApi                         controllers.errors.UnDetectedApi.indexAnalysis
-
 # 作業車・立馬予約
 GET         /site/itemCarReserve                            controllers.site.ItemCarReserve.index
 POST        /site/itemCarReserve                            controllers.site.ItemCarReserve.search
 POST        /site/itemCarReserve/reserve                    controllers.site.ItemCarReserve.reserve
-
-# その他仮設材予約取消
-GET         /site/itemOtherCancel                           controllers.site.ItemOtherCancel.index
-POST        /site/itemOtherCancel                           controllers.site.ItemOtherCancel.search
-POST        /site/itemOtherCancel/cancel                    controllers.site.ItemOtherCancel.cancel
-
-
-
-## 認証周り
-GET         /signin                                         controllers.Auth.signIn
-POST        /authenticate                                   controllers.Auth.authenticate
-GET         /signout                                        controllers.Auth.signOut
-GET         /myaccount                                      controllers.Application.myAccount
 
 # Map static resources from the /public folder to the /assets URL path
 GET         /public/*file                                   controllers.MyAssets.public(path="/public", file: Asset)

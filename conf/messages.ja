@@ -407,6 +407,24 @@ error.site.reserveOther.workType =「期間」{0}
 error.site.reserveOther.reserveDate =「予約日 」{0} ~ {1}
 error.site.reserveOther.already = すでに予約されてます。
 
+# その他仮設材取消
+lang.site.cancelOther.page.title=その他仮設材予約取消
+lang.site.cancelOther.select=選択
+lang.site.cancelOther.floor=現在フロア
+lang.site.cancelOther.pos=現在位置
+lang.site.cancelOther.itemId=実ID
+lang.site.cancelOther.txId=Tag ID
+lang.site.cancelOther.no=番号
+lang.site.cancelOther.typeId=種別ID
+lang.site.cancelOther.typeName=種別
+lang.site.cancelOther.name=名称
+lang.site.cancelOther.reserveCompany=予約業者
+lang.site.cancelOther.reserveStartDate=予約最初日
+lang.site.cancelOther.reserveEndDate=予約最終日
+lang.site.cancelOther.reserveTerm=予約期間
+lang.site.cancelOther.reserveId=予約ID
+lang.site.cancelOther.page.delete=選択されたその他仮設材予約を取消します。
+
 # Beaconタグ電池残量
 lang.site.txBattery.title= TX電池残量確認
 lang.site.txBattery.txTag.id= Tag ID
@@ -788,25 +806,6 @@ lang.site.item.term=期間
 lang.site.item.company=業者
 lang.site.item.reserveFloor=予約フロア
 lang.site.item.noselect=未設定
-
-# その他仮設材取消
-lang.site.itemOtherCancel.page.title=その他仮設材予約取消
-lang.site.itemOtherCancel.select=選択
-lang.site.itemOtherCancel.floor=現在フロア
-lang.site.itemOtherCancel.pos=現在位置
-lang.site.itemOtherCancel.itemId=実ID
-lang.site.itemOtherCancel.txId=Tag ID
-lang.site.itemOtherCancel.no=番号
-lang.site.itemOtherCancel.typeId=種別ID
-lang.site.itemOtherCancel.typeName=種別
-lang.site.itemOtherCancel.name=名称
-lang.site.itemOtherCancel.reserveCompany=予約業者
-lang.site.itemOtherCancel.reserveStartDate=予約最初日
-lang.site.itemOtherCancel.reserveEndDate=予約最終日
-lang.site.itemOtherCancel.reserveTerm=予約期間
-lang.site.itemOtherCancel.reserveId=予約ID
-lang.site.itemOtherCancel.page.delete=選択されたその他仮設材予約を取消します。
-
 
 # 予約画面共通
 error.site.reserve.overtime=現在時刻「{0}」は「{1}」予約可能時間を過ぎてるので本日内予約はできません。

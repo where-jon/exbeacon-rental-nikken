@@ -79,7 +79,7 @@ function btnEvent(){
             var inputDate2 = document.getElementById("inputDate2")
             inputDate2.value = gDatePicker.endSqlTime
 
-            dbExecuteManager("../site/itemOtherCancel/cancel")
+            dbExecuteManager("../site/cancelOther/cancel")
         }
     });
 
@@ -155,7 +155,7 @@ function btnEvent(){
         inputDate.value = gDatePicker.startSqlTime
         inputDate2.value = gDatePicker.endSqlTime
 
-        dbExecuteManager("../site/itemOtherCancel")
+        dbExecuteManager("../site/cancelOther")
 
     });
 

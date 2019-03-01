@@ -21,7 +21,7 @@ RESERVE_MAX_COUNT:Int)(implicit user: User, messages: Messages, request: Request
 <!doctype html>
 <html lang="ja">
 <head>
-    @templates.htmlHead(title = Messages("lang.site.itemOtherCancel.page.title"))
+    @templates.htmlHead(title = Messages("lang.site.cancelOther.page.title"))
     <link rel="stylesheet" href="@routes.MyAssets.css("manage/itemCar.css")"/>
     <script></script>
 </head>
@@ -45,7 +45,7 @@ RESERVE_MAX_COUNT:Int)(implicit user: User, messages: Messages, request: Request
             <!-- 画面題字 -->
             <div class="form-group" style="font-weight:bold;font-size:19px;margin:15px 0px;">
                 <!--タイトル-->
-                @Messages("lang.site.itemOtherCancel.page.title")
+                @Messages("lang.site.cancelOther.page.title")
             </div>
             <form id="viewForm" method="post" action="">
                 <!--header 検索部-->
@@ -115,23 +115,23 @@ RESERVE_MAX_COUNT:Int)(implicit user: User, messages: Messages, request: Request
                             <table id="myTable" class="table table-bordered table-condensed itemTable">
                                 <thead>
                                     <tr class ="hidden">
-                                        <th colspan="10" class="tableTitleBorder tableTitleTh">@Messages("lang.site.itemOtherCancel.page.title")</th>
+                                        <th colspan="10" class="tableTitleBorder tableTitleTh">@Messages("lang.site.cancelOther.page.title")</th>
                                     </tr>
                                     <tr>
-                                        <th class="tableTh tableBorder ">@Messages("lang.site.itemOtherCancel.select")</th>
-                                        <th class="tableTh tableBorder ">@Messages("lang.site.itemOtherCancel.txId")</th>
-                                        <th class="tableTh tableBorder ">@Messages("lang.site.itemOtherCancel.no")</th>
-                                        <th class="tableTh tableBorder ">@Messages("lang.site.itemOtherCancel.floor")</th>
-                                        <th class="tableTh tableBorder ">@Messages("lang.site.itemOtherCancel.pos")</th>
-                                        <th class="tableTh tableBorder hidden">@Messages("lang.site.itemOtherCancel.itemId")</th>
-                                        <th class="tableTh tableBorder hidden">@Messages("lang.site.itemOtherCancel.typeId")</th>
-                                        <th class="tableTh tableBorder ">@Messages("lang.site.itemOtherCancel.typeName")</th>
-                                        <th class="tableTh tableBorder ">@Messages("lang.site.itemOtherCancel.name")</th>
-                                        <th class="tableTh tableBorder ">@Messages("lang.site.itemOtherCancel.reserveCompany")</th>
-                                        <th class="tableTh tableBorder ">@Messages("lang.site.itemOtherCancel.reserveStartDate")</th>
-                                        <th class="tableTh tableBorder ">@Messages("lang.site.itemOtherCancel.reserveEndDate")</th>
-                                        <th class="hidden tableTh tableBorder ">@Messages("lang.site.itemOtherCancel.reserveTerm")</th>
-                                        <th class="tableTh tableBorder hidden">@Messages("lang.site.itemOtherCancel.reserveId")</th>
+                                        <th class="tableTh tableBorder ">@Messages("lang.site.cancelOther.select")</th>
+                                        <th class="tableTh tableBorder ">@Messages("lang.site.cancelOther.txId")</th>
+                                        <th class="tableTh tableBorder ">@Messages("lang.site.cancelOther.no")</th>
+                                        <th class="tableTh tableBorder ">@Messages("lang.site.cancelOther.floor")</th>
+                                        <th class="tableTh tableBorder ">@Messages("lang.site.cancelOther.pos")</th>
+                                        <th class="tableTh tableBorder hidden">@Messages("lang.site.cancelOther.itemId")</th>
+                                        <th class="tableTh tableBorder hidden">@Messages("lang.site.cancelOther.typeId")</th>
+                                        <th class="tableTh tableBorder ">@Messages("lang.site.cancelOther.typeName")</th>
+                                        <th class="tableTh tableBorder ">@Messages("lang.site.cancelOther.name")</th>
+                                        <th class="tableTh tableBorder ">@Messages("lang.site.cancelOther.reserveCompany")</th>
+                                        <th class="tableTh tableBorder ">@Messages("lang.site.cancelOther.reserveStartDate")</th>
+                                        <th class="tableTh tableBorder ">@Messages("lang.site.cancelOther.reserveEndDate")</th>
+                                        <th class="hidden tableTh tableBorder ">@Messages("lang.site.cancelOther.reserveTerm")</th>
+                                        <th class="tableTh tableBorder hidden">@Messages("lang.site.cancelOther.reserveId")</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -198,7 +198,7 @@ RESERVE_MAX_COUNT:Int)(implicit user: User, messages: Messages, request: Request
                         <input type="hidden" name="inputPlaceId" value="" />
                         <input type="hidden" id="inputItemKindId" name="inputItemKindId" />
                         <input type="hidden" id="actualItemInfoStr" name="actualItemInfoStr" />
-                        <div class="modal-header" style="">@Messages("lang.site.itemOtherCancel.page.title")</div>
+                        <div class="modal-header" style="">@Messages("lang.site.cancelOther.page.title")</div>
                         <div class="modal-body">
                             <div class="hidden form-group" style="margin-bottom: 5px;">
                                 <label class="text-right  control-label col-xs-6">@Messages("lang.site.item.reserveDate")</label>
@@ -222,7 +222,7 @@ RESERVE_MAX_COUNT:Int)(implicit user: User, messages: Messages, request: Request
                             </div>
                             <div class="form-group" style="margin-bottom: 5px;text-align: center;font-size: 2vmin;">
                                 <label class="text-center control-label">
-                                    @Messages("lang.site.itemOtherCancel.page.delete")
+                                    @Messages("lang.site.cancelOther.page.delete")
                                 </label>
                             </div>
                         </div>
@@ -240,7 +240,7 @@ RESERVE_MAX_COUNT:Int)(implicit user: User, messages: Messages, request: Request
         </div>
     </div>
 </div>
-<script type="text/javascript" src="@routes.MyAssets.js("site/itemOtherCancel.js")"></script>
+<script type="text/javascript" src="@routes.MyAssets.js("site/cancelOther.js")"></script>
 <script></script>
 </body>
 </html>
