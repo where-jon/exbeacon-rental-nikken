@@ -29,7 +29,7 @@ case class ReserveMasterCompanyCheck(
 )
 
 @javax.inject.Singleton
-class companyDAO @Inject() (dbapi: DBApi) {
+class CompanyDAO @Inject()(dbapi: DBApi) {
 
   private val db = dbapi.database("default")
 

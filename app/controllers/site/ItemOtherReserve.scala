@@ -29,7 +29,7 @@ class ItemOtherReserve @Inject()(config: Configuration
   , val messagesApi: MessagesApi
   , carDAO: models.manage.ItemCarDAO
   , otherDAO: models.itemOtherDAO
-  , companyDAO: models.manage.companyDAO
+  , companyDAO: models.manage.CompanyDAO
   , beaconService: BeaconService
   , floorDAO: models.system.floorDAO
   , btxDAO: models.btxDAO

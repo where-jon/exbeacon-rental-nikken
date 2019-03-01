@@ -19,18 +19,18 @@ import utils.silhouette.{MyEnv, UserService}
 
 @Singleton
 class RegionController @Inject() (
-  config: Configuration,
-  val silhouette: Silhouette[MyEnv],
-  val messagesApi: MessagesApi,
-  placeDAO: models.placeDAO,
-  floorDAO: models.system.floorDAO,
-  exbDAO: models.system.ExbDAO,
-  passwordHasherRegistry: PasswordHasherRegistry,
-  userService: UserService,
-  companyDAO: models.manage.companyDAO,
-  itemTypeDAO: models.ItemTypeDAO,
-  itemOtherDAO: models.itemOtherDAO,
-  itemCarDAO: models.manage.ItemCarDAO
+                                   config: Configuration,
+                                   val silhouette: Silhouette[MyEnv],
+                                   val messagesApi: MessagesApi,
+                                   placeDAO: models.placeDAO,
+                                   floorDAO: models.system.floorDAO,
+                                   exbDAO: models.system.ExbDAO,
+                                   passwordHasherRegistry: PasswordHasherRegistry,
+                                   userService: UserService,
+                                   companyDAO: models.manage.CompanyDAO,
+                                   itemTypeDAO: models.ItemTypeDAO,
+                                   itemOtherDAO: models.itemOtherDAO,
+                                   itemCarDAO: models.manage.ItemCarDAO
 ) extends BaseController with I18nSupport {
 
   /** 選択されている並び順 */

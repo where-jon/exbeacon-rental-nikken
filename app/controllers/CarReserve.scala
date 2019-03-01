@@ -43,7 +43,7 @@ class CarReserve @Inject()(config: Configuration
                            , floorDAO: models.system.floorDAO
                            , placeDAO: models.placeDAO
                            , carDAO: models.manage.ItemCarDAO
-                           , companyDAO: models.manage.companyDAO
+                           , companyDAO: models.manage.CompanyDAO
                            , btxLastPositionDAO: models.btxLastPositionDAO
                                ) extends BaseController with I18nSupport {
   // レスポンスのコンテントタイプ

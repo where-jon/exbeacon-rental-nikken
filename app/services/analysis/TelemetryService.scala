@@ -16,11 +16,11 @@ import scala.concurrent.Await
 import scala.concurrent.duration.Duration
 
 class TelemetryService @Inject()(
-  companyDAO: models.manage.companyDAO,
-  ws: WSClient,
-  exbDao:models.system.ExbDAO,
-  beaconService: BeaconService,
-  placeDAO: models.placeDAO
+                                  companyDAO: models.manage.CompanyDAO,
+                                  ws: WSClient,
+                                  exbDao:models.system.ExbDAO,
+                                  beaconService: BeaconService,
+                                  placeDAO: models.placeDAO
 ) {
 
   var GATEWAY_API_URL =""

@@ -25,7 +25,7 @@ class ItemOtherMaster @Inject()(config: Configuration
 , val silhouette: Silhouette[MyEnv]
 , val messagesApi: MessagesApi
 , otherDAO: models.itemOtherDAO
-, companyDAO: models.manage.companyDAO
+, companyDAO: models.manage.CompanyDAO
 , beaconService: BeaconService
 , floorDAO: models.system.floorDAO
 , btxDAO: models.btxDAO
