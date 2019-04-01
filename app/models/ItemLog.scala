@@ -270,8 +270,8 @@ class ItemLogDAO @Inject() (dbapi: DBApi) {
       val sql = SQL(
         """
           select
-          T1.item_id
-          ,T1.item_btx_id
+          DISTINCT T1.item_btx_id
+          ,T1.item_id
           ,T1.finish_floor_name
           ,T1.finish_exb_name
           ,to_char(T1.finish_updatetime, 'YYYY-MM-DD HH24:MI:SS') as finish_detected_time
@@ -290,9 +290,10 @@ class ItemLogDAO @Inject() (dbapi: DBApi) {
               where not finish_updatetime >= to_date({finish_updatetime}, 'YYYY-MM-DD') - 1
               GROUP BY item_btx_id ) AS T2
             ON T2.F1=T1.item_btx_id AND T2.F2=T1.finish_updatetime
-            where t1.place_id = {place_id}
+            where T1.place_id = {place_id}
             and finish_floor_name != '不在'
             and item_btx_id not in( """ + {detectedTxList.mkString(",")} +""" )
+            and not T1.updatetime >= to_date({finish_updatetime}, 'YYYY-MM-DD') - 1
 
         ORDER BY
         item_btx_id
