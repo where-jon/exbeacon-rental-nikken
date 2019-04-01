@@ -90,7 +90,7 @@
     <div class="modal" id="placeUpdateModal" tabindex="-1" role="dialog" aria-labelledby="placeUpdateModalLabel" aria-hidden="true" data-show="true" data-keyboard="false" data-backdrop="static">
         <div class="modal-dialog">
             <div class="modal-content">
-                <form id="placeUpdateForm" name="placeUpdateForm" enctype="multipart/form-data" class="form-horizontal" method="post" action="@controllers.tenant.routes.RegionController.regionRegister.path">
+                <form id="placeUpdateForm" name="placeUpdateForm" enctype="multipart/form-data" class="form-horizontal" method="post" action="@controllers.tenant.routes.RegionController.regionUpdate.path">
                     @CSRF.formField
                     <input type="hidden" name="placeId" value="@place.placeId">
                     <input type="hidden" name="userId" value="@place.userId">
