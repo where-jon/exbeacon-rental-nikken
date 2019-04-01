@@ -1,4 +1,4 @@
-# exbeacon-daidan-web
+# exbeacon-rental-nikken
 
 # --- !Ups
 

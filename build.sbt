@@ -1,4 +1,4 @@
-name := """exbeacon-daidan-web"""
+name := """exbeacon-rental-nikken"""
 
 version := "1.0-SNAPSHOT"
 
