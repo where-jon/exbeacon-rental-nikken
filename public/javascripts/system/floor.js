@@ -1,1 +1,152 @@
-eval(function(p,a,c,k,e,r){e=function(c){return(c<a?'':e(parseInt(c/a)))+((c=c%a)>35?String.fromCharCode(c+29):c.toString(36))};if(!''.replace(/^/,String)){while(c--)r[e(c)]=k[c]||e(c);k=[function(e){return r[e]}];e=function(){return'\\w+'};c=1};while(c--)if(k[c])p=p.replace(new RegExp('\\b'+e(c)+'\\b','g'),k[c]);return p}('5 p(a){4(!a){$(\'#y\').2(\'\');$(\'#z\').2(\'\');$(\'#k\').2(7);$("#l").2("1").q("h",8);$(\'#g\').2(\'\');$(\'#A\').2(\'\');$(\'#6\').2(\'\');$(\'.m\').r();$(\'#B\').s(\'i\');$(\'#C\').n(\'i\')}t{$(\'.m\').r();$(\'#y\').2(a);$(\'#z\').2($(\'#\'+a).9(\'.D\').f());$(\'#g\').2(\'\');3 b=$(\'#\'+a).9(\'.E\').f();4(b=="表示"){$("#j").2("1").q("h",8);$(\'#k\').2(8)}t{$("#j").2("0").q("h",8);$(\'#k\').2(7)}$(\'#U\').2($(\'#\'+a).9(\'.D\').f());$(\'#A\').2($(\'#\'+a).9(\'.V\').f());$(\'#6\').2(\'\');$(\'#B\').n(\'i\');$(\'#C\').s(\'i\')}$(\'#W\').F()}5 X(a){4(a){p()}t{4($(\'.o\').G>0){3 b=$(\'.o\').H(\'I-J\');p(b)}}}5 Y(){4($(\'.o\').G>0){3 a=$(\'.o\').H(\'I-J\');$(\'#10\').2(a);$(\'#11\').F()}}5 12(){4($(\'#13\').2()!=\'\'){4($(\'#6\').2().14(/[0-15-16-Z]/)){3 c=7;$(\'.m\').17(5(a,b){4($(b).9(\'u\').f()==$(\'#6\').2()){c=8;K 7}});4(c){$(\'#6\').2(\'\');K 7}3 d=$(\'.v\').18();d.s(\'m\');d.n(\'v\');d.9(\'u.L\').f($.w($(\'#6\').2()));3 e=$(\'#g\').2();4(e!=""){e=e+"-"}$(\'#g\').2(e+$.w($(\'#6\').2()));d.n(\'i\');$(\'.v\').19(d);$(\'#6\').2(\'\')}}}5 1a(a){3 b=$(a).M().M();3 c=$.w(b.9(\'u.L\').f());3 d=$(\'#g\').2();3 e=1b 1c("(-"+c+"|"+c+"-|"+c+")",\'\');$(\'#g\').2(d.1d(e,\'\'));b.r()}5 N(){3 d=$(\'#l\');4(d!=O){$(\'#l\').P(5(){3 a=$(\'#l Q:h\').2();3 b=R.S("E");3 c=7;4(a==1)c=8;b.T=c})}3 e=$(\'#j\');4(e!=O){$(\'#j\').P(5(){3 a=$(\'#j Q:h\').2();3 b=R.S("k");3 c=7;4(a==1)c=8;b.T=c})}}$(5(){N();x.1e();x.1f();x.1g()});',62,79,'||val|var|if|function|inputDeviceNo|false|true|find||||||text|inputExbDeviceNoListComma|selected|hidden|FLG_FILTER_DIALOG|activeFlgDialog|FLG_FILTER|cloned|removeClass|rowHoverSelectedColor|showFloorModal|prop|remove|addClass|else|span|template|trim|gInitView|inputFloorId|inputPreDisplayOrder|inputFloorName|floorUpdateFooter|floorRegisterFooter|displayOrder|activeFlg|modal|length|attr|data|floorId|return|inputDeviceNoSpan|parent|btnEvent|null|change|option|document|getElementById|value|inputDisplayOrder|floorName|floorUpdateModal|showFloorUpdateModal|showFloorDeleteModal||deleteFloorId|floorDeleteModal|addTagRow|inputDeviceId|match|9a|zA|each|clone|before|removeTagRow|new|RegExp|replace|fixTable|tableResize|bindMouseAndTouch'.split('|'),0,{}))
+
+// フロア追加・更新モーダル画面の表示
+function showFloorModal(floorId){
+    if(!floorId){
+        // 新規
+        $('#inputFloorId').val('');
+         $('#inputPreDisplayOrder').val('');
+        $('#activeFlgDialog').val(false);
+        $("#FLG_FILTER").val("1").prop("selected", true);
+        $('#inputExbDeviceNoListComma').val('');
+        $('#inputFloorName').val('');
+        $('#inputDeviceNo').val('');
+        $('.cloned').remove();
+        // ボタン表示の切り替え
+        $('#floorUpdateFooter').addClass('hidden');
+        $('#floorRegisterFooter').removeClass('hidden');
+    }else{
+        $('.cloned').remove();
+        $('#inputFloorId').val(floorId);
+        $('#inputPreDisplayOrder').val($('#'+floorId).find('.displayOrder').text());
+        $('#inputExbDeviceNoListComma').val('');
+
+        var vShow = $('#'+floorId).find('.activeFlg').text();
+        if(vShow == "表示"){
+            $("#FLG_FILTER_DIALOG").val("1").prop("selected", true);
+            $('#activeFlgDialog').val(true);
+        }else{
+            $("#FLG_FILTER_DIALOG").val("0").prop("selected", true);
+            $('#activeFlgDialog').val(false);
+        }
+
+        $('#inputDisplayOrder').val($('#'+floorId).find('.displayOrder').text());
+        $('#inputFloorName').val($('#'+floorId).find('.floorName').text());
+        $('#inputDeviceNo').val('');
+
+        // ボタン表示の切り替え
+        $('#floorUpdateFooter').removeClass('hidden');
+        $('#floorRegisterFooter').addClass('hidden');
+    }
+    $('#floorUpdateModal').modal();
+}
+
+function showFloorUpdateModal(isRegister){
+    if(isRegister){
+        showFloorModal();
+    }else{
+        if($('.rowHoverSelectedColor').length > 0){
+            var floorId = $('.rowHoverSelectedColor').attr('data-floorId');
+            showFloorModal(floorId);
+        }
+    }
+}
+
+function showFloorDeleteModal(){
+    if($('.rowHoverSelectedColor').length > 0){
+        var floorId = $('.rowHoverSelectedColor').attr('data-floorId');
+        $('#deleteFloorId').val(floorId);
+        $('#floorDeleteModal').modal();
+    }
+}
+
+// 入力モーダルのEXBデバイスの行を追加
+function addTagRow(){
+    if($('#inputDeviceId').val() != ''){
+        if($('#inputDeviceNo').val().match(/[0-9a-zA-Z]/)){
+            var duplicateFlg = false;
+            $('.cloned').each(function(index, element){
+                if($(element).find('span').text() == $('#inputDeviceNo').val()){
+                    duplicateFlg = true;
+                    return false;
+                }
+            });
+
+            if(duplicateFlg){
+                $('#inputDeviceNo').val('');
+                return false;
+            }
+
+            var clonedRow = $('.template').clone();
+            clonedRow.addClass('cloned');
+            clonedRow.removeClass('template');
+            // 表示文字列の設定
+            clonedRow.find('span.inputDeviceNoSpan').text($.trim($('#inputDeviceNo').val()));
+            // 値の設定
+            var value = $('#inputExbDeviceNoListComma').val();
+            if (value != "") {
+                value = value + "-";
+            }
+            $('#inputExbDeviceNoListComma').val(value + $.trim($('#inputDeviceNo').val()));
+
+            clonedRow.removeClass('hidden');
+            $('.template').before(clonedRow);
+            $('#inputDeviceNo').val('');
+        }
+    }
+}
+
+// 入力モーダルのEXBデバイスの行の削除
+function removeTagRow(obj){
+    var clonedRow = $(obj).parent().parent();
+    var value = $.trim(clonedRow.find('span.inputDeviceNoSpan').text());
+    var originalValue = $('#inputExbDeviceNoListComma').val();
+    var replaceReg = new RegExp("(-" + value + "|" + value + "-|" + value + ")", '');
+    $('#inputExbDeviceNoListComma').val(originalValue.replace(replaceReg, ''));
+    clonedRow.remove();
+}
+
+
+// 表示ボタンをクリックする時に発生するイベント
+function btnEvent(){
+    var flgFrame = $('#FLG_FILTER');
+    if(flgFrame != null){
+        // 管理者用selectbox value取得
+        $('#FLG_FILTER').change(function() {
+             var result = $('#FLG_FILTER option:selected').val();
+             console.log("select:" + result);
+             var vActiveFlgElement = document.getElementById("activeFlg");
+             var vResult = false;
+             if(result == 1 ) vResult = true;
+
+             vActiveFlgElement.value = vResult;
+        });
+    }
+
+    var flgFrame2 = $('#FLG_FILTER_DIALOG');
+        if(flgFrame2 != null){
+            // 管理者用selectbox value取得
+            $('#FLG_FILTER_DIALOG').change(function() {
+                 var result = $('#FLG_FILTER_DIALOG option:selected').val();
+                 console.log("select:" + result);
+                 var vActiveFlgElement = document.getElementById("activeFlgDialog");
+                 var vResult = false;
+                 if(result == 1 ) vResult = true;
+                 vActiveFlgElement.value = vResult;
+            });
+        }
+}
+// 初期表示
+$(function(){
+
+    // ボタンをイベント
+    btnEvent();
+
+    // テーブルを固定
+    gInitView.fixTable();
+
+    // 画面更新
+    gInitView.tableResize();
+
+    // マウス操作とタップ操作をバインド
+    gInitView.bindMouseAndTouch();
+});
